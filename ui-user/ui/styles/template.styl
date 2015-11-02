@@ -1,0 +1,1264 @@
+/******************************************************************************
+Copyright (c) 2015, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+// NOTE: Please do NOT use @extend in this file
+// This would be @import by other files, and maybe under a CSS Class
+// @extend only works at root level, and it would cause failure
+// Manually write CSS code (e.g. for .hope-graph-darken and .hope-graph)
+// instead of use @extend
+
+//////////////////////////////////////////////////////////////////
+// Bars
+//////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------
+// Left Tool Bar
+//----------------------------------------------------------------
+
+.hope-left-toolbar {
+  background-color: $left-toolbar-bk;
+  border-right: 1px solid $left-toolbar-border;
+  height: 100%;
+}
+
+.hope-left-toolbar > i {
+  width: 60px;
+  font-size: 32px;
+  text-align: center;
+  color: $left-toolbar-fg;
+  padding: 10px 5px 10px;
+}
+
+.hope-left-toolbar .disabled {
+  color: $left-toolbar-fg-off;
+}
+
+.hope-left-toolbar > i:hover {
+  background-color: $left-toolbar-bk-on;
+}
+
+//----------------------------------------------------------------
+// Nav Bar
+//----------------------------------------------------------------
+
+.hope-nav-bar {
+  background-color: $nav-bar-bk;
+  color: $nav-bar-fg;
+  position: relative;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Panel
+//////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------
+// Panel - General
+//----------------------------------------------------------------
+
+.hope-panel {
+  cursor: default;
+  color: $fg-3;
+  background-color: $panel-bk;
+  border: 1px solid $panel-border;
+}
+
+.hope-panel .error{
+  color: $fg-error;
+}
+
+.hope-panel .error:hover{
+  color: lighten($fg-error, 10%);
+}
+
+
+.hope-panel-header {
+  background-color: $panel-header-bk;
+  color: $panel-header-fg;
+  height: 22px;
+}
+
+.hope-panel-icon {
+  margin: 2px 10px 10px;
+}
+.hope-panel-icon-min {
+  color: $panel-header-fg;
+  position: absolute;
+  top: 4px;
+  right: 10px;
+}
+
+.hope-panel-icon-min:hover {
+  color: $panel-header-fg-on;
+}
+
+
+//----------------------------------------------------------------
+// Panel - Library
+//----------------------------------------------------------------
+
+// search box
+.hope-search-box {
+  margin: 5px !important;
+}
+
+.hope-search-box .input-group-addon{
+  background: $panel-lib-search-bk !important; 
+  padding: 1px 1px !important;
+}
+.hope-search-box .form-control{
+  border-right: 0; 
+  box-shadow: 0 0 0; 
+  border-color: #ccc;
+  background: $panel-lib-search-bk;
+}
+.hope-search-box button{
+  border: 0;
+  background: $panel-lib-search-bk;
+}
+
+.hope-search-box input[type="search"]:focus {
+  border-color: alpha($panel-lib-search-bk-on, 0.8);
+  box-shadow: 0px 2px 2px alpha($panel-lib-search-bk-on, 0.1) inset, 0 0 10px alpha($panel-lib-search-bk-on, 0.6);
+  outline: 0 none;
+}
+
+// tabs
+.hope-panel-lib-tabs {
+  background-color: $panel-lib-tabs-bk;
+  color: $panel-lib-tabs-fg;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.hope-panel-lib-tab-item {
+  text-align: center;
+}
+
+.hope-panel-lib-tab-item >div {
+  padding: 8px;
+}
+
+.hope-panel-lib-tab-item >div:hover {
+  color: $panel-lib-tabs-fg-on;
+}
+
+.hope-panel-lib-tab-item-addon {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+.hope-panel-lib-tab-item-addon:hover {
+  color: $panel-lib-tabs-fg-on;
+}
+
+
+.hope-panel-lib-tabs .on {
+  background-color: $panel-lib-tabs-bk-on;
+  color: $panel-lib-tabs-fg-on;
+}
+
+
+// hub view
+.hope-panel-lib-view {
+  background-color: $panel-lib-bk;
+  color: $panel-lib-fg;
+}
+
+.hope-panel-lib-view-first-level, 
+.hope-panel-lib-view-second-level, 
+.hope-panel-lib-view-third-level {
+  margin-top: 2px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.hope-panel-lib-view-third-level {
+  background-color: $panel-lib-view-third-level;
+}
+
+.hope-panel-lib-view-third-level:hover {
+  background-color: $panel-lib-view-third-level-on;
+  color: $panel-lib-fg-on;
+}
+
+.hope-panel-lib-view-second-level {
+  background-color: $panel-lib-view-second-level;
+}
+.hope-panel-lib-view-second-level:hover {
+  background-color: $panel-lib-view-second-level-on;
+  color: $panel-lib-fg-on;
+}
+
+.hope-panel-lib-view-first-level {
+  background-color: $panel-lib-view-first-level;
+}
+.hope-panel-lib-view-first-level:hover {
+  background-color: $panel-lib-view-first-level-on;
+  color: $panel-lib-fg-on;
+}
+
+.hope-panel-lib-drag {
+  text-align: center;
+  border: 1px solid $panel-lib-drag-border;
+  border-radius: 6px;
+}
+
+.hope-panel-lib-code-edit-icon {
+  color: $panel-lib-code-edit-icon
+}
+.hope-panel-lib-code-edit-icon:hover {
+  color: lighten($panel-lib-code-edit-icon, 20%)
+}
+
+
+//----------------------------------------------------------------
+// Panel - Inspector
+//----------------------------------------------------------------
+
+
+.hope-inspector-header {
+  background-color: $panel-inspector-bk;
+  height: 70px;
+}
+
+.hope-inspector-icon {
+  position: relative;
+  float: left;
+  color: $panel-inspector-icon;
+  font-size: 36px;
+  text-align: center;
+  min-width: 50px;
+  margin: 6px 6px 0px;
+}
+
+.hope-inspector-icon:hover {
+  color: $fg-6;
+}
+
+.hope-inspector-detail {
+  position: relative;
+  float: left;
+  width: 180px;
+}
+
+.hope-inspector-detail-name {
+  color: $fg-5;
+  font-size: 18px;
+  margin-top: 6px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.hope-inspector-detail-desc {
+  color: $fg-1;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.node-details {
+  background: $panel-inspector-details-bk;
+  color: $panel-inspector-details-fg;
+  height: 100%;
+}
+.node-details-tag {
+  width: 100%;
+  font-size: 12px;
+  background: $panel-tab-bk-on;
+  overflow: auto;
+  padding: 8px;
+}
+.node-details-tag i {
+  display: inline-block;
+  margin: 2px;
+  padding: 2px 6px 2px 6px;
+  border: 1px solid $panel-tab-bk-on;
+  background: $panel-inspector-details-tag-bk;
+  color: $panel-inspector-details-tag-fg;
+  font-style: normal;
+  font-size: 16px;
+}
+.node-details-tag i:hover {
+  border: 1px solid $panel-inspector-details-tag-border-on;
+}
+.node-details-binding {
+  width: 100%;
+  height: 270px;
+  font-size: 12px;
+  background: $panel-tab-bk-on;
+  overflow: auto;
+  padding: 12px;
+}
+.hope-dropdown {
+  min-width: 200px;
+  border-radius: 16px;
+  margin: 12px 0 0 0;
+}
+
+.hope-graph-grouped {
+  stroke-width: 0px;
+  fill: $graph-group-fill;
+}
+.hope-graph-nogroup {
+  stroke-width: 1px;
+  stroke: $graph-group-fill;
+  stroke-dasharray: 4 2;
+}
+.hope-graph-grouped:hover, .hope-graph-nogroup:hover {
+  stroke-width: 2px;
+  stroke: $fg-6;
+}
+.hope-graph-buf-outline {
+  stroke-width: 8px;
+  stroke: $fg-6;
+  fill: none;
+  opacity: 0.0;
+}
+.hope-graph-buf-outline:hover {
+  opacity: 0.5;
+}
+.hope-graph-inner-circle {
+  pointer-events: none;
+  stroke-width: 0px;
+  fill: $bk-0;
+}
+.hope-graph-passive-circle {
+  fill: $graph-port-fill;
+}
+.hope-graph-passive-circle:hover {
+  stroke-width: 2px;
+  stroke: $fg-6;
+}
+.hope-graph-default-value {
+  position: absolute;
+  pointer-events: fill;
+  font-size: 12px;
+  font-style: italic;
+  text-overflow: ellipsis;
+  padding-left: 4px;
+  overflow: hidden;
+  background: $bk-3;
+  border: 0;
+  border-radius: 3px;
+}
+
+.border-bottom {
+  border-bottom: 1px solid $bk-0;
+}
+.padding-left {
+  padding-left: 6px;
+}
+.margin-top {
+  margin-top: 8px;
+}
+.z-index-top {
+  z-index: 99;
+}
+.match-parent {
+  height: 100%;
+  width: 100%;
+}
+
+.hope-panel-details-row {
+  margin-top: 2px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.hope-inspector-detail-field {
+  background: $bk-5;
+  height: 20px;
+  width: 100%;
+  padding-left: 3px;
+  border: 1px solid $fg-1;
+  border-radius: 3px;
+}
+
+.hope-note {
+  position: relative;
+  background: $bk-5;
+  margin: 0 6px 6px 6px;
+}
+.hope-note:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: $bk-3;
+  border: solid 8px;
+  border-color: transparent $panel-inspector-details-bk $panel-inspector-details-bk transparent;
+  z-index: 100;
+}
+
+.hope-tag-group {
+  margin: 6px;
+}
+.hope-tag-box {
+  height: 34px;
+  border: 1px solid $fg-3;
+  border-radius: 8px;
+  margin: 14px;
+  text-align: center;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Tabs
+//////////////////////////////////////////////////////////////////////////
+
+.hope-tabs-navigation {
+  background-color: $panel-tab-bk;
+  color: $panel-tab-fg;
+}
+
+.hope-tabs-item-list {
+  display: table;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hope-tabs-item {
+  float: left;
+  color: $panel-tab-fg;
+  min-width: 60px;
+  padding: 5px 6px 5px;
+  text-align: center;
+  cursor: default;
+}
+.hope-tabs-item a {
+  text-decoration: none;
+  display: block;
+  color: $panel-tab-fg;
+}
+.hope-tabs-item.active a {
+  color: $panel-tab-fg-on;
+}
+.hope-tabs-item.active {
+  background: $panel-tab-bk-on;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// SVG Graph
+//////////////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------
+// General
+//----------------------------------------------------------------
+
+.hope-graph-background {
+  background-color: $graph-bk;
+}
+
+.hope-graph, .hope-graph-darken {
+  stroke-width: 0px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.hope-graph {
+  fill: $graph-fill;
+  stroke: $graph-stroke;
+  cursor: default;
+}
+
+.hope-graph-darken {
+  fill: $graph-fill-off;
+  stroke: $graph-stroke-off;
+}
+
+.hope-graph-selected {
+  fill: $graph-fill-on;
+  stroke: $graph-stroke-on;
+  stroke-width: 1px;
+}
+
+
+//----------------------------------------------------------------
+// Fonts
+//----------------------------------------------------------------
+
+text {
+  stroke: none;
+}
+
+.hope-graph-in-port, .hope-graph-out-port, .hope-graph-extract, .hope-graph-tag {
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+  font-size: 12px;
+  text-rendering: geometricPrecision;
+  dominant-baseline: central;
+}
+
+.hope-graph-icon, .hope-inspector-icon {
+  font-family: 'FontAwesome';
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.hope-graph-icon-btn {
+  font-family: 'FontAwesome';
+  dominant-baseline: central;
+  cursor: default;
+  fill: $fg-3;
+}
+
+.hope-graph-icon-btn:hover {
+  fill: $fg-6;
+}
+
+.hope-graph-out-port text {
+  text-anchor: end;
+}
+
+.hope-binding-text {
+  text-anchor: middle;
+  font-size: 13px;
+}
+
+//----------------------------------------------------------------
+// Shapes
+//----------------------------------------------------------------
+
+.hope-graph-in-line, .hope-graph-edge, .hope-graph-edge-preview {
+  stroke-width: 2px;
+  fill: none;
+  pointer-events: fill;
+}
+
+.hope-graph-in-line {
+  stroke: $graph-stroke;
+}
+
+.hope-graph-edge-preview {
+  stroke: $graph-edge-preview;
+ }
+
+.hope-graph-dash {
+  stroke-dasharray: 4 2;
+}
+
+.hope-graph-edge:hover {
+  stroke-width: 5px;
+}
+
+.hope-graph-edge.hope-graph-selected {
+  stroke: $fg-6;
+}
+
+.hope-graph-port-circle {
+  fill: $graph-port-fill;
+  stroke-width: 0px;
+}
+
+.hope-graph-port-circle:hover, .hope-graph-binding-circle:hover {
+  fill: $graph-port-fill-on;
+}
+
+.hope-graph-binding-circle {
+  fill: $graph-binding-fill;
+  stroke: $graph-binding-stroke;
+  stroke-width: 1px;
+}
+
+.hope-graph .hope-graph-extract rect {
+  stroke-width: 1px;
+  fill: $graph-extract-fill;
+}
+
+.hope-graph-darken .hope-graph-extract rect {
+  stroke-width: 1px;
+  fill: $graph-extract-fill-off;
+}
+
+.hope-graph-darken .hope-graph-selected .hope-graph-extract rect {
+  fill: $graph-extract-fill;
+}
+
+.hope-graph-node-title-bar {
+  fill: $graph-node-title-fill;
+}
+
+
+.hope-graph-port-text {
+  fill: $graph-port-text;
+}
+.hope-graph-port-text:hover {
+  fill: $fg-6;
+}
+
+.hope-graph-extract text {
+  fill: $graph-extract-text;
+  text-anchor: middle;
+}
+
+.hope-graph-group {
+  stroke-width: 0px;
+  fill: $graph-group-fill;
+}
+
+.hope-graph-tag {
+  fill: $graph-tag-fill;
+}
+
+@keyframes blink {
+  0% {
+  	fill: $graph-port-blink-a;
+  	stroke: $graph-port-blink-a;
+  }
+  50% {
+  	fill: $graph-port-blink-b;
+  	stroke: $graph-port-blink-b;
+  }
+}
+.hope-graph-blink {
+  animation: blink 0.5s ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.directional-icon {
+  text-anchor: middle;
+}
+.directional-icon:hover {
+  cursor: default;
+}
+
+//////////////////////////////////////////////////////////////////
+// Addons
+//////////////////////////////////////////////////////////////////
+//----------------------------------------------------------------
+// Palette
+//----------------------------------------------------------------
+.hope-color-palette i {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+.hope-color-palette {
+  background-color: $palette-bk;
+  border: 1px solid $palette-border;
+  border-radius: 6px;
+}
+
+//////////////////////////////////////////////////////////////////
+// Opened file tabs
+//////////////////////////////////////////////////////////////////
+
+.hope-ftabs-wrapper {
+  background-color: $bk-4;
+  height: 100%;
+  width: 100%;
+}
+.hope-ftabs {
+  list-style: none; 
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.hope-ftabs li { 
+  float: left;
+  height: 24px;
+  padding: 0 6px;
+  text-align: center;
+  text-decoration: none;
+  font-style: normal;
+  color: $bk-0;
+  background: $fg-2;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  cursor: pointer;
+}
+.hope-ftabs-name {
+  display: inline-block;
+  white-space: nowrap;
+  min-width: 30px;
+}
+.hope-ftabs li.active { 
+  background: $fg-6;
+}
+.hope-ftabs li:not(.active):hover {
+  background: $fg-4;
+}
+.hope-ftabs-btn:hover {
+  color: $1;
+}
+
+//////////////////////////////////////////////////////////////////
+// Open Graph/UI Dialog 
+//////////////////////////////////////////////////////////////////
+.hope-open-dialog-list {
+  height: 360px;
+  overflow: auto;
+}
+.hope-open-dialog-item {
+  line-height: 18px;
+  width: 120px;
+  height: 60px;
+  float: left;
+  font-size: 16px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 2px solid black;
+  background-color: hsl(190, 90%, 45%);
+}
+.hope-open-dialog-item:hover {
+  border: 2px solid yellow;
+}
+.hope-open-dialog-item.selected {
+  background-color: green;
+}
+
+//////////////////////////////////////////////////////////////////
+// App manager
+//////////////////////////////////////////////////////////////////
+.hope-app-manager, .hope-app-home {
+  background-color: #e8e8e8;
+  height: 100%;
+}
+.hope-app-mgr-toolbar, .hope-app-home-toolbar {
+  background-color: white;
+}
+.hope-app {
+  line-height: 18px;
+  font-size: 20px;
+  float: left;
+  width: 200px;
+  height: 100px;
+  margin: 20px 20px 20px 0;
+  border: 2px solid black;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  position: relative;
+}
+.hope-app:hover {
+  border: 2px solid #00BAFF;
+}
+.hope-app-trash {
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  color: #999;
+}
+.hope-app-trash:hover {
+  color: red;
+}
+.hope-app-mgr-sort-dropdown {
+  margin: 5px !important;
+}
+.hope-app-mgr-body {
+  padding: 0 60px;
+}
+.hope-app-mgr-title-bar {
+  border-bottom: 1px solid #ccc;
+  padding: 10px 8px;
+  position: relative;
+}
+.hope-app-mgr-title, .hope-app-home-title {
+  font-size: 24px;
+}
+.hope-button {
+  display: inline-block;
+  border: 2px solid #00BAFF;
+  border-radius: 8px;
+  width: 120px;
+  color: #00BAFF;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+}
+.hope-button:hover {
+  background-color: #efefef;
+}
+.hope-button i {
+  padding: 6px;
+}
+.hope-app-mgr-list {
+  list-style: none;
+  overflow: auto;
+  padding: 10px 0 0 0;
+}
+
+// App Home
+.hope-app-home-title-bar {
+  border-bottom: 1px solid #ccc;
+  margin: 30px 20px 0;
+  position: relative;
+}
+.hope-app-home-app-dropdown {
+  margin: 8px 0 8px 60px;
+  font-size: 24px;
+}
+.hope-app-home-app-dropdown .btn:first-child:not(.dropdown-toggle) {
+  min-width: 160px;
+}
+.hope-app-home-icon {
+  color: #999;
+}
+.hope-app-home-icon:hover {
+  color: #00BAFF;
+}
+.hope-app-home-icon-light {
+  color: red;
+}
+.hope-app-panel {
+  background-color: white;
+  height: 600px;
+  font-size: 16px;
+  border: 1px solid #666;
+  border-radius: 8px;
+  margin: 30px 20px 0 40px;
+  padding: 15px;
+}
+.hope-app-panel-name {
+  text-align: center;
+  font-size: 18px;
+  padding: 12px 0;
+}
+.hope-app-panel-label {
+  color: #00BAFF;
+  padding: 4px 10px 4px 0;
+}
+.hope-app-panel-desc {
+  height: 85px;
+  width: 209px;
+  font-size: 14px;
+  resize: none;
+  border: 0;
+}
+.hope-app-panel-btn {
+  background-color: #fcfcfc;
+  border: 1px solid #555;
+  border-radius: 8px;
+  height: 32px;
+  padding: 4px;
+  margin: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+.hope-app-panel-btn:hover {
+  border: 1px solid #00BAFF;
+}
+.hope-app-panel-ui-list {
+  height: 300px;
+  overflow: auto;
+}
+.hope-app-panel-ui {
+  border: 0;
+  border-radius: 8px;
+  height: 32px;
+  margin: 6px 0;
+  padding: 4px;
+  color: black;
+  position: relative;
+}
+.hope-app-panel-ui:hover {
+  background-color: #ccc;
+}
+.hope-app-panel-ui-name {
+  width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-left: 20px;
+}
+.hope-app-panel-ui-home {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  color: #999;
+}
+.hope-app-panel-ui-home.home-ui {
+  color: #00BAFF;
+}
+.hope-app-panel-ui-trash {
+  color: #999;
+  position: absolute;
+  right: 6px;
+  top: 6px;
+}
+.hope-app-panel-ui-home:not(.home-ui):hover,
+.hope-app-panel-ui-trash:hover {
+  color: red;
+}
+.hope-app-home-list {
+  list-style: none;
+  overflow: auto;
+  padding: 10px 20px;
+}
+.hope-activity {
+  float: left;
+  width: 200px;
+  height: 200px;
+  margin: 20px 20px 20px 0;
+  border: 2px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  position: relative;
+}
+.hope-activity:hover {
+  border: 2px solid #00BAFF;
+}
+.hope-activity-bar {
+  text-align: center;
+  background: #363636;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+.hope-activity-icon {
+  margin: 10px 0;
+  font-size: 7em;
+  text-decoration: none;
+  font-style: normal;
+  color: white;
+}
+.hope-activity-name, .hope-activity-desc {
+  font-size: 12px;
+  text-decoration: none;
+  font-style: normal;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  color: black;
+}
+.hope-activity-name {
+  white-space: nowrap;
+  padding: 6px;
+}
+.hope-activity-desc {
+  color: #888;
+  height: 50px;
+  padding: 0 6px;
+}
+
+//////////////////////////////////////////////////////////////////
+// UI 
+//////////////////////////////////////////////////////////////////
+.hope-ui-container {
+  background: $ui-container-bk;
+  color: $ui-container-fg;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+.hope-ui-widget {
+  background: $ui-widget-bk;
+  color: $ui-widget-fg;
+}
+
+.grid-stack-item {
+  border: 0;
+}
+.grid-stack-item-content,
+.grid-stack .grid-stack-placeholder > .placeholder-content {
+  left: 0 !important;
+  right: 0 !important;
+  overflow: hidden !important;
+}
+.grid-stack > .grid-stack-item > .ui-resizable-se {
+  right: 0 !important;
+}
+
+.onoffswitch {
+  text-align: left;
+  position: relative;
+  width: 78px;
+}
+.onoffswitch-checkbox {
+  display: none;
+}
+.onoffswitch-label {
+  display: block;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 0;
+  border: 1px solid $fg-1;
+}
+.onoffswitch-inner {
+  width: 200%;
+  margin-left: -100%;
+  transition: margin 0.1s ease-in 0s;
+}
+.onoffswitch-inner .on, .onoffswitch-inner .off {
+  float: left;
+  width: 50%;
+  height: 24px;
+  padding: 0 6px;
+  line-height: 24px;
+  font-size: 14px;
+}
+.onoffswitch-inner .on {
+  background-color: #2a2a2a;
+  color: #8B8B8B;
+}
+.onoffswitch-inner .off {
+  background-color: #101214;
+  color: #8B8B8B;
+  text-align: right;
+}
+.onoffswitch-switch {
+  width: 21px;
+  margin: 4px;
+  background: #A1A1A1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 47px;
+  transition: all 0.1s ease-in 0s;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+  right: 0px;
+  background-color: #FF9900;
+}
+
+.styled-select select {
+  width: 100%;
+  height: 20px;
+  background: $bk-5;
+  border: 1px solid $fg-1;
+}
+
+.hope-widget-details-extra {
+  text-align: center;
+  background: $bk-3;
+}
+.hope-widget-details-extra:hover {
+  background: $bk-0;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Templated colors
+//////////////////////////////////////////////////////////////////////////
+
+.fill-color-1     { fill: $1 !important; }
+.fill-color-2     { fill: $2 !important; }
+.fill-color-3     { fill: $3 !important; }
+.fill-color-4     { fill: $4 !important; }
+.fill-color-5     { fill: $5 !important; }
+.fill-color-6     { fill: $6 !important; }
+.fill-color-7     { fill: $7 !important; }
+.fill-color-8     { fill: $8 !important; }
+.fill-color-9     { fill: $9 !important; }
+
+.fill-color-1-with-hover { fill: $1 !important; }
+.fill-color-2-with-hover { fill: $2 !important; }
+.fill-color-3-with-hover { fill: $3 !important; }
+.fill-color-4-with-hover { fill: $4 !important; }
+.fill-color-5-with-hover { fill: $5 !important; }
+.fill-color-6-with-hover { fill: $6 !important; }
+.fill-color-7-with-hover { fill: $7 !important; }
+.fill-color-8-with-hover { fill: $8 !important; }
+.fill-color-9-with-hover { fill: $9 !important; }
+
+.fill-color-1-with-hover:hover { fill: $1-on !important; }
+.fill-color-2-with-hover:hover { fill: $2-on !important; }
+.fill-color-3-with-hover:hover { fill: $3-on !important; }
+.fill-color-4-with-hover:hover { fill: $4-on !important; }
+.fill-color-5-with-hover:hover { fill: $5-on !important; }
+.fill-color-6-with-hover:hover { fill: $6-on !important; }
+.fill-color-7-with-hover:hover { fill: $7-on !important; }
+.fill-color-8-with-hover:hover { fill: $8-on !important; }
+.fill-color-9-with-hover:hover { fill: $9-on !important; }
+
+
+.fill-color-1-on  { fill: $1-on !important; }
+.fill-color-2-on  { fill: $2-on !important; }
+.fill-color-3-on  { fill: $3-on !important; }
+.fill-color-4-on  { fill: $4-on !important; }
+.fill-color-5-on  { fill: $5-on !important; }
+.fill-color-6-on  { fill: $6-on !important; }
+.fill-color-7-on  { fill: $7-on !important; }
+.fill-color-8-on  { fill: $8-on !important; }
+.fill-color-9-on  { fill: $9-on !important; }
+
+.fill-color-1-off { fill: $1-off !important; }
+.fill-color-2-off { fill: $2-off !important; }
+.fill-color-3-off { fill: $3-off !important; }
+.fill-color-4-off { fill: $4-off !important; }
+.fill-color-5-off { fill: $5-off !important; }
+.fill-color-6-off { fill: $6-off !important; }
+.fill-color-7-off { fill: $7-off !important; }
+.fill-color-8-off { fill: $8-off !important; }
+.fill-color-9-off { fill: $9-off !important; }
+
+
+.stroke-color-1   { stroke: $1 !important; }
+.stroke-color-2   { stroke: $2 !important; }
+.stroke-color-3   { stroke: $3 !important; }
+.stroke-color-4   { stroke: $4 !important; }
+.stroke-color-5   { stroke: $5 !important; }
+.stroke-color-6   { stroke: $6 !important; }
+.stroke-color-7   { stroke: $7 !important; }
+.stroke-color-8   { stroke: $8 !important; }
+.stroke-color-9   { stroke: $9 !important; }
+
+.stroke-color-1-with-hover   { stroke: $1 !important; }
+.stroke-color-2-with-hover   { stroke: $2 !important; }
+.stroke-color-3-with-hover   { stroke: $3 !important; }
+.stroke-color-4-with-hover   { stroke: $4 !important; }
+.stroke-color-5-with-hover   { stroke: $5 !important; }
+.stroke-color-6-with-hover   { stroke: $6 !important; }
+.stroke-color-7-with-hover   { stroke: $7 !important; }
+.stroke-color-8-with-hover   { stroke: $8 !important; }
+.stroke-color-9-with-hover   { stroke: $9 !important; }
+
+.stroke-color-1-with-hover:hover   { stroke: $1-on !important; }
+.stroke-color-2-with-hover:hover   { stroke: $2-on !important; }
+.stroke-color-3-with-hover:hover   { stroke: $3-on !important; }
+.stroke-color-4-with-hover:hover   { stroke: $4-on !important; }
+.stroke-color-5-with-hover:hover   { stroke: $5-on !important; }
+.stroke-color-6-with-hover:hover   { stroke: $6-on !important; }
+.stroke-color-7-with-hover:hover   { stroke: $7-on !important; }
+.stroke-color-8-with-hover:hover   { stroke: $8-on !important; }
+.stroke-color-9-with-hover:hover   { stroke: $9-on !important; }
+
+.stroke-color-1-on    { stroke: $1-on !important; }
+.stroke-color-2-on    { stroke: $2-on !important; }
+.stroke-color-3-on    { stroke: $3-on !important; }
+.stroke-color-4-on    { stroke: $4-on !important; }
+.stroke-color-5-on    { stroke: $5-on !important; }
+.stroke-color-6-on    { stroke: $6-on !important; }
+.stroke-color-7-on    { stroke: $7-on !important; }
+.stroke-color-8-on    { stroke: $8-on !important; }
+.stroke-color-9-on    { stroke: $9-on !important; }
+
+.stroke-color-1-off   { stroke: $1-off !important; }
+.stroke-color-2-off   { stroke: $2-off !important; }
+.stroke-color-3-off   { stroke: $3-off !important; }
+.stroke-color-4-off   { stroke: $4-off !important; }
+.stroke-color-5-off   { stroke: $5-off !important; }
+.stroke-color-6-off   { stroke: $6-off !important; }
+.stroke-color-7-off   { stroke: $7-off !important; }
+.stroke-color-8-off   { stroke: $8-off !important; }
+.stroke-color-9-off   { stroke: $9-off !important; }
+
+.color-1              { color: $1 !important; }
+.color-2              { color: $2 !important; }
+.color-3              { color: $3 !important; }
+.color-4              { color: $4 !important; }
+.color-5              { color: $5 !important; }
+.color-6              { color: $6 !important; }
+.color-7              { color: $7 !important; }
+.color-8              { color: $8 !important; }
+.color-9              { color: $9 !important; }
+
+.color-1-with-hover              { color: $1 !important; }
+.color-2-with-hover              { color: $2 !important; }
+.color-3-with-hover              { color: $3 !important; }
+.color-4-with-hover              { color: $4 !important; }
+.color-5-with-hover              { color: $5 !important; }
+.color-6-with-hover              { color: $6 !important; }
+.color-7-with-hover              { color: $7 !important; }
+.color-8-with-hover              { color: $8 !important; }
+.color-9-with-hover              { color: $9 !important; }
+
+.color-1-with-hover:hover        { color: $1-on !important; }
+.color-2-with-hover:hover        { color: $2-on !important; }
+.color-3-with-hover:hover        { color: $3-on !important; }
+.color-4-with-hover:hover        { color: $4-on !important; }
+.color-5-with-hover:hover        { color: $5-on !important; }
+.color-6-with-hover:hover        { color: $6-on !important; }
+.color-7-with-hover:hover        { color: $7-on !important; }
+.color-8-with-hover:hover        { color: $8-on !important; }
+.color-9-with-hover:hover        { color: $9-on !important; }
+
+.color-1-on           { color: $1-on !important; }
+.color-2-on           { color: $2-on !important; }
+.color-3-on           { color: $3-on !important; }
+.color-4-on           { color: $4-on !important; }
+.color-5-on           { color: $5-on !important; }
+.color-6-on           { color: $6-on !important; }
+.color-7-on           { color: $7-on !important; }
+.color-8-on           { color: $8-on !important; }
+.color-9-on           { color: $9-on !important; }
+
+.color-1-off          { color: $1-off !important; }
+.color-2-off          { color: $2-off !important; }
+.color-3-off          { color: $3-off !important; }
+.color-4-off          { color: $4-off !important; }
+.color-5-off          { color: $5-off !important; }
+.color-6-off          { color: $6-off !important; }
+.color-7-off          { color: $7-off !important; }
+.color-8-off          { color: $8-off !important; }
+.color-9-off          { color: $9-off !important; }
+
+.bk-color-1           { color: $1 !important; }
+.bk-color-2           { color: $2 !important; }
+.bk-color-3           { color: $3 !important; }
+.bk-color-4           { color: $4 !important; }
+.bk-color-5           { color: $5 !important; }
+.bk-color-6           { color: $6 !important; }
+.bk-color-7           { color: $7 !important; }
+.bk-color-8           { color: $8 !important; }
+.bk-color-9           { color: $9 !important; }
+
+.bk-color-1-with-hover           { color: $1 !important; }
+.bk-color-2-with-hover           { color: $2 !important; }
+.bk-color-3-with-hover           { color: $3 !important; }
+.bk-color-4-with-hover           { color: $4 !important; }
+.bk-color-5-with-hover           { color: $5 !important; }
+.bk-color-6-with-hover           { color: $6 !important; }
+.bk-color-7-with-hover           { color: $7 !important; }
+.bk-color-8-with-hover           { color: $8 !important; }
+.bk-color-9-with-hover           { color: $9 !important; }
+
+.bk-color-1-with-hover:hover           { color: $1-on !important; }
+.bk-color-2-with-hover:hover           { color: $2-on !important; }
+.bk-color-3-with-hover:hover           { color: $3-on !important; }
+.bk-color-4-with-hover:hover           { color: $4-on !important; }
+.bk-color-5-with-hover:hover           { color: $5-on !important; }
+.bk-color-6-with-hover:hover           { color: $6-on !important; }
+.bk-color-7-with-hover:hover           { color: $7-on !important; }
+.bk-color-8-with-hover:hover           { color: $8-on !important; }
+.bk-color-9-with-hover:hover           { color: $9-on !important; }
+
+.bk-color-1-on        { color: $1-on !important; }
+.bk-color-2-on        { color: $2-on !important; }
+.bk-color-3-on        { color: $3-on !important; }
+.bk-color-4-on        { color: $4-on !important; }
+.bk-color-5-on        { color: $5-on !important; }
+.bk-color-6-on        { color: $6-on !important; }
+.bk-color-7-on        { color: $7-on !important; }
+.bk-color-8-on        { color: $8-on !important; }
+.bk-color-9-on        { color: $9-on !important; }
+
+.bk-color-1-off       { color: $1-off !important; }
+.bk-color-2-off       { color: $2-off !important; }
+.bk-color-3-off       { color: $3-off !important; }
+.bk-color-4-off       { color: $4-off !important; }
+.bk-color-5-off       { color: $5-off !important; }
+.bk-color-6-off       { color: $6-off !important; }
+.bk-color-7-off       { color: $7-off !important; }
+.bk-color-8-off       { color: $8-off !important; }
+.bk-color-9-off       { color: $9-off !important; }

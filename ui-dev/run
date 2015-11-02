@@ -1,0 +1,16 @@
+#!/bin/bash
+
+
+node sample_server/index.js &
+pid=$!
+
+
+trap cleanup EXIT
+
+function cleanup() {
+  echo "killing server ..."
+  if [ -n "$pid" ]; then kill $pid; fi
+}
+
+
+gulp watch

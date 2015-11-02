@@ -1,0 +1,173 @@
+/******************************************************************************
+Copyright (c) 2015, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+//////////////////////////////////////////////////////////////////
+// Load theme
+//////////////////////////////////////////////////////////////////
+
+@import "./themes/dark"
+
+.hope-theme-dark {
+  @import "./template"
+}
+
+@import "./themes/light"
+
+.hope-theme-light {
+  @import "./template"
+}
+
+@import "./help"
+
+//////////////////////////////////////////////////////////////////
+// Basic Setting & Layout
+//////////////////////////////////////////////////////////////////
+
+
+body {
+  overflow: hidden;
+  user-select: none;
+}
+
+.hope-svg-canvas-holder {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.shake-opacity {
+  animation-name: shake-opacity;
+  animation-duration: 200ms;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0s;
+}
+@keyframes shake-opacity {
+  0% { transform: translate(0px, 0px) rotate(0deg); }
+  10% { transform: translate(4px, 0px) rotate(-0.5deg); }
+  20% { transform: translate(4px, -3px) rotate(1.5deg); }
+  30% { transform: translate(-2px, 2px) rotate(-0.5deg);}
+  40% { transform: translate(2px, -1px) rotate(1.5deg);}
+  50% { transform: translate(4px, 1px) rotate(0.5deg);}
+  60% { transform: translate(-5px, -3px) rotate(-2.5deg);}
+  70% { transform: translate(4px, 2px) rotate(0.5deg);}
+  80% { transform: translate(-1px, 3px) rotate(-0.5deg);}
+  90% { transform: translate(-5px, 4px) rotate(-0.5deg);}
+}
+
+//////////////////////////////////////////////////////////////////
+// Remove gutters with Grid of Bootstrap 3
+// To avoid the content toches browser border, bs3 Grid system has a 
+// magic padding, margin system, i.e. padding 15px for container,
+// margin -15px for row, and padding 15px for col
+// To make our layout easy, we strictly remove all of these from Grid
+// with !important
+// if anything inside the grid need its own padding, it needs to add
+// a div or so and add paddings / margins inside
+//////////////////////////////////////////////////////////////////
+.container, .container-fluid {
+  padding-left: 0 !important
+  padding-right: 0 !important
+}
+
+.container .row, .container-fluid .row {
+  margin-left: 0 !important
+  margin-right: 0 !important
+}
+
+.container .row [class*="col-"], .container-fluid .row [class*="col-"] {
+  padding-left: 0 !important
+  padding-right: 0 !important
+}
+
+.hv-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.popover li {
+  list-style: none;
+}
+
+.no-events {
+  pointer-events: none;
+}
+
+
+//////////////////////////////////////////////////////////////////
+// Ace Editor
+//////////////////////////////////////////////////////////////////
+
+.hope-ace-container {
+  width: 800px;
+  height: 1000px;
+  position: absolute;
+  top: 50px;
+  left: 30px;
+}
+
+//////////////////////////////////////////////////////////////////
+// Transitions for React
+//////////////////////////////////////////////////////////////////
+
+
+.hope-code-editor-enter {
+  opacity: 0.01;
+  transition: opacity .5s ease-in;
+}
+
+.hope-code-editor-enter.hope-code-editor-enter-active {
+  opacity: 1;
+}
+
+.hope-code-editor-leave {
+  opacity: 1;
+  transition: opacity .5s ease-out;
+}
+
+.hope-code-editor-leave.hope-code-editor-leave-active {
+  opacity: 0;
+}
+
+//////////////////////////////////////////////////////////////////
+// Expand Sign
+//////////////////////////////////////////////////////////////////
+.hope-tree-node__is-expanded .hope-tree-node__sign-expanded {
+  display: inline-block;
+}
+.hope-tree-node__is-expanded .hope-tree-node__sign-collapsed {
+  display: none;
+}
+.hope-tree-node__not-expanded .hope-tree-node__sign-expanded {
+  display: none;
+}
+.hope-tree-node__not-expanded .hope-tree-node__sign-collapsed {
+  display: inline-block;
+}
+
+
+

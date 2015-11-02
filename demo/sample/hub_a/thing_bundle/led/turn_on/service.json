@@ -1,0 +1,17 @@
+{
+  "description":"turn on or off the device",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "on",
+        "type": "boolean"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  }
+}

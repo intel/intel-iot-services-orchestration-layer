@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+// -*- mode: js -*-
+
+var Hub = require("./index");
+
+var program = require("commander");
+var fs = require("fs");
+var _ = require("lodash");
+var B = require("hope-base");
+var S = require("hope-hub-center-shared");
+
+var version = "3.0.0";
+
+var categories = {
+  "*":      false,
+  "message": false,
+  "center": true,
+  "entity": false,
+  "hub": true,
+  "heartbeat": false,
+  "sm" : false,
+  "base": false,
+  "store": false
+};
+
+B.log.configure_categories(categories);
+
+
+program
+  .version(version)
+  .usage("[config-file]");
+
+program.name = "hub";
+
+program.parse(process.argv);
+
+if (program.args.length > 1) {
+  program.help();
+}
+
+var config_file_path = program.args[0] || "./config.json";
+var config =  B.fs.read_json(config_file_path);
+
+config.config_path = B.path.resolve(config_file_path);// the path of the config file
+
+if (!config.id) {
+  config.id = S.get_instance_id(
+    B.path.abs("./.id", module.filename),
+    B.path.resolve(config_file_path));
+}
+
+var mnode_params = _.get(config, "assemble.mnode.$params[1]");
+if (mnode_params && !mnode_params.id) {
+  mnode_params.id = config.id + "__mnode__";
+}
+
+
+S.enable_debug_shell();
+
+
+function grace_exit() {
+  B.log("hope", "... HUB EXITING ...");
+  Hub.stop$().then(function() {
+   B.log("hope", "Hub exit safely");
+    process.exit(0);
+  }).catch(function(err) {
+    B.log.error("hope", "Error when hub exit", err);
+    process.exit(1);
+  }).done();
+}
+
+process.on("SIGINT", grace_exit);
+
+process.on("message", function(data) {
+  B.log("hope", "message from parent", data);
+  if (data === "exit") {
+    grace_exit();
+  }
+});  
+
+Hub.start$(config).done();
+

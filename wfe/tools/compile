@@ -1,0 +1,54 @@
+#!/usr/bin/node
+// -*- js -*-
+
+var WorkflowEngine = require("../wfe");
+var ComponentManager = require("../mocks/cm");
+var dependencies = {
+  component_manager : new ComponentManager()
+};
+
+var wfe = new WorkflowEngine(dependencies);
+
+function load(filepath) {
+  var result = JSON.parse(require(filepath));
+  result.graph.id = result.id;
+  return result;
+}
+
+function compile(caseobj) {
+  var graph = caseobj.graph;
+  var schemas = caseobj.specs;
+
+  return wfe.compile(graph, schemas);
+}
+
+function compile2Display(filepath, fstream) {
+  var output = fstream || process.stdout;
+  var graph = load(filepath);
+  output.write(JSON.stringify(graph, undefined, 2) + "\n");
+  output.write("-----------------------------------------\n");
+  
+  var workflow = compile(graph);
+  //workflow.install();
+  
+  workflow.print(output);
+}
+
+var isCommandline = true;
+process.argv.forEach(function(filepath, index) {
+
+  if (index < 2) {
+    if (index === 1 && filepath.length >= 7) {
+      var lastpart = filepath.substr(filepath.length - 7, 7);
+      isCommandline = lastpart === "compile";
+    }
+    return;
+  }
+
+  if (!isCommandline) {
+    return;
+  }
+  compile2Display(filepath);
+});
+
+module.exports = compile2Display;

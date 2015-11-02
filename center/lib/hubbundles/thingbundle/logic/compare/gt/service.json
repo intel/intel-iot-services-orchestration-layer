@@ -1,0 +1,8 @@
+{
+  "name":"operator >",
+  "description":" bool = (in1 > in2)",
+  "spec":"compare_2_1_builtin",
+  "ui":{
+
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "author": {
+    "name": "Zidong Jiang",
+    "email": "zidong.jiang@intel.com"
+  },
+  "contributors": [
+    {
+      "name": "Zidong Jiang"
+    }
+  ],
+  "name": "hope-store",
+  "homepage": "",
+  "description": "Store libraries of IoT Services Orchestration Layer",
+  "version": "0.9.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "readme": "",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": ""
+  },
+  "scripts": {},
+  "dependencies": {
+    "eventemitter3": "^1.1.1",
+    "lodash": "^3.10.0",
+    "mongodb": "^2.0.46"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0"
+  }
+}

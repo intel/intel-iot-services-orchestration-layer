@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ "x$1" == "x" ]; then
+
+  echo "HELP: run task, task could be:"
+  echo "  broker          start the http broker"
+  echo "  center          start the sample center"
+  echo "  hub             start the sample hub"
+  echo "  edison          start the sample hub in edison (it includes real things)"
+  exit 1
+
+fi
+
+case $1 in 
+  broker)
+    node ./node_modules/hope-center/start_http_broker.js
+    ;;
+  center)
+    ./center ./node_modules/hope-demo/sample/center/config.json
+    ;;
+  hub)
+    ./hub ./node_modules/hope-demo/sample/hub_a/config.json
+    ;;
+  hub_b)
+    ./hub ./node_modules/hope-demo/sample/hub_b/config.json
+    ;;
+  edison)
+    ./hub ./node_modules/hope-demo/sample/edison/config.json
+esac

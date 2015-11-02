@@ -1,0 +1,8 @@
+{
+  "name":"or",
+  "description":" bool = (in1 || in2)",
+  "spec":"logical_op_2_1_builtin",
+  "ui":{
+
+  }
+}

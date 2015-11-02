@@ -1,0 +1,41 @@
+{
+  "author": {
+    "name": "Jonathan Ding",
+    "email": "jonathan.ding@intel.com"
+  },
+  "contributors": [
+    {
+      "name": "Jonathan Ding"
+    }
+  ],
+  "name": "hope-center",
+  "homepage": "",
+  "description": "Orchestration Center of IoT Services Orchestration Layer",
+  "version": "0.9.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "readme": "",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": ""
+  },
+  "scripts": {},
+  "dependencies": {
+    "commander": "^2.8.1",
+    "eventemitter3": "^1.1.1",
+    "lodash": "^3.10.0"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0"
+  }
+}

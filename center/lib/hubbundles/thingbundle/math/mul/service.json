@@ -1,0 +1,5 @@
+{
+  "name":"multiply",
+  "description":"out = in1 * in2",
+  "spec":"math_2_1_builtin"
+}

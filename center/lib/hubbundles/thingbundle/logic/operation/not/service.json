@@ -1,0 +1,21 @@
+{
+  "name":"not",
+  "description":" bool = !in",
+  "spec":{
+    "out": {
+      "ports": [{             
+        "name": "bool",
+        "type": "boolean"
+      }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "in",
+        "type": "boolean"
+      }]
+    }
+  },
+  "ui":{
+
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "emit",
+  "description": "When triggered, send 'value' to 'output' port.",
+  "spec":{
+    "out": {
+      "ports": [{             
+        "name": "output"
+      }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "trigger"
+      }, {
+        "name": "value"
+        }]
+    }
+  },
+  "ui": {
+
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "description":"report the angle value at intervals",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "interval",
+        "type": "int",
+        "default": 3000
+      }]
+    },
+    "out": {
+      "ports": [{
+        "name": "angle",
+        "type": "int"
+      }]
+    }
+  }
+}

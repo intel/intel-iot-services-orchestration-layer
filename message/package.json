@@ -1,0 +1,45 @@
+{
+  "author": {
+    "name": "Jonathan Ding",
+    "email": "jonathan.ding@intel.com"
+  },
+  "contributors": [
+    {
+      "name": "Jonathan Ding"
+    }
+  ],
+  "name": "hope-message",
+  "homepage": "",
+  "description": "Message libraries of IoT Services Orchestration Layer",
+  "version": "0.9.0",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "readme": "",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": ""
+  },
+  "scripts": {},
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "eventemitter3": "^1.1.1",
+    "express": "^4.13.3",
+    "lodash": "^3.10.0",
+    "request": "^2.60.0",
+    "server-destroy": "^1.0.1",
+    "socket.io": "^1.3.6"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0"
+  }
+}

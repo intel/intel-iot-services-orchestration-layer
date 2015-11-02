@@ -1,0 +1,24 @@
+{
+  "name": "if",
+  "description": "if the in is true, send true in 'if' port, else send true in 'else' port",
+  "spec":{
+    "out": {
+      "ports": [{             
+        "name": "then",
+        "type": "boolean"
+      }, {
+        "name": "else",
+        "type": "boolean"
+        }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "in",
+        "type": "boolean"
+      }]
+    }
+  },
+  "ui": {
+
+  }
+}
