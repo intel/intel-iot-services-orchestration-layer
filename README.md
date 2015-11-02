@@ -63,7 +63,7 @@ Development of each projects are basically same as normal node.js projects. Howe
 
 To build, simply run
 
-    `./build.sh`
+    ./build.sh
 
 All necessary stuff would be built into `./dist` which could be immediately used anywhere.
 
@@ -101,4 +101,5 @@ To shutdown the demo, you need run `killall node` to kill all `Node.js` processe
 
 ## Documentation
 
-There are some documentation (we will add many more in near future) located at `./doc`. They are created in MD format while you could run `./gen_doc.sh` to get a HTML version, if `pandoc` has been installed.
+There are some documentation (we will add many more in near future) located at `./doc`. They are created in MD format while you could run `./gen_doc.sh` to get a HTML version, if `pandoc` has been installed. Initial existing documentation are more focused about how to manually add new services into the framework. More documentation is working in progress and would be released together with v1.0 couple months later, including starter guide and how to add new customized UI widgets,
+etc.
