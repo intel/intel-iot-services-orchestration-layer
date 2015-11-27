@@ -1,6 +1,4 @@
 {
   "directory": "ui/bower_components",
-  "proxy": "http://child-prc.intel.com:913",
-  "https-proxy": "http://child-prc.intel.com:913",
   "timeout": 1200000
 }
