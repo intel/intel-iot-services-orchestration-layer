@@ -56,7 +56,7 @@ export default class Grid extends ReactComponent {
   remove_widget(w) {
     _.remove(this.widgets, w);
     if (w.$hope_is_added) {
-      var dom = React.findDOMNode(w);
+      var dom = ReactDOM.findDOMNode(w);
 
       // delete DOM node delayed, prevent React error
       setTimeout(() => {
@@ -81,7 +81,7 @@ export default class Grid extends ReactComponent {
           auto = true;
         }
         $hope.log("widget", "add", widget, "is_auto:", auto);
-        var dom = React.findDOMNode(w);
+        var dom = ReactDOM.findDOMNode(w);
         this.grid.add_widget(dom,
           widget.x, widget.y, widget.width, widget.height, auto);
       }
@@ -102,7 +102,7 @@ export default class Grid extends ReactComponent {
       height:           this.props.maxHeight || 0,
       auto:             false     // we will add_widget by ourselves
     };
-    var gridstack = $(React.findDOMNode(this)).gridstack(options);
+    var gridstack = $(ReactDOM.findDOMNode(this)).gridstack(options);
     this.grid = gridstack.data("gridstack");
 
     this.update_widgets();
@@ -256,7 +256,7 @@ class UnknownWidget extends Widget {
           color: "yellow",
           textAlign: "center"
         }}>
-        <strong>Unknown Widget</strong>
+        <strong>{__("Unknown UI Widget")}</strong>
         <div style={{
           color: "blue"
         }}>{widget.spec}</div>

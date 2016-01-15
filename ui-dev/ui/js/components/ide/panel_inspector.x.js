@@ -65,7 +65,7 @@ export default class PanelInspector extends ReactComponent {
       body = <GraphDetails />;
     }
     return (
-      <Panel icon="info" id="inspector" title="Inspector"
+      <Panel icon="info" id="inspector" title={__("Inspector")}
             left={inspector.left}
             top={inspector.top}
             width={inspector.width}

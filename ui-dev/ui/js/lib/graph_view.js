@@ -283,6 +283,7 @@ export default class GraphView extends EventEmitter {
     if (this.modified !== flag) {
       this.modified = flag;
       $hope.app.stores.graph.emit("graph", {id: this.id, type: "graph", event: "status/changed"});
+      this.update_toolbar();
     }
   }
 
@@ -763,22 +764,21 @@ export default class GraphView extends EventEmitter {
 
   update_animation() {
     var logs = this.$logs;
-    var edges = {};
-    var nodes = {};
+    var edges = {}, nodes = {}, obj;
 
     if (logs && this.$logidx < logs.length) {
       var log = logs[this.$logidx];
       _.forEach(log.nodes, n => {
-        var obj = this.get("node", n.id);
+        obj = this.get("node", n.id);
         if (obj) {
-          obj.$time = n.end - log.time; // execution time
           obj.$lasttim = log.time;      // beginning
+          obj.$lastdat = n.data;        // data snapshot
           nodes[n.id] = obj;
         }
       });
 
       _.forEach(log.edges, e => {
-        var obj = this.get("edge", e.id);
+        obj = this.get("edge", e.id);
         if (obj) {
           obj.$lastdat = e.data;        // data snapshot
           obj.$lasttim = log.time;      // beginning
@@ -787,11 +787,16 @@ export default class GraphView extends EventEmitter {
       });
     }
 
+    let objs = _.size(nodes) + _.size(edges);
+    if (objs === 1) {
+      this.select(obj.$type, obj.id, true);
+    }
+
     this.animated_edges = edges;
     this.animated_nodes = nodes;
     $hope.app.stores.graph.emit("graph", {id: this.id, type: "graph", event: "animated"});
 
-    if (!_.isEmpty(edges) || !_.isEmpty(nodes)) {
+    if (objs > 0) {
       setTimeout(() => {
         this.animated_edges = {};
         this.animated_nodes = {};
@@ -977,7 +982,7 @@ export default class GraphView extends EventEmitter {
       case "graph/remove/node":
         this._remove_items_action([this.get("node", data.id)]);
         break;
-      case "graph/change/node/name":
+      case "graph/change/node":
         this.change("node", data.id, data.node);
         break;
       case "graph/move/node": {

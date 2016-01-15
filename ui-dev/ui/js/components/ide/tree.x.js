@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
 //////////////////////////////////////////////////////////////////
 
-import {Row, Col, CollapsibleMixin} from "react-bootstrap";
+import {Row, Col, Collapse} from "react-bootstrap";
 import class_names from "classnames";
 
 
@@ -57,21 +57,10 @@ var Node = React.createClass({
     onToggle: React.PropTypes.func      // function(new_expand_state)
   },
 
-
-  mixins: [CollapsibleMixin],
-
-  getCollapsibleDOMNode() {
-    return React.findDOMNode(this.refs.expand_area);
-  },
-
-  getCollapsibleDimensionValue() {
-    return React.findDOMNode(this.refs.expand_area).scrollHeight;
-  },
-
   _on_toggle(e) {
     e.preventDefault();
     var new_expanded = !this.state.expanded;
-    var dom = $(React.findDOMNode(this.refs.toggle_area));
+    var dom = $(this.refs.toggle_area);
     if (new_expanded) {
       dom.addClass("hope-tree-node__is-expanded")
          .removeClass("hope-tree-node__not-expanded");
@@ -103,9 +92,6 @@ var Node = React.createClass({
     });
 
 
-    var styles = this.getCollapsibleClassSet();
-
-
     var toggle_area_style = this.state.expanded ? 
       "hope-tree-node__is-expanded" : "hope-tree-node__not-expanded";
 
@@ -116,9 +102,9 @@ var Node = React.createClass({
              onClick={this._on_toggle} >
           {normal_children}
         </div>
-        <div ref="expand_area" className={class_names(styles)}>
-          {children}
-        </div>
+        <Collapse in={!this.state.expanded}>
+          <div>{children}</div>
+        </Collapse>
       </div>
     );
   }

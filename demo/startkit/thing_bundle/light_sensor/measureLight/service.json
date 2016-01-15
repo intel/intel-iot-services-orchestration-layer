@@ -1,0 +1,8 @@
+{
+  "name": "measureLight",
+  "description": "measure the ambient light",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  }
+}

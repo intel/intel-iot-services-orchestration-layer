@@ -24,7 +24,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Route, DefaultRoute, NotFoundRoute} from "react-router";
+import {Router, Route, IndexRoute} from "react-router";
+import {createHashHistory, useBeforeUnload} from "history";
 
 import HOPE from "./hope.x";
 import AppManager from "./app/app_manager.x";
@@ -34,14 +35,31 @@ import UIIDE from "./ui_ide/ui_ide.x";
 import Composer from "./composer/composer.x";
 import NotFound from "./not_found.x";
 
+let history = useBeforeUnload(createHashHistory)({
+  queryKey: false,
+  getUserConfirmation: function (message, callback) {
+    $hope.confirm(__("Leave without SAVE"), message, "warning", res => {
+      if(!res) {
+        $hope.app.stores.app.active_app(null);
+      }
+      callback(!res);
+    }, {
+      cancelButtonText: __("Leave"),
+      confirmButtonText: __("Cancel and back to edit")
+    });
+  }
+});
+
 export default (
-  <Route handler={HOPE}>
-    <DefaultRoute handler={AppManager}/>
-    <Route name="app" path="app" handler={AppManager}/>
-    <Route name="app_home" path="app_home/:id" handler={AppHome}/>
-    <Route name="ide" path="ide/:id" handler={IDE}/>
-    <Route name="ui_ide" path="ui_ide/:id" handler={UIIDE}/>
-    <Route name="composer" path="composer/:id" handler={Composer}/>
-    <NotFoundRoute handler={NotFound}/>
-  </Route>
+  <Router history={history} >
+    <Route path="/" component={HOPE}>
+      <IndexRoute component={AppManager}/>
+      <Route path="app" component={AppManager}/>
+      <Route path="app_home/:id" component={AppHome}/>
+      <Route path="ide/:id" component={IDE}/>
+      <Route path="ui_ide/:id" component={UIIDE}/>
+      <Route path="composer/:id" component={Composer}/>
+      <Route path="*" component={NotFound}/>
+    </Route>
+  </Router>
 );

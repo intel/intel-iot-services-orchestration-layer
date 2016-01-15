@@ -42,15 +42,15 @@ npm link ../entity-store
 npm link ../session-manager
 
 
-cd ../wfe
+cd ../workflow
 npm install
 npm link ../base
+npm link ../session-manager
 
 
 cd ../center
 npm install
 npm link ../base
-npm link ../ui-widgets
 npm link ../hub-center-shared
 npm link ../store
 npm link ../message
@@ -58,21 +58,20 @@ npm link ../entity
 npm link ../entity-store
 npm link ../session-manager
 npm link ../hub
-npm link ../wfe
+npm link ../workflow
 
 cd ../ui-widgets
 npm install
-bower --allow-root install
 gulp build
 
 cd ../ui-dev
+bower --allow-root install
 npm install
 npm link ../ui-widgets
-bower --allow-root install
 gulp build
 
 cd ../ui-user
+bower --allow-root install
 npm install
 npm link ../ui-widgets
-bower --allow-root install
 gulp build

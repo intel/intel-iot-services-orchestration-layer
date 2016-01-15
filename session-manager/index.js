@@ -52,6 +52,7 @@ var log = B.log.for_category("sm");
  *                                     then generate an unique id for the session obj
  * @param  {String||Number} service_id 
  * @param {String}  mnode_id  session should send msg to the dst mnode. 
+ * @param {Object}  config  session's config info
  * @return {Promise}                   resolve: session object
  *                                              {
  *                                                id:
@@ -61,8 +62,8 @@ var log = B.log.for_category("sm");
  *                                                is_status_stable: whether the status is changing now 
  *                                              }
  */
-exports.create_session$ = function(sm, session_id, service_id, mnode_id) {
-  return sm.create_session$(session_id, service_id, mnode_id);
+exports.create_session$ = function(sm, session_id, service_id, mnode_id, config) {
+  return sm.create_session$(session_id, service_id, mnode_id, config);
 };
 
 /**
@@ -131,6 +132,14 @@ exports.clear_sessions_with_mnode$ = function(sm, mnode_id) {
   return sm.clear_sessions_with_mnode$(mnode_id);
 };
 
+/**
+ * clear all sessions
+ * @param  {Object} sm        
+ * @return {Promise}            
+ */
+exports.clear_all_sessions$ = function(sm) {
+  return sm.clear_all_sessions$();
+};
 // -----------------------------------------------------------------
 // Service related. 
 // -----------------------------------------------------------------
@@ -162,6 +171,20 @@ exports.uninstall_service$ = function(sm, service_id) {
   return sm.uninstall_service$(service_id);
 };
 
+
+/**
+ * uninstall all services
+ * 0, make sure the service is installed (aka, in service is in cache)
+ * 1, get the service_cache_obj
+ * 2, call destroy func
+ * 3, delete the obj in cache
+ * @param  {object} sm  
+ * @param  {id} service_id 
+ * @return {Promise}          resolve: destroy done value
+ */
+exports.clear_all_services$ = function(sm) {
+  return sm.clear_all_services$();
+};
 // -----------------------------------------------------------------
 // Message related. 
 // -----------------------------------------------------------------
@@ -171,20 +194,23 @@ exports.uninstall_service$ = function(sm, service_id) {
  * @param  {Object} mnode        src mnode
  * @param  {id} dst_mnode_id     dst mnode id
  * @param  {id} session_id   
+ * @param {id} invocation_id respresents this invocation
  * @param  {string} action       action name
  * @param  {Object} others       other parameters
  *                               {
  *                                 IN: for kernel
  *                                 tags: for kernel
  *                                 service_id: for start
+ *                                 config: for start, session's config object
  *                               }
  * @return {Promise}              mnode.send$'s ret
  */
-exports.send_invoke_cmd$ = function(mnode, dst_mnode_id, session_id, action, others) {
-  log("send_invoke_cmd$", dst_mnode_id, session_id, action, others);
+exports.send_invoke_cmd$ = function(mnode, dst_mnode_id, session_id, invocation_id, action, others) {
+  log("send_invoke_cmd$", dst_mnode_id, session_id, invocation_id, action, others);
   var msg = {
     action: action,
-    session_id: session_id
+    session_id: session_id,
+    invocation_id: invocation_id
   };
   if (action === "kernel") {
     check(_.isObject(others.IN), "sm/send_invoke_cmd",
@@ -195,8 +221,8 @@ exports.send_invoke_cmd$ = function(mnode, dst_mnode_id, session_id, action, oth
   if (action === "start") {
     check(!_.isUndefined(others.service_id), "sm/send_invoke_cmd",
      "start must have service_id in others", action, others);
-    
     msg.service_id = others.service_id;
+    msg.config = others.config;
   }
   return mnode.send$(dst_mnode_id, "session_invoke", msg);
 };
@@ -207,7 +233,6 @@ exports.send_invoke_cmd$ = function(mnode, dst_mnode_id, session_id, action, oth
 // --------------------------------------------
 
 var SessionManager = require("./lib/session-manager").SessionManager;
-var WfeAgent = require("./lib/wfe-agent").WfeAgent;
 
 /**
  * create a session manager, which will handle session/service invoke
@@ -228,27 +253,8 @@ exports.create_session_manager$ = function(config) {
   });
 };
 
-/**
- * create a wfe agent, which will be used as cm in wfe
- * @param  {Object} config {
- *                           mnode:
- *                           em:
- *                         }
- * @return {Object}        resolve: inited wfe agent obj
- */
-exports.create_wfe_agent$ = function(config) {
-  var wa;
-  return Promise.resolve()
-  .then(function() {
-    wa = new WfeAgent(config.em, config.mnode);
-    return wa.init$();
-  }).then(function() {
-    return wa;
-  });
-};
 
 
 exports.$factories = {
-  SessionManager: exports.create_session_manager$,
-  WorkflowAgent: exports.create_wfe_agent$
+  SessionManager: exports.create_session_manager$
 };

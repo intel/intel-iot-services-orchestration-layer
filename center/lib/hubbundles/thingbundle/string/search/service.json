@@ -1,0 +1,30 @@
+{
+  "name": "search",
+  "description": "whether the str2 is sub string of str1, if yes, out = true, otherwise, out = false",
+  "spec":{
+    "id": "string_search_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "str1",
+          "type": "string"
+
+        },
+        {
+          "name": "str2",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "ui": {
+  }
+}

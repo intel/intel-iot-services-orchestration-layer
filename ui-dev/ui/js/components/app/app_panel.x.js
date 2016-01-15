@@ -24,13 +24,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, ModalTrigger, OverlayTrigger, Popover, Button} from "react-bootstrap";
-import {Navigation} from "react-router";
-import DlgCreate from "../ide/dlg_create.x";
+import {Row, Button} from "react-bootstrap";
+import {History} from "react-router";
+import Dialog from "../ide/dialog.x";
+import Overlay from "../overlay.x";
 
 var AppPanel = React.createClass({
 
-  mixins: [Navigation],
+  mixins: [History],
 
   propTypes: {
     app: React.PropTypes.object.isRequired,
@@ -52,13 +53,13 @@ var AppPanel = React.createClass({
     return status;
   },
 
-  _on_double_click: function(e) {
+  _on_double_click() {
     this.setState({
       is_editing: true
     });
   },
 
-  _on_blur: function(e) {
+  _on_blur(e) {
     var app = this.props.app;
     e.preventDefault();
     e.stopPropagation();
@@ -77,7 +78,7 @@ var AppPanel = React.createClass({
     });
   },
 
-  _on_desc_change: function(e) {
+  _on_desc_change(e) {
     var app = this.props.app;
     if (app.description !== e.target.value) {
       app.description = e.target.value;
@@ -87,7 +88,7 @@ var AppPanel = React.createClass({
     }
   },
 
-  _on_control: function(e) {
+  _on_control(e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -111,19 +112,20 @@ var AppPanel = React.createClass({
         return;
       }
       $hope.trigger_action("graph/start", {
-        graphs: graphs
+        graphs: graphs,
+        tracing: false
       });
     }
   },
 
-  _on_addui: function(data) {
+  _on_addui(data) {
     var name = data && data.name && data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid UI name");
+      return $hope.notify("error", __("Invalid UI name"));
     }
     var app = $hope.app.stores.app.get_app(this.props.app.id);
-    if (_.find(app.uis, "name", name)) {
-      return $hope.notify("error", "This name already exists in the App");
+    if (_.find(app.uis, "name", name) || $hope.app.stores.ui.find_view(this.props.app.id, name)) {
+      return $hope.notify("error", __("This name already exists"));
     }
     var ui = $hope.app.stores.ui.create_ui(this.props.app.id, {
       id: $hope.uniqueId("UI_"),
@@ -131,10 +133,10 @@ var AppPanel = React.createClass({
       description: data.description
     });
 
-    this.transitionTo("ui_ide", {id: ui.id});
+    this.history.push(`/ui_ide/${ui.id}`);
   },
 
-  _on_home: function(id, e) {
+  _on_home(id, e) {
     e.preventDefault();
     e.stopPropagation();
 
@@ -149,19 +151,19 @@ var AppPanel = React.createClass({
     }
   },
 
-  _on_go: function(id, e) {
+  _on_go(id, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    this.transitionTo("ui_ide", {id: id});
+    this.history.push(`/ui_ide/${id}`);
   },
 
-  _on_trash: function(id, e) {
+  _on_trash(id, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    $hope.confirm("Delete from Server", 
-      "This would delete the ui deployed on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete from Server"), 
+      __("This would delete the ui deployed on the server. Please make sure this is what you expect!"),
       "warning", () => {
       var app = this.props.app;
       if (app && app.main_ui === id) {
@@ -178,7 +180,7 @@ var AppPanel = React.createClass({
     });
   },
 
-  _on_ui_event: function(e) {
+  _on_ui_event(e) {
     $hope.log("event", "AppPanel", e);
     $hope.log("forceUpdate", "AppPanel");
 
@@ -188,22 +190,26 @@ var AppPanel = React.createClass({
         if (app) {
           _.remove(app.uis, ui => ui.id === e.id);
         }
-        $hope.notify("success", "UI successfully removed!");
+        $hope.notify("success", __("UI successfully removed!"));
         break;
     }
 
     this.forceUpdate();
   },
 
-  componentDidMount: function() {
+  _on_show_dlg() {
+    Dialog.show_create_dialog(__("Create UI"), this._on_addui);
+  },
+
+  componentDidMount() {
     $hope.app.stores.ui.on("ui", this._on_ui_event);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     $hope.app.stores.ui.removeListener("ui", this._on_ui_event);
   },
 
-  render: function() {
+  render() {
     var app = this.props.app;
     var sts = this.get_status();
 
@@ -213,7 +219,7 @@ var AppPanel = React.createClass({
           <div>{app.name}</div>
         </Row>
         <Row>
-          <OverlayTrigger trigger="hover" placement="bottom" rootClose overlay={<Popover>Double Click to edit the description</Popover>}>
+          <Overlay placement="bottom" overlay={__("Double Click to edit the description")}>
             <textarea className="hope-app-panel-desc"
               value={app.description}
               type="text"
@@ -221,18 +227,18 @@ var AppPanel = React.createClass({
               onChange={this._on_desc_change}
               onBlur={this._on_blur}
               onDoubleClick={this._on_double_click} />
-          </OverlayTrigger>
+          </Overlay>
         </Row>
         <Row className="text-center hope-app-panel-sep hope-app-panel-shadow-border">
-          <div>Status Control</div>
+          <div>{__("Status Control")}</div>
         </Row>
         <Row className="text-center">
           <Button onClick={this._on_control} bsStyle={sts === "Working" ? "warning" : "primary"} className="hope-app-panel-btn">
-            {sts === "Working" ? "Stop" : "Run"}
+            {sts === "Working" ? __("Stop") : __("Run")}
           </Button>
         </Row>
         <Row className="text-center hope-app-panel-sep hope-app-panel-shadow-border">
-          <div>UI for End User</div>
+          <div>{__("UI for End User")}</div>
         </Row>
         <Row className="hope-app-panel-ui-list">
         {
@@ -247,11 +253,9 @@ var AppPanel = React.createClass({
             </div>)
         }
         { !app.is_builtin &&
-          <ModalTrigger modal={<DlgCreate title="Create UI" onClickCreate={this._on_addui}/>}>
-            <div className="text-center hope-app-panel-ui add-new">
-              <i className="fa fa-plus"/>
-            </div>
-          </ModalTrigger>
+          <div className="text-center hope-app-panel-ui add-new" onClick={this._on_show_dlg}>
+            <i className="fa fa-plus"/>
+          </div>
         }
         </Row>
       </div>

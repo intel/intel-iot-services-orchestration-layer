@@ -29,7 +29,7 @@ export default class NotFound extends ReactComponent {
   render() {
     return (
       <div className="hope-error">
-      <h1> Not Found!</h1>
+      <h1>{__("Not Found!")}</h1>
       </div>
     );
   }

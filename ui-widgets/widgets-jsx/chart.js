@@ -51,7 +51,7 @@ export default class ChartWidget extends Widget {
       var lables = new Array(data_cache_size);
       vals = new Array(data_cache_size);
       for (let i = 0; i < data_cache_size; i++) {
-        lables[i] = i;
+        lables[i] = '';
         vals[i] = 0;
       }
       this.chart_data.labels = lables;
@@ -77,16 +77,16 @@ export default class ChartWidget extends Widget {
 
   init_chart() {
     var w = this.props.widget;
-    var canvas = React.findDOMNode(this.refs.canvas);
-    var ctx = canvas.getContext("2d");
+    var ctx = this.refs.canvas.getContext("2d");
 
     if (this.chart_obj) {
       this.chart_obj.destroy();
     }
     this.chart_obj = new Chart(ctx).Line(this.chart_data, {
       animation: false,
-      showScale: false,
-      scaleShowGridLines: false,
+      scaleShowHorizontalLines: true,
+      scaleShowVerticalLines: false,
+      scaleGridLineColor : "rgba(127,127,127,0.2)",
       showTooltips: false,
       bezierCurve: !!w.config.bezier,
       datasetStrokeWidth: 1,

@@ -29,16 +29,14 @@ import {Link} from "react-router";
 export default class NavBar extends ReactComponent {
 
   state = {
-    app_name: "",
-    app_id: ""
+    app: null
   };
 
   _on_app_event(e) {
     switch(e.event) {
       case "actived":
         this.setState({
-          app_name: e.name,
-          app_id: e.id
+          app: e.app
         });
         break;
     }
@@ -53,6 +51,40 @@ export default class NavBar extends ReactComponent {
   }
 
   render() {
+    var store = $hope.app.stores.ide;
+    var app = this.state.app;
+    var to, btn, extra;
+    if (app) {
+      if (_.startsWith(location.hash, "#/ide/")) {
+        var active_ui = $hope.app.stores.ui.active_view;
+        if (active_ui && active_ui.get_app() === app) {
+          to = "/ui_ide/" + active_ui.id;
+        }
+        else if (app && app.uis && app.uis.length > 0) {
+          to = "/ui_ide/" + app.uis[0].id;
+        }
+        btn = "UI Editor";
+      }
+      else if (_.startsWith(location.hash, "#/ui_ide/")) {
+        var active_graph = $hope.app.stores.graph.active_view;
+        if (active_graph && active_graph.get_app() === app) {
+          to = "/ide/" + active_graph.id;
+        }
+        else if (app && app.graphs && app.graphs.length > 0) {
+          to = "/ide/" + app.graphs[0].id;
+        }
+        btn = "Workflow Editor";
+      }
+      if (to) {
+        extra = [
+          <span key="sep" className="hope-nav-bar-sep">{"|"}</span>,
+          <Link key="sw" to={to}>
+            <i className="fa fa-hand-o-right hope-nav-bar-app" />
+            <span className="hope-nav-bar-app">{" " + __(btn)}</span>
+          </Link>];
+      }
+    }
+
     return (
       <div className="hope-nav-bar">
         <Link to="/">
@@ -64,22 +96,25 @@ export default class NavBar extends ReactComponent {
         </Link>
         <div style={{
           position: "absolute",
-          top: 8,
+          top: 16,
           right: 20
         }}>
-          <Link to="/" > App </Link>
-          | Device | EndUser
+          <a href={location.protocol + "//" + location.hostname + ":3000"} target="_blank">
+            {__("EndUser")}
+          </a>
         </div>
 
-        { this.state.app_name &&
+        { app &&
           <div style={{
               position: "absolute",
               top: 16,
-              left: 260
+              left: store.left_toolbar.width + store.panel.library.width
               }}>
-            <Link to="app_home" params={{id: this.state.app_id}}>
-              <i className="fa fa-sitemap hope-nav-bar-app">{" " + this.state.app_name}</i>
+            <Link to={`/app_home/${app.id}`}>
+              <i className="fa fa-hand-o-right hope-nav-bar-app" />
+              <span className="hope-nav-bar-app">{" " + __("App") + ": " + app.name}</span>
             </Link>
+            {extra}
           </div>
         }
         </div>

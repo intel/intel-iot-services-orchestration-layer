@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-var fs = require('fs');
+
 var gulp = require("gulp");
 var nib = require("nib");
 var _ = require("lodash");
@@ -35,16 +35,17 @@ var babel = require("babelify");
 // load plugins
 var $ = require("gulp-load-plugins")();
 var wiredep = require("wiredep").stream;
-var mainBowerFiles = require("main-bower-files");
 
+var RELEASE = process.env.NODE_ENV === "production";
+var DEBUG = !RELEASE;
 
 gulp.task("hope_css", function () {
   gulp.src("ui/styles/hope.styl")
     .pipe($.plumber())
-    .pipe($.sourcemaps.init())
+    .pipe($.if(DEBUG, $.sourcemaps.init()))
     .pipe($.stylus({use: nib(), import: ["nib"]}))
     .pipe($.plumber.stop())
-    .pipe($.sourcemaps.write("."))
+    .pipe($.if(DEBUG, $.sourcemaps.write(".")))
     .pipe(gulp.dest("public/css"));
 });
  
@@ -54,10 +55,11 @@ function make_bundle(watch) {
     // add custom browserify options here
     var customOpts = {
       entries: "./ui/js/index.js",
-      debug: true 
+      debug: DEBUG
     };
     var opts = _.assign({}, watchify.args, customOpts);
     var _bundle = browserify(opts).transform(babel.configure({
+      sourceMap: RELEASE ? false : "inline",
       optional: ["es7.classProperties"]
     })); 
 
@@ -71,17 +73,17 @@ function make_bundle(watch) {
       var buffer = require("vinyl-buffer");
       return _bundle.bundle()
           .on("error", function (err) { 
-            console.log("\nError : " + err.message + "\n"); 
+            console.log(err); 
           })
           .pipe($.plumber())
           .pipe(source("hope.js"))
           .pipe(buffer())
-          .pipe($.sourcemaps.init({loadMaps: true}))
+          .pipe($.if(DEBUG, $.sourcemaps.init({loadMaps: true})))
           // Add transformation tasks to the pipeline here.
-          //.pipe($.uglify())
+          .pipe($.if(RELEASE, $.uglify()))
           .on("error", $.util.log)
           .pipe($.plumber.stop())
-          .pipe($.sourcemaps.write("."))
+          .pipe($.if(DEBUG, $.sourcemaps.write(".")))
           .pipe(gulp.dest("public/js"));
     };
     if (watch) {
@@ -108,21 +110,11 @@ gulp.task("wire_html", function() {
 
 // NOTE that this would result in vendor.js / vendor.css 
 gulp.task("hope_html", ["wire_html"], function () {
-    var jsFilter = $.filter("**/*.js");
-    var cssFilter = $.filter("**/*.css");
-    var assets = $.useref.assets({searchPath: [".tmp", "ui"]});
-
     return gulp.src("ui/*.html")
         .pipe($.plumber())
-        .pipe(assets)
-        .pipe(jsFilter)
-        .pipe($.uglify())
-        .pipe(jsFilter.restore())
-        .pipe(cssFilter)
-        .pipe($.csso())
-        .pipe(cssFilter.restore())
-        .pipe(assets.restore())
-        .pipe($.useref())
+        .pipe($.useref({searchPath: [".tmp", "ui"]}))
+        .pipe($.if("*.js", $.uglify()))
+        .pipe($.if("*.css", $.csso()))
         .pipe($.plumber.stop())
         .pipe(gulp.dest("public"));
 });
@@ -134,7 +126,6 @@ gulp.task("hope_image", function() {
 
 gulp.task("fonts", function () {
     return gulp.src(["ui/bower_components/bootstrap/fonts/*", "ui/bower_components/font-awesome/fonts/*"])
-        .pipe($.filter("**/*.{eot,svg,ttf,woff,woff2}"))
         .pipe($.flatten())
         .pipe(gulp.dest("public/fonts"));
 });
@@ -143,10 +134,11 @@ gulp.task("fonts", function () {
 
 gulp.task("clean", function () {
     return gulp.src(["public/*", ".tmp"], 
-        { read: false }).pipe($.clean());
+        { read: false }).pipe($.rimraf());
 });
 
 gulp.task("awesome", function() {
+  var fs = require('fs');
   var input = 'ui/bower_components/font-awesome/less/variables.less';
   var output = 'ui/js/lib/font-awesome.js';
   var icons = {};
@@ -169,19 +161,6 @@ gulp.task("start", function () {
 gulp.task("watch_js", make_bundle(true)); // rebundle in case any dep changed
 
 gulp.task("watch", ["watch_js"], function () {
-    var server = $.livereload();
-    server.changed();   // tricky that we need this to trigger the LR server
-    // watch for changes
-    gulp.watch([
-        "public/*.html",
-        "public/css/**/*",
-        "public/js/**/*",
-        "public/images/**/*",
-        "public/fonts/**/*"
-    ]).on("change", function (file) {
-        server.changed(file.path);
-    });
-
     gulp.watch("ui/images/**/*", ["hope_image"]);
     gulp.watch(["ui/styles/**/*.styl"], ["hope_css"]);
     gulp.watch("ui/*.html", ["hope_html"]);

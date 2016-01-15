@@ -113,7 +113,7 @@ export default class WidgetLibrary extends ReactComponent {
       <div className="hope-panel match-parent">
         <div className="hope-panel-header" >
           <i className={"hope-panel-icon fa fa-list"} />
-          <span className="hope-panel-title">Widgets</span>
+          <span className="hope-panel-title">{__("Widgets")}</span>
         </div>
         <div className="hope-panel-body">
           <Row>

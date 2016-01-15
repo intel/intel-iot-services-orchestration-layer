@@ -1,0 +1,8 @@
+{
+  "name": "measureSound",
+  "description": "measure the sound of the mic",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  }
+}

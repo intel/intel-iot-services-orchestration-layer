@@ -24,25 +24,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col, SplitButton, MenuItem, ModalTrigger} from "react-bootstrap";
-import {Navigation} from "react-router";
+import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
+import {History} from "react-router";
 import AppPanel from "./app_panel.x";
-import DlgCreate from "../ide/dlg_create.x";
+import Dialog from "../ide/dialog.x";
 import Workflow from "./workflow.x";
 
 // Don't use class here as we need mixin 
 var AppHome = React.createClass({
 
-  mixins: [Navigation],
-
-  statics: {
-    willTransitionTo: function(transition, params) {
-      if (!params.id) {
-        $hope.check(false, "AppHome", "No id passed in");
-        transition.abort();
-      }
-    }
-  },
+  mixins: [History],
 
   getInitialState: function() {
     return {
@@ -61,7 +52,7 @@ var AppHome = React.createClass({
         if (app) {
           _.remove(app.graphs, g => g.id === e.id);
         }
-        $hope.notify("success", "Workflow successfully removed!");
+        $hope.notify("success", __("Workflow successfully removed!"));
         break;
     }
     this.forceUpdate();
@@ -76,11 +67,11 @@ var AppHome = React.createClass({
   _on_create: function(data) {
     var name = data && data.name && data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid workflow name");
+      return $hope.notify("error", __("Invalid workflow name"));
     }
     var app = $hope.app.stores.app.get_app(this.state.app.id);
-    if (_.find(app.graphs, "name", name)) {
-      return $hope.notify("error", "This name already exists in the App");
+    if (_.find(app.graphs, "name", name) || $hope.app.stores.graph.find_view(this.state.app.id, name)) {
+      return $hope.notify("error", __("This name already exists"));
     }
     // We directly create an graph object and then transit
     // We don't use trigger_acton, because we will make a transition anyway
@@ -88,11 +79,15 @@ var AppHome = React.createClass({
     var view = $hope.app.stores.graph.create_view(this.state.app.id, 
       name, data.description);
 
-    this.transitionTo("ide", {id: view.id});
+    this.history.push(`/ide/${view.id}`);
   },
 
   _on_resize: function() {
     this.forceUpdate();
+  },
+
+  _on_show_dlg() {
+    Dialog.show_create_dialog(__("Create Workflow"), this._on_create);
   },
 
   componentDidMount: function() {
@@ -145,7 +140,7 @@ var AppHome = React.createClass({
       <div className="hope-app-home">
         <Row className="hope-app-home-toolbar">
           <div className="hope-app-home-app-dropdown">
-            <SplitButton title={app.name}>
+            <SplitButton id="app-split-button" title={app.name}>
             {
               _.map($hope.app.stores.app.get_all_apps(), a =>
                 <MenuItem key={a.id} onSelect={this._on_selected.bind(this, a)}>
@@ -162,7 +157,7 @@ var AppHome = React.createClass({
           <Col xs={1} style={{width: window.innerWidth - 300}}>
             <Row className="hope-app-home-body">
               <div className="hope-app-home-title-bar">
-                <span className="hope-app-home-title">Workflow List</span>
+                <span className="hope-app-home-title">{__("Workflow List")}</span>
               </div>
             </Row>
             <Row>
@@ -174,13 +169,11 @@ var AppHome = React.createClass({
                   </li>)
               }
               { !app.is_builtin &&
-                <ModalTrigger modal={<DlgCreate title="Create Workflow" onClickCreate={this._on_create}/>}>
-                  <li>
-                    <div className="hv-center hope-workflow add-new">
-                      <i className="fa fa-4x fa-plus" />
-                    </div>
-                  </li>
-                </ModalTrigger>
+                <li onClick={this._on_show_dlg}>
+                  <div className="hv-center hope-workflow add-new">
+                    <i className="fa fa-4x fa-plus" />
+                  </div>
+                </li>
               }
               </ul>
             </Row>

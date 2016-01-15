@@ -26,6 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Tabs, Tab} from "../tabs.x";
 import InputDetails from "./input_details.x";
+import ConfigDetails from "./config_details.x";
 import TagsDetails from "./tags_details.x";
 import BindingDetails from "./binding_details.x";
 import Dialog from "../dialog.x";
@@ -36,12 +37,26 @@ export default class NodeDetails extends ReactComponent {
     id: React.PropTypes.string.isRequired
   };
 
+  constructor(props) {
+    super();
+
+    this.state = {
+      id: props.id
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      id: nextProps.id
+    });
+  }
+
   _on_click_icon() {
     var view = $hope.app.stores.graph.active_view;
-    var node = view.get("node", this.props.id);
+    var node = view.get("node", this.state.id);
     var styles = node.$get_styles() || {};
 
-    Dialog.show_iconpicker_dialog("Change the icon of node", icon => {
+    Dialog.show_iconpicker_dialog(__("Change the icon of node"), icon => {
       if (_.startsWith(icon, "fa-")) {
         node.$merge_styles({
           icon: icon.substr(3)
@@ -52,14 +67,24 @@ export default class NodeDetails extends ReactComponent {
         node.$set_styles(styles);
       }
       this.forceUpdate();
-      view.change("node", this.props.id, null);
+      view.change("node", this.state.id, null);
     },
     styles.icon || node.icon);
   }
 
+  _on_xxx_change(field, e) {
+    var view = $hope.app.stores.graph.active_view;
+    var node = view.get("node", this.state.id);
+
+    node[field] = e.target.value;
+    this.forceUpdate();
+    view.change("node", this.state.id, null);
+  }
+
   render() {
     var view = $hope.app.stores.graph.active_view;
-    var node = view.get("node", this.props.id);
+    var node = view.get("node", this.state.id);
+    var spec = node.$get_spec();
     var binding = node.$get_binding();
     var name = node.name;
     var desc = node.description;
@@ -69,13 +94,24 @@ export default class NodeDetails extends ReactComponent {
     if (binding && binding.service) {
       var service = hub_manager.get_service(binding.service);
       if (service) {
-        if (service.name) {
+        if (!name && service.name) {
           name = service.name;
         }
-        if (service.description) {
+        if (!desc && service.description) {
           desc = service.description;
         }
       }
+    }
+    if (!name) {
+      name = spec.name || "__unknown__";
+    }
+
+    var trace_time, trace_data;
+    if (view.is_debugging() && ("$lastdat" in node) && view.is_selected("node", node.id)) {
+      var v = node.$lastdat;
+      var date = new Date(node.$lasttim);
+      trace_time = date.toLocaleTimeString();
+      trace_data = $hope.to_string(v);
     }
 
     return (
@@ -85,36 +121,51 @@ export default class NodeDetails extends ReactComponent {
             { view.get_node_icon(node) }
           </div>
           <div className="hope-inspector-detail">
-            <div className="hope-inspector-detail-name">
-              { name }
-            </div>
-            <div className="hope-inspector-detail-desc">
-              { desc }
-            </div>
+            <input className="hope-inspector-detail-name"
+                value={name}
+                type="text"
+                readOnly={!view.is_editing()}
+                onChange={this._on_xxx_change.bind(this, "name")} />
+            <textarea className="hope-inspector-detail-desc"
+                value={desc}
+                type="text"
+                readOnly={!view.is_editing()}
+                onChange={this._on_xxx_change.bind(this, "description")} />
           </div>
         </div>
         {view.is_editing() &&
-        <Tabs>
-          <Tab title="Input">
+        <Tabs key={this.state.id} >
+          <Tab title={__("Input")}>
             <div className="node-details" >
-              <InputDetails id={this.props.id} />
+              <InputDetails id={this.state.id} />
             </div>
           </Tab>
-          <Tab title="Tag">
+          {!node.is_ui && _.isArray(spec.config) && spec.config.length > 0 &&
+            <Tab title={__("Config")}>
+              <ConfigDetails id={this.state.id} />
+            </Tab>
+          }
+          <Tab title={__("Tag")}>
             <div className="node-details">
               <div className="node-details-tag">
-                <TagsDetails id={this.props.id} />
+                <TagsDetails id={this.state.id} />
               </div>
             </div>
           </Tab>
-          <Tab title="Binding">
+          <Tab title={__("Binding")}>
             <div className="node-details">
               <div className="node-details-binding">
-                <BindingDetails id={this.props.id} />
+                <BindingDetails id={this.state.id} />
               </div>
             </div>
           </Tab>
         </Tabs>
+      }
+      {view.is_debugging() && trace_time &&
+        <div>
+          <div className="hope-inspector-time">{ trace_time }</div>
+          <pre className="hope-inspector-data">{ trace_data }</pre>
+        </div>
       }
       </div>
     );

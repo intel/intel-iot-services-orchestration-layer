@@ -24,13 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {OverlayTrigger, Popover} from "react-bootstrap";
+import Overlay from "../overlay.x";
 
 export default class LeftToolbar extends ReactComponent {
 
   _on_save() {
-    $hope.confirm("Save to Server", 
-      "This would overwrite the UI deployed on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Save to Server"),
+      __("This would overwrite the UI deployed on the server. Please make sure this is what you expect!"),
       "warning", () => {
       $hope.trigger_action("ui/save", {});
     });
@@ -54,12 +54,12 @@ export default class LeftToolbar extends ReactComponent {
 
     return (
       <div className="hope-left-toolbar"> 
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to save the UI</Popover>}>
-          <i onClick={this._on_save} className="fa fa-floppy-o"></i>
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to delete the selected widgets</Popover>}>
-          <i onClick={this._on_trash} className={"fa fa-trash-o" + (selected ? "" : " disabled")}></i>
-        </OverlayTrigger>
+        <Overlay overlay={__("Click to save the UI")}>
+          <i onClick={this._on_save} className={"fa fa-floppy-o" + (view && view.modified ? "" : " disabled")} />
+        </Overlay>
+        <Overlay overlay={__("Click to delete the selected widgets")}>
+          <i onClick={this._on_trash} className={"fa fa-trash-o" + (selected ? "" : " disabled")} />
+        </Overlay>
       </div>
     );
   }

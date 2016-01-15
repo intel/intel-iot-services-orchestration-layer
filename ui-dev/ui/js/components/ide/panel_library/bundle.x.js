@@ -43,7 +43,7 @@ export default class Bundle extends ReactComponent {
 
   _on_click_color_palette(e) {
     e.stopPropagation();
-    var rect = React.findDOMNode(this.refs.color).getBoundingClientRect();
+    var rect = this.refs.color.getBoundingClientRect();
     $hope.trigger_action("ide/show/palette", {
       x: rect.left + rect.width + 10,
       y: rect.top,

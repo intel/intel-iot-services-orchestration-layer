@@ -29,7 +29,7 @@ import Panel from "./panel.x";
 export default class PanelNavigator extends ReactComponent {
 
   componentDidMount() {
-    var dom_node = React.findDOMNode(this.refs.canvas);
+    var dom_node = this.refs.canvas;
     PolymerGestures.addEventListener(dom_node, "trackstart", _.noop);
     PolymerGestures.addEventListener(dom_node, "track", _.noop);
     PolymerGestures.addEventListener(dom_node, "trackend", _.noop);
@@ -40,7 +40,7 @@ export default class PanelNavigator extends ReactComponent {
   }
 
   componentWillUnmount() {
-    var dom_node = React.findDOMNode(this.refs.canvas);
+    var dom_node = this.refs.canvas;
     PolymerGestures.removeEventListener(dom_node, "trackstart", _.noop);
     PolymerGestures.removeEventListener(dom_node, "track", _.noop);
     PolymerGestures.removeEventListener(dom_node, "trackend", _.noop);
@@ -93,7 +93,7 @@ export default class PanelNavigator extends ReactComponent {
     if (!view || !this.refs.canvas) {
       return;
     }
-    var canvas = React.findDOMNode(this.refs.canvas);
+    var canvas = this.refs.canvas;
     var c = canvas.getContext("2d");
 
     // Reset origin
@@ -129,7 +129,7 @@ export default class PanelNavigator extends ReactComponent {
 
     // Draw edges
     view.graph.edges.forEach(edge => {
-      if (edge.source.$node === edge.target.$node) {
+      if (!edge.source || !edge.target || edge.source.$node === edge.target.$node) {
         return;
       }
       var s = edge.source.$node.$get_position();
@@ -225,7 +225,7 @@ export default class PanelNavigator extends ReactComponent {
       className={"hope-panel-icon-min fa fa-" + (nav.visible ? "minus-square-o" : "plus-square-o")} />;
 
     return (
-      <Panel icon="eye" id="navigator" title="Navigator"
+      <Panel icon="eye" id="navigator" title={__("Navigator")}
             left={nav.left}
             top={nav.top}
             width={nav.width}

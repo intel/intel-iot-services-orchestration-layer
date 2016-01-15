@@ -1,0 +1,40 @@
+{
+  "name": "camera",
+  "description": "turn on/off the camera",
+  "spec":{
+    "id": "webrtc_camera_spec",
+    "name": "webrtc_camera_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "switch",
+          "type": "boolean"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "status",
+          "type": "boolean"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "id",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "serverip",
+        "type": "string",
+        "default": "127.0.0.1",
+        "required": true
+      }
+    ]
+  },
+  "ui": {
+
+  }
+}

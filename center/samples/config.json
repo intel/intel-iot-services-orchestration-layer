@@ -152,21 +152,6 @@
       }]
     },
 
-    "wfe_agent" : {
-      "$type": "WorkflowAgent",
-      "$params": {
-        "mnode": "$mnode",
-        "em": "$entity_manager"
-      }
-    },
-
-    "wfe": {
-      "$type": "WFE",
-      "$params": {
-        "component_manager" : "$wfe_agent"
-      }
-    },
-
     "center": {
       "$type": "Center",
       "$params": {
@@ -179,7 +164,13 @@
         "dev_web_app": "$dev_web_app",
         "user_web_app": "$user_web_app",
         "config_path": "$config_path",
-        "wfe": "$wfe",
+        "workflow_engine": {
+          "$type": "WorkflowEngine",
+          "$params": {
+            "mnode": "$mnode",
+            "em": "$entity_manager"
+          }
+        },
         "heartbeat_server": {
           "store": {
             "$type": "Store",

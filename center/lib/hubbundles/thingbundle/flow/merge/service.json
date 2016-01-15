@@ -1,0 +1,17 @@
+{
+  "name": "merge",
+  "description": "Combine multiple message into one",
+  "spec":{
+    "icon": "code-fork",
+    "in": {
+      "ports": [],
+      "allow_to_add": true
+    },
+    "out": {
+      "ports": [{
+        "name": "out",
+        "type": "object"
+      }]
+    }
+  }
+}

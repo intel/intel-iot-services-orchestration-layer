@@ -1,0 +1,8 @@
+{
+  "name": "button_down",
+  "description": "whether the button is pressed on lcd_keyboard",
+  "spec":"keyboard_1_1_startkit",
+  "ui": {
+
+  }
+}

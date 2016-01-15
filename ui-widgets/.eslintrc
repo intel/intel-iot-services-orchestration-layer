@@ -28,6 +28,7 @@
   },
   "globals": {
     "React"         : false,
+    "ReactDOM"      : false,
     "ReactComponent": false,
     "$hope"         : false,
     "_"             : false,

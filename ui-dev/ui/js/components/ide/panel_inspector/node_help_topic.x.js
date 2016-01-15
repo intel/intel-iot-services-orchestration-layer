@@ -52,17 +52,17 @@ export default class NodeHelpTopic extends ReactComponent {
               <i className="fa fa-comment"/>
             </Col>
             <Col xs={2}>
-              <div>Tips</div>
+              <div>{__("Tips")}</div>
             </Col>
           </Row>
           <Row className="hope-panel-details-note-row" onClick={this._on_cng}>
-            <div>Cached Decorator</div>
+            <div>{__("Cached Decorator")}</div>
           </Row>
           <Row className="hope-panel-details-note-row" onClick={this._on_bg}>
-            <div>Buffered Decorator</div>
+            <div>{__("Buffered Decorator")}</div>
           </Row>
           <Row className="hope-panel-details-note-row" onClick={this._on_mix}>
-            <div>Mixed Decorator</div>
+            <div>{__("Mixed Decorator")}</div>
           </Row>
         </div>
     );

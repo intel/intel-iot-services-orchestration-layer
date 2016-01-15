@@ -46,6 +46,7 @@ function create_service_sandbox(service_cache_obj)
     clearImmediate : clearImmediate,
     console : console,
     require: generate_require_in_sandbox(service_cache_obj.path),
+    __dirname: service_cache_obj.path,
     service_shared: service_cache_obj.shared,
     hub_shared: service_cache_obj.hub_shared
   };

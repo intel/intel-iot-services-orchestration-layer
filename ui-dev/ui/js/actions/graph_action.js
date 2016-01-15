@@ -34,7 +34,9 @@ $hope.register_action({         // params of Action
   "graph/close":            null,   // {graph_id: ...}
   "graph/save":             null,   // {}
   "graph/remove":           null,   // {graphs: ...}
-  "graph/start":            null,   // {graphs: ...}
+  "graph/start":            null,   // {graphs: ..., tracing: ...}
+  "graph/save_and_start":   null,   // {}
+  "graph/stop_replay":      null,   // {}
   "graph/stop":             null,   // {graphs: ...}
   "graph/replay":           null,   // {graphs: ...}
   "graph/step":             null,   // {graphs: ...}
@@ -53,8 +55,7 @@ $hope.register_action({         // params of Action
 
   "graph/create/node":  null,   // {graph_id:...,  node: {...}, styles: {...}, binding: {...}}
   "graph/remove/node":  null,   // {graph_id: ..., id: node_id}
-  "graph/change/node/name":  null,   // {graph_id: ..., id: node_id, data: ...}
-  "graph/change/node/description":  null,   // {graph_id: ..., id: node_id, data: ...}
+  "graph/change/node":  null,   // {graph_id: ..., id: node_id, data: ...}
 
   // although move is also kind of styles changes, we specifically make it as 
   // an action, this makes params easier, and also brings optimization potential

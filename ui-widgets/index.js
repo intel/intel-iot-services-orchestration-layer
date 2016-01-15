@@ -26,19 +26,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 // Widget implementation to specs
 
-exports.widgets = {
+var widgets = {
   "hope/ui/text":      require("./generated/text"),
   "hope/ui/gauge":     require("./generated/gauge"),
   "hope/ui/image":     require("./generated/image"),
   "hope/ui/fan":       require("./generated/fan"),
   "hope/ui/chart":     require("./generated/chart"),
+  "hope/ui/pie":       require("./generated/pie"),
+  "hope/ui/progress":  require("./generated/progress"),
+  "hope/ui/slider":    require("./generated/slider"),
+  "hope/ui/combox":    require("./generated/combox"),
 
   // inputs
   "hope/ui/button":    require("./generated/button"),
   "hope/ui/switch":    require("./generated/switch"),
   "hope/ui/editbox":   require("./generated/editbox"),
-  "hope/ui/light":     require("./generated/light")
+  "hope/ui/light":     require("./generated/light"),
+
+  // WebRTC
+  "hope/ui/webrtc":    require("./generated/webrtc")
 };
 
+require("./plugins").forEach(function(m) {
+  for(var id in m.widgets) {
+    widgets[id] = m.widgets[id];
+  }
+});
 
+exports.widgets = widgets;
 exports.spec_bundle = require("./specs");

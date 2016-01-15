@@ -1,0 +1,5 @@
+{
+  "name": "weibo",
+  "description": "related service with sina weibo",
+  "is_builtin": true
+}

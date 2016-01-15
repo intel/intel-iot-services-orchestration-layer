@@ -65,7 +65,7 @@ export default class Panel extends ReactComponent {
   }
 
   componentDidMount() {
-    var dom = React.findDOMNode(this);
+    var dom = ReactDOM.findDOMNode(this);
     dom.addEventListener("keydown", this._on_key);
     dom.addEventListener("keyup", this._on_key);
     dom.addEventListener("keypress", this._on_key);
@@ -82,7 +82,7 @@ export default class Panel extends ReactComponent {
   }
 
   componentWillUnmount() {
-    var dom = React.findDOMNode(this);
+    var dom = ReactDOM.findDOMNode(this);
     dom.removeEventListener("keydown", this._on_key);
     dom.removeEventListener("keyup", this._on_key);
     dom.removeEventListener("keypress", this._on_key);

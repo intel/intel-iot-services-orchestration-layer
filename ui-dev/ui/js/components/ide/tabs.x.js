@@ -28,7 +28,7 @@ class Tabs extends ReactComponent {
   
   state = {
     current: 0
-  };
+  }
 
   set_active(idx, event) {
     event.preventDefault();
@@ -36,8 +36,9 @@ class Tabs extends ReactComponent {
   }
 
   render() {
-    var children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
-    var items = _.map(children, (item, idx) => {
+    var tabs = _.filter(_.isArray(this.props.children) ? this.props.children : [this.props.children], x => x.type === Tab);
+
+    var items = _.map(tabs, (item, idx) => {
       var title = item.props.title;
       return (
         <li key={title} className={"hope-tabs-item" + (this.state.current === idx ? " active" : "")}>
@@ -54,7 +55,7 @@ class Tabs extends ReactComponent {
           </ul>
         </nav>
         <article className="hope-tabs-body">
-          {children[this.state.current]}
+          {tabs[this.state.current]}
         </article>
       </div>
     );

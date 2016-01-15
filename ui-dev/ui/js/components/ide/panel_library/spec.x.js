@@ -51,14 +51,18 @@ export default class Spec extends ReactComponent {
     }
   }
 
-
-
   _create_drag_object() {
     let view = $hope.app.stores.graph.active_view;
     var instance = this.props.instance;
     var spec = this.props.spec;
     var div = document.createElement("div");
-    React.render(<DragFromLib scale={this.props.scalable && view ? view.zoom_scale : 1} text={(instance && instance.name) || spec.name}/>, div);
+
+    ReactDOM.render(
+      <DragFromLib
+          scale={this.props.scalable && view ? view.zoom_scale : 1}
+          text={(instance && instance.name) || spec.name}/>,
+      div);
+
     $(div).css("z-index", 1000);
     $(div).data("hope-spec-id", spec.id);
     if (instance) {
@@ -77,7 +81,7 @@ export default class Spec extends ReactComponent {
 
   componentDidMount() {
     if (this.props.draggable) {
-      $(React.findDOMNode(this)).draggable({
+      $(ReactDOM.findDOMNode(this)).draggable({
         cursor: "move",
         cursorAt: {top: 0, left: 0},
         helper: this._create_drag_object.bind(this)     // not autobound
@@ -100,10 +104,13 @@ export default class Spec extends ReactComponent {
         <Col className="text-center" xs={1}>
           <i className={"fa fa-" + (spec.icon ? spec.icon : "cog")}/>
         </Col>
-        <Col xs={8}>{instance ? (instance.name || "No Name (" + spec.name + ")") : spec.name}</Col>
+        <Col xs={8}>
+          {instance ? (instance.name || "No Name (" + spec.name + ")") : spec.name}
+        </Col>
         { spec.is_ui && instance &&
           <Col className="text-center" xs={1}>
-            <Link to="ui_ide" params={{id: $hope.app.stores.ui.get_ui_id_by_widget(instance.id)}} >
+            <Link to={`/ui_ide/${$hope.app.stores.ui.get_ui_id_by_widget(instance.id)}`}
+                  query={{ widget: instance.id }}>
               <i className="fa fa-angle-double-right hope-panel-lib-code-edit-icon"/>
             </Link>
           </Col>

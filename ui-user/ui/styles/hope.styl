@@ -111,58 +111,31 @@ body {
   list-style: none;
 }
 
-
-
-//////////////////////////////////////////////////////////////////
-// Ace Editor
-//////////////////////////////////////////////////////////////////
-
-.hope-ace-container {
-  width: 800px;
-  height: 1000px;
+.x-webrtc-container {
+  position: relative;
+  width: 100%;
+}
+.x-webrtc-container video {
+  width: 100%;
+  height: 100%;
+}
+.x-webrtc-play {
   position: absolute;
-  top: 50px;
-  left: 30px;
-}
-
-//////////////////////////////////////////////////////////////////
-// Transitions for React
-//////////////////////////////////////////////////////////////////
-
-
-.hope-code-editor-enter {
-  opacity: 0.01;
-  transition: opacity .5s ease-in;
-}
-
-.hope-code-editor-enter.hope-code-editor-enter-active {
-  opacity: 1;
-}
-
-.hope-code-editor-leave {
-  opacity: 1;
-  transition: opacity .5s ease-out;
-}
-
-.hope-code-editor-leave.hope-code-editor-leave-active {
+  cursor: pointer;
+  top: 50%;
+  left: 50%;
+  color: white;
+  transform: translateZ(0) translate(-50%, -50%);
   opacity: 0;
 }
-
-//////////////////////////////////////////////////////////////////
-// Expand Sign
-//////////////////////////////////////////////////////////////////
-.hope-tree-node__is-expanded .hope-tree-node__sign-expanded {
-  display: inline-block;
+.x-webrtc-container:hover .x-webrtc-play {
+  opacity: 0.5;
 }
-.hope-tree-node__is-expanded .hope-tree-node__sign-collapsed {
-  display: none;
+.x-webrtc-blink {
+  animation: x-webrtc-blink-opacity 3s infinite;
 }
-.hope-tree-node__not-expanded .hope-tree-node__sign-expanded {
-  display: none;
+@keyframes x-webrtc-blink-opacity {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
-.hope-tree-node__not-expanded .hope-tree-node__sign-collapsed {
-  display: inline-block;
-}
-
-
-

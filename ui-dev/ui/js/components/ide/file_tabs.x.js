@@ -24,22 +24,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {ModalTrigger} from "react-bootstrap";
-import {Navigation, Link} from "react-router";
+import {History, Link} from "react-router";
 import DlgOpenGraph from "./dlg_open_graph.x";
 
 // Don't use class here as we need mixin 
 var FileTabs = React.createClass({
 
   propTypes: {
-    app: React.PropTypes.object.isRequired,
+    app: React.PropTypes.object,
     width: React.PropTypes.number.isRequired
   },
 
-  mixins: [Navigation],
+  mixins: [History],
+
+  getInitialState() {
+    return {
+      origin: [],
+      request: 0,
+      show_dlg: false
+    };
+  },
 
   _on_open: function(id) {
-    this.transitionTo("ide", {id: id});
+    this.history.push(`/ide/${id}`);
   },
 
   _close: function(id, e) {
@@ -58,7 +65,7 @@ var FileTabs = React.createClass({
       });
 
       if (_.isEmpty(graph_store.views)) {
-        return self.transitionTo("/", {});
+        return self.history.push("/");
       }
       
       if (v === oldview) {
@@ -71,7 +78,7 @@ var FileTabs = React.createClass({
         if (rcs.length === 0) {
           rcs = _.keys(graph_store.views);
         }
-        self.replaceWith("ide", {id: rcs[0]});
+        self.history.replace(`/ide/${rcs[0]}`);
       }
       else {
         self.forceUpdate();
@@ -82,8 +89,8 @@ var FileTabs = React.createClass({
       return close_force();
     }
 
-    $hope.confirm("Close", 
-      "This would discard the changes of workflow. Please make sure this is what you expect!",
+    $hope.confirm(__("Close"),
+      __("This would discard the changes of workflow. Please make sure this is what you expect!"),
       "warning", () => {
       close_force();
     });
@@ -97,7 +104,17 @@ var FileTabs = React.createClass({
     return v.get_app_id() === app.id;
   },
 
-  componentWillUpdate: function() {
+  _show_dlg(show) {
+    this.setState({
+      show_dlg: show
+    });
+  },
+
+  componentDidMount() {
+    this.componentWillReceiveProps();
+  },
+
+  componentWillReceiveProps() {
     var ul = $('<ul class="hope-ftabs">').appendTo(document.body);
     var width = {};
     var total = 0;
@@ -113,8 +130,13 @@ var FileTabs = React.createClass({
     });
 
     ul.remove();
-    this.$origin = width;
-    this.$request = total;
+
+    if (total !== this.state.request) {
+      this.setState({
+        origin: width,
+        request: total
+      });
+    }
   },
 
   render: function() {
@@ -132,11 +154,11 @@ var FileTabs = React.createClass({
         // TODO: if active_view is null (maybe intermediate stage now),
         // we using an approximate width temporarily, next redrawing will come soon.
         //
-        avg = (this.props.width - 70 - (view ? this.$origin[view.id] : 0)) / (_.size(graph_store.views) - 1) - 16; // border
+        avg = (this.props.width - 70 - (view ? this.state.origin[view.id] : 0)) / (_.size(graph_store.views) - 1) - 16; // border
       }
       
       let style;
-      if (this.$request + 70 > this.props.width && v !== view && this.$origin[id] > avg) {
+      if (this.state.request + 70 > this.props.width && v !== view && this.state.origin[id] > avg) {
         style = {
           textOverflow: "ellipsis",
           overflow: "hidden",
@@ -144,7 +166,7 @@ var FileTabs = React.createClass({
         };
       }
       files.push(
-        <Link to="ide" params={{id: id}} key={id}>
+        <Link to={`/ide/${id}`} key={id}>
           <li className={v === view ? "active" : ""}>
             <span style={style}
                 className={"hope-ftabs-name" + (v.modified ? " modified" : "")}>
@@ -165,13 +187,14 @@ var FileTabs = React.createClass({
           { files }
 
           { view &&
-            <ModalTrigger modal={<DlgOpenGraph onClickOpen={this._on_open} />}>
-              <li style={{width: 40}}>
-                <span className="fa fa-folder-open-o fa-lg hope-ftabs-btn"/>
-              </li>
-            </ModalTrigger>
+            <li style={{width: 40}} onClick={this._show_dlg.bind(this, true)}>
+              <span className="fa fa-folder-open-o fa-lg hope-ftabs-btn"/>
+            </li>
           }
         </ul>
+        <DlgOpenGraph show={this.state.show_dlg}
+          onHide={this._show_dlg.bind(this, false)}
+          onClickOpen={this._on_open} />
       </div>
     );
   }

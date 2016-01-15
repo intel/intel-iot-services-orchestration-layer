@@ -65,12 +65,12 @@ export default class EditWidget extends Widget {
   componentDidMount() {
     super.componentDidMount();
 
-    React.findDOMNode(this.refs.input).addEventListener("keydown",
+    this.refs.input.addEventListener("keydown",
       this._on_key_down);
   }
 
   componentWillUnmount() {
-    React.findDOMNode(this.refs.input).removeEventListener("keydown", 
+    this.refs.input.removeEventListener("keydown", 
       this._on_key_down);
     super.componentWillUnmount();
   }

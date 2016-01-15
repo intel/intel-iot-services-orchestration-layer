@@ -24,12 +24,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {RouteHandler} from "react-router";
 import NavBar from "./nav_bar.x";
 
-
 export default class HOPE extends ReactComponent {
-
 
   _on_notify(data) {
     var f = toastr[data.level];   // eslint-disable-line
@@ -45,9 +42,7 @@ export default class HOPE extends ReactComponent {
 
   componentWillUnmount() {
     $hope.app.stores.notification.removeListener("notify", this._on_notify);
-  }  
-
-
+  }
 
   render() {
     return (
@@ -59,7 +54,7 @@ export default class HOPE extends ReactComponent {
             style={{
               height: window.innerHeight - $hope.app.stores.ide.nav_bar.height
             }}>
-          <RouteHandler/>
+          {this.props.children}
         </div>
       </div>
     );

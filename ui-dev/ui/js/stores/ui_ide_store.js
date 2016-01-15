@@ -68,6 +68,10 @@ class UIIDEStore extends EventEmitter {
     this.panel[e.panel].top = e.top;
   }
 
+  update_toolbar() {
+    this.emit("ui_ide", {type: "ui_ide", event: "update/toolbar"});
+  }
+
   update_inspector() {
     this.emit("ui_ide", {type: "ui_ide", event: "update/inspector"});
   }

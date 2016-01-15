@@ -24,11 +24,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col, OverlayTrigger, Popover, MenuItem, ModalTrigger} from "react-bootstrap";
+import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import {ExpandSign} from "../tree.x";
-import class_names from "classnames";
-import DlgCreate from "../dlg_create.x";
-import DlgEdit from "../dlg_edit.x";
+import Dialog from "../dialog.x";
+import Overlay from "../../overlay.x";
 
 
 export default class Thing extends ReactComponent {
@@ -37,15 +36,16 @@ export default class Thing extends ReactComponent {
   };
 
   _on_click_edit() {
+    var thing = this.props.thing;
     this.refs.overlay.hide();
-    this.refs.dlg_edit.show();
+    Dialog.show_create_dialog(__("Edit Thing"), this._on_save_thing, __("Save"), thing.name, thing.description);
   }
 
   _on_save_thing(data) {
     var thing = this.props.thing;
     var name = data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid thing name");
+      return $hope.notify("error", __("Invalid thing name"));
     }
     var req = {};
     if (thing.obj.name !== name) {
@@ -66,8 +66,8 @@ export default class Thing extends ReactComponent {
 
   _on_delete() {
     this.refs.overlay.hide();
-    $hope.confirm("Delete from Server", 
-      "This would delete the thing on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete from Server"),
+      __("This would delete the thing on the server. Please make sure this is what you expect!"),
       "warning", () => {
       var thing = this.props.thing;
       $hope.trigger_action("hub/remove/thing", {
@@ -78,18 +78,19 @@ export default class Thing extends ReactComponent {
 
   _on_click_add() {
     this.refs.overlay.hide();
-    this.refs.dlg_create.show();
+    Dialog.show_create_dialog(__("Create Service"), this._on_create_service);
   }
 
   _on_create_service(data) {
     var thing = this.props.thing;
     var name = data && data.name && data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid service name");
+      return $hope.notify("error", __("Invalid service name"));
     }
     if (_.find(thing.obj.services, "name", name)) {
-      return $hope.notify("error", "This name already exists in the thing");
+      return $hope.notify("error", __("This name already exists in the thing"));
     }
+
     $hope.trigger_action("hub/create/service", {
       thing_id: thing.obj.id,
       name: name,
@@ -100,10 +101,10 @@ export default class Thing extends ReactComponent {
   render() {
     var thing = this.props.thing;
     var popover =
-      <Popover>
-        <MenuItem onSelect={this._on_click_edit}>Edit</MenuItem>
-        <MenuItem onSelect={this._on_delete}>Delete</MenuItem>
-        <MenuItem onSelect={this._on_click_add}>Add Service</MenuItem>
+      <Popover id="PO-thing-menu">
+        <MenuItem onSelect={this._on_click_edit}>{__("Edit")}</MenuItem>
+        <MenuItem onSelect={this._on_delete}>{__("Delete")}</MenuItem>
+        <MenuItem onSelect={this._on_click_add}>{__("Add Service")}</MenuItem>
       </Popover>;
 
     return (
@@ -114,20 +115,11 @@ export default class Thing extends ReactComponent {
         <Col xs={1} className="text-center"
             onClick={e => e.stopPropagation()}>
           {!thing.obj.is_builtin &&
-            <OverlayTrigger ref="overlay" trigger="click" rootClose overlay={popover}>
+            <Overlay ref="overlay" trigger="click" overlay={popover}>
               <i className="hope-panel-lib-menu fa fa-bars" />
-            </OverlayTrigger>
+            </Overlay>
           }
         </Col>
-
-        <ModalTrigger ref="dlg_create" modal={<DlgCreate title="Create Service" onClickCreate={this._on_create_service}/>}>
-          <i />
-        </ModalTrigger>
-
-        <ModalTrigger ref="dlg_edit"
-          modal={<DlgEdit title="Edit Thing" name={thing.name} description={thing.description} onSave={this._on_save_thing}/>}>
-          <i />
-        </ModalTrigger>
       </Row>
     );
   }

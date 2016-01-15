@@ -7,6 +7,7 @@ if [ "x$1" == "x" ]; then
   echo "  center          start the sample center"
   echo "  hub             start the sample hub"
   echo "  edison          start the sample hub in edison (it includes real things)"
+  echo "  skartkit        start the startkit hub in edison"
   exit 1
 
 fi
@@ -16,14 +17,18 @@ case $1 in
     node ./node_modules/hope-center/start_http_broker.js
     ;;
   center)
-    ./center ./node_modules/hope-demo/sample/center/config.json
+    ./center ./node_modules/hope-demo/center/config.json
     ;;
   hub)
-    ./hub ./node_modules/hope-demo/sample/hub_a/config.json
+    ./hub ./node_modules/hope-demo/mockup/hub_a/config.json
     ;;
   hub_b)
-    ./hub ./node_modules/hope-demo/sample/hub_b/config.json
+    ./hub ./node_modules/hope-demo/mockup/hub_b/config.json
     ;;
   edison)
-    ./hub ./node_modules/hope-demo/sample/edison/config.json
+    ./hub ./node_modules/hope-demo/edison/config.json
+    ;;
+  startkit)
+    ./hub ./node_modules/hope-demo/startkit/config.json
+    ;;
 esac

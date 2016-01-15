@@ -35,7 +35,7 @@ var specs = [{
   icon:         "text-width",
 
   use_ract:     true,
-  data_cache_size: 5,   // how many data items would be cached to show the widget    
+  data_cache_size: 3,   // how many data items would be cached to show the widget    
                         // 0 for using default, -1 means unliminted
   config: [{
     name: "defval",
@@ -195,6 +195,77 @@ var specs = [{
 },
 /////////////////////////////////////////////////
 {
+  id:           "hope/ui/slider",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "basic",
+  name:         "Slider",
+  description:  "Input range slider",
+  icon:         "sliders",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "step",
+    type: "number",
+    default: 1
+  }, {
+    name: "min",
+    type: "number",
+    default: 0
+  }, {
+    name: "max",
+    type: "number",
+    default: 100
+  }],
+
+  in: {
+    ports: [{
+      name: "preset",
+      type: "number"
+    }]
+  },
+  out: {
+    ports: [{
+      name: "output",      // output number
+      type: "number"
+    }]
+  }
+},
+/////////////////////////////////////////////////
+{
+  id:           "hope/ui/combox",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "basic",
+  name:         "Combo box",
+  description:  "Combo box control",
+  icon:         "list-alt",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "options",
+    type: "object"
+  }],
+
+  in: {
+    ports: [{
+      name: "preset",
+      type: "string"
+    }]
+  },
+  out: {
+    ports: [{
+      name: "output",
+      type: "string"
+    }]
+  }
+},
+/////////////////////////////////////////////////
+{
   id:           "hope/ui/fan",
   type:         "spec",
   is_ui:        true,
@@ -224,9 +295,9 @@ var specs = [{
   type:         "spec",
   is_ui:        true,
   catalog:      "basic",
-  name:         "Chart",
-  description:  "Bar/Line/Pie charts",
-  icon:         "bar-chart",
+  name:         "LineChart",
+  description:  "Area/Line charts",
+  icon:         "line-chart",
 
   use_ract:     true,
   data_cache_size: 100,
@@ -252,6 +323,101 @@ var specs = [{
   in: {
     ports: [{
       name: "series1",
+      type: "number"
+    }]
+  },
+  out: {
+    ports: []
+  }
+},
+/////////////////////////////////////////////////
+{
+  id:           "hope/ui/pie",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "basic",
+  name:         "PieChart",
+  description:  "Pie/Doughnut charts",
+  icon:         "pie-chart",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "type",
+    type: "option",
+    default: "Pie",
+    options: ["Pie", "Doughnut"]
+  }, {
+    name: "percentageInnerCutout",
+    display: "Inner percent",
+    type: "number",
+    default: 50,
+    depend: "$$.type === 'Doughnut'"
+  }, {
+    name: "colors",
+    type: "object",
+    sub_type: "color",
+    headers: ["Label", "Color"]
+  }],
+
+  in: {
+    ports: [{
+      name: "input",
+      type: "object"
+    }]
+  },
+  out: {
+    ports: []
+  }
+},
+/////////////////////////////////////////////////
+{
+  id:           "hope/ui/progress",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "basic",
+  name:         "Progress",
+  description:  "Progress bar",
+  icon:         "spinner",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "active",
+    display:"Animated",
+    type: "boolean"
+  }, {
+    name: "striped",
+    type: "boolean",
+    depend: "!$$.active"
+  }],
+
+  extra: [{
+    name: "label",
+    type: "option",
+    default: "%(percent)s%",
+    options: [{
+      name: "Percent",
+      value: "%(percent)s%"
+    }, {
+      name: "None",
+      value: ""
+    }]
+  }, {
+    name: "min",
+    type: "number",
+    default: 0
+  }, {
+    name: "max",
+    type: "number",
+    default: 100
+  }],
+
+  in: {
+    ports: [{
+      name: "position",
       type: "number"
     }]
   },
@@ -425,8 +591,49 @@ var specs = [{
   out: {
     ports: []
   }
+},
+/////////////////////////////////////////////////
+{
+  id:           "hope/ui/webrtc",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "webrtc",
+  name:         "video",
+  description:  "Intel CS for WebRTC Client",
+  icon:         "video-camera",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "peerServerIP",
+    type: "string",
+    required: true
+  }, {
+    name: "cameraID",
+    type: "string",
+    required: true
+  }],
+
+  in: {
+    ports: [{
+      name: "control",
+      type: "boolean"
+    }]
+  },
+  out: {
+    ports: []
+  }
 }];
 
+if (process.browser) {
+  require("./plugins").forEach(function(m) {
+    specs = specs.concat(m.specs);
+  });
+}
+else {
+  specs = specs.concat(require("./plugins-specs.json"));
+}
 
 // ensure it contains required information
 specs.forEach(function(s) {

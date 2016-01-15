@@ -221,23 +221,25 @@ class HubStore extends EventEmitter {
   create_thing(data) {
     $hope.app.server.hub.create_thing$(data.hub_id, data.name, data.description).then(res => {
       $hope.check(res && res.id, "HubStore", "create_thing$ returns invalid response");
-      $hope.notify("success", "Thing successfully created!");
+      $hope.notify("success", __("Thing successfully created!"));
+    }).catch(e => {
+      $hope.notify("error", "Failed to create thing!", e);
     }).done();
   }
 
   remove_thing(data) {
     $hope.app.server.thing.remove$(data.ids).then(() => {
-      $hope.notify("success", "Thing successfully deleted!");
+      $hope.notify("success", __("Thing successfully deleted!"));
     }).catch(e => {
-      $hope.notify("error", "Thing failed to update!", e);
+      $hope.notify("error", "Failed to remove thing!", e);
     }).done();
   }
 
   update_thing(data) {
     $hope.app.server.thing.update$(data.thing).then(() => {
-      $hope.notify("success", "Thing successfully updated!");
+      $hope.notify("success", __("Thing successfully updated!"));
     }).catch(e => {
-      $hope.notify("error", "Thing failed to update!", e);
+      $hope.notify("error", "Failed to update thing!", e);
     }).done();
   }
 
@@ -245,23 +247,25 @@ class HubStore extends EventEmitter {
   create_service(data) {
     $hope.app.server.thing.create_service$(data.thing_id, data.name, data.description).then(res => {
       $hope.check(res && res.id, "HubStore", "create_service$ returns invalid response");
-      $hope.notify("success", "Service successfully created!");
+      $hope.notify("success", __("Service successfully created!"));
+    }).catch(e => {
+      $hope.notify("error", "Failed to create service!", e);
     }).done();
   }
 
   remove_service(data) {
     $hope.app.server.service.remove$(data.ids).then(() => {
-      $hope.notify("success", "Service successfully deleted!");
+      $hope.notify("success", __("Service successfully deleted!"));
     }).catch(e => {
-      $hope.notify("error", "Service failed to update!", e);
+      $hope.notify("error", __("Failed to update service!"), e);
     }).done();
   }
 
   update_service(data) {
     $hope.app.server.service.update$(data.service).then(() => {
-      $hope.notify("success", "Service successfully updated!");
+      $hope.notify("success", __("Service successfully updated!"));
     }).catch(e => {
-      $hope.notify("error", "Service failed to update!", e);
+      $hope.notify("error", __("Failed to update service!"), e);
     }).done();
   }
 }

@@ -113,7 +113,7 @@ export default class BindingDetails extends ReactComponent {
 
     _.forOwn(d.get_all_things_using_spec(spec.id), thing => {
       things.push(
-        <MenuItem onSelect={this._set_fixed_xxx_id.bind(this, "thing", thing.id)}>
+        <MenuItem key={thing.id} onSelect={this._set_fixed_xxx_id.bind(this, "thing", thing.id)}>
           {thing.name}
         </MenuItem>
       );
@@ -130,7 +130,7 @@ export default class BindingDetails extends ReactComponent {
           }
 
           services.push(
-            <MenuItem onSelect={this._set_fixed_xxx_id.bind(this, "service", svc.id)}>
+            <MenuItem key={svc.id} onSelect={this._set_fixed_xxx_id.bind(this, "service", svc.id)}>
               {svc.name}
             </MenuItem>
           );
@@ -138,18 +138,18 @@ export default class BindingDetails extends ReactComponent {
       }
     });
 
-    return [
-      <div className="margin-top"> Active Thing </div>,
-      <DropdownButton buttonClassName="hope-dropdown"
+    return <div>
+      <div className="margin-top">{__("Active Thing")}</div>
+      <DropdownButton id="t" buttonClassName="hope-dropdown"
           bsStyle="success" bsSize="small" title={curth} >
         { things }
-      </DropdownButton>,
-      <div className="margin-top"> Active Service </div>,
-      <DropdownButton buttonClassName="hope-dropdown"
+      </DropdownButton>
+      <div className="margin-top">{__("Active Service")}</div>
+      <DropdownButton id="s" buttonClassName="hope-dropdown"
           bsStyle="success" bsSize="small" title={cursvc} >
         { services }
       </DropdownButton>
-    ];
+    </div>;
   }
 
   render_hubs(spec, binding) {
@@ -160,7 +160,7 @@ export default class BindingDetails extends ReactComponent {
 
     _.forOwn(avail_hubs, d => {
       hubs.push(
-        <MenuItem onSelect={this._set_fixed_dev.bind(this, d.id)}>
+        <MenuItem key={d.id} onSelect={this._set_fixed_dev.bind(this, d.id)}>
           {d.name}
         </MenuItem>
       );
@@ -179,8 +179,8 @@ export default class BindingDetails extends ReactComponent {
 
     return (
       <div>
-        <div className="margin-top"> Active Hub </div>
-        <DropdownButton buttonClassName="hope-dropdown"
+        <div className="margin-top">{__("Active Hub")}</div>
+        <DropdownButton id="h" buttonClassName="hope-dropdown"
             bsStyle="success" bsSize="small" title={curdev} >
           { hubs }
         </DropdownButton>
@@ -203,7 +203,7 @@ export default class BindingDetails extends ReactComponent {
               widget_name = s.instance.name;
             }
             instances.push(
-              <MenuItem onSelect={this._set_widget.bind(this, s.instance.id)}>
+              <MenuItem key={s.instance.id} onSelect={this._set_widget.bind(this, s.instance.id)}>
                 {s.instance.name}
               </MenuItem>
             );
@@ -214,7 +214,7 @@ export default class BindingDetails extends ReactComponent {
     return (
       <div>
         <div className="margin-top"> Active Widget </div>
-        <DropdownButton buttonClassName="hope-dropdown"
+        <DropdownButton id="i" buttonClassName="hope-dropdown"
             bsStyle="success" bsSize="small" title={widget_name} >
           { instances }
         </DropdownButton>
@@ -242,16 +242,16 @@ export default class BindingDetails extends ReactComponent {
 
     return (
       <div>
-        <div> Type </div>
-        <DropdownButton buttonClassName="hope-dropdown"
-            bsStyle="primary" bsSize="small" title={this.state.type} >
+        <div>{__("Binding Type")} </div>
+        <DropdownButton id="X" buttonClassName="hope-dropdown"
+            bsStyle="primary" bsSize="small" title={__(this.state.type)} >
           <MenuItem onSelect={this._set_type.bind(this, FIXED)}>
-            {FIXED}
+            {__(FIXED)}
           </MenuItem>
           { no_binding && <MenuItem divider /> }
           { no_binding &&
             <MenuItem onSelect={this._set_type.bind(this, NO_BINDING)}>
-              {NO_BINDING}
+              {__(NO_BINDING)}
             </MenuItem>
           }
         </DropdownButton>

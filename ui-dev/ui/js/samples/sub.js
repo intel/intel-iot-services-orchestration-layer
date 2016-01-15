@@ -65,7 +65,7 @@ var specs = [
         // by default
         customizations_disabled: {    
           buffered: false,
-          passive: false,
+          no_trigger: false,
           be_grouped: false
         }
       }]

@@ -34,27 +34,37 @@ import ColorPalette from "./color_palette.x";
 import Halogen from "halogen";
 
 import {Row, Col} from "react-bootstrap";
-import {Link} from "react-router";
+import {Lifecycle} from "react-router";
 
-export default class IDE extends ReactComponent {
+export default React.createClass({
 
-  static propTypes = {
+  propTypes: {
     id: React.PropTypes.number
-  };
+  },
 
-  static willTransitionTo(transition, params) {
+  mixins: [ Lifecycle ],
 
-    if (!params.id) {
-      $hope.check(false, "IDE", "No id passed in");
-      transition.abort();
+  routerWillLeave(nextLocation) {
+    if (_.startsWith(nextLocation.pathname, "/ide/")) {
+      return;
     }
-    if (params.id) {
-      $hope.trigger_action("graph/set_active", {
-        graph_id: params.id
-      });
+
+    var view = $hope.app.stores.graph.active_view;
+    var app = view ? view.get_app() : null;
+    var modified = false;
+    _.forEach($hope.app.stores.graph.views, v => {
+      if (v.get_app() === app) {
+        modified |= v.modified;
+      }
+    });
+    if (modified) {
+      return __("Your edit is NOT saved! Are you READLLY want to leave?");
     }
-    $hope.app.stores.ide.layout();
-  }
+    if (!_.startsWith(nextLocation.pathname, "/ide/") &&
+        !_.startsWith(nextLocation.pathname, "/ui_ide/")) {
+      $hope.app.stores.app.active_app(null);
+    }
+  },
 
   _on_graph_event(e) {
     $hope.log("event", "_on_graph_event", e);
@@ -64,13 +74,13 @@ export default class IDE extends ReactComponent {
     switch(e.event) {
       case "started":
         view.set_running();
-        $hope.notify("success", "Workflow successfully started!");
+        $hope.notify("success", __("Workflow successfully started!"));
         break;
 
       case "stoped":
         if (view.is_running()) {
-          $hope.confirm("Replay", 
-            "Workflow successfully stoped! Do you want replay slowly?",
+          $hope.confirm(__("Replay"),
+            __("Workflow successfully stoped! Do you want replay slowly?"),
             "warning", (res) => {
               if (!res) {
                 view.set_debugging();
@@ -81,16 +91,18 @@ export default class IDE extends ReactComponent {
               }
               this.forceUpdate();
           }, {
-            confirmButtonText: "No",    // swap the meaning of buttons
-            cancelButtonText: "Yes"
+            confirmButtonText: __("No"),    // swap the meaning of buttons
+            cancelButtonText: __("Yes")
           });
         }
         else {
+          view.stop_auto_replay();
+          view.unselect_all();
           view.set_editing();
         }
         break;
 
-      case "logs/loaded":
+      case "trace/loaded":
         view.update_animation();
         break;
 
@@ -98,7 +110,7 @@ export default class IDE extends ReactComponent {
         break;
 
       case "saved":
-        $hope.notify("success", "Workflow successfully saved!");
+        $hope.notify("success", __("Workflow successfully saved!"));
         break;
 
       case "removed":
@@ -118,7 +130,7 @@ export default class IDE extends ReactComponent {
         return;
     }
     this.forceUpdate();
-  }
+  },
 
   _on_ide_event(e) {
     $hope.log("event", "_on_ide_event", e);
@@ -141,25 +153,25 @@ export default class IDE extends ReactComponent {
         $hope.log("forceUpdate", "IDE");
         this.forceUpdate();
     }
-  }
+  },
 
   _on_spec_event(e) {
     $hope.log("event", "_on_spec_event", e);
     $hope.log("forceUpdate", "IDE");
     this.forceUpdate();
-  }
+  },
 
   _on_hub_event(e) {
     $hope.log("event", "_on_hub_event", e);
     $hope.log("forceUpdate", "IDE");
     this.forceUpdate();
-  }
+  },
 
   _on_library_event(e) {
     $hope.log("event", "_on_library_event", e);
     $hope.log("forceUpdate", "IDE - library");
     this.refs.library.forceUpdate();
-  }
+  },
 
   _on_ui_event(e) {
     $hope.log("event", "_on_ui_event", e);
@@ -171,7 +183,7 @@ export default class IDE extends ReactComponent {
         }
         break;
     }
-  }
+  },
 
   _on_key_down(e) {
     var view = $hope.app.stores.graph.active_view;
@@ -200,7 +212,7 @@ export default class IDE extends ReactComponent {
         }
         break;
     }
-  }
+  },
 
   _on_key_up(e) {
     var view = $hope.app.stores.graph.active_view;
@@ -214,14 +226,14 @@ export default class IDE extends ReactComponent {
         }
         break;
     }
-  }
+  },
 
 
   _on_resize() {
     $hope.app.stores.ide.layout();
     $hope.log("forceUpdate", "IDE");
     this.forceUpdate();
-  }
+  },
 
   _need_switch_current_view() {
     // we might need to switch the IDE to the graph required
@@ -229,7 +241,20 @@ export default class IDE extends ReactComponent {
     var graph_store = $hope.app.stores.graph;
     return id && (!graph_store.active_view || 
       graph_store.active_view.id !== id); 
-  }
+  },
+
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props);
+    $hope.app.stores.ide.layout();
+  },
+
+  componentWillReceiveProps(nextProps) {
+    var id = nextProps.params.id;
+    $hope.check(id, "IDE - No id passed in");
+    $hope.trigger_action("graph/set_active", {
+      graph_id: id
+    });
+  },
 
   componentDidMount() {
     document.body.className = $hope.app.stores.ide.theme;
@@ -245,11 +270,9 @@ export default class IDE extends ReactComponent {
     document.addEventListener("keyup", this._on_key_up);
 
     window.addEventListener("resize", this._on_resize);
-  }
+  },
 
   componentWillUnmount() {
-    $hope.app.stores.app.active_app(null);
-
     $hope.app.stores.graph.removeListener("graph", this._on_graph_event);      
     $hope.app.stores.ide.removeListener("ide", this._on_ide_event);
     $hope.app.stores.spec.removeListener("spec", this._on_spec_event);
@@ -261,7 +284,7 @@ export default class IDE extends ReactComponent {
     document.removeEventListener("keyup", this._on_key_up);
 
     window.removeEventListener("resize", this._on_resize);
-  }  
+  },
 
 
 
@@ -270,15 +293,6 @@ export default class IDE extends ReactComponent {
     var ide_store = $hope.app.stores.ide;
     var view = $hope.app.stores.graph.active_view;
     var app = view ? view.get_app() : null;
-
-    var to_ui = null;
-    var active_ui = $hope.app.stores.ui.active_view;
-    if (active_ui) {
-      to_ui = active_ui.id;
-    }
-    else if (app && app.uis && app.uis.length > 0) {
-      to_ui = app.uis[0].id;
-    }
 
     // we only show the active view
     if (view && !this._need_switch_current_view()) {
@@ -290,9 +304,9 @@ export default class IDE extends ReactComponent {
       var reason = $hope.app.stores.graph.no_active_reason;
       var reason_content;
       if (reason === "loading") {
-        reason_content = <div><Halogen.DotLoader/><br/>Loading ...</div>;
+        reason_content = <div><Halogen.DotLoader/><br/>{__("Loading") + " ..."}</div>;
       } else {
-        reason_content = <div>Failed to load due to {reason} </div>;
+        reason_content = <div>{__("Failed to load due to ") + reason}</div>;
       }
       graph = <div 
         className="hope-graph-background"
@@ -333,12 +347,7 @@ export default class IDE extends ReactComponent {
             height: ide_store.file_tabs.height
           }}>
             <FileTabs ref="file_tabs" app={app}
-                width={ide_store.file_tabs.width - (to_ui ? 70 : 0)} />
-            {to_ui &&
-              <Link to="ui_ide" params={{id: to_ui}} >
-                <div className="hope-ide-switcher">UI</div>
-              </Link>
-            }
+                width={ide_store.file_tabs.width} />
           </Row>
           <Row style={{
             width: ide_store.graph_svg.width,
@@ -353,5 +362,5 @@ export default class IDE extends ReactComponent {
       </Row>
     );
   }
-}
+});
 

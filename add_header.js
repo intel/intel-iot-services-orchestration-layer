@@ -71,7 +71,7 @@ try {
 program.args.forEach(function(file) {
   var content = fs.readFileSync(file, 'utf8');
   if (header === content.slice(0, header.length)) {
-    console.log(file, " [skipped]");
+    console.log(file, " [skiped]");
     return;
   }
 

@@ -1,0 +1,20 @@
+{
+  "description":"send signal 1 at intervals",
+  "spec": {
+    "id":"interval_spec",
+    "name": "interval_spec",
+    "in": {
+      "ports": [{
+        "name": "interval",
+        "type": "int",
+        "default": 1000
+      }]
+    },
+    "out": {
+      "ports": [{
+        "name": "out",
+        "type": "int"
+      }]
+    }
+  }
+}

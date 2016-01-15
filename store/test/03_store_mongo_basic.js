@@ -89,7 +89,7 @@ describe("store_mongo_basic>>", function() {
 
 var list_length = 2;
 var list_length_incorrect = null;
-it("list with invalid key", function(d) {
+it("list with valid key", function(d) {
 
   var length = list_length;
 
@@ -100,9 +100,9 @@ it("list with invalid key", function(d) {
     if (length === 0) {
       assert(_.isArray(v), true) && assert(_.isEmpty(v), true);
     }
-    //else {
-    //  assert.equal(_.isEqual(v, _.keys(s.db).slice(0, length)), true);
-    //} TODO!
+    else {
+      assert.equal(_.isEqual(v, key_correct.slice(0, length)), true);
+    }
     d();
   }).done();
 });
@@ -111,14 +111,14 @@ it("list with invalid key", function(d) {
   //var key_correct_obj = {};
 
   s.list$(list_length_incorrect).then(function(v) {
-   //assert.equal(_.isEqual(v, _.keys(s.db)), true); TODO
+    assert.equal(_.isEqual(v, key_correct), true);
     d();
   }).done();
 });
 
 
 //test StoreMemory.size$()
- it("size with invalid key", function(d) {
+ it("size with valid key", function(d) {
     s.size$().then(function(size) {
       assert.equal(size, key_correct.length);
       d();
@@ -130,7 +130,7 @@ it("list with invalid key", function(d) {
 var get_key = [];
 var get_value = [];
 
-it("get with invalid key", function(d) {
+it("get with valid key", function(d) {
   get_key = key_correct.concat("", "notexist");
   get_value = value_correct.concat(undefined, undefined);
 
@@ -219,14 +219,17 @@ var del_key = ["a", "abc"];
 var del_key_incorrect = [null, {}];
 
 
-it("delete with invalid key", function(d) {
+it("delete with valid key", function(d) {
   var i;
   var count = 0;
   for (i = 0; i < del_key.length; i++) {
     (function(index) {
-      s.delete$(del_key[index]).then(function() {
+      s.delete$(del_key[index]).then(function(v) {
         count++;
-        //assert.equal(del_key[index] in s.db, false);TODO
+        assert.equal(v, del_key[index]);
+        s.get$(del_key[index]).then(function(v1) {
+          assert.equal(_.isEqual(v1, undefined), true);
+        });
         if (count === del_key.length)
           d();
       }).done();
@@ -288,7 +291,10 @@ describe("store_mongo_batch>>", function() {
     s.batch_set$(batch_pair).then(function(v) {
       assert.equal(_.isEqual(v, batch_pair), true);
       batch_pair.forEach(function(pair) {
-        //assert.equal(_.isEqual(s.db[pair[0]], pair[1]), true);TODO
+        s.get$(pair[0]).then(function(v1) {
+          assert.equal(_.isEqual(v1, pair[1]), true);
+        });
+        
       });
       d();
     }).done();
@@ -417,7 +423,9 @@ describe("store_mongo_batch>>", function() {
         assert.equal(_.isEqual(v[i], del_key[i]), true);
       }
       for (var j = 0; j < del_key.length; j++) {
-        //assert.equal(del_key[j] in s.db, false); TODO
+        s.get$(del_key[j]).then(function(v1) {
+          assert.equal(_.isEqual(v1, undefined), true);
+        });
       }
       d();
     }).done();

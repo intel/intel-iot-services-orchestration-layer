@@ -1,0 +1,28 @@
+{
+  "name": "rotate",
+  "description": "control the servo's angle (0-180)",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "angle",
+        "type": "number"
+      }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    },
+    "config": [
+    {
+      "name": "pin",
+      "type": "int",
+      "required": true
+    }
+  ]
+  },
+  "ui": {
+
+  }
+}

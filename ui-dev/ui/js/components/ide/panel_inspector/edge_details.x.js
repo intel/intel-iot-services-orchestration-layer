@@ -85,7 +85,7 @@ export default class EdgeDetails extends ReactComponent {
 
   _on_click_color_palette(e) {
     e.stopPropagation();
-    var rect = React.findDOMNode(this.refs.color).getBoundingClientRect();
+    var rect = this.refs.color.getBoundingClientRect();
     $hope.trigger_action("ide/show/palette", {
       x: rect.left + rect.width + 10,
       y: rect.top,
@@ -114,19 +114,15 @@ export default class EdgeDetails extends ReactComponent {
 
     if (view.is_debugging() && ("$lastdat" in edge) && view.is_selected("edge", edge.id)) {
       var v = edge.$lastdat;
-      var date = new Date();
-      date.setTime(edge.$lasttim);
-      var time = date.toLocaleString();
-      if (_.isArray(v) || _.isObject(v)) {
-        v = JSON.stringify(v, null, 2);
-      }
-      else {
-        v = String(v);
+      var date = new Date(edge.$lasttim);
+      var time = date.toLocaleTimeString();
+      if (v) {
+        v = $hope.to_string(v.payload);
       }
       valdiv =
         <div>
           <div className="hope-inspector-time">{ time }</div>
-          <div className="hope-inspector-data">{ v }</div>
+          <pre className="hope-inspector-data">{ v }</pre>
         </div>;
     }
 
@@ -135,17 +131,17 @@ export default class EdgeDetails extends ReactComponent {
         <div className="hope-inspector-header" >
           <div className={"hope-inspector-icon fa fa-long-arrow-right" + $hope.color(styles.color)} />
           <div className="hope-inspector-detail">
-            <div className="hope-inspector-detail-name">Edge</div>
-            <div className="hope-inspector-detail-desc">simple connection</div>
+            <div className="hope-inspector-detail-name">{__("Edge")}</div>
+            <div className="hope-inspector-detail-desc">{__("Simple connection")}</div>
           </div>
         </div>
         { valdiv }
         {view.is_editing() &&
         <Tabs>
-          <Tab title="Details">
+          <Tab title={__("Details")}>
             <Row className="hope-panel-details-row text-center border-bottom">
               <Col xs={6}>
-                <div>Extract Field</div>
+                <div>{__("Extract Field")}</div>
               </Col>
               <Col xs={4}>
                 <input type="text"
@@ -158,9 +154,9 @@ export default class EdgeDetails extends ReactComponent {
                   onClick={this._on_show_extractor} />
               </Col>
             </Row>
-{ false &&    <Row className="hope-panel-details-row text-center border-bottom">
+            <Row className="hope-panel-details-row text-center border-bottom">
               <Col xs={6}>
-                <div>No Store</div>
+                <div>{__("No Store")}</div>
               </Col>
               <Col xs={1}>
                 <input type="checkbox"
@@ -173,10 +169,9 @@ export default class EdgeDetails extends ReactComponent {
                   onClick={this._on_show_nostore} />
               </Col>
             </Row>
-}
             <Row className="hope-panel-details-row text-center">
               <Col xs={6}>
-                <div>Color</div>
+                <div>{__("Color")}</div>
               </Col>
               <Col xs={1}>
                 <i ref="color"

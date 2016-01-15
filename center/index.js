@@ -36,7 +36,7 @@ var Store = require("hope-store");
 var EntityStore = require("hope-entity-store");
 var Entity = require("hope-entity");
 var SessionManager = require("hope-session-manager");
-var WFE = require("hope-wfe");
+var Workflow = require("hope-workflow");
 
 // TODO workaround to expose the center to sandbox of a service
 var G = require("./lib/globals");
@@ -46,7 +46,7 @@ asm.add_factories(Store.$factories)
    .add_factories(EntityStore.$factories)
    .add_factories(Entity.$factories)
    .add_factories(SessionManager.$factories)
-   .add_factories(WFE.$factories)
+   .add_factories(Workflow.$factories)
    .add_factories({
       Center: require("./lib/center").create$
     });

@@ -107,18 +107,22 @@ ServiceCache.prototype.sync_from_base$ = function(key) {
 };
 
 /**
- * sync_from_base with init and destroy
+ * reload service. it will destroy the old and init if the previous service is inited.
  * 1, destroy if inited
  * 2, sync
- * 3, init
+ * 3, init if inited before
  * @param  {number||string} key 
  * @return {Promise}       resolve: service_cache_obj
  */
-ServiceCache.prototype.sync_from_base_with_init_destroy$ = function(key) {
+ServiceCache.prototype.reload_service_with_init_destroy$ = function(key) {
   var self = this;
+  var is_inited = false;
+  var res; // the service_cache_obj
   function prepare_destroy$(c_obj, k) {
     if (c_obj.has(k) && c_obj.get_cache(k).is_inited) {
-      return c_obj.destroy_service$(k);
+      is_inited = true;
+      log("destroy the old service", key);
+      return c_obj.destroy_service$(c_obj.get_cache(k));
     }
     else {
       return Promise.resolve("not init yet");
@@ -130,10 +134,17 @@ ServiceCache.prototype.sync_from_base_with_init_destroy$ = function(key) {
     return self.sync_from_base$(key);
   })
   .then(function (sc_object) {
-    return self.init_service$(sc_object)
-    .then(function() {
-      return sc_object;
-    });
+    res = sc_object;
+    if (is_inited) {
+      log("init the modified service", key);
+      return self.init_service$(sc_object);
+    }
+    else {
+      return 0;
+    }
+  })
+  .then(function() {
+    return res;
   });
 };
 
@@ -272,6 +283,9 @@ function prepare_script(service_cache_obj, action) {
       //2 wrap the function
       if (action === "kernel") {
         func_string = "(function(IN, CONFIG){\n" + context + "\n})";
+      }
+      else if (action === "service_init" || action === "service_destroy") {
+        func_string = "(function(CONFIG){\n" + context + "\n})"; 
       }
       else {
         func_string = "(function(CONFIG){\n" + context + "\n})"; 

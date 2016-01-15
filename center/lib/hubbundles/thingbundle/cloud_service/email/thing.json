@@ -1,0 +1,5 @@
+{
+  "name": "email",
+  "description": "related service with email",
+  "is_builtin": true
+}

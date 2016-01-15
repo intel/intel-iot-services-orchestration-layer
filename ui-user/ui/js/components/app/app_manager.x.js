@@ -28,8 +28,8 @@ import App from "./app.x";
 import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
 import SearchBox from "./search_box.x";
 
-const LAST_MODIFIED = "Last Modified";
-const LAST_CREATED = "Last Created";
+const LAST_MODIFIED = __("Last Modified");
+const LAST_CREATED = __("Last Created");
 
 function sort_by_time(field) {
   return (a, b) => {
@@ -124,7 +124,7 @@ export default class AppManager extends ReactComponent {
         </Row>
         <Row className="hope-app-mgr-body">
           <Row className="hope-app-mgr-title-bar">
-            <span className="hope-app-mgr-title">My App</span>
+            <span className="hope-app-mgr-title">{__("My App")}</span>
           </Row>
           <Row>
             <ul className="hope-app-mgr-list">

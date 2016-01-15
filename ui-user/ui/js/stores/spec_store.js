@@ -71,8 +71,8 @@ class SpecStore extends EventEmitter {
         if (!_.isEmpty(still_unloaded)) {
           $hope.log.error("spec", "Still have specs", still_unloaded, 
             "unloaded even after get_for_specs$", spec_array);
-          d.reject(new Error("Still have specs unloaded after get_for_spec$: " +
-            still_unloaded.join(",")));
+          //d.reject(new Error("Still have specs unloaded after get_for_spec$: " +
+          //  still_unloaded.join(",")));
         }
         d.resolve();
       }).catch(err => {

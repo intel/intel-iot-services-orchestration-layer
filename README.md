@@ -46,9 +46,15 @@ Some of these projects may reference (i.e. require) others, so npm link is neede
 
 ### Start to Develop the Framework
 
-As mentioned, Node.js >=0.12 need to be installed first. After that, run following commands to setup the environment. *NOTE* these start with # are comments and don't need to type in command shell
+As mentioned, Node.js >=0.12 need to be installed first. After that, run following commands to setup the environment. 
+
+*NOTE* these start with # are comments and don't need to type in command shell. And you might need sudo to execute this depends on your setup of Node.js
+
+*NOTE* As the setup and the following build stage heavily uses NPM, it should be connected to internet and do please configure NPM correctly if you are behind a proxy. You may use `npm config edit` and then configure the related proxy items.
 
 ```shell
+    # If your Node.js isn't installed by NVM, you might need sudo to run this
+
     # Install related tools such as gulp, babel etc.
     ./dev-install.sh
 
@@ -56,7 +62,7 @@ As mentioned, Node.js >=0.12 need to be installed first. After that, run followi
     ./link-npms.sh
 ```
 
-Development of each projects are basically same as normal node.js projects. However, the `ui-dev` and `ui-user` are frontend code so need to manually run `gulp build` under each's folder each time upon change, or run `gulp watch` to automatically build upon change.
+Development of each projects are basically same as normal node.js projects. However, the ui-widgets,`ui-dev` and `ui-user` are frontend code so need to manually run `gulp build` under each's folder each time upon change, or run `gulp watch` to automatically build upon change.
 
 
 ### Build

@@ -25,6 +25,15 @@ var categories = {
 
 B.log.configure_categories(categories);
 
+process.on("uncaughtException", function(err) {
+    console.log(">>>>> Unhandled Exception >>>>>>");
+    if (_.isError(err)) {
+      console.log(err.stack);
+    } else {
+      console.log(B.to_string(err));
+    }
+});
+
 
 program
   .version(version)

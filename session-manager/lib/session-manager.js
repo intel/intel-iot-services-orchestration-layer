@@ -84,8 +84,10 @@ SessionManager.prototype.init$ = function() {
    * @param  {Object} msg           {
    *                                  action:
    *                                  session_id:
+   *                                  invocation_id: 
    *                                  IN: for kernel
    *                                  service_id: for start
+   *                                  config: for start and save in the session-cache-obj
    *                                  tags: for kernel
    *                                }
    * @param  {String} topic         [description]
@@ -97,17 +99,20 @@ SessionManager.prototype.init$ = function() {
       var action = msg.action;
       var id = msg.session_id;
       var IN = msg.IN;
+      var invocation_id = msg.invocation_id;
       var others = {
         IN: IN,
         mnode: self.mnode,
+        invocation_id: invocation_id,
         dst_mnode_id: from_mnode_id,
-        tags: msg.tags
+        tags: msg.tags,
+        config: msg.config
       };
       Promise.resolve("")
       .then(function prepare_init() {
         if (!self.session_cache.has(id)) {
           check(action === "start", "sm", "the session isn't in the cache and action is not start", msg);
-          return self.create_session$(id, msg.service_id, from_mnode_id);
+          return self.create_session$(id, msg.service_id, from_mnode_id, msg.config);
         }
         return "session_already_created";
       })
@@ -115,7 +120,7 @@ SessionManager.prototype.init$ = function() {
         return self.invoke_session$(id, action, others);
       })
       .then(function after_done(value) {
-        var payload = generate_msg_payload(id, action, false, null, value);
+        var payload = generate_msg_payload(id, invocation_id, action, false, null, value);
         self.mnode.send$(from_mnode_id, "session_invoke_ret", payload);
         if (action === "stop") {
           return self.delete_session$(id);
@@ -125,7 +130,7 @@ SessionManager.prototype.init$ = function() {
         }
       }, function after_fail(e) {
         log.warn("session_invoke_fail", e, msg, topic, from_mnode_id);
-        var payload = generate_msg_payload(id, action, true, null, e);
+        var payload = generate_msg_payload(id, invocation_id, action, true, null, e);
         self.mnode.send$(from_mnode_id, "session_invoke_ret", payload);
       })
       .catch(function(e) {
@@ -156,6 +161,7 @@ SessionManager.prototype.init$ = function() {
  *                                     then generate an unique id for the session obj
  * @param  {String||Number} service_id
  * @param {String} mnode_id the id of dst mnode, and session should send msg to it. 
+ * @param {Object}  config  session's config info
  * @return {Promise}                   resolve: session object
  *                                              {
  *                                                id:
@@ -165,8 +171,8 @@ SessionManager.prototype.init$ = function() {
  *                                                is_status_stable: whether the status is changing now 
  *                                              }
  */
-SessionManager.prototype.create_session$ = function(id, service_id, mnode_id) {
-  log("create_session", id, service_id);
+SessionManager.prototype.create_session$ = function(id, service_id, mnode_id, config) {
+  log("create_session", id, service_id, config);
   var self = this;
   if (_.isNull(id)) {
     id = B.unique_id("session");
@@ -182,7 +188,8 @@ SessionManager.prototype.create_session$ = function(id, service_id, mnode_id) {
     status: "idle",
     shared: {},
     is_status_stable: true,
-    mnode: mnode_id
+    mnode: mnode_id,
+    config: config
   };
   return self.service_cache.get$(service_id)
   .then(function(service_cache_obj) {
@@ -285,6 +292,21 @@ SessionManager.prototype.clear_session$ = function(session_id) {
 };
 
 /**
+ * clear all sessions in the session-cache
+ * @return {Promise}
+ */
+SessionManager.prototype.clear_all_sessions$ = function() {
+  log("clear all sessions");
+  var tasks = [];
+  var ids = _.keys(this.session_cache.db);
+  var self = this;
+  ids.forEach(function(id) {
+      tasks.push(self.clear_session$(id));
+  });
+  return Promise.all(tasks);
+};
+
+/**
  * ask session to act
  * @param  {String||number} id session id
  * @param  {string} action "kernel", "start", "stop", "pause",
@@ -358,7 +380,25 @@ SessionManager.prototype.uninstall_service$ = function(service_id) {
     return result;
   });
 };
+/**
+ * clear all services in the service_cache. including call destroy and delete
+ * @return {Promise}
+ */
+SessionManager.prototype.clear_all_services$ = function() {
+  log("clear all services");
+  var tasks = [];
+  var ids = _.keys(this.service_cache.db);
+  var self = this;
+  ids.forEach(function(id) {
+      tasks.push(self.uninstall_service$(id));
+  });
+  return Promise.all(tasks);
+};
 
+SessionManager.prototype.reload_service$ = function(service_id) {
+  log("reload the service", service_id);
+  return this.service_cache.reload_service_with_init_destroy$(service_id);
+};
 
 // TODO:
 // 1, service in both store/cache should have a boolean attri: connect
@@ -413,7 +453,7 @@ function check_status_in_sending (sm, session_id)
 function run_func(f, sandbox, action, others, resolve, reject, session, service) {
   if (action === "kernel") {
     try {
-      f(others.IN, service.config);
+      f(others.IN, _.merge({}, session.config, service.config));
     } catch(e) {
       log.warn("kernel exception", e, session);
       sandbox.sendERR(e);
@@ -425,7 +465,7 @@ function run_func(f, sandbox, action, others, resolve, reject, session, service)
 
   else if (action === "after_resume") {
     try {
-      f(service.config);
+      f(_.merge({}, session.config, service.config));
     } catch(e) {
       log.warn("after_resume exception", e, session);
       sandbox.sendERR(e);
@@ -438,7 +478,7 @@ function run_func(f, sandbox, action, others, resolve, reject, session, service)
   else {
     try {
       session.is_status_stable = false;
-      f(service.config);
+      f(_.merge({}, session.config, service.config));
     } catch(e) {
       log.warn(action + " exception", e, session);
       sandbox.fail(e);
@@ -455,7 +495,8 @@ function enhance_sandbox(sandbox, action, others, service, session, resolve, rej
       try {
         check_status_in_sending(sm, session.id);
         log("sendOUT", out, action, session);
-        var payload = generate_msg_payload(session.id, action, false, others.tags, out);
+        var payload = generate_msg_payload(session.id, others.invocation_id,
+          action, false, others.tags, out);
         others.mnode.send$(others.dst_mnode_id, "session_send", payload)
         .catch(function(e) {
           log.warn("error in sending session output", e, others.dst_mnode_id, payload);
@@ -469,7 +510,8 @@ function enhance_sandbox(sandbox, action, others, service, session, resolve, rej
       try {
         check_status_in_sending(sm, session.id);
         log.warn("sendERR", err, action, session);
-        var payload = generate_msg_payload(session.id, action, true, others.tags, err);
+        var payload = generate_msg_payload(session.id, others.invocation_id,
+          action, true, others.tags, err);
         others.mnode.send$(others.dst_mnode_id, "session_send", payload)
         .catch(function(e) {
           log.warn("error in sending session error", e, others.dst_mnode_id, payload);
@@ -501,9 +543,10 @@ function enhance_sandbox(sandbox, action, others, service, session, resolve, rej
 }
 
 // generate payload for message send
-function generate_msg_payload(session_id, action, is_error, tags, value) {
+function generate_msg_payload(session_id, invocation_id, action, is_error, tags, value) {
   var payload = {
     session_id: session_id,
+    invocation_id: invocation_id,
     action: action,
     is_error: is_error,
     tags: tags,

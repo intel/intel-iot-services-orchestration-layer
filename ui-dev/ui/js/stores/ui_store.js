@@ -373,6 +373,7 @@ class UIView {
     if (this.modified !== flag) {
       this.modified = flag;
       ui_store.emit("ui", {id: this.id, type: "graph", event: "status/changed"});
+      $hope.app.stores.ui_ide.update_toolbar();
     }
   }
 
@@ -456,7 +457,7 @@ class UIView {
     ui_store.data.send_data$(widget_id, data).then(() => {
       ui_store.emit("ui", {id: this.id, type: "ui", event: "data/sended"});
     }).catch(err => {
-      $hope.notify("error", "Failed to send the data because", err);
+      $hope.notify("error", __("Failed to send the data because"), err);
     }).done();
   }
 
@@ -496,6 +497,9 @@ class UIView {
 class UIStore extends EventEmitter {
   constructor() {
     super();
+
+    // Max listener for ui event
+    this.setMaxListeners(1000);
 
     this.manager = ui_manager;
     this.data = new WidgetDataManager();
@@ -608,13 +612,19 @@ class UIStore extends EventEmitter {
     return this.views[ui_id];
   }
 
+  find_view(app_id, name) {
+    var view = null;
+    _.forOwn(this.views, v => {
+      if (name === v.get_ui().name && app_id === v.get_app_id()) {
+        view = v;
+        return false;
+      }
+    });
+    return view;
+  }
 
-  set_active$(ui_id) {
-    var d = $Q.defer(); 
-    if (this.active_view && this.active_view.id === ui_id) {
-      d.resolve();
-    }
 
+  set_active(ui_id) {
     this.active_view = null;
     this.no_active_reason = "loading";
     this.ensure_ui_loaded$(ui_id).then(view => {
@@ -624,15 +634,11 @@ class UIStore extends EventEmitter {
     }).catch(err => {
       $hope.check_warn(false, "ui", "failed due to", err);
       this.no_active_reason = $hope.error_to_string(err);
-      $hope.notify("error", "Failed to show the ui because", 
+      $hope.notify("error", __("Failed to show the UI because"),
         this.no_active_reason);
       
       this.emit("ui", {type: "ui", id: ui_id, event: "set_active"});
-      d.reject(err);
     }).done();
-
-    return d.promise;
-
   }
 
   ensure_ui_bundles_ready$() {
@@ -720,6 +726,14 @@ class UIStore extends EventEmitter {
     }
 
     var method, params, view = this.active_view;
+
+    try {
+      this.check_configs(view.id);
+    } catch(err) {
+      d.reject(err);
+      return d.promise;
+    }
+
     var data = view.get_ui().$serialize();
     var backend = $hope.app.server;
     if (view.info_for_new) {    // create
@@ -751,7 +765,7 @@ class UIStore extends EventEmitter {
       view.set_modified(false);
       this.emit("ui", {type: "ui", id: view.id, event: "saved"});
     }).catch(err => {
-      $hope.notify("error", "UI failed to save because", err.toString());
+      $hope.notify("error", __("Failed to save UI because"), err.message);
     }).done();
   }
 
@@ -769,7 +783,7 @@ class UIStore extends EventEmitter {
   remove_ui(ids) {
     $hope.app.server.ui.remove$(ids).done(data => {
       if (data.error) {
-        $hope.notify("error", "Failed to delete ui because", data.error);
+        $hope.notify("error", __("Failed to delete UI because"), data.error);
         return;
       }
       ids.map(id => {
@@ -795,10 +809,30 @@ class UIStore extends EventEmitter {
     delete this.views[id];
   }
 
+  check_configs(id) {
+    var v = this.view(id);
+    if (!v) {
+      return;
+    }
+
+    _.forEach(v.get_ui().widgets, widget => {
+      var spec = widget.$get_spec();
+      if (!spec || !widget.config) {
+        return;
+      }
+      var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
+      _.forOwn(items, i => {
+        if (i.required && (!(i.name in widget.config) || widget.config[i.name] === "")) {
+          throw new Error(widget.name + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before start."));
+        }
+      });
+    });
+  }
+
   handle_action(action, data) {
     switch (action) {
       case "ui/set_active":
-        this.set_active$(data.ui_id);
+        this.set_active(data.ui_id);
         break;
 
       case "ui/save":

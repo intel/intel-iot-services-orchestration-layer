@@ -63,6 +63,8 @@ class GraphStore extends EventEmitter {
       "graph/save",
       "graph/remove",
       "graph/start",
+      "graph/save_and_start",
+      "graph/stop_replay",
       "graph/stop",
       "graph/replay",
       "graph/step",
@@ -77,8 +79,7 @@ class GraphStore extends EventEmitter {
       "graph/autolayout",
       "graph/create/node",
       "graph/remove/node",
-      "graph/change/node/name",
-      "graph/change/node/description",
+      "graph/change/node",
       "graph/merge_styles/node",
       "graph/move/node",
       "graph/resize/node",
@@ -115,12 +116,7 @@ class GraphStore extends EventEmitter {
     return view;
   }
 
-  set_active$(id) {
-    var d = $Q.defer(); 
-    if (this.active_view && this.active_view.id === id) {
-      d.resolve();
-    }
-
+  set_active(id) {
     this.active_view = null;
     this.no_active_reason = "loading";
     this.ensure_graph_loaded$(id).then(view => {
@@ -129,24 +125,43 @@ class GraphStore extends EventEmitter {
       this.emit("graph", {type: "graph", id: id, event: "set_active"});
     }).catch(err => {
       $hope.check_warn(false, "Graph", "failed due to", err);
+      console.log(err.stack);
       this.no_active_reason = $hope.error_to_string(err);
-      $hope.notify("error", "Failed to show the workflow because", 
+      $hope.notify("error", __("Failed to show the workflow because"),
         this.no_active_reason);
       
       this.emit("graph", {type: "graph", id: id, event: "set_active"});
-      d.reject(err);
     }).done();
-
-    return d.promise;
   }
 
-  start(ids) {
-    $hope.app.server.graph.start$(ids).then(() => {
+  save_and_start() {
+    var view = this.active_view;
+
+    if (!view) {
+      return;
+    }
+    this.save_active$().then(() => {
+      view.set_modified(false);
+      this.emit("graph", {type: "graph", id: view.id, event: "saved"});
+      return this.check_required_configs$([view.id]);
+    }).then(() => {
+      return $hope.app.server.graph.start$([view.id]);
+    }).then(() => {
+      this.emit("graph", {type: "graph", id: view.id, event: "started"});
+    }).catch(err => {
+      $hope.notify("error", __("Failed to start workflow because"), err.toString());
+    }).done();
+  }
+
+  start(ids, tracing) {
+    this.check_required_configs$(ids).then(() => {
+      return $hope.app.server.graph.start$(ids, tracing);
+    }).then(() => {
       ids.map(id => {
         this.emit("graph", {type: "graph", id: id, event: "started"});
       });
     }).catch(err => {
-      $hope.notify("error", "Workflow failed to start because", err.toString());
+      $hope.notify("error", __("Failed to start workflow because"), err.toString());
     }).done();
   }
 
@@ -156,7 +171,7 @@ class GraphStore extends EventEmitter {
         this.emit("graph", {type: "graph", id: id, event: "stoped"});
       });
     }).catch(err => {
-      $hope.notify("error", "Workflow failed to stop because", err.toString());
+      $hope.notify("error", __("Failed to stop workflow because"), err.toString());
     }).done();
   }
 
@@ -166,19 +181,34 @@ class GraphStore extends EventEmitter {
     view.graph.nodes.forEach(node => {
       delete node.$time;
       delete node.$lasttim;
+      delete node.$lastdat;
     });
     view.graph.edges.forEach(edge => {
       delete edge.$lastdat;
       delete edge.$lasttim;
     });
 
-    $hope.app.server.graph.get_records$([id]).then(data => {
-      view.$logs = data[0].records;
+    $hope.app.server.graph.trace$([id]).then(data => {
+      if (!_.isArray(data) || data.length < 1 || !_.isArray(data[0].trace) || data[0].trace.length < 1) {
+        this.stop_replay();
+        $hope.notify("warning", __("Workflow executed without tracing"));
+        return;
+      }
+      view.$logs = data[0].trace;
       view.$logidx = 0;
-      this.emit("graph", {id: id, type: "graph", event: "logs/loaded"});
+      this.emit("graph", {id: id, type: "graph", event: "trace/loaded"});
     }).catch(err => {
-      $hope.notify("error", "Workflow failed to get records because", err.toString());
+      $hope.notify("error", __("Failed to get workflow trace because"), err.toString());
     }).done();
+  }
+
+  stop_replay() {
+    var view = this.active_view;
+
+    if (!view) {
+      return;
+    }
+    this.emit("graph", {type: "graph", id: view.id, event: "stoped"});
   }
 
   ensure_graph_loaded$(id) {
@@ -257,12 +287,8 @@ class GraphStore extends EventEmitter {
     }
     if (_.isArray(stoped)) {
       _.forEach(stoped, id => {
-        var v = this.view(id);
-        if (v) {
-          v.set_editing();
-          if (this.active_view && this.active_view.id === id) {
-            this.emit("graph", {type: "graph", id: id, event: "status/changed"});
-          }
+        if (this.active_view && this.active_view.id === id) {
+          this.emit("graph", {type: "graph", id: id, event: "status/changed"});
         }
       });
     }
@@ -274,6 +300,14 @@ class GraphStore extends EventEmitter {
       d.resolve();
     }
     var method, params, view = this.active_view;
+    
+    try {
+      this.check_configs(view.id);
+    } catch(err) {
+      d.reject(err);
+      return d.promise;
+    }
+
     var data = view.graph.$serialize();
     var backend = $hope.app.server;
     if (view.info_for_new) {    // create
@@ -305,7 +339,7 @@ class GraphStore extends EventEmitter {
       view.set_modified(false);
       this.emit("graph", {type: "graph", id: view.id, event: "saved"});
     }).catch(err => {
-      $hope.notify("error", "Workflow failed to save because", err.toString());
+      $hope.notify("error", __("Failed to save workflow because"), err.message);
     }).done();
   }
 
@@ -342,7 +376,9 @@ class GraphStore extends EventEmitter {
         delete this.views[id];
         this.emit("graph", {type: "graph", id: id, event: "removed"});
       });
-    });
+    }).catch(err => {
+      $hope.notify("error", __("Failed to delete workflow because"), err.message);
+    }).done();
   }
 
 
@@ -370,13 +406,56 @@ class GraphStore extends EventEmitter {
     return ids;
   }
 
+  find_view(app_id, name) {
+    var view = null;
+    _.forOwn(this.views, v => {
+      if (name === v.graph.name && app_id === v.get_app_id()) {
+        view = v;
+        return false;
+      }
+    });
+    return view;
+  }
+
+  check_required_configs$(ids) {
+    var q = [];
+    _.forEach(ids, id => {
+      if (!this.view(id)) {
+        q.push(this.load_graph$(id));
+      }
+    });
+    return $Q.all(q).then(() => {
+      _.forEach(ids, id => this.check_configs(id));
+    });
+  }
+
+  check_configs(id) {
+    var v = this.view(id);
+    if (!v) {
+      return;
+    }
+
+    _.forEach(v.graph.nodes, node => {
+      var spec = node.$get_spec();
+      if (spec.is_ui || !node.config) {
+        return;
+      }
+      var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
+      _.forOwn(items, i => {
+        if (i.required && (!(i.name in node.config) || node.config[i.name] === "")) {
+          throw new Error(node.$get_name() + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before start."));
+        }
+      });
+    });
+  }
+
 
   // See graph_action.js for schema of data
   handle_action(action, data) {
     switch (action)
     {
       case "graph/set_active":
-        this.set_active$(data.graph_id);
+        this.set_active(data.graph_id);
         break;
 
       case "graph/save":
@@ -392,7 +471,15 @@ class GraphStore extends EventEmitter {
         break;
 
       case "graph/start":
-        this.start(data.graphs);
+        this.start(data.graphs, data.tracing);
+        break;
+
+      case "graph/save_and_start":
+        this.save_and_start();
+        break;
+
+      case "graph/stop_replay":
+        this.stop_replay();
         break;
 
       case "graph/stop":

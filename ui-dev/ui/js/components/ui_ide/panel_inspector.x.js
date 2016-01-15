@@ -52,7 +52,7 @@ export default class PanelInspector extends ReactComponent {
       className={"hope-panel-icon-min fa fa-" + (inspector.visible ? "minus-square-o" : "plus-square-o")} />;
 
     return (
-      <Panel icon="info" id="inspector" title="Inspector"
+      <Panel icon="info" id="inspector" title={__("Inspector")}
             left={inspector.left}
             top={inspector.top}
             width={inspector.width}

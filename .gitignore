@@ -1,9 +1,11 @@
 **/node_modules/*
 **/bower_components/*
+ui-widgets/plugins.js
+ui-widgets/plugins-specs.json
 center/samples/appbundle/*
 demo/sample/center/appbundle/HOPE_APP_*
 hub/samples/thingbundle/*
-demo/sample/hub_a/thing_bundle/new_things_by_user
+**/new_things_by_user/*
 ui-dev/ui/js/lib/font-awesome.js
 /dist
 /TODO

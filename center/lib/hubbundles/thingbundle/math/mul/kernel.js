@@ -24,6 +24,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-var ret = IN.in1 * IN.in2;
-console.log("MULTIPLY:", IN.in1, IN.in2, "result:", ret);
+//var ret = IN.in1 * IN.in2;
+//console.log("MULTIPLY:", IN.in1, IN.in2, "result:", ret);
+var t, ret = null;
+for(var k in IN) {
+  t = parseFloat(IN[k]);
+  ret = ret === null ? t : ret * t;
+}
 sendOUT({out: ret});

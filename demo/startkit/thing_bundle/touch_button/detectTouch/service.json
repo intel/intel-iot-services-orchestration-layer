@@ -1,0 +1,8 @@
+{
+  "name": "detectTouch",
+  "description": "Whenever triggered, bool = (whether the button is touched)",
+  "spec":"digitalread_1_1_startkit",
+  "ui": {
+
+  }
+}

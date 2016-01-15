@@ -17,13 +17,13 @@ case $1 in
     node center/start_http_broker.js
     ;;
   center)
-    ./center/center demo/sample/center/config.json
+    node center/center demo/sample/center/config.json
     ;;
   hub)
-    ./hub/hub demo/sample/hub_a/config.json
+    node hub/hub demo/sample/hub_a/config.json
     ;;
   hub_b)
-    ./hub/hub demo/sample/hub_b/config.json
+    node hub/hub demo/sample/hub_b/config.json
     ;;
   ui)
     cd ui-dev

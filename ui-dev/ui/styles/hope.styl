@@ -117,6 +117,35 @@ body {
   pointer-events: none;
 }
 
+.x-webrtc-container {
+  position: relative;
+  width: 100%;
+}
+.x-webrtc-container video {
+  width: 100%;
+  height: 100%;
+}
+.x-webrtc-play {
+  position: absolute;
+  cursor: pointer;
+  top: 50%;
+  left: 50%;
+  color: white;
+  transform: translateZ(0) translate(-50%, -50%);
+  opacity: 0;
+}
+.x-webrtc-container:hover .x-webrtc-play {
+  opacity: 0.5;
+}
+.x-webrtc-blink {
+  animation: x-webrtc-blink-opacity 3s infinite;
+}
+@keyframes x-webrtc-blink-opacity {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 
 //////////////////////////////////////////////////////////////////
 // Ace Editor
@@ -170,4 +199,18 @@ body {
 }
 
 
+
+//////////////////////////////////////////////////////////////////
+// Scroll Bar
+//////////////////////////////////////////////////////////////////
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
 

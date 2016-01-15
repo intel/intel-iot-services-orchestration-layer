@@ -25,12 +25,12 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import App from "./app.x";
-import {Row, Col, SplitButton, MenuItem, ModalTrigger} from "react-bootstrap";
-import DlgCreate from "../ide/dlg_create.x";
+import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
+import Dialog from "../ide/dialog.x";
 import SearchBox from "./search_box.x";
 
-const LAST_MODIFIED = "Last Modified";
-const LAST_CREATED = "Last Created";
+const LAST_MODIFIED = __("Last Modified");
+const LAST_CREATED = __("Last Created");
 
 function sort_by_time(field) {
   return (a, b) => {
@@ -76,7 +76,7 @@ export default class AppManager extends ReactComponent {
             });
           }
         });
-        $hope.notify("success", "App successfully removed!");
+        $hope.notify("success", __("App successfully removed!"));
         break;
     }
 
@@ -95,15 +95,20 @@ export default class AppManager extends ReactComponent {
     });
   }
 
+  _on_show_dlg() {
+    Dialog.show_create_dialog(__("Create App"), this._on_create);
+  }
+
   _on_create(data) {
     var name = data && data.name && data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid App name");
+      return $hope.notify("error", __("Invalid App name"));
     }
     var apps = $hope.app.stores.app.get_all_apps();
     if (_.find(apps, "name", name)) {
-      return $hope.notify("error", "This name already exists");
+      return $hope.notify("error", __("This name already exists"));
     }
+
     $hope.trigger_action("app/create/app", {
       name: name,
       description: data.description
@@ -157,18 +162,16 @@ export default class AppManager extends ReactComponent {
         </Row>
         <Row className="hope-app-mgr-body">
           <Row className="hope-app-mgr-title-bar">
-            <span className="hope-app-mgr-title">My App</span>
+            <span className="hope-app-mgr-title">{__("My App")}</span>
           </Row>
           <Row>
             <ul className="hope-app-mgr-list">
               {apps}
-              <ModalTrigger modal={<DlgCreate title="Create App" onClickCreate={this._on_create}/>}>
-                <li>
-                  <div className="hv-center hope-app add-new">
-                    <i className="fa fa-2x fa-plus" />
-                  </div>
-                </li>
-              </ModalTrigger>
+              <li onClick={this._on_show_dlg}>
+                <div className="hv-center hope-app add-new">
+                  <i className="fa fa-2x fa-plus" />
+                </div>
+              </li>
             </ul>
           </Row>
         </Row>

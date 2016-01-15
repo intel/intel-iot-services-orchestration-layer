@@ -1,0 +1,27 @@
+{
+  "id": "analogwrite_1_1_startkit",
+  "name": "analogwrite_1_1_startkit",
+  "in": {
+    "ports": [
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
+  },
+  "out": {
+    "ports": [
+      {
+        "name": "status",
+        "type": "boolean"
+      }
+    ]
+  },
+  "config": [
+    {
+      "name": "pin",
+      "type": "int",
+      "required": true
+    }
+  ]
+}

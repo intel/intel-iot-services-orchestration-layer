@@ -70,9 +70,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
 }
 
+.hope-nav-bar a, .hope-nav-bar a:hover {
+  text-decoration: none;
+}
+
+.hope-nav-bar-sep {
+  padding: 3px 16px;
+  font-size: 18px;
+  color: $fg-3;
+}
+
 .hope-nav-bar-app {
   padding-top: 3px;
-  font-size: 20px;
+  font-size: 18px;
   color: $fg-5;
 }
 
@@ -294,8 +304,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .hope-inspector-detail-name {
   color: $fg-5;
-  font-size: 18px;
-  margin-top: 6px;
+  background-color: $panel-inspector-bk;
+  border: 0;
+  font-size: 20px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -303,6 +314,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .hope-inspector-detail-desc {
   color: $fg-1;
+  background-color: $panel-inspector-bk;
+  border: 0;
+  resize: none;
   font-size: 14px;
   font-style: italic;
   line-height: 16px;
@@ -475,6 +489,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 
+.hope-tbl {
+  width: 100%;
+}
+.hope-tbl th {
+  text-align: center;
+}
+.hope-tbl-row-val, .hope-tbl-row-key {
+  width: 95%;
+  padding-left: 3px;
+  background-color: #272727;
+  border: 1px solid #3d3d3d;
+}
+
+textarea:focus,
+input[type="text"]:focus {
+  border-color: rgba(255, 153, 0, 0.8);
+  outline: 0;
+  outline: thin dotted \9;
+  box-shadow: insect 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgb(255,153,0);
+  transition: border linear 0.2s, box-shadow linear 0.2s;
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Tabs
 //////////////////////////////////////////////////////////////////////////
@@ -557,18 +593,17 @@ text {
 }
 
 .hope-graph-in-port, .hope-graph-out-port, .hope-graph-extract, .hope-graph-tag, .hope-graph-port-default {
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro, monospace;
+  font-family: Monaco, 'Ubuntu Mono', Consolas, monospace;
   font-size: 12px;
-  text-rendering: geometricPrecision;
 }
 
 .hope-graph-icon, .hope-inspector-icon {
-  font-family: 'FontAwesome';
+  font-family: FontAwesome, Monaco, 'Ubuntu Mono', Consolas, monospace;
   text-anchor: middle;
 }
 
 .hope-graph-icon-btn {
-  font-family: 'FontAwesome';
+  font-family: FontAwesome, Monaco, 'Ubuntu Mono', Consolas, monospace;
   cursor: default;
   fill: $fg-3;
 }
@@ -847,12 +882,11 @@ text {
 .hope-app-trash {
   position: absolute;
   right: 8px;
-  top: 4px;
+  top: 8px;
   color: #999;
   visibility: hidden;
 }
-.hope-app:hover .hope-app-trash,
-.hope-workflow:hover .hope-app-trash {
+.hope-app:hover .hope-app-trash {
   visibility: visible;
 }
 .hope-app-trash:hover {
@@ -1075,6 +1109,28 @@ text {
   left: 8px;
   top: 4px;
 }
+.hope-workflow-trash {
+  position: absolute;
+  right: 8px;
+  top: 32px;
+  color: #999;
+  visibility: hidden;
+}
+.hope-workflow:hover .hope-workflow-trash {
+  visibility: visible;
+}
+.hope-workflow-trash:hover {
+  color: red;
+}
+.hope-workflow-control {
+  position: absolute;
+  right: 8px;
+  top: 4px;
+  color: #999;
+}
+.hope-workflow-control:hover {
+  color: yellow;
+}
 
 //////////////////////////////////////////////////////////////////
 // UI 
@@ -1247,6 +1303,10 @@ text {
 .svg-dialog-body {
   background: black;
   color: #ddd;
+}
+
+.hope-color-picker-modal {
+  width: 365px;
 }
 
 //////////////////////////////////////////////////////////////////////////

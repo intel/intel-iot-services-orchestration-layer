@@ -1,12 +1,20 @@
 #!/bin/bash
 
+
+# by default, we do npm cache first
+if [ "x$1" != "xnoclean" ]; then
+  echo ">>> cleaning npm cache ..."
+  echo "    You may use './build.sh noclean' to avoid cleaning npm cache"
+  npm cache clean
+fi
+
 rm -rf ./dist/*
 
 if [ ! -e dist/node_modules ]; then
   mkdir -p dist/node_modules
 fi
 
-PROJS="base center entity entity-store hub hub-center-shared message session-manager store wfe"
+PROJS="base center entity entity-store hub hub-center-shared message session-manager store workflow"
 
 for P in $PROJS; do
   echo ">>> copying $P"
@@ -27,19 +35,21 @@ cd -
 
 echo ">>> ui widgets"
 cd ./ui-widgets
+rm -rf node_modules/*
 npm install
-bower --allow-root install
 gulp build
 cd -
 mkdir -p ./dist/node_modules/ui-widgets
-cp ./ui-widgets/specs.js ./dist/node_modules/ui-widgets
+cp ./ui-widgets/{specs.js,plugins-specs.json} ./dist/node_modules/ui-widgets
 
 echo ">>> ui dev"
 cd ./ui-dev
+rm -rf node_modules/*
 npm install
 npm link ../ui-widgets
 bower --allow-root install
-gulp build
+rm -rf ./public
+NODE_ENV=production gulp build
 cd -
 mkdir -p ./dist/node_modules/ui-dev
 cp -r ./ui-dev/public ./dist/node_modules/ui-dev/.
@@ -47,10 +57,12 @@ cp -r ./ui-dev/public ./dist/node_modules/ui-dev/.
 
 echo ">>> ui user"
 cd ./ui-user
+rm -rf node_modules/*
 npm install
 npm link ../ui-widgets
 bower --allow-root install
-gulp build
+rm -rf ./public
+NODE_ENV=production gulp build
 cd -
 mkdir -p ./dist/node_modules/ui-user
 cp -r ./ui-user/public ./dist/node_modules/ui-user/.
@@ -58,7 +70,7 @@ cp -r ./ui-user/public ./dist/node_modules/ui-user/.
 
 echo ">>> demo"
 mkdir ./dist/node_modules/hope-demo
-cp -r ./demo/sample ./dist/node_modules/hope-demo/.
+cp -r ./demo/* ./dist/node_modules/hope-demo
 rm -rf ./dist/node_modules/hope-demo/sample/center/appbundle/*
 
 

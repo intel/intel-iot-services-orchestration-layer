@@ -61,7 +61,7 @@ export default class DlgOpenGraph extends ReactComponent {
     if (this.state.selected_id && _.isFunction(this.props.onClickOpen)) {
       this.props.onClickOpen(this.state.selected_id);
     }
-    this.props.onRequestHide();
+    this.props.onHide();
   }
 
   render_app(app, all_others) {
@@ -112,7 +112,7 @@ export default class DlgOpenGraph extends ReactComponent {
           <Button style={{marginTop: 8}}
             bsSize="small"
             bsStyle="warning"
-            onClick={this._on_show_others}>Other Apps</Button>
+            onClick={this._on_show_others}>{__("Other Apps")}</Button>
         </div>
       );
     }
@@ -125,13 +125,16 @@ export default class DlgOpenGraph extends ReactComponent {
     }
 
     return (
-      <Modal {...this.props} title="Open Workflow" animation={true}>
+      <Modal {...this.props} animation={true}>
+        <Modal.Header closeButton>
+          <Modal.Title>{__("Open Workflow")}</Modal.Title>
+        </Modal.Header>
         <div className="modal-body hope-open-dialog-list">
           {list}
         </div>
         <div className="modal-footer">
-          <Button bsStyle="primary" {...open_btn_props} onClick={this._on_open}>Open</Button>
-          <Button bsStyle="default" onClick={this.props.onRequestHide}>Cancel</Button>
+          <Button bsStyle="default" onClick={this.props.onHide}>{__("Cancel")}</Button>
+          <Button bsStyle="primary" {...open_btn_props} onClick={this._on_open}>{__("Open")}</Button>
         </div>
       </Modal>
     );

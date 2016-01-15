@@ -27,7 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import Dialog from "../dialog.x";
 
 function draggable(ref, helper) {
-  $(React.findDOMNode(ref)).draggable({
+  $(ref).draggable({
     cursor: "move",
     cursorAt: {top: 0, left: 0},
     helper: helper
@@ -35,7 +35,7 @@ function draggable(ref, helper) {
 }
 
 function droppable(ref, drop) {
-  $(React.findDOMNode(ref)).droppable({
+  $(ref).droppable({
     accept: ".hope-graph-tag",
     drop: drop
   });
@@ -51,7 +51,7 @@ export default class TagsDetails extends ReactComponent {
     var view = $hope.app.stores.graph.active_view;
     var tags = view.graph.tags;
     if (tags.length >= 20) {
-      $hope.notify("error", "Too many tags");
+      $hope.notify("error", __("Too many tags"));
       return;
     }
 
@@ -64,7 +64,7 @@ export default class TagsDetails extends ReactComponent {
   _create_drag_object(src, tag) {
     var view = $hope.app.stores.graph.active_view;
     var div = document.createElement("div");
-    React.render(<i className={"hope-graph-tag"} style={{background: view.get_tag_color(tag)}}>{tag.name}</i>, div);
+    ReactDOM.render(<i className={"hope-graph-tag"} style={{background: view.get_tag_color(tag)}}>{tag.name}</i>, div);
     // binding information
     $(div).data("src", src);
     $(div).data("tag", tag);
@@ -85,7 +85,7 @@ export default class TagsDetails extends ReactComponent {
 
     if (!io.tags || io.tags.length === 0) {
       if (io.ports.length === 0) {
-        $hope.notify("warning", "add tag without ports");
+        $hope.notify("warning", __("Add tag without ports"));
         return;
       }
       io.tags = [{ref: data.tag.id, ports: []}];
@@ -112,7 +112,7 @@ export default class TagsDetails extends ReactComponent {
     if (data.src === "sys") {
       var id = data.tag.id;
       if (view.is_tag_used(id)) {
-        $hope.notify("error", "tag in use");
+        $hope.notify("error", __("Tag in use"));
       }
       else {
         view.remove("tag", id);
@@ -134,7 +134,7 @@ export default class TagsDetails extends ReactComponent {
   }
 
   _shake_trash() {
-    var trash = React.findDOMNode(this.refs.trash);
+    var trash = this.refs.trash;
     trash.classList.add("shake-opacity");
     setTimeout( () => {
       trash.classList.remove("shake-opacity");
@@ -201,13 +201,13 @@ export default class TagsDetails extends ReactComponent {
 
     return (
       <div>
-        <div> Drag to add tags </div>
+        <div>{__("Drag to add tags")}</div>
         <div className="hope-tag-group">
           { sys_tags }
           <i onClick={this._on_add_tag} className="hope-graph-tag">+</i>
         </div>
         <div>
-          <span><strong>Input &nbsp;</strong></span>
+          <span><strong>{__("Input") + " "}</strong></span>
           <span className="fa fa-question-circle hope-hover-icon-btn"
              onClick={this._on_show_tagin} />
         </div>
@@ -215,14 +215,14 @@ export default class TagsDetails extends ReactComponent {
           { in_tags }
         </div>
         <div>
-          <span><strong>Output &nbsp;</strong></span>
+          <span><strong>{__("Output") + " "}</strong></span>
           <span className="fa fa-question-circle hope-hover-icon-btn"
              onClick={this._on_show_tagout} />
         </div>
         <div ref="output" className="hope-tag-box">
           { out_tags }
         </div>
-        <div> Drop here to delete </div>
+        <div>{__("Drop here to delete")}</div>
         <div className="text-center">
           <span ref="trash" className="fa fa-trash fa-3x"/>
         </div>

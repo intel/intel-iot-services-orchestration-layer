@@ -76,11 +76,11 @@ export default class Node extends ReactComponent {
     var spec = this.props.spec;
     var port = _.find(spec.in.ports, "name", name);
 
-    if (port.passive) {
-      delete port.passive;
+    if (port.no_trigger) {
+      delete port.no_trigger;
     }
     else {
-      port.passive = true;
+      port.no_trigger = true;
     }
     this.forceUpdate();
     if (this.props.onChanged) {
@@ -158,7 +158,7 @@ export default class Node extends ReactComponent {
   _on_click_icon() {
     var spec = this.props.spec;
 
-    Dialog.show_iconpicker_dialog("Change the icon of node", icon => {
+    Dialog.show_iconpicker_dialog(__("Change the icon of node"), icon => {
       if (_.startsWith(icon, "fa-")) {
         spec.icon = icon.substr(3);
       }
@@ -216,18 +216,18 @@ export default class Node extends ReactComponent {
     function render_in_port(p) {
       var y = margin + nth + nh / (inports.length + 1) * (inports.indexOf(p) + 1);
 
-      var addons = [];
+      var addons;
       if (!p.buffered) {
-        addons.push(<circle className={"hope-graph-inner-circle"} cx={25} cy={y} r={3} />);
+        addons = <circle className={"hope-graph-inner-circle"} cx={25} cy={y} r={3} />;
       }
       return (
-        <g className="hope-graph-in-port">
+        <g key={"I." + p.name} className="hope-graph-in-port">
           <text className={"hope-graph-port-text"}
               x={styles.x + 5} y={y + 2} fontSize="14px">{p.name}</text>
           <text onClick={self._on_remove_port.bind(self, "in", p.name)}
               className={"hope-graph-icon-btn"}
               x={styles.x + 85} y={y + 4} fontSize="14px">{FONT_AWESOME["trash-o"]}</text>
-          <line className={"hope-graph-in-line" + (p.passive ? " hope-graph-dash" : "")}
+          <line className={"hope-graph-in-line" + (p.no_trigger ? " hope-graph-dash" : "")}
               x1={21} y1={y} x2={45} y2={y} />
           <line onClick={self._on_click_line.bind(self, p.name)}
               className="hope-graph-buf-outline"
@@ -245,7 +245,7 @@ export default class Node extends ReactComponent {
       var x = styles.x + styles.width;
       var r = $hope.config.graph.port_radius;
       return (
-        <g className="hope-graph-out-port">
+        <g key={"O." + p.name} className="hope-graph-out-port">
           <text className={"hope-graph-port-text"} x={x - 8} y={y + 3}>{p.name}</text>
           <text onClick={self._on_remove_port.bind(self, "out", p.name)}
               className={"hope-graph-icon-btn"}
@@ -265,6 +265,7 @@ export default class Node extends ReactComponent {
       }
       defval_inputs.push(
         <input type="text"
+          key={p.name}
           className="hope-graph-default-value"
           value={self.state[p.name]}
           onChange={self._on_change_defval.bind(self, p.name)}

@@ -33,7 +33,7 @@ export default class FanWidget extends Widget {
 
   _on_settings_changed(prev, next) {
     if (prev.height !== next.height) {
-      var svg = React.findDOMNode(this.refs.svg);
+      var svg = this.refs.svg;
       var size = this.get_height();
       svg.setAttribute("width", size);
       svg.setAttribute("height", size);
@@ -50,7 +50,6 @@ export default class FanWidget extends Widget {
 
   componentDidUpdate() {
     var self = this;
-    var dom = React.findDOMNode(self.refs.hdr);
     var data = self.get_data();
     if (_.isArray(data) && data.length > 0) {
       var on = Boolean(data[0].state);
@@ -61,7 +60,7 @@ export default class FanWidget extends Widget {
 
       if (on) {
         self.timer = setInterval(() => {
-            dom.setAttribute("transform", "rotate(" + self.ang + " 120 110)");
+            self.refs.hdr.setAttribute("transform", "rotate(" + self.ang + " 120 110)");
             self.ang += 30;
           }, 100);
       }

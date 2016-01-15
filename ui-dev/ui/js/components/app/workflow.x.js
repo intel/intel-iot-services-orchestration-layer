@@ -38,8 +38,8 @@ export default class Workflow extends ReactComponent {
     e.preventDefault();
     e.stopPropagation();
 
-    $hope.confirm("Delete from Server", 
-      "This would delete the workflow deployed on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete from Server"),
+      __("This would delete the workflow deployed on the server. Please make sure this is what you expect!"),
       "warning", () => {
         $hope.trigger_action("graph/remove", {
           graphs: [this.props.graph.id]
@@ -47,12 +47,31 @@ export default class Workflow extends ReactComponent {
     });
   }
 
+  _on_control(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    var graph = this.props.graph;
+    var running = this.props.working.indexOf(graph.id) >= 0;
+    if (running) {
+      $hope.trigger_action("graph/stop", {
+        graphs: [graph.id]
+      });
+    }
+    else {
+      $hope.trigger_action("graph/start", {
+          graphs: [graph.id],
+          tracing: false
+        });
+    }
+  }
+
   render() {
     var app = this.props.app;
     var graph = this.props.graph;
     var running = this.props.working.indexOf(graph.id) >= 0;
     return (
-      <Link to="ide" params={{id: graph.id}}>
+      <Link to={`/ide/${graph.id}`}>
         <div className="hope-workflow">
           <Row className="hope-workflow-bar">
             <div className="fa fa-cubes hope-workflow-icon" />
@@ -63,8 +82,9 @@ export default class Workflow extends ReactComponent {
           <Row>
             <div className="hope-workflow-desc">{graph.description}</div>
           </Row>
+          <i onClick={this._on_control} className={"hope-workflow-control fa fa-" + (running ? "power-off" : "play")} />
           { !app.is_builtin &&
-            <i onClick={this._on_delete} className="fa fa-trash hope-app-trash" />
+            <i onClick={this._on_delete} className="fa fa-trash hope-workflow-trash" />
           }
           { running &&
             <i className="fa fa-cog fa-spin hope-workflow-status-icon" />

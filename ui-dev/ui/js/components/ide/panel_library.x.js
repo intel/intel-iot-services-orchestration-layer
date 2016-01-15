@@ -89,7 +89,7 @@ export default class PanelLibrary extends ReactComponent {
       <div className="hope-panel match-parent">
         <div className="hope-panel-header" >
           <i className={"hope-panel-icon fa fa-list"} />
-          <span className="hope-panel-title">Library</span>
+          <span className="hope-panel-title">{__("Library")}</span>
           <i onClick={this._on_click_min} className="hope-panel-icon-min fa fa-times-circle" />
         </div>
         <div className="hope-panel-body">
@@ -115,13 +115,13 @@ export default class PanelLibrary extends ReactComponent {
             </Col>
 
             
-            <Col xs={3} className={class_names("hope-panel-lib-tab-item", {
+            {/* <Col xs={3} className={class_names("hope-panel-lib-tab-item", {
               on: current_view.type === "SpecView"
             })} onClick={this._switch_to_view.bind(this, "spec")}> 
               <div> Specs </div>
-            </Col>
+            </Col> */}
 
-            <Col xs={1} /> 
+            <Col xs={4} /> 
 
             <Col xs={1} className="hope-panel-lib-tab-item-addon"> 
               <i className="fa fa-chevron-circle-right"

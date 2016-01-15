@@ -35,7 +35,7 @@ export default class App extends ReactComponent {
   render() {
     var app = this.props.app;
     return (
-      <Link to="ui" params={{id: app.main_ui || app.uis[0].id}}>
+      <Link to={`/ui/${app.main_ui || app.uis[0].id}`}>
         <div className="hv-center hope-app">
           {app.name}
         </div>

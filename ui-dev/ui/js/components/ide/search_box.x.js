@@ -65,7 +65,7 @@ export default class SearchBox extends ReactComponent {
 
 
   componentDidMount() {
-    var dom = React.findDOMNode(this.refs.input);
+    var dom = this.refs.input;
     dom.addEventListener("keydown", this._on_key_down);
     if (this.state.value.length > 0) {
       dom.focus();
@@ -73,7 +73,7 @@ export default class SearchBox extends ReactComponent {
   }
 
   componentWillUnmount() {
-    React.findDOMNode(this.refs.input).removeEventListener("keydown", 
+    this.refs.input.removeEventListener("keydown",
       this._on_key_down);
   }
 
@@ -84,7 +84,7 @@ export default class SearchBox extends ReactComponent {
       <div className="col-sm-12">
           <div className="input-group">
             <input type="search" ref="input" className="form-control" 
-              placeholder="Search" 
+              placeholder={__("Search")}
               value={this.state.value}
               onChange={this._on_change} />
             <span className="input-group-addon">

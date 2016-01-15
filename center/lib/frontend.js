@@ -67,7 +67,11 @@ FrontEnd.prototype.emit = function(url_path, event, data) {
 };
 
 FrontEnd.prototype.sys_emit = function(event, data) {
-  return this.emit("/__HOPE__SYSTEM__", event, data);
+  this.emit("/__HOPE__SYSTEM__", event, data);
+
+  if (this.$forward) {
+    this.$forward.sys_emit(event, data);
+  }
 };
 
 function _socket_path_for_app(id) {
@@ -333,7 +337,7 @@ DevFrontEnd.prototype.init$ = function() {
 
 // {
 //   name: app_name
-//   desc: desc
+//   description: app_desc
 // }
 DevFrontEnd.prototype.api_app__create$ = function(data) {
   B.check(_.isObject(data), "frontend/app/create", "Should be a json for app", data);
@@ -341,6 +345,7 @@ DevFrontEnd.prototype.api_app__create$ = function(data) {
   if (!data.id) {
     data.id = B.unique_id("HOPE_APP_");
   }
+  data.create_time = (new Date()).getTime();
   var self = this;
   return this.center.em.app__add$(data, this.center.appbundle_path).then(function() {
     return self.api_app__get$([data.id]).then(function(apps) {
@@ -360,6 +365,7 @@ DevFrontEnd.prototype.api_app__update$ = function(data) {
   B.check(_.isString(data.app), "frontend/app/update", "Should specify app id", data);
   var d = data.props || {};
   d.id = data.app;
+  d.modify_time = (new Date()).getTime();
   return this.center.em.app__update$(d);
 };
 
@@ -527,11 +533,11 @@ DevFrontEnd.prototype.api_graph__remove$ = function(ids) {
 };
 
 // [id_1, id_2, ...]
-DevFrontEnd.prototype.api_graph__start$ = function(ids) {
+DevFrontEnd.prototype.api_graph__start$ = function(ids, tracing) {
   var self = this;
   var center = this.center;
   return Promise.all(ids.map(function(id) {
-    return center.wfe_start$(id);
+    return center.workflow_start$(id, tracing);
   })).then(function () {
     self.sys_emit("wfe/changed", {
       started: ids
@@ -544,7 +550,7 @@ DevFrontEnd.prototype.api_graph__stop$ = function(ids) {
   var self = this;
   var center = this.center;
   return Promise.all(ids.map(function(id) {
-    return center.wfe_stop$(id);
+    return center.workflow_stop$(id);
   })).then(function () {
     self.sys_emit("wfe/changed", {
       stoped: ids
@@ -558,7 +564,17 @@ DevFrontEnd.prototype.api_graph__status$ = function(ids) {
   return ids.map(function(id) {
     return {
       graph: id,
-      status: center.wfe_get_status(id)
+      status: center.workflow_get_status(id)
+    };
+  });
+};
+
+DevFrontEnd.prototype.api_graph__trace = function(ids) {
+  var center = this.center;
+  return ids.map(function(id) {
+    return {
+      id: id,
+      trace: center.workflow_get_trace(id)
     };
   });
 };

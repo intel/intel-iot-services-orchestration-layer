@@ -74,70 +74,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //   
 //   
 
-
-// Most functions are ended with $ which indicates that they are async
-var backend_interface = {
-  app: {
-    list$:        null,     // all apps returned in an array
-    get$:         null,     // give ids array, return an array
-    create$:      null,     // [{name, description}], return an array of created app
-    remove$:      null,     // give ids array
-    update$:      null,
-
-    create_ui$:   null,
-
-    create_graph$:      null,     // 
-                          // TODO may create spec with graph ??
-                          // TODO we provide id in client for
-                          // now, but maybe should returned from backend
-
-    // Events
-    event:        null,     
-  },
-
-  graph: {
-    get$:         null,
-
-    update$:      null,
-    remove$:      null,
-    enable$:      null,
-    event:        null,
-    start$:       null,
-    stop$:        null,
-    get_records$: null,
-    status$:      null
-  },
-
-  ui: {
-    get$:        null,
-    update$:     null,
-    remove$:     null,
-  },
-
-  spec_bundle: {
-    list$:      null,
-    get$:       null,
-    get_for_specs: null,    // get all neccessary bundles that contains these specs
-    event:              null,
-  },
-
-  hub: {
-    list$:      null,
-    get$:       null,
-
-    event:              null,
-  }
-
-};
-
-
 // For now we only need one implementation of above interface
 var WebBackend = {
   app: {},
   ui: {},
   graph: {},
   spec_bundle: {},
-  hub: {},
+  hub: {}
 };
 
 function invoke(api) {
@@ -158,7 +101,7 @@ function invoke(api) {
     return data;
   }, function(err) {
     $hope.log.warn("API", "[Invoke]", api, "\n            [Params]", 
-      params, "\n            [Error ]", err.responseText, err);
+      params, "\n            [Error]", err.responseText, err);
     if (err.responseText) {
       return new Error(err.responseText);
     }
@@ -168,40 +111,6 @@ function invoke(api) {
 
 WebBackend.app.list$ = function() {
   return invoke("app.list");
-};
-
-WebBackend.app.create_graph$ = function(app_id, graph) {
-  return invoke("app.create_graph", {
-    app: app_id,
-    graph: graph
-  });
-};
-
-WebBackend.app.create$ = function(app_name, desc) {
-  return invoke("app.create", {
-    name: app_name,
-    desc: desc
-  });
-};
-
-WebBackend.app.update$ = function(app_id, props) {
-  return invoke("app.update", {
-    app: app_id,
-    props: props
-  });
-};
-
-WebBackend.app.remove$ = function(app_id) {
-  return invoke("app.remove", {
-    app: app_id
-  });
-};
-
-WebBackend.app.create_ui$ = function(app_id, ui) {
-  return invoke("app.create_ui", {
-    app: app_id,
-    ui: ui
-  });
 };
 
 WebBackend.app.get_widget_data$ = function(app_id, widget_id) {
@@ -228,43 +137,11 @@ WebBackend.ui.get$ = function(ids) {
   return invoke("ui.get", ids);
 };
 
-WebBackend.ui.update$ = function(ui) {
-  return invoke("ui.update", ui);
-};
-
-WebBackend.ui.remove$ = function(ids) {
-  return invoke("ui.remove", ids);
-};
-
 WebBackend.graph.get$ = function(ids) {
   if (!_.isArray(ids)) {
     ids = [ids];
   } 
   return invoke("graph.get", ids);
-};
-
-WebBackend.graph.update$ = function(graph) {
-  return invoke("graph.update", graph);
-};
-
-WebBackend.graph.remove$ = function(ids) {
-  return invoke("graph.remove", ids);
-};
-
-WebBackend.graph.start$ = function(ids) {
-  return invoke("graph.start", ids);
-};
-
-WebBackend.graph.stop$ = function(ids) {
-  return invoke("graph.stop", ids);
-};
-
-WebBackend.graph.get_records$ = function(ids) {
-  return invoke("graph.get_records", ids);
-};
-
-WebBackend.graph.status$ = function(ids) {
-  return invoke("graph.status", ids);
 };
 
 WebBackend.spec_bundle.list$ = function() {
@@ -295,7 +172,5 @@ WebBackend.hub.get$ = function(ids) {
   } 
   return invoke("hub.get", ids);
 };
-
-
 
 export default WebBackend;

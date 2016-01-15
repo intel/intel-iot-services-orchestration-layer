@@ -479,7 +479,7 @@ APIHandler.prototype.app__create = function(data) {
   var app = {
     id: app_id,
     name: data.name,
-    description: data.desc,
+    description: data.description,
     main_ui: "",
     modify_time: now.getTime(),
     create_time: now.getTime()

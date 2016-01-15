@@ -1,0 +1,8 @@
+{
+  "name": "analogRead",
+  "description": "read the value of Aio.",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  }
+}

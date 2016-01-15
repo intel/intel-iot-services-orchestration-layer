@@ -28,7 +28,7 @@ export default {
   max_ports_per_side: 20,
   widget_cell_height: 60,
   widget_vertical_margin: 0,
-  
+
   // only categories enabled would be logged
   log: {
     categories: {
@@ -39,9 +39,9 @@ export default {
       API:        true,
       GraphView:  false,
       forceUpdate: false,
-      widget:     true,
+      widget:     false,
       autobind:   false,
-      socket:     true
+      socket: true
     }
   }
 

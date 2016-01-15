@@ -34,7 +34,7 @@ export default class TextWidget extends Widget {
     var text;
 
     if (_.isArray(data) && data.length > 0) {
-      text = data.map((t, i) => <div key={w.id + i} >{t.text}</div>);
+      text = data.map((t, i) => <div key={w.id + i}>{String(t.text)}</div>);
     }
     else if ("defval" in w.config) {
       text = w.config.defval;

@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {OverlayTrigger, Popover} from "react-bootstrap";
+import Overlay from "../overlay.x";
 
 export default class LeftToolbar extends ReactComponent {
 
@@ -50,8 +50,8 @@ export default class LeftToolbar extends ReactComponent {
   }
 
   _on_save() {
-    $hope.confirm("Save to Server", 
-      "This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Save to Server"),
+      __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
       "warning", () => {
       $hope.trigger_action("graph/save", {});
     });
@@ -76,17 +76,32 @@ export default class LeftToolbar extends ReactComponent {
   _on_run() {
     var view = $hope.app.stores.graph.active_view;
 
-    $hope.trigger_action("graph/start", {
-      graphs: [view.id]
-    });
+    if (view.modified) {
+      $hope.confirm(__("Save and Run"), 
+        __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
+        "warning", () => {
+        $hope.trigger_action("graph/save_and_start", {});
+      });
+    }
+    else {
+      $hope.trigger_action("graph/start", {
+        graphs: [view.id],
+        tracing: true
+      });
+    }
   }
 
   _on_stop() {
     var view = $hope.app.stores.graph.active_view;
 
-    $hope.trigger_action("graph/stop", {
-      graphs: [view.id]
-    });
+    if (view.is_debugging()) {
+      $hope.trigger_action("graph/stop_replay", {});
+    }
+    else {
+      $hope.trigger_action("graph/stop", {
+        graphs: [view.id]
+      });
+    }
   }
 
   _on_step(type) {
@@ -113,9 +128,9 @@ export default class LeftToolbar extends ReactComponent {
       if (view.is_running()) {
         return (
           <div className="hope-left-toolbar">
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to stop the workflow</Popover>}>
+            <Overlay overlay={__("Click to stop the workflow")}>
               <i onClick={this._on_stop} className="fa fa-stop" />
-            </OverlayTrigger>
+            </Overlay>
           </div>
         );
       }
@@ -126,21 +141,21 @@ export default class LeftToolbar extends ReactComponent {
         var len = logs ? logs.length : 0;
         return (
           <div className="hope-left-toolbar">
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to stop the workflow</Popover>}>
+            <Overlay overlay={__("Click to stop the workflow")}>
               <i onClick={this._on_stop} className="fa fa-circle-o-notch" />
-            </OverlayTrigger>
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Continue</Popover>}>
+            </Overlay>
+            <Overlay overlay={__("Continue")}>
               <i onClick={this._on_step.bind(this, "go")} className={"fa fa-arrow-circle-right" + (view.is_auto_replaying() ? " disabled" : "")} />
-            </OverlayTrigger>
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Step forward</Popover>}>
+            </Overlay>
+            <Overlay overlay={__("Step forward")}>
               <i onClick={this._on_step.bind(this, "step")} className={"fa fa-step-forward" + (logs && idx < len - 1 ? "" : " disabled")} />
-            </OverlayTrigger>
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Step backward</Popover>}>
+            </Overlay>
+            <Overlay overlay={__("Step backward")}>
               <i onClick={this._on_step.bind(this, "back")} className={"fa fa-step-backward" + (logs && idx > 0 ? "" : " disabled")} />
-            </OverlayTrigger>
-            <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Back to the beginning</Popover>}>
+            </Overlay>
+            <Overlay overlay={__("Back to the beginning")}>
               <i onClick={this._on_step.bind(this, "begin")} className={"fa fa-fast-backward" + (logs && idx !== 0 ? "" : " disabled")} />
-            </OverlayTrigger>
+            </Overlay>
           </div>
         );
       }
@@ -148,33 +163,33 @@ export default class LeftToolbar extends ReactComponent {
 
     return (
       <div className="hope-left-toolbar">
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to show or hide the library</Popover>}>
+        <Overlay overlay={__("Click to show or hide the library")}>
           <i onClick={this._on_click_library} className={"fa fa-list" + (panel.library.visible ? " disabled" : "")} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to run the workflow</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Click to run the workflow")}>
           <i onClick={this._on_run} className="fa fa-play" />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to save the workflow</Popover>}>
-          <i onClick={this._on_save} className="fa fa-floppy-o" />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to delete the selected objects</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Click to save the workflow")}>
+          <i onClick={this._on_save} className={"fa fa-floppy-o" + (view && view.modified ? "" : " disabled")} />
+        </Overlay>
+        <Overlay overlay={__("Click to delete the selected objects")}>
           <i onClick={this._on_trash} className={"fa fa-trash-o" + (selected ? "" : " disabled")} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Undo</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Undo")}>
           <i onClick={this._on_undo} className={"fa fa-undo" + (undo_stack_len <= undo_times ? " disabled" : "")} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Redo</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Redo")}>
           <i onClick={this._on_redo} className={"fa fa-repeat" + (undo_times === 0 ? " disabled" : "")} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to fit the view</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Click to fit the view")}>
           <i onClick={this._on_fit} className={"fa fa-arrows-alt"} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to auto layout the workflow</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Click to auto layout the workflow")}>
           <i onClick={this._on_autolayout} className={"fa fa-sitemap"} />
-        </OverlayTrigger>
-        <OverlayTrigger trigger="hover" rootClose overlay={<Popover>Click to change theme</Popover>}>
+        </Overlay>
+        <Overlay overlay={__("Click to change theme")}>
           <i onClick={this._on_change_theme} className="fa fa-cog" />
-        </OverlayTrigger>
+        </Overlay>
       </div>
     );
   }

@@ -24,8 +24,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {Tooltip} from "react-bootstrap";
 import Dialog from "../dialog.x";
+import Overlay from "../../overlay.x";
 import NodeHelpTopic from "./node_help_topic.x";
 import FONT_AWESOME from "../../../lib/font-awesome.js";
 
@@ -69,7 +70,7 @@ export default class InputDetails extends ReactComponent {
     });
 
     if (!groupable) {
-      $hope.notify("warning", "attributes modifing disabled");
+      $hope.notify("warning", __("Unable to modify this attribute"));
       return;
     }
 
@@ -98,7 +99,7 @@ export default class InputDetails extends ReactComponent {
     var port = node.in.$port(name);
 
     if (port.customizations_disabled && port.customizations_disabled.buffered) {
-      $hope.notify("warning", "attributes modifing disabled");
+      $hope.notify("warning", __("Unable to modify this attribute"));
       return;
     }
 
@@ -114,23 +115,23 @@ export default class InputDetails extends ReactComponent {
   }
 
   _on_click_line(name) {
-    /*var view = $hope.app.stores.graph.active_view;
+    var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
     var port = node.in.$port(name);
 
-    if (port.customizations_disabled && port.customizations_disabled.passive) {
-      $hope.notify("warning", "attributes modifing disabled");
+    if (port.customizations_disabled && port.customizations_disabled.no_trigger) {
+      $hope.notify("warning", __("Unable to modify this attribute"));
       return;
     }
 
-    if (port.passive) {
-      delete port.passive;
+    if (port.no_trigger) {
+      delete port.no_trigger;
     }
     else {
-      port.passive = true;
+      port.no_trigger = true;
     }
     this.forceUpdate();
-    view.change("node", this.props.id, null);*/
+    view.change("node", this.props.id, null);
   }
 
   _on_add_new() {
@@ -141,7 +142,7 @@ export default class InputDetails extends ReactComponent {
       type: "any"
     });
     if (!port) {
-      $hope.notify("error", "unable to add port");
+      $hope.notify("error", __("Unable to add port"));
       return;
     }
 
@@ -196,7 +197,7 @@ export default class InputDetails extends ReactComponent {
     var styles = node.$get_styles() || {};
 
     if (!styles.in_ports) {
-      styles.in_ports = [];
+      styles.in_ports = {};
     }
     if (!styles.in_ports[name]) {
       styles.in_ports[name] = {};
@@ -210,7 +211,7 @@ export default class InputDetails extends ReactComponent {
 
   _on_click_color_palette(name, e) {
     e.stopPropagation();
-    var rect = React.findDOMNode(this.refs["color_" + name]).getBoundingClientRect();
+    var rect = this.refs["color_" + name].getBoundingClientRect();
     $hope.trigger_action("ide/show/palette", {
       x: rect.left + rect.width + 10,
       y: rect.top,
@@ -221,12 +222,11 @@ export default class InputDetails extends ReactComponent {
   _on_click_port_name(name, e) {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
-    var port = node.in.$port(name);
 
     e.stopPropagation();
 
     if (node.$is_added_port(name)) {
-      Dialog.show_edit_dialog("Change the name of port", newname => {
+      Dialog.show_edit_dialog(__("Change the name of port"), newname => {
           node.$rename_port("in", name, newname);
           this.setState({
             [newname]: this.state[name]
@@ -307,7 +307,7 @@ export default class InputDetails extends ReactComponent {
       "z"
     ].join(" ");
 
-    var tooltip_change_color = <Tooltip bsSize="small">Change color</Tooltip>;
+    var tooltip_change_color = <Tooltip id="color" bsSize="small">Change color</Tooltip>;
 
     function render_groups() {
       var num = ports.length;
@@ -335,19 +335,19 @@ export default class InputDetails extends ReactComponent {
 
       var addons = [];
       if (!p.buffered) {
-        addons.push(<circle className={"hope-graph-inner-circle"} cx={25} cy={y} r={3} />);
+        addons.push(<circle key="c" className={"hope-graph-inner-circle"} cx={25} cy={y} r={3} />);
       }
       if (node.$is_added_port(p.name)) {
-        addons.push(<text onClick={self._on_remove_port.bind(self, p.name)}
+        addons.push(<text key="t" onClick={self._on_remove_port.bind(self, p.name)}
             className={"hope-graph-icon-btn"}
-            x={w - 60} y={y} fontSize="16px">{FONT_AWESOME["trash-o"]}</text>);
+            x={w - 60} y={y + 4} fontSize="16px">{FONT_AWESOME["trash-o"]}</text>);
       }
       return (
-        <g className="hope-graph-in-port">
+        <g key={p.name} className="hope-graph-in-port">
           <text onClick={self._on_click_port_name.bind(self, p.name)}
               className={"hope-graph-port-text"}
-              x={80} y={y} fontSize="14px" >{p.name}</text>
-          <line className={"hope-graph-in-line" + (p.passive ? " hope-graph-dash" : "") + $hope.color(color, "stroke")}
+              x={80} y={y + 3} fontSize="14px" >{p.name}</text>
+          <line className={"hope-graph-in-line" + (p.no_trigger ? " hope-graph-dash" : "") + $hope.color(color, "stroke")}
               x1={30} y1={y} x2={62} y2={y} />
           <line onClick={self._on_click_line.bind(self, p.name)}
               className="hope-graph-buf-outline"
@@ -355,12 +355,12 @@ export default class InputDetails extends ReactComponent {
           <circle onClick={self._on_click_circle.bind(self, p.name)}
               className={"hope-graph-passive-circle" + $hope.color(color, "fill", "hover")}
               cx={25} cy={y} r={6} />
-          <OverlayTrigger placement="left" overlay={tooltip_change_color}>
+          <Overlay placement="left" overlay={tooltip_change_color}>
             <circle ref={"color_" + p.name}
                 className={"hope-graph-passive-circle" + $hope.color(color, "fill", "hover")}
                 onClick={self._on_click_color_palette.bind(self, p.name)}
                 cx={w - 70} cy={y} r={6} />
-          </OverlayTrigger>
+          </Overlay>
           { addons }
         </g>
       );
@@ -369,7 +369,7 @@ export default class InputDetails extends ReactComponent {
     var add_new_btn = null;
     if (node.in.allow_to_add) {
       add_new_btn = <text onClick={self._on_add_new}
-          className={"hope-graph-icon-btn"} x={70} y={h - 26}>{FONT_AWESOME["plus-circle"] + " add new"}</text>;
+          className={"hope-graph-icon-btn"} x={70} y={h - 26}>{FONT_AWESOME["plus-circle"] + " " + __("add new")}</text>;
     }
 
     var help_section = null;
@@ -386,6 +386,7 @@ export default class InputDetails extends ReactComponent {
       }
       defval_inputs.push(
         <input type="text"
+          key={p.name}
           className="hope-graph-default-value"
           value={self.state[p.name]}
           onChange={self._on_change_defval.bind(self, p.name)}

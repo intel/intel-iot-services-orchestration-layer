@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import D3Gauge from "d3-gauge";
+import D3Gauge from "d3-gauge-x";
 
 var SIMPLE_CSS = ".d3-gauge.simple .outer-circle {fill:#ccc;stroke:#000;stroke-width:0.5px;} .d3-gauge.simple .inner-circle {fill:#fff;stroke:#E0E0E0;stroke-width:2px;} .d3-gauge.simple .label {fill:#333;font-size:24px;} .d3-gauge.simple .major-tick {stroke:#333;stroke-width:2px;} .d3-gauge.simple .minor-tick {stroke:#666;stroke-width:1px;} .d3-gauge.simple .major-tick-label {fill:darkblue;stroke-width:2px;font-size:15px;}.d3-gauge.simple .needle {fill:#dc3912;stroke:#c63310;fill-opacity:0.7;} .d3-gauge.simple .needle-container {fill:#4684EE;stroke:#666;fill-opacity:1;}.d3-gauge.simple .current-value {fill:#000;stroke-width:0px;} .d3-gauge.simple .green-zone {fill:#FF9900} .d3-gauge.simple .yellow-zone {fill:#FF9900} .d3-gauge.simple .red-zone {fill:#DC3912}";
 
@@ -63,9 +63,8 @@ export default class GaugeWidget extends Widget {
       config.zones.push({clazz: "red-zone", from: valToPercent(w.config.red_min), to: valToPercent(w.config.red_max) });
     }
 
-    var container = React.findDOMNode(this.refs.container);
-    $(container).empty();
-    this.gauge_object = new D3Gauge(container, config);
+    $(this.refs.container).empty();
+    this.gauge_object = new D3Gauge(this.refs.container, config);
   }
 
   componentDidMount() {
@@ -76,7 +75,7 @@ export default class GaugeWidget extends Widget {
   }
 
   componentWillUnmount() {
-    $(React.findDOMNode(this.refs.container)).empty();
+    $(this.refs.container).empty();
     this.gauge_object = null;
     super.componentWillUnmount();
   }
@@ -95,7 +94,7 @@ export default class GaugeWidget extends Widget {
         width: "100%",
         textAlign: "center"
       }}>
-        <div className="gauge-container" ref="container" />
+        <div ref="container" />
       </div>
     );
   }

@@ -24,47 +24,52 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+import {History, Lifecycle} from "react-router";
 import {Row, Col} from "react-bootstrap";
 import Node from "./node.x";
 import Editor from "./editor.x";
 import Dialog from "../ide/dialog.x";
 
-export default class Composer extends ReactComponent {
+export default React.createClass({
 
-  static willTransitionTo(transition, params) {
+  mixins: [ History, Lifecycle ],
 
-    if (!params.id) {
-      $hope.check(false, "Composer", "No service id passed in");
-      transition.abort();
+  routerWillLeave() {
+    var modified = false;
+    _.forEach(this.files, f => {
+      if (this.is_modified(f)) {
+        modified |= true;
+      }
+    });
+    if (modified) {
+      return __("Your edit is NOT saved! Are you READLLY want to leave?");
     }
-    $hope.app.stores.composer.layout();
-  }
+  },
 
-  constructor(props) {
-    super(props);
-
-    this.service_id = decodeURIComponent(props.params.id);
+  getInitialState() {
+    $hope.check(this.props.params && this.props.params.id, "Composer", "No service id passed in");
+    this.service_id = decodeURIComponent(this.props.params.id);
 
     this.files = [];
     this.expected = [];
     this.accepts = [];
     this.exists = [];
 
-    this.state = {
+    return {
       spec: {},
       active: 0
     };
-  }
+  },
 
   set_modified(f, sts) {
     this.setState({
       [f.name + "modified"]: sts
     });
-  }
+  },
 
   is_modified(f) {
     return this.state[f.name + "modified"];
-  }
+  },
 
   get_origin_spec() {
     let svc = $hope.app.stores.hub.manager.get_service(this.service_id);
@@ -72,7 +77,7 @@ export default class Composer extends ReactComponent {
       return null;
     }
     return $hope.app.stores.spec.get_spec(svc.spec);
-  }
+  },
 
   init_spec() {
     if (!_.isEmpty(this.state.spec)) {
@@ -85,27 +90,27 @@ export default class Composer extends ReactComponent {
     let spec = $hope.serialize(origin_spec, true, ["id", "path", "specbundle"]);
     this.setState({spec: spec});
     this.files.push({
-      name: "Specification",
+      name: __("Specification"),
       type: "json",
       content: JSON.stringify(spec, null, 2),
       open_always: true
     });
     this.forceUpdate();
-  }
+  },
 
   _on_resize() {
     $hope.app.stores.composer.layout();
     $hope.log("forceUpdate", "Composer");
     this.forceUpdate();
-  }
+  },
 
   _on_spec_event() {
     this.init_spec();
-  }
+  },
 
   _on_hub_event() {
     this.init_spec();
-  }
+  },
 
   _on_composer_event(e) {
     switch(e.event) {
@@ -151,7 +156,7 @@ export default class Composer extends ReactComponent {
         break;
     }
     this.forceUpdate();
-  }
+  },
 
   _switch(idx) {
     this.setState({
@@ -162,7 +167,7 @@ export default class Composer extends ReactComponent {
         f.editor.focus();
       }
     });
-  }
+  },
 
   _open(name) {
     var idx = _.findIndex(this.files, "name", name);
@@ -175,7 +180,7 @@ export default class Composer extends ReactComponent {
       service_id: this.service_id,
       file_path: name
     });
-  }
+  },
 
   _close_force(f) {
     var idx = this.files.indexOf(f);
@@ -185,7 +190,7 @@ export default class Composer extends ReactComponent {
     }
     this.set_modified(f, false);
     this.forceUpdate();
-  }
+  },
 
   _close(f, e) {
     e.stopPropagation();
@@ -193,18 +198,18 @@ export default class Composer extends ReactComponent {
       this._close_force(f);
       return;
     }
-    $hope.confirm("Close", 
-      "This would discard the changes of file. Please make sure this is what you expect!",
+    $hope.confirm(__("Close"),
+      _("This would discard the changes of file. Please make sure this is what you expect!"),
       "warning", () => {
 
       this._close_force(f);
     });
-  }
+  },
 
   _delete(name, e) {
     e.stopPropagation();
-    $hope.confirm("Delete", 
-      "This would delete the file on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete"),
+      __("This would delete the file on the server. Please make sure this is what you expect!"),
       "warning", () => {
       var f = _.find(this.files, "name", name);
       if (f) {
@@ -215,7 +220,7 @@ export default class Composer extends ReactComponent {
         file_path: name
       });
     });
-  }
+  },
 
   _on_editor_changed(f, newValue) {
     var new_spec;
@@ -238,30 +243,27 @@ export default class Composer extends ReactComponent {
         });
       }
     }
-  }
+  },
+
   _on_editor_loaded(f, editor) {
     f.editor = editor;
-  }
+  },
 
   _on_back() {
-    window.history.back();
-  }
+    this.history.goBack();
+  },
 
   _on_save() {
     var f = this.files[this.state.active];
     if (this.is_modified(f)) {
-      $hope.confirm("Save to Server", 
-        "This would overwrite the spec deployed on the server. Please make sure this is what you expect!",
+      $hope.confirm(__("Save"),
+        __("This would overwrite the spec deployed on the server. Please make sure this is what you expect!"),
         "warning", () => {
         if (this.state.active === 0) {
           $hope.trigger_action("composer/save/spec", {
             service_id: this.service_id,
             spec: this.state.spec
           });
-          //var spec = this.get_origin_spec();
-          //if (spec) {
-          //  _.merge(spec, this.state.spec);
-          //}
         }
         else {
           $hope.trigger_action("composer/write/file", {
@@ -272,7 +274,7 @@ export default class Composer extends ReactComponent {
         }
       });
     }
-  }
+  },
 
   _on_spec_changed(spec) {
     var f0 = this.files[0];
@@ -282,13 +284,13 @@ export default class Composer extends ReactComponent {
     if (editor) {
       editor.setValue(f0.content, 1);
     }
-  }
+  },
 
   _on_create_file() {
-    Dialog.show_edit_dialog("New File", name => {
+    Dialog.show_edit_dialog(__("New File"), name => {
       name = name && name.trim();
       if (!name || name.indexOf("..") >= 0) {
-        return $hope.notify("error", "Invalid file name");
+        return $hope.notify("error", __("Invalid file name"));
       }
       if (this.accepts.indexOf(name) < 0) {
         this.accepts.push(name);
@@ -296,8 +298,12 @@ export default class Composer extends ReactComponent {
       }
       this._open(name);
 
-    }, "", "Enter File Name", "Create");
-  }
+    }, "", __("Enter File Name"), __("Create"));
+  },
+
+  componentWillMount() {
+    $hope.app.stores.composer.layout();
+  },
 
   componentDidMount() {
     window.addEventListener("resize", this._on_resize);
@@ -308,14 +314,14 @@ export default class Composer extends ReactComponent {
     $hope.trigger_action("composer/list/files", {
       service_id: this.service_id
     });
-  }
+  },
 
   componentWillUnmount() {
     window.removeEventListener("resize", this._on_resize);
     $hope.app.stores.composer.removeListener("composer", this._on_composer_event);
     $hope.app.stores.spec.removeListener("spec", this._on_spec_event);
     $hope.app.stores.hub.removeListener("hub", this._on_hub_event);
-  }
+  },
 
   render_file_list() {
     return _.map(this.accepts, f => {
@@ -337,7 +343,7 @@ export default class Composer extends ReactComponent {
         </Row>
       );
     }, this);
-  }
+  },
 
   render_file_tabs() {
     return (
@@ -363,7 +369,7 @@ export default class Composer extends ReactComponent {
         </ul>
       </div>
     );
-  }
+  },
 
   render_editors() {
     return _.map(this.files, (f, idx) => {
@@ -378,7 +384,7 @@ export default class Composer extends ReactComponent {
           onChange={this._on_editor_changed.bind(this, f)} />
       );
     });
-  }
+  },
 
   render() {
     var store = $hope.app.stores.composer;
@@ -403,7 +409,7 @@ export default class Composer extends ReactComponent {
               onChanged={this._on_spec_changed} />
           </Row>
           <Row className="hope-composer-separator">
-            Package Files
+            {__("Package Files")}
           </Row>
           <Row>
             { this.render_file_list() }
@@ -423,4 +429,4 @@ export default class Composer extends ReactComponent {
       </Row>
     );
   }
-}
+});

@@ -24,17 +24,17 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col, OverlayTrigger, Popover, MenuItem, ModalTrigger} from "react-bootstrap";
+import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import {ExpandSign} from "../tree.x";
 import class_names from "classnames";
-import DlgCreate from "../dlg_create.x";
+import Dialog from "../dialog.x";
+import Overlay from "../../overlay.x";
 
 
 export default class Hub extends ReactComponent {
   static propTypes = {
     hub: React.PropTypes.object.isRequired
   };
-
 
   _on_color_selected(i) {
     $hope.trigger_action("hub/change/color", {
@@ -45,7 +45,7 @@ export default class Hub extends ReactComponent {
 
   _on_click_color_palette(e) {
     e.stopPropagation();
-    var rect = React.findDOMNode(this.refs.color).getBoundingClientRect();
+    var rect = this.refs.color.getBoundingClientRect();
     $hope.trigger_action("ide/show/palette", {
       x: rect.left + rect.width + 10,
       y: rect.top,
@@ -55,17 +55,17 @@ export default class Hub extends ReactComponent {
 
   _on_click_add_thing() {
     this.refs.overlay.hide();
-    this.refs.dlg_create.show();
+    Dialog.show_create_dialog(__("Create Thing"), this._on_create_thing);
   }
 
   _on_create_thing(data) {
     var hub = this.props.hub;
     var name = data && data.name && data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid thing name");
+      return $hope.notify("error", __("Invalid thing name"));
     }
     if (_.find(hub.things, "name", name)) {
-      return $hope.notify("error", "This name already exists in the hub");
+      return $hope.notify("error", __("This name already exists in the hub"));
     }
     $hope.trigger_action("hub/create/thing", {
       hub_id: hub.id,
@@ -77,8 +77,8 @@ export default class Hub extends ReactComponent {
   render() {
     var hub = this.props.hub;
     var popover =
-      <Popover>
-        <MenuItem onSelect={this._on_click_add_thing}>Add Thing</MenuItem>
+      <Popover id="PO-addthing">
+        <MenuItem onSelect={this._on_click_add_thing}>{__("Add Thing")}</MenuItem>
       </Popover>;
 
     return (
@@ -94,15 +94,11 @@ export default class Hub extends ReactComponent {
         <Col xs={1} className="text-center"
             onClick={e => e.stopPropagation()}>
           { hub.type !== "builtin" &&
-            <OverlayTrigger ref="overlay" trigger="click" rootClose overlay={popover}>
+            <Overlay ref="overlay" trigger="click" overlay={popover}>
               <i className="hope-panel-lib-menu fa fa-bars" />
-            </OverlayTrigger>
+            </Overlay>
           }
         </Col>
-
-        <ModalTrigger ref="dlg_create" modal={<DlgCreate title="Create Thing" onClickCreate={this._on_create_thing}/>}>
-          <i />
-        </ModalTrigger>
       </Row>
     );
   }

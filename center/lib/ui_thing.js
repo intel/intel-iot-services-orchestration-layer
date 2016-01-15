@@ -90,7 +90,9 @@ UIThing.prototype.on_data_from_service = function(widget_id, data, cache_size) {
   }
 };
 
-
+UIThing.prototype.empty_cache = function() {
+  this.cache = {};
+};
 
 UIThing.prototype.remove$ = function() {
   var self = this;
@@ -130,7 +132,7 @@ UIThing.prototype._gen_service_jsons_for_widgets$ = function(widgets) {
         config: {
           widget_id: w.id,
           app_id: self.app_id,
-          cache_size: spec.default_cache_size || 10
+          cache_size: spec && spec.default_cache_size || 10
         }
       };
     });

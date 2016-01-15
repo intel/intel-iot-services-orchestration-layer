@@ -1,0 +1,8 @@
+{
+  "name": "lcd_display",
+  "description": "show the content in the LCD screen",
+  "spec":"lcd_1_1_startkit",
+  "ui": {
+
+  }
+}

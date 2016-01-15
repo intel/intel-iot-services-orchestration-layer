@@ -138,13 +138,19 @@ Hub.prototype.leave$ = function() {
   this._unsubscribe_events();
   return this.undefine_rpc$()
   .then(function() {
+    return self.sm.clear_all_sessions$();
+  })
+  .then(function() {
+    return self.sm.clear_all_services$();
+  })
+  .then(function() {
     return self._unsubscribe_topics$();
   })
   .then(function() {
     return self.mnode.publish$(P.HUB_LEAVE, self.get_brief());
   })
   .then(function() {
-    self.destroy_related_webapp();
+    return self.destroy_related_webapp();
   });
 };
 
@@ -280,6 +286,9 @@ Hub.prototype.define_rpc$ = function() {
     mnode.define_rpc("clear_session", function(session_id) {
       return self.sm.clear_session$(session_id);
     });
+    mnode.define_rpc("reload_service", function(service_id) {
+      return self.sm.reload_service$(service_id);
+    });
   });
 };
 
@@ -296,6 +305,7 @@ Hub.prototype.undefine_rpc$ = function() {
   mnode.undefine_rpc("write_service_file");
   mnode.undefine_rpc("remove_service_file");
   mnode.undefine_rpc("clear_session");
+  mnode.undefine_rpc("reload_service");
   return mnode.disable_rpc$();
 };
 

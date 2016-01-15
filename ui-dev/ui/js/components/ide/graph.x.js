@@ -40,7 +40,7 @@ export default class Graph extends ReactComponent {
 
   _on_graph_change(e) {
     var view = this.props.view;
-    var svg_g = React.findDOMNode(this.refs["master-svg-group"]);
+    var svg_g = this.refs["master-svg-group"];
     switch(e.event) {
       // some of the graph changes don't need to re-render entire graph
       case "moved":
@@ -125,6 +125,7 @@ export default class Graph extends ReactComponent {
   }
 
   _start_preview_edge() {
+    this.props.view.edge_previewing = true;
     document.addEventListener("keydown", this._on_key_down);
     document.addEventListener("mousemove", this._on_render_preview_edge);
   }
@@ -142,6 +143,7 @@ export default class Graph extends ReactComponent {
 
   _cancel_preview_edge() {
     var preview = this.refs["edge-preview"];
+    this.props.view.edge_previewing = false;
     document.removeEventListener("keydown", this._on_key_down);
     document.removeEventListener("mousemove", this._on_render_preview_edge);
     preview.setState({sX: 0, sY: 0, tX: 0, tY: 0});
@@ -150,7 +152,7 @@ export default class Graph extends ReactComponent {
   _on_render_preview_edge(event) {
     var view = this.props.view;
     var preview = this.refs["edge-preview"];
-    var rect = React.findDOMNode(this).getBoundingClientRect();
+    var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     var t = view.get_port_position(view.selected_port, view.selected_port_type);
     var x = event.clientX || 0;
     var y = event.clientY || 0;
@@ -166,8 +168,12 @@ export default class Graph extends ReactComponent {
   }
 
   _on_click(e) {
+    var view = this.props.view;
     e.stopPropagation();
     $hope.trigger_action("ide/hide/palette", {});
+    if (view.edge_previewing) {
+      return view.unselect_port();
+    }
     if (!this.is_tracking) {
       $hope.trigger_action("graph/unselect/all", {graph_id: this.props.view.id});
     }
@@ -207,17 +213,21 @@ export default class Graph extends ReactComponent {
   }
 
   _on_wheel(e) {
-    // deltaMode:
-    //  DOM_DELTA_PIXEL 0x00  The delta values are specified in pixels. (Chrome)
-    //  DOM_DELTA_LINE  0x01  The delta values are specified in lines.  (Firefox)
-    //
-    if (e.deltaY === 0) {
-      return;
+    var ratio;
+    if ("deltaMode" in e && "deltaY" in e) {
+      // deltaMode:
+      //  DOM_DELTA_PIXEL 0x00  The delta values are specified in pixels. (Chrome)
+      //  DOM_DELTA_LINE  0x01  The delta values are specified in lines.  (Firefox)
+      //
+      var dy = e.deltaMode === 0 ? 1000 : 40;
+      ratio = 1 - e.deltaY / dy;
     }
-    var dy = e.deltaMode === 0 ? 1000 : 40;
+    else {
+      ratio = 1 + e.wheelDelta / 1000;
+    }
     $hope.trigger_action("graph/zoom", {
       graph_id: this.props.view.id,
-      ratio: 1 - e.deltaY / dy,
+      ratio: ratio,
       x: e.clientX,
       y: e.clientY
     });
@@ -225,7 +235,7 @@ export default class Graph extends ReactComponent {
 
 
   _render_background() {
-    var canvas = React.findDOMNode(this.refs["background-canvas"]);
+    var canvas = this.refs["background-canvas"];
     var c = canvas.getContext("2d");
     var scale = this.props.view.zoom_scale;
     var width = canvas.width;
@@ -273,7 +283,7 @@ export default class Graph extends ReactComponent {
 
   _on_drop(event, ui) {
     var view = this.props.view;
-    var rect = React.findDOMNode(this).getBoundingClientRect();
+    var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     var x = (event.x || event.clientX || 0) - rect.left;
     var y = (event.y || event.clientY || 0) - rect.top;
 
@@ -320,7 +330,7 @@ export default class Graph extends ReactComponent {
     this.props.view.on("edge", this._on_edge_change); 
     this.props.view.on("graph", this._on_graph_change); 
 
-    var dom_node = React.findDOMNode(this);
+    var dom_node = ReactDOM.findDOMNode(this);
 
     PolymerGestures.addEventListener(dom_node, "trackstart", _.noop);
     PolymerGestures.addEventListener(dom_node, "track", _.noop);
@@ -351,7 +361,7 @@ export default class Graph extends ReactComponent {
     this.props.view.removeListener("graph", this._on_graph_change); 
 
 
-    var dom_node = React.findDOMNode(this);
+    var dom_node = ReactDOM.findDOMNode(this);
     PolymerGestures.removeEventListener(dom_node, "trackstart", _.noop);
     PolymerGestures.removeEventListener(dom_node, "track", _.noop);
     PolymerGestures.removeEventListener(dom_node, "trackend", _.noop);
@@ -371,6 +381,13 @@ export default class Graph extends ReactComponent {
   render() {
     $hope.log("render", "Graph");
     var view = this.props.view;
+    var edges = [];
+
+    view.graph.edges.forEach(e => {
+      if (e.source && e.target) {
+        edges.push(<Edge key={e.id} ref={e.id} view={view} id={e.id}/>);
+      }
+    });
 
     // need to draw edges first to ensure they are under nodes
     return (
@@ -387,9 +404,7 @@ export default class Graph extends ReactComponent {
           <g ref="master-svg-group" 
              transform={view.get_transform_string()}>
 
-            {view.graph.edges.map(e => {
-              return <Edge key={e.id} ref={e.id} view={view} id={e.id}/>;
-            })}
+            {edges}
 
             <EdgePreview ref="edge-preview" />
 

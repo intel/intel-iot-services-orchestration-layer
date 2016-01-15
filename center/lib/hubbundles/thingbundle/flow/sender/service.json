@@ -1,0 +1,32 @@
+{
+  "name": "sender",
+  "description": "Whenever triggered, out = content",
+  "spec":{
+    "id": "sender_spec",
+    "name": "sender_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "content",
+          "type": "any",
+          "no_trigger": true
+        },
+        {
+          "name": "trigger",
+          "type": "any"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "any"
+        }
+      ]
+    }
+  },
+  "ui": {
+
+  }
+}

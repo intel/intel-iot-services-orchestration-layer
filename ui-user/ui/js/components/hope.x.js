@@ -24,9 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {RouteHandler} from "react-router";
 import NavBar from "./nav_bar.x";
-
 
 export default class HOPE extends ReactComponent {
 
@@ -59,7 +57,7 @@ export default class HOPE extends ReactComponent {
             style={{
               height: window.innerHeight - $hope.app.stores.ui_ide.nav_bar.height
             }}>
-          <RouteHandler/>
+          {this.props.children}
         </div>
       </div>
     );

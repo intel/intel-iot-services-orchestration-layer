@@ -55,12 +55,16 @@ module.exports = function(config) {
     this.frontends.user = new FE.UserFrontEnd(this, config.user_web_app);
   }
 
+  if (this.frontends.dev) {
+    this.frontends.dev.$forward = this.frontends.user;
+  }
+
   if (config.heartbeat_server) {
     this.heartbeat_server = new HeartBeatServer(this, config.heartbeat_server); 
   }
 
   this.built_in_hub = null;
-  this.wfe = config.wfe;
+  this.workflow_engine = config.workflow_engine;
 
 };
 
@@ -309,59 +313,76 @@ Center.prototype.beat$ = function(hub_id) {
   });
 };
 // -----------------------------------------------
-// WFE related. all lock the graph_id. 
+// Workflow related. all lock the graph_id. 
 //              each operation is atomic
 // -----------------------------------------------
-Center.prototype.wfe_start$ = function(graph_id) {
-  log("wf_start", graph_id);
-  var graph;
-  var specs;
-  var bindings;
+Center.prototype.workflow_start$ = function(graph_id, tracing) {
+  log("workflow_start", graph_id);
   var self = this;
+  var graph;
   return this.make_lock(graph_id).lock_as_promise$(function() {
     return self.em.graph__get$(graph_id)
-    .then(function(graph_obj) {
-      graph = graph_obj.graph;
-      graph.id = graph_id;
-      bindings = graph_obj.bindings;
+    .then(function(graph_json) {
       var specid_array = [];
-      graph.nodes.forEach(function(node) {
+      graph_json.graph.nodes.forEach(function(node) {
         specid_array.push(node.spec);
       });
+      graph = graph_json;
       return self.em.spec__get$(specid_array);
     })
-    .then(function(spec_array) {
-      specs = spec_array;
-      return self.wfe.start$(graph, specs, bindings);
+    .then(function(specs) {
+      // The specs we got from database is an array
+      // However, the engine expects a hashtable for the specs 
+      // so need index it first
+      return self.workflow_engine.start$(graph, 
+        _.indexBy(specs, "id"), tracing).then(function() {
+        });
     });
   });
 };
 
-Center.prototype.wfe_get_status = function(graph_id) {
-  return this.wfe.get_status(graph_id);
+Center.prototype.workflow_get_status = function(graph_id) {
+  // need to interpret internal status to external
+  switch (this.workflow_engine.get_status(graph_id)) {
+    case "unloaded": 
+      return "Non-exist";
+    case "enabled":
+      return "Working";
+    case "disabled":
+      return "Paused";
+    case "installed":
+      return "Stopped";
+    case "loaded":
+      return "Idle";
+  }
 };
 
-Center.prototype.wfe_stop$ = function(graph_id) {
-  log("wf_stop", graph_id);
+Center.prototype.workflow_get_trace = function(graph_id) {
+  log("workflow_get_trace", graph_id);
+  return this.workflow_engine.get_trace(graph_id);
+};
+
+Center.prototype.workflow_stop$ = function(graph_id) {
+  log("workflow_stop", graph_id);
   var self = this;
   return this.make_lock(graph_id).lock_as_promise$(function() {
-    return self.wfe.stop$(graph_id);
+    return self.workflow_engine.stop$(graph_id);
   });
 };
 
-Center.prototype.wfe_pause$ = function(graph_id) {
-  log("wf_pause", graph_id);
+Center.prototype.workflow_pause$ = function(graph_id) {
+  log("workflow_pause", graph_id);
   var self = this;
   return this.make_lock(graph_id).lock_as_promise$(function() {
-    return self.wfe.pause$(graph_id);
+    return self.workflow_engine.pause$(graph_id);
   });
 };
 
-Center.prototype.wfe_resume$ = function(graph_id) {
-  log("wf_resume", graph_id);
+Center.prototype.workflow_resume$ = function(graph_id) {
+  log("workflow_resume", graph_id);
   var self = this;
   return this.make_lock(graph_id).lock_as_promise$(function() {
-    return self.wfe.resume$(graph_id);
+    return self.workflow_engine.resume$(graph_id);
   });
 };
 
@@ -476,16 +497,31 @@ Center.prototype.read_service_file$ = function(service_id, file_path) {
 
 Center.prototype.write_service_file$ = function(service_id, file_path, content) {
   var self = this;
+  var hub;
+  B.check(!self.workflow_engine.has_started_workflows(), "center",
+    "there still has started workflows, cannnot write_service_file");
   return this.em.service__get_hub$(service_id)
-  .then(function(hub) {
+  .then(function(_hub) {
+    hub = _hub;
     return self.mnode.invoke_rpc$(hub.mnode, "write_service_file", [service_id, file_path, content]);
+  })
+  .then(function() {
+    return self.mnode.invoke_rpc$(hub.mnode, "reload_service", service_id);
   });
 };
 
 Center.prototype.remove_service_file$ = function(service_id, file_path) {
   var self = this;
+  var hub;
+  B.check(!self.workflow_engine.has_started_workflows(), "center",
+    "there still has started workflows, cannnot remove_service_file");
   return this.em.service__get_hub$(service_id)
-  .then(function(hub) {
+  .then(function(_hub) {
+    hub = _hub;
     return self.mnode.invoke_rpc$(hub.mnode, "remove_service_file", [service_id, file_path]);
+  })
+  .then(function() {
+    return self.mnode.invoke_rpc$(hub.mnode, "reload_service", service_id);
   });
+
 };

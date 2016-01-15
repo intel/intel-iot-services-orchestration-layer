@@ -53,6 +53,11 @@ var router = M.create_router(route_table);
 var mnode_master = M.create_mnode(router);
 var mnode_slave = M.create_mnode(router);
 
+
+function _new_id() {
+  return B.unique("invocation_");
+}
+
 //create sm
 var sm;
 SM.create_session_manager$({em:em, mnode:mnode_slave}).
@@ -111,37 +116,37 @@ setTimeout(function() {
   }));
   Promise.all(tasks).then(function() {
     SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-      session_id, "start", {service_id:service_id});
+      session_id, _new_id(), "start", {service_id:service_id});
   }).done();
 }, 2000);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "resume");
+   session_id, _new_id(), "resume");
 }, 2100);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "after_resume");
+   session_id, _new_id(), "after_resume");
 }, 2200);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "kernel", {IN:{num:1}});
+   session_id, _new_id(), "kernel", {IN:{num:1}});
 }, 2300);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "kernel", {IN:{num:1}});
+   session_id, _new_id(), "kernel", {IN:{num:1}});
 }, 2400);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "pause");
+   session_id, _new_id(), "pause");
 }, 2500);
 
 setTimeout(function() {
   SM.send_invoke_cmd$(mnode_master, mnode_slave.id,
-   session_id, "stop");
+   session_id, _new_id(), "stop");
 }, 2600);
 

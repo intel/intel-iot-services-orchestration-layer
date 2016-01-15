@@ -24,12 +24,12 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col, OverlayTrigger, Popover, MenuItem, ModalTrigger} from "react-bootstrap";
+import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import {Link} from "react-router";
 import DragFromLib from "./drag_from_lib.x";
 import class_name from "classnames";
-import DlgEdit from "../dlg_edit.x";
-
+import Dialog from "../dialog.x";
+import Overlay from "../../overlay.x";
 
 export default class Service extends ReactComponent {
   static propTypes = {
@@ -57,7 +57,7 @@ export default class Service extends ReactComponent {
     let view = $hope.app.stores.graph.active_view;
     var service = this.props.service;
     var div = document.createElement("div");
-    React.render(<DragFromLib scale={view ? view.zoom_scale : 1} text={service.name}/>, div);
+    ReactDOM.render(<DragFromLib scale={view ? view.zoom_scale : 1} text={service.name}/>, div);
 
     $(div).css("z-index", 1000);
 
@@ -72,7 +72,7 @@ export default class Service extends ReactComponent {
 
   componentDidMount() {
     if (this.props.draggable) {
-      $(React.findDOMNode(this)).draggable({
+      $(ReactDOM.findDOMNode(this)).draggable({
         cursor: "move",
         cursorAt: {top: 0, left: 0},
         helper: this._create_drag_object.bind(this)     // this isn't auto bound
@@ -81,14 +81,15 @@ export default class Service extends ReactComponent {
   }
 
   _on_click_edit() {
+    var service = this.props.service;
     this.refs.overlay.toggle();
-    this.refs.dlg_edit.show();
+    Dialog.show_create_dialog(__("Edit Service"), this._on_save_service, __("Save"), service.name, service.description);
   }
 
   _on_delete() {
     this.refs.overlay.toggle();
-    $hope.confirm("Delete from Server", 
-      "This would delete the service on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete from Server"),
+      __("This would delete the service on the server. Please make sure this is what you expect!"),
       "warning", () => {
       var service = this.props.service;
       $hope.trigger_action("hub/remove/service", {
@@ -101,7 +102,7 @@ export default class Service extends ReactComponent {
     var service = this.props.service;
     var name = data.name.trim();
     if (!name) {
-      return $hope.notify("error", "Invalid service name");
+      return $hope.notify("error", __("Invalid service name"));
     }
     var req = {};
     if (service.name !== name) {
@@ -126,32 +127,33 @@ export default class Service extends ReactComponent {
     var icon = service.$icon();
 
     var popover =
-      <Popover>
-        <MenuItem onSelect={this._on_click_edit}>Edit</MenuItem>
-        <MenuItem onSelect={this._on_delete}>Delete</MenuItem>
+      <Popover id="PO-svc-menu">
+        <MenuItem onSelect={this._on_click_edit}>{__("Edit")}</MenuItem>
+        <MenuItem onSelect={this._on_delete}>{__("Delete")}</MenuItem>
       </Popover>;
 
     var tooltip =
-      <Popover title={service.$name()}>
+      <Popover id="PO-svc-desc" title={service.$name()}>
         {service.description}
       </Popover>;
 
     return (
       <Row className={class_name("hope-panel-lib-view-third-level", 
-        "graph-accept", {"error": this.props.error })}
-      onClick={this._on_click} onDoubleClick={this._on_double_click}>
+            "graph-accept", {"error": this.props.error })}
+          onClick={this._on_click}
+          onDoubleClick={this._on_double_click}>
         <Col xs={2}/>
         <Col className="text-center" xs={1}>
           <i className={"fa fa-" + (icon ? icon : "cog")}/>
         </Col>
-        <OverlayTrigger trigger="hover" rootClose overlay={tooltip}>
+        <Overlay overlay={tooltip}>
           <Col xs={7}>
             {service.$name() || "__unknown__"}
           </Col>
-        </OverlayTrigger>
+        </Overlay>
         {!is_builtin &&
           <Col className="text-center" xs={1}>
-            <Link to="composer" params={{id: encodeURIComponent(service.id)}}>
+            <Link to={`/composer/${encodeURIComponent(service.id)}`}>
               <i className="fa fa-code" />
             </Link>
           </Col>
@@ -159,16 +161,11 @@ export default class Service extends ReactComponent {
         {!is_builtin &&
           <Col className="text-center" xs={1}
             onClick={e => e.stopPropagation()}>
-            <OverlayTrigger ref="overlay" trigger="click" rootClose overlay={popover}>
+            <Overlay ref="overlay" trigger="click" overlay={popover}>
               <i className="hope-panel-lib-menu fa fa-bars" />
-            </OverlayTrigger>
+            </Overlay>
           </Col>
         }
-
-        <ModalTrigger ref="dlg_edit"
-          modal={<DlgEdit title="Edit Service" name={service.name} description={service.description} onSave={this._on_save_service}/>}>
-          <i />
-        </ModalTrigger>
       </Row>
     );
   }

@@ -36,8 +36,8 @@ export default class App extends ReactComponent {
     e.preventDefault();
     e.stopPropagation();
 
-    $hope.confirm("Delete from Server", 
-      "This would delete the app deployed on the server. Please make sure this is what you expect!",
+    $hope.confirm(__("Delete from Server"),
+      __("This would delete the app deployed on the server. Please make sure this is what you expect!"),
       "warning", () => {
       $hope.trigger_action("app/remove/app", {
         id: this.props.app.id
@@ -48,7 +48,7 @@ export default class App extends ReactComponent {
   render() {
     var app = this.props.app;
     return (
-      <Link to="app_home" params={{id: app.id}}>
+      <Link to={`/app_home/${app.id}`}>
         <div className="hv-center hope-app">
           {app.name}
           { !app.is_builtin &&

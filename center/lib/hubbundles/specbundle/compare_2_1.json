@@ -3,7 +3,7 @@
     "name": "compare_2_1_builtin",
     "description": "compare two inports and send a boolean result",
     "out": {
-      "ports": [{             
+      "ports": [{
         "name": "bool",
         "type": "boolean"
       }]

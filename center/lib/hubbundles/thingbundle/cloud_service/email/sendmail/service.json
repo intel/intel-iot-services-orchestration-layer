@@ -1,0 +1,48 @@
+{
+  "name": "sendmail",
+  "description": "send an email by providing the servicename, username, passwd, receiver, subject and text",
+  "spec":{
+    "id": "sendmail_builtin_spec",
+    "name": "sendmail_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "name": "subject",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "status",
+          "type": "bool"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "service",
+        "type": "string"
+      },
+      {
+        "name": "account",
+        "type": "string"
+      },
+      {
+        "name": "passwd",
+        "type": "string"
+      },
+      {
+        "name": "receiver",
+        "type": "string"
+      }
+    ]
+  },
+  "ui": {
+  }
+}

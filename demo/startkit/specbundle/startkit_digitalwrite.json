@@ -1,0 +1,27 @@
+{
+  "id": "digitalwrite_1_1_startkit",
+  "name": "digitalwrite_1_1_startkit",
+  "in": {
+    "ports": [
+      {
+        "name": "on",
+        "type": "boolean"
+      }
+    ]
+  },
+  "out": {
+    "ports": [
+      {
+        "name": "status",
+        "type": "boolean"
+      }
+    ]
+  },
+  "config": [
+    {
+      "name": "pin",
+      "type": "int",
+      "required": true
+    }
+  ]
+}

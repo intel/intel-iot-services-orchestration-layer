@@ -43,7 +43,7 @@ export default (
     </g>
     <circle id="cng-in-1" fill="#39B54A" cx="32.3" cy="22.3" r="7" />
     <circle id="cng-in-def" stroke="white" cx="163" strokeDasharray="2 2" cy="54.3" r="6" />
-    <text id="cng-in-deftxt" fill="white" fontSize="8" x="174" y="62">Default</text>
+    <text id="cng-in-deftxt" fill="white" fontSize="8" x="174" y="62">{__("Default")}</text>
     <circle id="cng-in-3" opacity="0" fill="#D91B5B" cx="32.3" cy="54.3" r="7" />
     <path id="cng-ou-1" fill="#FFD400" d="M258.8,28L258.8,28c1.9,0,3.5,1.6,3.5,3.5v13.3c0,1.9-1.6,3.5-3.5,3.5l0,0c-1.9,0-3.5-1.6-3.5-3.5V31.5C255.3,29.6,256.9,28,258.8,28z" />
   </svg>

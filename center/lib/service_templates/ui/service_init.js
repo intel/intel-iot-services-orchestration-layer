@@ -65,6 +65,7 @@ function Listener(cb) {
 }
 
 Listener.prototype.start = function() {
+  ui_thing.empty_cache();
   ui_thing.event.on(CONFIG.widget_id, this.cb);  
 };
 

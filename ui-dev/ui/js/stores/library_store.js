@@ -173,7 +173,8 @@ class View {
       this.search_string = search;
       this._dfs(this.render_data_for_search, (key, id, obj, parent) => {
         if (!obj.children) {  // leaf
-          if (obj.name.toLowerCase().indexOf(search) < 0) {
+          if (obj.name.toLowerCase().indexOf(search) < 0 &&
+            parent && parent.name.toLowerCase().indexOf(search) < 0) {
             delete parent.children[id];
           }       
         } else {

@@ -1,0 +1,33 @@
+{
+  "name": "delay",
+  "description": "When the input arrives, delay sometime and send it out. When pause, all timer will delete",
+  "spec":{
+    "id": "delay_spec",
+    "name": "delay_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "delay",
+          "type": "int",
+          "no_trigger": true,
+          "default": 1000
+        },
+        {
+          "name": "in",
+          "type": "any"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "any"
+        }
+      ]
+    }
+  },
+  "ui": {
+
+  }
+}

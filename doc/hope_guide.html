@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link href="data:text/css,body%20%7B%0A%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20padding%2Dright%3A%201em%3B%0A%20%20%20%20padding%2Dleft%3A%201em%3B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%20%0A%20%20%20%20border%2Dleft%3A%201px%20solid%20black%3B%0A%20%20%20%20border%2Dright%3A%201px%20solid%20black%3B%0A%20%20%20%20color%3A%20black%3B%0A%20%20%20%20font%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0A%20%20%20%20font%2Dsize%3A%20100%25%3B%0A%20%20%20%20line%2Dheight%3A%20140%25%3B%0A%20%20%20%20color%3A%20%23333%3B%20%0A%7D%0Apre%20%7B%0A%20%20%20%20border%3A%201px%20dotted%20gray%3B%0A%20%20%20%20background%2Dcolor%3A%20%23ececec%3B%0A%20%20%20%20color%3A%20%231111111%3B%0A%20%20%20%20padding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0A%20%20%20%20font%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%20%0A%20%20%20%20text%2Ddecoration%3A%20none%3B%0A%20%20%20%20color%3A%20%237a5ada%3B%20%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20border%2Dbottom%3A%201px%20dotted%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20padding%2Dbottom%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20left%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%201em%3B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2070%25%3B%0A%20%20%20%20%20%20%20%20color%3A%20gray%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%0Apre%20%7B%0A%20%20%20%20background%2Dcolor%3A%20%23FDF6E3%0A%7D%0A%0A%2F%2F%20KeyWordTok%0A%2EsourceCode%20%2Ekw%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20DataTypeTok%0A%2EsourceCode%20%2Edt%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%0A%2F%2F%20DecValTok%20%28decimal%20value%29%2C%20BaseNTok%2C%20FloatTok%0A%2EsourceCode%20%2Edv%2C%20%2EsourceCode%20%2Ebn%2C%20%2EsourceCode%20%2Efl%20%7B%20color%3A%20%23D33682%3B%20%7D%0A%2F%2F%20CharTok%0A%2EsourceCode%20%2Ech%20%7B%20color%3A%20%23DC322F%3B%20%7D%0A%2F%2F%20StringTok%0A%2EsourceCode%20%2Est%20%7B%20color%3A%20%232AA198%3B%20%7D%0A%2F%2F%20CommentTok%0A%2EsourceCode%20%2Eco%20%7B%20color%3A%20%2393A1A1%3B%20%7D%0A%2F%2F%20OtherTok%0A%2EsourceCode%20%2Eot%20%7B%20color%3A%20%23A57800%3B%20%7D%0A%2F%2F%20AlertTok%0A%2EsourceCode%20%2Eal%20%7B%20color%3A%20%23CB4B16%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A%2F%2F%20FunctionTok%0A%2EsourceCode%20%2Efu%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20RegionMarkerTok%0A%2EsourceCode%20%2Ere%20%7B%20%7D%0A%2F%2F%20ErrorTok%0A%2EsourceCode%20%2Eer%20%7B%20color%3A%20%23D30102%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#widget">Widget</a><ul>
+<li><a href="#introduction-of-widget">Introduction of Widget</a></li>
+<li><a href="#widget-class">Widget class</a><ul>
+<li><a href="#methods">Methods</a></li>
+</ul></li>
+<li><a href="#spec">spec</a><ul>
+<li><a href="#configurations">Configurations</a></li>
+</ul></li>
+<li><a href="#code-integration">Code integration</a></li>
+<li><a href="#wrapping-third-party-as-builtin-widget">Wrapping third party as builtin widget</a></li>
+<li><a href="#publish-to-npm">Publish to NPM</a></li>
+<li><a href="#directory-layout">Directory Layout</a><ul>
+<li><a href="#package.json">package.json</a></li>
+<li><a href="#index.js">index.js</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="widget"><a href="#widget">Widget</a></h1>
+<h2 id="introduction-of-widget"><a href="#introduction-of-widget">Introduction of Widget</a></h2>
+<p>The <strong>Widget</strong> is the basic element that consists the UI of end users, its code base is shared by both <em>ui-dev</em> and <em>ui-user</em> projects.</p>
+<p>Every UI divides up the screen as a grid with N rows and 12 columns, the width of each column is about 8.333% width of the browser, and the height of row is fixed to 60px (configurable). The number of rows (N) is dependent on the height of the browser.</p>
+<p>Each initial instance of widgets occupies 1x1 size on the grid, developers can resize it by drag and drop.</p>
+<h2 id="widget-class"><a href="#widget-class">Widget class</a></h2>
+<p>All widgets should be derivatived from the <em>Widget</em> class, this base class encapsulates the infrastructure such as UI layout, data communication and event dispatching. You can find the builtin widgets under <em>ui-widget/widgets-jsx/</em>, and put your code there, so that we can processes it by unified building scripts.</p>
+<p>For example, we create a sample widget as follows:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">export</span> <span class="kw">default</span> <span class="kw">class</span> TextWidget <span class="kw">extends</span> Widget {
+    <span class="co">// All widget must overwrite this method</span>
+    <span class="fu">render</span>() {
+        <span class="kw">var</span> text = <span class="kw">this</span>.<span class="fu">get_data</span>().<span class="fu">map</span>((t, i) =&gt; &lt;div&gt;{<span class="ot">t</span>.<span class="fu">text</span>}&lt;<span class="ot">/div&gt;</span><span class="fl">)</span><span class="ot">;</span>
+<span class="ot">        return super.render</span><span class="fl">(</span>
+<span class="ot">            &lt;div&gt;{text}&lt;/div</span>&gt;
+        );
+    }
+}</code></pre>
+<h3 id="methods"><a href="#methods">Methods</a></h3>
+<h4 id="get_data"><a href="#get_data">get_data()</a></h4>
+<p>This method get all the data cached from inports, returns an array of plain objects whose keys are inports’ name.</p>
+<p><strong>Note</strong>: The size of the array is a configurable item(<code>data_cache_size</code>) in <em>spec</em>.</p>
+<h4 id="get_height"><a href="#get_height">get_height()</a></h4>
+<p>This method returns the <code>height</code> of the instance in <strong>px</strong>.</p>
+<h4 id="get_width"><a href="#get_width">get_width()</a></h4>
+<p>This method returns the <code>width</code> of the instance in <strong>px</strong>.</p>
+<h4 id="set_cssid-css"><a href="#set_cssid-css">set_css(id, css)</a></h4>
+<p>This method inserts a <em>style</em> element into current HTML document</p>
+<pre class="sourceCode HTML"><code class="sourceCode html"><span class="kw">&lt;style</span><span class="ot"> id=</span><span class="st">&quot;id&quot;</span><span class="kw">&gt;</span>
+  css
+<span class="kw">&lt;/style&gt;</span></code></pre>
+<h4 id="send_dataout"><a href="#send_dataout">send_data(out)</a></h4>
+<p>This method sends the <code>out</code> into the outports, <code>out</code> is the key-value mapping of the outports, e.g. {<code>o1</code>: val1, <code>o2</code>: val2;},</p>
+<p><strong>Note</strong>: the <code>o1</code>, <code>o2</code> is the name of outports</p>
+<h4 id="switch_uiid"><a href="#switch_uiid">switch_ui(id)</a></h4>
+<p>This method is used to switchs the UIs of the App.</p>
+<h4 id="on_settings_changedprev-next"><a href="#on_settings_changedprev-next">_on_settings_changed(prev, next)</a></h4>
+<p>This is a callback function, implement it if you want to handle the event of <code>settings changed</code> which emited by property panel (inspector).</p>
+<h2 id="spec"><a href="#spec">spec</a></h2>
+<p><em>spec</em> is a textual description for <strong>Widget</strong>, such as how many <code>inports</code>, <code>outports</code> and <code>configurations</code>, and details.</p>
+<p>Every widget should be described in <code>ui-widgets/specs.js</code>.</p>
+<p>For example, following is the builtin spec of <em>Text</em> widget:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript">{
+  <span class="dt">id</span>:           <span class="st">&quot;hope/ui/text&quot;</span>,
+  <span class="dt">catalog</span>:      <span class="st">&quot;basic&quot;</span>,
+  <span class="dt">name</span>:         <span class="st">&quot;Text&quot;</span>,
+  <span class="dt">description</span>:  <span class="st">&quot;Show Text&quot;</span>,
+  <span class="dt">icon</span>:         <span class="st">&quot;text-width&quot;</span>,
+  <span class="dt">use_ract</span>:     <span class="kw">true</span>,
+  <span class="dt">data_cache_size</span>: <span class="dv">5</span>,       <span class="co">// how many data items would be cached to show the widget    </span>
+                            <span class="co">// 0 for using default, -1 means unliminted</span>
+  <span class="dt">config</span>: [{
+    <span class="dt">name</span>: <span class="st">&quot;align&quot;</span>,
+    <span class="dt">type</span>: <span class="st">&quot;option&quot;</span>,
+    <span class="kw">default</span>: <span class="st">&quot;left&quot;</span>,
+    <span class="dt">options</span>: [<span class="st">&quot;left&quot;</span>, <span class="st">&quot;center&quot;</span>, <span class="st">&quot;right&quot;</span>]
+  }, {
+    <span class="dt">name</span>: <span class="st">&quot;font_size&quot;</span>,
+    <span class="dt">display</span>: <span class="st">&quot;Font Size&quot;</span>,   <span class="co">// displaying label in property panel</span>
+    <span class="dt">type</span>: <span class="st">&quot;string&quot;</span>
+  }],
+  <span class="kw">in</span>: {
+    <span class="dt">ports</span>: [{
+      <span class="dt">name</span>: <span class="st">&quot;text&quot;</span>,
+      <span class="dt">type</span>: <span class="st">&quot;string&quot;</span>
+    }]
+  },
+  <span class="dt">out</span>: {
+    <span class="dt">ports</span>: []
+  }
+}</code></pre>
+<h3 id="configurations"><a href="#configurations">Configurations</a></h3>
+<p>For a widget, all property of configuration is divided into two parts, the <strong>config</strong> group always is visible, and the <strong>extra</strong> group is hidden by default.</p>
+<p>Supported data types of configuration item:</p>
+<h4 id="boolean"><a href="#boolean">boolean</a></h4>
+<p><code>Boolean</code> property, corresponding to a <code>switch</code> button in the property panel.</p>
+<h4 id="number"><a href="#number">number</a></h4>
+<p><code>Number</code> property, corresponding to an <code>editbox</code> in the property panel.</p>
+<h4 id="int"><a href="#int">int</a></h4>
+<p><code>Integer</code> property, corresponding to an <code>editbox</code> in the property panel.</p>
+<h4 id="string"><a href="#string">string</a></h4>
+<p><code>String</code> property, corresponding to an <code>editbox</code> in the property panel.</p>
+<h4 id="option"><a href="#option">option</a></h4>
+<p><code>Option</code> property, corresponding to a <code>combox</code> in the property panel. Options are provided by <code>options</code> property, following three cases are supported:</p>
+<ul>
+<li><code>array</code> of keys, such as the <code>align</code> in spec of <code>hope/ui/text</code> widget.</li>
+<li><p><code>array</code> of plain object, e.g.</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript">{
+  <span class="dt">name</span>: <span class="st">&quot;editor_type&quot;</span>,
+  <span class="dt">type</span>: <span class="st">&quot;option&quot;</span>,
+  <span class="dt">options</span>: [{
+    <span class="dt">name</span>: <span class="st">&quot;Single Line&quot;</span>,
+    <span class="dt">value</span>: <span class="st">&quot;sle&quot;</span>
+  }, {
+    <span class="dt">name</span>: <span class="st">&quot;Multiple Line&quot;</span>,
+    <span class="dt">value</span>: <span class="st">&quot;mle&quot;</span>
+  }]
+}</code></pre></li>
+<li><p><code>string</code>: only <code>__HOPE_APP_UI_LIST__</code> supported now, which will be replaced by a list of UIs in the App.</p></li>
+</ul>
+<h4 id="glyphicon"><a href="#glyphicon">glyphicon</a></h4>
+<p>A font icon, developers can easily pick one in the property panel, system now provides up to 576 icons.</p>
+<h4 id="color"><a href="#color">color</a></h4>
+<p>‘Color’ property, corresponding to an circle <code>button</code> in the property panel, click the button will open a color dialog.</p>
+<h2 id="code-integration"><a href="#code-integration">Code integration</a></h2>
+<p>For a new widget, besides adding its <code>spec</code> in <code>ui-widgets/specs.js</code>, we also need to export it from <code>ui-widgets/index.js</code>.</p>
+<p>Specifically, we should add one key-value pair in <code>widgets</code> object of <code>index.js</code>, and use the unique <code>id</code> of widget as key, and use the constructor of widget as value.</p>
+<p>For example, the <code>text</code> widget is exported as following:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="ot">exports</span>.<span class="fu">widgets</span> = {
+  <span class="st">&quot;hope/ui/text&quot;</span>: <span class="fu">require</span>(<span class="st">&quot;./generated/text&quot;</span>);
+  ...
+}</code></pre>
+<h2 id="wrapping-third-party-as-builtin-widget"><a href="#wrapping-third-party-as-builtin-widget">Wrapping third party as builtin widget</a></h2>
+<p>For example, we want to import the <a href="http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6">D3 Liquid Fill Gauge</a>.</p>
+<p>At first, we download the script <a href="http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6#liquidFillGauge.js">liquidFillGauge.js</a> and save it to <code>ui-widgets/third_party/</code> with a little changes like follows:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> d3 = <span class="fu">require</span>(<span class="st">&quot;d3&quot;</span>);
+<span class="ot">exports</span>.<span class="fu">liquidFillGaugeDefaultSettings</span> = <span class="kw">function</span>(){
+    <span class="kw">return</span> {
+        ...
+}
+<span class="ot">exports</span>.<span class="fu">loadLiquidFillGauge</span> = <span class="kw">function</span>(elementId, value, config) {
+    <span class="kw">if</span>(config == <span class="kw">null</span>) config = <span class="fu">liquidFillGaugeDefaultSettings</span>();
+    ...</code></pre>
+<p>Secondly, we create a new React class to wrap this widget, and save the js file as <code>ui-widgets/widgets-jsx/lfg.js</code>:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">import</span> {liquidFillGaugeDefaultSettings, loadLiquidFillGauge} from <span class="st">&quot;../third_party/liquidFillGauge.js&quot;</span>;
+<span class="kw">export</span> <span class="kw">default</span> <span class="kw">class</span> LFGWidget <span class="kw">extends</span> Widget {
+  <span class="fu">_on_settings_changed</span>() {
+    <span class="kw">this</span>.<span class="fu">init_gauge</span>();
+  }
+  <span class="fu">init_gauge</span>() {
+    <span class="kw">var</span> w = <span class="kw">this</span>.<span class="ot">props</span>.<span class="fu">widget</span>;
+    <span class="kw">var</span> size = <span class="kw">this</span>.<span class="fu">get_height</span>() - <span class="dv">5</span>;
+    <span class="kw">var</span> svg = <span class="st">&quot;&lt;svg id='&quot;</span> + <span class="ot">w</span>.<span class="fu">id</span> + <span class="st">&quot;' width='&quot;</span> + size + <span class="st">&quot;' height='&quot;</span> + size + <span class="st">&quot;'&gt;&quot;</span>;
+    <span class="kw">var</span> config = <span class="fu">liquidFillGaugeDefaultSettings</span>();
+    <span class="ot">_</span>.<span class="fu">merge</span>(config, <span class="ot">w</span>.<span class="fu">config</span>);
+    <span class="fu">$</span>(<span class="kw">this</span>.<span class="ot">refs</span>.<span class="fu">container</span>).<span class="fu">empty</span>().<span class="fu">append</span>(svg);
+    <span class="kw">this</span>.<span class="fu">gauge_object</span> = <span class="fu">loadLiquidFillGauge</span>(<span class="ot">w</span>.<span class="fu">id</span>, <span class="dv">0</span>, config);
+  }
+  <span class="fu">componentDidMount</span>() {
+    <span class="kw">super</span>.<span class="fu">componentDidMount</span>();
+    <span class="kw">this</span>.<span class="fu">set_css</span>(<span class="st">&quot;lfg-css&quot;</span>, <span class="st">&quot;.liquidFillGaugeText { font-family: Helvetica; font-weight: bold; }&quot;</span>);
+    <span class="kw">this</span>.<span class="fu">init_gauge</span>();
+  }
+  <span class="fu">componentDidUpdate</span>() {
+    <span class="kw">var</span> data = <span class="kw">this</span>.<span class="fu">get_data</span>();
+    <span class="kw">if</span> (<span class="ot">_</span>.<span class="fu">isArray</span>(data) &amp;&amp; <span class="ot">data</span>.<span class="fu">length</span> &gt; <span class="dv">0</span>) {
+      <span class="kw">var</span> val = <span class="fu">parseFloat</span>(data[<span class="dv">0</span>].<span class="fu">value</span>);
+      <span class="kw">this</span>.<span class="ot">gauge_object</span>.<span class="fu">update</span>(val);
+    }
+  }
+  <span class="fu">render</span>() {
+    <span class="kw">return</span> <span class="kw">super</span>.<span class="fu">render</span>(&lt;div ref=<span class="st">&quot;container&quot;</span> <span class="ot">/&gt;</span><span class="fl">)</span><span class="ot">;</span>
+<span class="ot">  }</span>
+<span class="ot">}</span></code></pre>
+<p>Then, we append following spec into <code>ui-widgets/specs.js</code>:</p>
+<pre class="sourceCode javascript"><code class="sourceCode javascript">{
+  <span class="dt">id</span>:           <span class="st">&quot;hope/ui/lfg-gauge&quot;</span>,
+  <span class="dt">catalog</span>:      <span class="st">&quot;basic&quot;</span>,
+  <span class="dt">name</span>:         <span class="st">&quot;liquid Fill Gauge&quot;</span>,
+  <span class="dt">description</span>:  <span class="st">&quot;liquid Fill Gauge&quot;</span>,
+  <span class="dt">icon</span>:         <span class="st">&quot;dashboard&quot;</span>,
+  <span class="dt">use_ract</span>:     <span class="kw">true</span>,
+  <span class="dt">data_cache_size</span>: <span class="dv">1</span>,
+  <span class="dt">config</span>: [{
+    <span class="dt">name</span>: <span class="st">&quot;waveColor&quot;</span>,      <span class="co">// same name in liquidFillGaugeDefaultSettings</span>
+    <span class="dt">type</span>: <span class="st">&quot;string&quot;</span>,         <span class="co">// TODO: add more configuration like this</span>
+    <span class="kw">default</span>: <span class="st">&quot;#178BCA&quot;</span>
+  }],
+  <span class="kw">in</span>: {
+    <span class="dt">ports</span>: [{
+      <span class="dt">name</span>: <span class="st">&quot;value&quot;</span>,
+      <span class="dt">type</span>: <span class="st">&quot;number&quot;</span>
+    }]
+  },
+  <span class="dt">out</span>: {
+    <span class="dt">ports</span>: []
+  }
+}</code></pre>
+<p>Finally, we need to add a key-value pair into <code>ui-widgets/index.js</code> to export this widget, and run <code>gulp build</code> to rebuild the <code>ui-widgets</code> project.</p>
+<pre class="sourceCode json"><code class="sourceCode json"><span class="er">&quot;hope/ui/lfg-gauge&quot;:</span> <span class="er">require(&quot;./generated/lfg&quot;)</span></code></pre>
+<h2 id="publish-to-npm"><a href="#publish-to-npm">Publish to NPM</a></h2>
+<p>In most cases, we want to publish the widget on internet. now we are using <a href="http://www.npmjs.com">NPM</a> to host our widget plugins.</p>
+<p>Conventionally, We highly recommend that the name of npm package of widget should begin with “hope-widget-”, it’s a simple way for code integration. For example, if want to use <code>XYZ</code>, we just need execute following commands in <code>ui-widgets/</code> directory:</p>
+<pre class="shell"><code> $ npm install hope-widget-XYZ --save
+ $ gulp build</code></pre>
+<h2 id="directory-layout"><a href="#directory-layout">Directory Layout</a></h2>
+<p>For example, we create a new npm package <code>ui-widgets/hope-widget-lfg/</code>, and its tree graph is as follows:</p>
+<pre><code>hope-widget-lfg
+|-- package.json
+|-- index.js
+|-- third_party
+|       `-- liquidFillGauge.js
+`-- src
+    `-- lfg.js</code></pre>
+<h3 id="package.json"><a href="#package.json">package.json</a></h3>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;name&quot;</span>: <span class="st">&quot;hope-widget-lfg&quot;</span>,
+  <span class="dt">&quot;version&quot;</span>: <span class="st">&quot;1.0.0&quot;</span>,
+  <span class="dt">&quot;description&quot;</span>: <span class="st">&quot;liquid Fill Gauge&quot;</span>,
+  <span class="dt">&quot;main&quot;</span>: <span class="st">&quot;index.js&quot;</span>,
+  <span class="dt">&quot;scripts&quot;</span>: {
+    <span class="dt">&quot;build&quot;</span>: <span class="st">&quot;babel src --out-dir lib&quot;</span>,
+    <span class="dt">&quot;prepublish&quot;</span>: <span class="st">&quot;npm run build&quot;</span>
+  },
+  <span class="dt">&quot;dependencies&quot;</span>: {},
+  <span class="dt">&quot;devDependencies&quot;</span>: {},
+  <span class="dt">&quot;keywords&quot;</span>: [<span class="st">&quot;guage&quot;</span>],
+  <span class="dt">&quot;author&quot;</span>: <span class="st">&quot;Kanghua Yu&quot;</span>,
+  <span class="dt">&quot;license&quot;</span>: <span class="st">&quot;MIT&quot;</span>
+}</code></pre>
+<h3 id="index.js"><a href="#index.js">index.js</a></h3>
+<pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="ot">exports</span>.<span class="fu">specs</span> = [{
+  <span class="dt">id</span>:           <span class="st">&quot;hope/ui/lfg-gauge&quot;</span>,
+  <span class="dt">catalog</span>:      <span class="st">&quot;basic&quot;</span>,
+  <span class="dt">name</span>:         <span class="st">&quot;liquid Fill Gauge&quot;</span>,
+  <span class="dt">description</span>:  <span class="st">&quot;liquid Fill Gauge&quot;</span>,
+  <span class="dt">icon</span>:         <span class="st">&quot;dashboard&quot;</span>,
+  <span class="dt">use_ract</span>:     <span class="kw">true</span>,
+  <span class="dt">data_cache_size</span>: <span class="dv">1</span>,
+  <span class="dt">config</span>: [{
+    <span class="dt">name</span>: <span class="st">&quot;waveColor&quot;</span>,      <span class="co">// same name in liquidFillGaugeDefaultSettings</span>
+    <span class="dt">type</span>: <span class="st">&quot;string&quot;</span>,         <span class="co">// TODO: add more configuration like this</span>
+    <span class="kw">default</span>: <span class="st">&quot;#178BCA&quot;</span>
+  }],
+  <span class="kw">in</span>: {
+    <span class="dt">ports</span>: [{
+      <span class="dt">name</span>: <span class="st">&quot;value&quot;</span>,
+      <span class="dt">type</span>: <span class="st">&quot;number&quot;</span>
+    }]
+  },
+  <span class="dt">out</span>: {
+    <span class="dt">ports</span>: []
+  }
+}];
+<span class="kw">if</span> (<span class="ot">process</span>.<span class="fu">browser</span>) {
+  <span class="ot">exports</span>.<span class="fu">widgets</span> = {
+    <span class="st">&quot;hope/ui/lfg-gauge&quot;</span>: <span class="fu">require</span>(<span class="st">&quot;./lib/lfg&quot;</span>);
+    ...
+  }
+}</code></pre>
+</body>
+</html>

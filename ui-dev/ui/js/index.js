@@ -30,15 +30,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // a lot of internal modules can ONLY be loaded after major body of this index.js
 // has been executed, e.g. global.$hope etc. has been set
 // So if use import, these modules would be loaded first and causing error
-import React from "react/addons";
-import Router from "react-router";
+import React from "react";
+import ReactDOM from "react-dom";
 
 global._ = require("lodash");
 global.React = React;
+global.ReactDOM = ReactDOM;
 
 // promise of JQuery (i.e. $) is very hard to use, we'd like to wrap it to Q
 global.$Q = require("q");
 
+global.__ = require("./i18n");
 
 // We use this to add bind helpers
 // And most of the components in this app should inheirt from this
@@ -200,6 +202,67 @@ global.$hope = (function() {
     return a;
   };
 
+  function to_short_string(x) {
+    return x.toString();
+  }
+
+  function to_string(x, depth, cur_depth, indent) {
+    if (_.isUndefined(x) || _.isNull(x)) {
+      return to_short_string(x);
+    }
+
+    if (_.isString(x)) {
+      return "\"" + x + "\"";
+    }
+
+    // cannot use instanceof because this would be false if it is TypeError etc.
+    if (_.isDate(x) || _.isFunction(x)) {
+      return to_short_string(x);
+    }
+
+
+    depth = depth || 3;
+    if (depth < 0) {
+      depth = 3;
+    }
+    cur_depth = cur_depth || 0;
+    // indent is only used when there is a need to add a new line
+    if (_.isUndefined(indent)) {
+      indent = "";
+    }
+
+    var lines = [], i;
+    if (_.isArray(x)) {
+      if (cur_depth >= depth) {
+        return to_short_string(x);
+      }
+      for (i = 0; i < x.length; i++) {
+        lines.push(to_string(x[i], depth, cur_depth + 1, indent));
+      }
+      return "[" + lines.join(",") + "]";
+    }
+
+
+    if (_.isObject(x)) {
+      if (cur_depth >= depth) {
+        return to_short_string(x);
+      }
+      var new_indent = indent + "  ";   // indent 2 spaces
+      var keys = _.keys(x);
+      if (keys.length === 0) {
+        return "{}";
+      }
+      for (i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        lines.push(indent + '  ' + k + ': ' + to_string(x[k], depth, 
+          cur_depth + 1, new_indent));
+      }
+      return "{\n" + lines.join(",\n") + "\n" + indent + "}";
+    }
+    return x.toString();
+  }
+
+  ret.to_string = to_string;
 
   ret.error_to_string = function(err) {
     if (_.isString(err)) {
@@ -459,9 +522,9 @@ global.$hope = (function() {
       return;
     }
     socket.e.removeListener(this.event, this.cb);
-    socket.count[event] = socket.count[event] - 1;
-    if (socket.count[event] === 0) {
-      delete socket.count[event];
+    socket.count[this.event] = socket.count[this.event] - 1;
+    if (socket.count[this.event] === 0) {
+      delete socket.count[this.event];
     }
     if (_.size(socket.count) === 0) {
       delete all_sockets[this.url_path];
@@ -558,9 +621,7 @@ require("./actions/composer_action");
 
 
 // Render with initial state
-Router.run(require("./components/route.x"), Router.HashLocation, function(Root) {
-  React.render(React.createElement(Root), document.body);
-});
+ReactDOM.render(require("./components/route.x"), document.getElementById("react-world"));
 
 
 // Initial Data loading

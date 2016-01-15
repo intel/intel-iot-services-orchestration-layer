@@ -30,20 +30,6 @@ import Halogen from "halogen";
 
 export default class UIIDE extends ReactComponent {
 
-  static willTransitionTo(transition, params) {
-
-    if (!params.id) {
-      $hope.check(false, "UIIDE", "No id passed in");
-      transition.abort();
-    }
-    if (params.id) {
-      $hope.trigger_action("ui/set_active", {
-        ui_id: params.id
-      });
-    }
-    $hope.app.stores.ui_ide.layout();
-  }
-
   _on_ui_ide_event(e) {
     $hope.log("forceUpdate", "UIIDE");
     switch(e.event) {
@@ -91,6 +77,18 @@ export default class UIIDE extends ReactComponent {
       store.active_view.id !== id); 
   }
 
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props);
+    $hope.app.stores.ui_ide.layout();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    var id = nextProps.params.id;
+    $hope.check(id, "UIIDE - No id passed in");
+    $hope.trigger_action("ui/set_active", {
+      ui_id: id
+    });
+  }
 
   componentDidMount() {
     $hope.app.stores.ui_ide.on("ui_ide", this._on_ui_ide_event);
@@ -98,7 +96,6 @@ export default class UIIDE extends ReactComponent {
 
     window.addEventListener("resize", this._on_resize);
   }
-
 
   componentWillUnmount() {
     $hope.app.stores.ui_ide.removeListener("ui_ide", this._on_ui_ide_event);
@@ -121,9 +118,9 @@ export default class UIIDE extends ReactComponent {
       var reason = ui_store.no_active_reason;
       var reason_content;
       if (reason === "loading") {
-        reason_content = <div><Halogen.DotLoader/><br/>Loading ...</div>;
+        reason_content = <div><Halogen.DotLoader/><br/>{__("Loading") + " ..."}</div>;
       } else {
-        reason_content = <div>Failed to load due to {reason} </div>;
+        reason_content = <div>{__("Failed to load due to ") + reason}</div>;
       }
       ui = <div 
         className="hope-ui-container">

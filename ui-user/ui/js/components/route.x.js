@@ -24,18 +24,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Route, DefaultRoute, NotFoundRoute} from "react-router";
+import {Router, Route, IndexRoute} from "react-router";
+import {createHashHistory, useBeforeUnload} from "history";
 
 import HOPE from "./hope.x";
 import AppManager from "./app/app_manager.x";
 import UI from "./ui_ide/ui_ide.x";
 import NotFound from "./not_found.x";
 
+let history = useBeforeUnload(createHashHistory)({
+  queryKey: false
+});
+
 export default (
-  <Route handler={HOPE}>
-    <DefaultRoute handler={AppManager}/>
-    <Route name="app" path="app" handler={AppManager}/>
-    <Route name="ui" path="ui/:id" handler={UI}/>
-    <NotFoundRoute handler={NotFound}/>
-  </Route>
+  <Router history={history}>
+    <Route path="/" component={HOPE}>
+      <IndexRoute component={AppManager}/>
+      <Route path="app" component={AppManager}/>
+      <Route path="ui/:id" component={UI}/>
+      <Route path="*" component={NotFound}/>
+    </Route>
+  </Router>
 );

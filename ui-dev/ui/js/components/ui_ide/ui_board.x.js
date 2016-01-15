@@ -42,7 +42,7 @@ export default class UIBoard extends ReactComponent {
   }
 
   _on_drop(event, ui) {
-    var rect = React.findDOMNode(this).getBoundingClientRect();
+    var rect = ReactDOM.findDOMNode(this).getBoundingClientRect();
     var x = (event.x || event.clientX || 0) - rect.left;
     var y = (event.y || event.clientY || 0) - rect.top;
 
@@ -78,7 +78,7 @@ export default class UIBoard extends ReactComponent {
   // is always 0 so no way to accept any drop
   // we have to do so in its container
   componentDidMount() {
-    $(React.findDOMNode(this)).droppable({
+    $(ReactDOM.findDOMNode(this)).droppable({
       accept: ".widget-accept",
       drop: this._on_drop
     });      

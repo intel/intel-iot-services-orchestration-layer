@@ -33,16 +33,30 @@ var assert = require("assert");
 
 
 describe("app/graph/ui add/remove/list/get", function() {
+  //create app_store,graph_store,ui_store
+  var appstore;
+  var graphstore;
+  var uistore;
+  var em;
 
-  //create app_store, graph_store, ui_store
-  var appstore = ES.create_appstore("memory");
-  var graphstore = ES.create_graphstore("memory");
-  var uistore = ES.create_uistore("memory");
-  var em = E.create_entity_manager({
-    app_store : appstore,
-    graph_store : graphstore,
-    ui_store : uistore
+  before("create_entity_manager", function(d) {
+    ES.create_appstore$("memory").then(function(obj1) {
+      appstore = obj1;
+      return ES.create_graphstore$("memory");
+    }).then(function(obj2) {
+      graphstore = obj2;
+      return ES.create_uistore$("memory");
+    }).then(function(obj3) {
+      uistore = obj3;
+      em = E.create_entity_manager({
+        app_store : appstore,
+        graph_store : graphstore,
+        ui_store : uistore
+      });
+      d();
+    }).done();
   });
+
   var appbundle_path = B.path.join(__dirname, "./app_bundle");
 
 
@@ -52,11 +66,12 @@ describe("app/graph/ui add/remove/list/get", function() {
   var new_app1 = {
     id: 'new_app_1',
     name: 'newapp1',
-    description: undefined,
+    //description: undefined,
     path: B.path.join(appbundle_path, '/new_app_1'),
-    uis: [],
-    main_ui: undefined,
+   
+   // main_ui: undefined,
     graphs: [],
+    uis: [],
     is_builtin: false
   };
 
@@ -64,11 +79,11 @@ describe("app/graph/ui add/remove/list/get", function() {
   {
     id: 'new_app_2',
     name: 'newapp1',
-    description: undefined,
+    //description: undefined,
     path: B.path.join(appbundle_path, '/new_app_2'),
-    uis: [],
-    main_ui: undefined,
+    //main_ui: undefined,
     graphs: [],
+    uis: [],
     is_builtin: false 
   };
 
@@ -76,11 +91,11 @@ describe("app/graph/ui add/remove/list/get", function() {
   {
     id: 'new_app_3',
     name: 'newapp1',
-    description: undefined,
+    //description: undefined,
     path: B.path.join(appbundle_path, '/new_app_3'),
-    uis: [],
-    main_ui: undefined,
+    //main_ui: undefined,
     graphs: [],
+    uis: [],
     is_builtin: false
   };
 
@@ -104,6 +119,7 @@ describe("app/graph/ui add/remove/list/get", function() {
   };
 
   var app_in_store_array = [app_in_store_0, app_in_store_1, app_in_store_2];
+  var app_in_store_array1 = [new_app1, new_app2, new_app3];
 
   it("app__add$", function(d) {
       app_add_array = [
@@ -122,9 +138,12 @@ describe("app/graph/ui add/remove/list/get", function() {
     ];
 
     var count = 0;
-    for (var i = 0;i < app_add_array.length; i++) {
+    for (var i = 0; i < app_add_array.length; i++) {
       (function(index) {
         em.app__add$(app_add_array[index], appbundle_path).then(function() {
+          em.app__get$(app_add_array[index].id).then(function(v) {
+            assert.equal(_.isEqual(v, app_in_store_array1[index]), true);
+          });
           assert.equal(_.isEqual(em.app_store.store.db, app_in_store_array[index]), true);
           assert.equal(_.isEqual(em.graph_store.store.db, {}), true);
           assert.equal(_.isEqual(em.ui_store.store.db, {}), true);
@@ -138,13 +157,15 @@ describe("app/graph/ui add/remove/list/get", function() {
 
 
   it("app_remove$", function(d) {
+    
     var count = 0;
     for (var i = app_add_array.length - 1; i >= 0; i--) {
       (function(index) {
-        em.app__remove$(app_add_array[index].id).then(function() {
+        em.app__remove$(app_add_array[index].id).then(function() { 
           count++;
           if (index !== 0) {
             assert.equal(_.isEqual(em.app_store.store.db, app_in_store_array[index - 1]), true);
+            
           }
           else {
             assert.equal(_.isEqual(em.app_store.store.db, {}), true);
@@ -156,7 +177,6 @@ describe("app/graph/ui add/remove/list/get", function() {
         }).done();
       })(i);
     }
- 
   });
 
 
@@ -170,22 +190,22 @@ describe("app/graph/ui add/remove/list/get", function() {
     {
       id: 'app1',
       name: 'myapp1',
-      description: undefined,
+      //description: undefined,
       path: B.path.join(appbundle_path, '/app1'),
-      uis: [ 'ui_001', 'ui_002' ],
-      main_ui: undefined,
+      //main_ui: undefined,
       graphs: [ 'graph_001', 'graph_002' ],
+      uis: [ 'ui_001', 'ui_002' ],
       is_builtin: false 
     },
     app2: 
     {
       id: 'app2',
       name: 'myapp2',
-      description: undefined,
+      //description: undefined,
       path: B.path.join(appbundle_path, '/app2'),
-      uis: [ 'ui_003', 'ui_004' ],
-      main_ui: undefined,
+      //main_ui: undefined,
       graphs: [ 'graph_003', 'graph_004' ],
+      uis: [ 'ui_003', 'ui_004' ],
       is_builtin: false 
     }
   };
@@ -417,6 +437,8 @@ describe("app/graph/ui add/remove/list/get", function() {
 
   var graph_add_parray = [graph_add_0, graph_add_1, graph_add_2];
 
+
+
   it("graph__add$", function(d) {
     var count = 0;
     var graph_in_store_ch = _.clone(graph_in_store);
@@ -452,6 +474,9 @@ describe("app/graph/ui add/remove/list/get", function() {
       })(i);
     }
   });
+
+
+
 
   //graph__get$ test
   it("graph__get$", function(d) {
@@ -533,38 +558,38 @@ describe("app/graph/ui add/remove/list/get", function() {
     var app_values = [
       { id: 'app1',
         name: 'myapp1',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app1'),
-        uis: [ 'ui_001', 'ui_002' ],
-        main_ui: undefined,
+       // main_ui: undefined,
         graphs: [ 'graph_001', 'graph_002' ],
+        uis: [ 'ui_001', 'ui_002' ],
         is_builtin: false 
       },
       { id: 'app1',
         name: 'myapp1',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app1'),
-        uis: [ 'ui_001', 'ui_002' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_001', 'graph_002' ],
+        uis: [ 'ui_001', 'ui_002' ],
         is_builtin: false 
       },
       { id: 'app2',
         name: 'myapp2',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app2'),
-        uis: [ 'ui_003', 'ui_004' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_003', 'graph_004' ],
+        uis: [ 'ui_003', 'ui_004' ],
         is_builtin: false
       },
       { id: 'app2',
         name: 'myapp2',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app2'),
-        uis: [ 'ui_003', 'ui_004' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_003', 'graph_004' ],
+        uis: [ 'ui_003', 'ui_004' ],
         is_builtin: false
       }
     ];
@@ -741,38 +766,38 @@ describe("app/graph/ui add/remove/list/get", function() {
     var app_values = [
       { id: 'app1',
         name: 'myapp1',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app1'),
-        uis: [ 'ui_001', 'ui_002' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_001', 'graph_002' ],
+        uis: [ 'ui_001', 'ui_002' ],
         is_builtin: false 
       },
       { id: 'app1',
         name: 'myapp1',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app1'),
         uis: [ 'ui_001', 'ui_002' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_001', 'graph_002' ],
         is_builtin: false 
       },
       { id: 'app2',
         name: 'myapp2',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app2'),
-        uis: [ 'ui_003', 'ui_004' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_003', 'graph_004' ],
+        uis: [ 'ui_003', 'ui_004' ],
         is_builtin: false
       },
       { id: 'app2',
         name: 'myapp2',
-        description: undefined,
+        //description: undefined,
         path: B.path.join(appbundle_path, '/app2'),
-        uis: [ 'ui_003', 'ui_004' ],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [ 'graph_003', 'graph_004' ],
+        uis: [ 'ui_003', 'ui_004' ],
         is_builtin: false
       }
     ];
@@ -794,14 +819,29 @@ describe("app/graph/ui add/remove/list/get", function() {
 
 
 describe("app/graph/ui update", function() {
-  var appstore = ES.create_appstore("memory");
-  var graphstore = ES.create_graphstore("memory");
-  var uistore = ES.create_uistore("memory");
-  var em = E.create_entity_manager({
-    app_store : appstore,
-    graph_store : graphstore,
-    ui_store : uistore
+  var appstore;
+  var graphstore;
+  var uistore;
+  var em;
+
+  before("create_entity_manager",function(d) {
+    ES.create_appstore$("memory").then(function(obj1) {
+      appstore = obj1;
+      return ES.create_graphstore$("memory");
+    }).then(function(obj2) {
+      graphstore = obj2;
+      return ES.create_uistore$("memory");
+    }).then(function(obj3) {
+      uistore = obj3;
+      em = E.create_entity_manager({
+        app_store : appstore,
+        graph_store : graphstore,
+        ui_store : uistore
+      });
+      d();
+    }).done();
   });
+
   var appbundle_path = B.path.join(__dirname, "./app_bundle");
 
 
@@ -827,12 +867,12 @@ describe("app/graph/ui update", function() {
      new_app_1: 
       { id: 'new_app_1',
         name: 'newname!',
-        description: 'add the description!!',
         path: B.path.join(appbundle_path, '/new_app_1'),
-        uis: [],
-        main_ui: undefined,
+        //main_ui: undefined,
         graphs: [],
-        is_builtin: false 
+        uis: [],
+        is_builtin: false,
+        description: 'add the description!!' 
       } 
      };
 
@@ -938,7 +978,6 @@ describe("app/graph/ui update", function() {
       d();
     }).done();
   });
-
 });
 
 

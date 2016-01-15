@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import In from "./in.x";
 import Out from "./out.x";
 import class_names from "classnames";
+import color from "color";
 import FONT_AWESOME from "../../lib/font-awesome.js";
 
 export default class Node extends ReactComponent {
@@ -119,14 +120,14 @@ export default class Node extends ReactComponent {
   }
 
   componentDidMount() {
-    var dom_node = React.findDOMNode(this.refs.header);
+    var dom_node = this.refs.box;
     dom_node.addEventListener("trackstart", this._on_track_start);
     dom_node.addEventListener("track", this._on_track);
     dom_node.addEventListener("trackend", this._on_track_end);
   }
 
   componentWillUnmount() {
-    var dom_node = React.findDOMNode(this.refs.header);
+    var dom_node = this.refs.box;
     dom_node.removeEventListener("trackstart", this._on_track_start);
     dom_node.removeEventListener("track", this._on_track);
     dom_node.removeEventListener("trackend", this._on_track_end);
@@ -188,19 +189,6 @@ export default class Node extends ReactComponent {
 
     var tags = [];
 
-    function darken(rgb) {
-      var match = /^#(\w{2})(\w{2})(\w{2})$/.exec(rgb);
-
-      if (!match) {
-        return rgb;
-      }
-      function cvt(i) {
-        var c = (parseInt(match[i], 16) * 0.8 | 0).toString(16);
-        return c.length === 1 ? ("0" + c) : c;
-      }
-      return "#" + cvt(1) + cvt(2) + cvt(3);
-    }
-
     function render_tag(type, x, y) {
       if (node.$has_tags(type)) {
         var tag = view.get("tag", node[type].tags[0].ref); //TODO: Single tag one side only
@@ -218,8 +206,8 @@ export default class Node extends ReactComponent {
         tags.push(
           <g key={type}>
             <rect x={x} y={y} width={tagsz + 2} height={tagsz} fill={rgb} strokeWidth={0}/>
-            <path fill={darken(rgb)} strokeWidth={0} d={path} />
-            <text className="hope-graph-tag" x={x + 3} y={y + 5}>{tag.name}</text>
+            <path fill={color(rgb).darken(0.2).rgbString()} strokeWidth={0} d={path} />
+            <text className="hope-graph-tag" x={x + 3} y={y + 8}>{tag.name}</text>
           </g>
         );
       }
@@ -289,14 +277,14 @@ export default class Node extends ReactComponent {
         );
     }
 
-    var _name = service ? service.$name() : node.name;
-    _name = _name || "__unknown__";
+    var _name = node.name || (service ? service.$name() : "") || spec.name || "__unknown__";
     return (
-      <g className={class_names("hope-graph-node", {"hope-graph-selected": this._is_selected()})}>
-        <g onClick={this._on_click}>
+      <g className={class_names("hope-graph-node", {"hope-graph-selected": !view.edge_previewing && this._is_selected()})}>
+        <g ref="box" onClick={this._on_click}>
           <path className={"hope-graph-node-title-bar " + $hope.color(styles.color, "fill")} 
-                d={hdr_path} ref="header" />
-          <path className={(this._is_animated() ? "hope-graph-node-shadow" : "")}
+                d={hdr_path} />
+          <path className={(this._is_animated() ? "hope-graph-node-shadow" :
+                  $hope.color(_.isEmpty(spec) ? 1 : null, "fill"))}
                 d={body_path} />
           {binding_items}
           {groups}

@@ -408,7 +408,7 @@ class UIView {
     ui_store.data.send_data$(widget_id, data).then(() => {
       ui_store.emit("ui", {id: this.id, type: "ui", event: "data/sended"});
     }).catch(err => {
-      $hope.notify("error", "Failed to send the data because", err);
+      $hope.notify("error", __("Failed to send the data because"), err);
     }).done();
   }
 
@@ -576,7 +576,7 @@ class UIStore extends EventEmitter {
     }).catch(err => {
       $hope.check_warn(false, "ui", "failed due to", err);
       this.no_active_reason = $hope.error_to_string(err);
-      $hope.notify("error", "Failed to show the ui because", 
+      $hope.notify("error", __("Failed to show the UI because"),
         this.no_active_reason);
       
       this.emit("ui", {type: "ui", id: ui_id, event: "set_active"});
@@ -702,7 +702,7 @@ class UIStore extends EventEmitter {
     this.save_active$().then(() => {
       this.emit("ui", {type: "ui", id: view.id, event: "saved"});
     }).catch(err => {
-      $hope.notify("error", "UI failed to save because", err.toString());
+      $hope.notify("error", __("Failed to save UI because"), err.toString());
     }).done();
   }
 
@@ -719,7 +719,7 @@ class UIStore extends EventEmitter {
   remove_ui(ids) {
     $hope.app.server.ui.remove$(ids).done(data => {
       if (data.error) {
-        $hope.notify("error", "Failed to delete ui because", data.error);
+        $hope.notify("error", __("Failed to delete UI because"), data.error);
         return;
       }
       ids.map(id => {
@@ -743,6 +743,30 @@ class UIStore extends EventEmitter {
     }
 
     delete this.views[id];
+  }
+
+  // We need to update whole window when start or stop any workflow
+  // referenced to this widget in same app
+  handle_changed_event(started, stoped) {
+    if (!this.active_view) {
+      return;
+    }
+
+    var need_update = false;
+    var myappid = this.active_view.get_app_id();
+
+    if (_.isArray(started)) {
+      _.forEach(started, id => {
+        var app = $hope.app.stores.app.get_app_by_graph_id(id);
+        if (app && app.id === myappid) {
+          need_update = true;
+        }
+      });
+    }
+
+    if (need_update) {
+      location.reload();
+    }
   }
 
   handle_action(action, data) {

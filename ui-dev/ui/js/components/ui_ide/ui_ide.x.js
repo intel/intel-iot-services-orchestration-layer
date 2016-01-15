@@ -31,29 +31,42 @@ import FileTabs from "./file_tabs.x";
 import UIBoard from "./ui_board.x";
 
 import {Row, Col} from "react-bootstrap";
-import {Link} from "react-router";
+import {Lifecycle} from "react-router";
 
 import Halogen from "halogen";
 
-export default class UIIDE extends ReactComponent {
+export default React.createClass({
 
-  static willTransitionTo(transition, params) {
+  mixins: [ Lifecycle ],
 
-    if (!params.id) {
-      $hope.check(false, "UIIDE", "No id passed in");
-      transition.abort();
+  routerWillLeave(nextLocation) {
+    if (_.startsWith(nextLocation.pathname, "/ui_ide/")) {
+      return;
     }
-    if (params.id) {
-      $hope.trigger_action("ui/set_active", {
-        ui_id: params.id
-      });
+    var view = $hope.app.stores.ui.active_view;
+    var app = view ? view.get_app() : null;
+    var modified = false;
+    _.forEach($hope.app.stores.ui.views, v => {
+      if (v.get_app() === app) {
+        modified |= v.modified;
+      }
+    });
+    if (modified) {
+      return __("Your edit is NOT saved! Are you READLLY want to leave?");
     }
-    $hope.app.stores.ui_ide.layout();
-  }
+    if (!_.startsWith(nextLocation.pathname, "/ide/") &&
+        !_.startsWith(nextLocation.pathname, "/ui_ide/")) {
+      $hope.app.stores.app.active_app(null);
+    }
+  },
 
   _on_ui_ide_event(e) {
     $hope.log("forceUpdate", "UIIDE");
     switch(e.event) {
+      case "update/toolbar":
+        $hope.log("forceUpdate", "UIIDE - toolbar");
+        this.refs.toolbar.forceUpdate();
+        break;
       case "update/inspector":
         $hope.log("forceUpdate", "UIIDE - inspector");
         this.refs.inspector.forceUpdate();
@@ -63,13 +76,13 @@ export default class UIIDE extends ReactComponent {
         this.forceUpdate();
         break;
     }
-  }
+  },
 
   _on_ui_event(e) {
     $hope.log("forceUpdate", "UIIDE");
     switch(e.event) {
       case "saved":
-        $hope.notify("success", "UI successfully saved!");
+        $hope.notify("success", __("UI successfully saved!"));
         break;
       case "data/received":
         if (this.refs.ui_board) {
@@ -97,6 +110,15 @@ export default class UIIDE extends ReactComponent {
             return _.find(a.uis, "id", view.id);
           });
         }
+        if (e.event === "set_active") {
+          let query = this.props.location.query;
+          if (query && query.widget) {
+            $hope.trigger_action("ui/select/widget", {
+              ui_id: view.id, 
+              id: query.widget
+            });
+          }
+        }
         this.forceUpdate();
         break;
       case "status/changed":
@@ -106,24 +128,24 @@ export default class UIIDE extends ReactComponent {
         this.forceUpdate();
         break;
     }
-  }
+  },
 
   _on_app_event() {
     $hope.log("forceUpdate", "UIIDE");
     this.forceUpdate();
-  }
+  },
 
   _on_library_event() {
     $hope.log("forceUpdate", "UIIDE");
     this.forceUpdate();
-  }
+  },
 
 
   _on_resize() {
     $hope.app.stores.ui_ide.layout();
     $hope.log("forceUpdate", "UI_IDE");
     this.forceUpdate();
-  }
+  },
 
   _need_switch_current_view() {
     // we might need to switch the IDE to the graph required
@@ -131,7 +153,7 @@ export default class UIIDE extends ReactComponent {
     var store = $hope.app.stores.ui;
     return id && (!store.active_view || 
       store.active_view.id !== id); 
-  }
+  },
 
   _on_key_up(e) {
     var view = $hope.app.stores.ui.active_view;
@@ -145,8 +167,20 @@ export default class UIIDE extends ReactComponent {
         }
         break;
     }
-  }
+  },
 
+  componentWillMount() {
+    this.componentWillReceiveProps(this.props);
+    $hope.app.stores.ui_ide.layout();
+  },
+
+  componentWillReceiveProps(nextProps) {
+    var id = nextProps.params.id;
+    $hope.check(id, "UIIDE - No id passed in");
+    $hope.trigger_action("ui/set_active", {
+      ui_id: id
+    });
+  },
 
   componentDidMount() {
     $hope.app.stores.ui_ide.on("ui_ide", this._on_ui_ide_event);
@@ -156,12 +190,10 @@ export default class UIIDE extends ReactComponent {
 
     window.addEventListener("resize", this._on_resize);
     document.addEventListener("keyup", this._on_key_up);
-  }
+  },
 
 
   componentWillUnmount() {
-    $hope.app.stores.app.active_app(null);
-
     $hope.app.stores.ui_ide.removeListener("ui_ide", this._on_ui_ide_event);
     $hope.app.stores.ui.removeListener("ui", this._on_ui_event);
     $hope.app.stores.app.removeListener("app", this._on_app_event);
@@ -169,7 +201,7 @@ export default class UIIDE extends ReactComponent {
 
     window.removeEventListener("resize", this._on_resize);
     document.removeEventListener("keyup", this._on_key_up);
-  }
+  },
 
   render() {
     var ui_ide_store = $hope.app.stores.ui_ide;
@@ -177,15 +209,6 @@ export default class UIIDE extends ReactComponent {
     var view = ui_store.active_view;
     var app = view ? view.get_app() : null;
     var ui;
-
-    var to_graph = null;
-    var active_graph = $hope.app.stores.graph.active_view;
-    if (active_graph) {
-      to_graph = active_graph.id;
-    }
-    else if (app && app.graphs && app.graphs.length > 0) {
-      to_graph = app.graphs[0].id;
-    }
 
     // we only show the active view
     if (view && !this._need_switch_current_view()) {
@@ -195,15 +218,15 @@ export default class UIIDE extends ReactComponent {
       var reason = ui_store.no_active_reason;
       var reason_content;
       if (reason === "loading") {
-        reason_content = <div><Halogen.DotLoader/><br/>Loading ...</div>;
+        reason_content = <div><Halogen.DotLoader/><br/>{__("Loading") + " ..."}</div>;
       } else {
-        reason_content = <div>Failed to load due to {reason} </div>;
+        reason_content = <div>{__("Failed to load due to ") + reason}</div>;
       }
       ui = <div 
         className="hope-ui-container">
         <div style={{
           position: "absolute",
-          left: (ui_ide_store.ui_ide.width) / 2,
+          left: (ui_ide_store.ui_ide.width) / 2 - ui_ide_store.widget_library.width,
           top: (ui_ide_store.ui_ide.height) / 2 - 5,
           color: "#aaa"
         }}> {reason_content}
@@ -234,12 +257,7 @@ export default class UIIDE extends ReactComponent {
             height: ui_ide_store.file_tabs.height
           }}>
             <FileTabs  ref="file_tabs" app={app}
-                width={ui_ide_store.file_tabs.width - (to_graph ? 70 : 0)} />
-            {to_graph &&
-              <Link to="ide" params={{id: to_graph}} >
-                <div className="hope-ide-switcher">Workflow</div>
-              </Link>
-            }
+                width={ui_ide_store.file_tabs.width} />
           </Row>
           <Row style={{
             height: ui_ide_store.ui_ide.height
@@ -252,4 +270,4 @@ export default class UIIDE extends ReactComponent {
     );
 
   }
-}
+});

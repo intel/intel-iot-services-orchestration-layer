@@ -136,7 +136,7 @@ exports.remove_hope_thing$ = function(thing_id, em, changed_list) {
 /**
  * add a hope service from frontend. it will affect the service_store, thing_store,
  * and may be specbundle/spec store
- * @param {Object} service      service objecy
+ * @param {Object} service      service object
  * @param {Object} specbundle   {
  *                                id:
  *                                name:

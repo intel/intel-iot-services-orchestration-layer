@@ -15,7 +15,7 @@ var categories = {
   "*":      false,
   "message": false,
   "center": true,
-  "entity": true,
+  "entity": false,
   "hub": false,
   "heartbeat": false,
   "wfe": false,
@@ -23,6 +23,16 @@ var categories = {
 };
 
 B.log.configure_categories(categories);
+
+process.on("uncaughtException", function(err) {
+    console.log(">>>>> Unhandled Exception >>>>>>");
+    if (_.isError(err)) {
+      console.log(err.stack);
+    } else {
+      console.log(B.to_string(err));
+    }
+});
+
 
 program
   .version(version)
@@ -65,6 +75,7 @@ if (mnode_params && !mnode_params.id) {
 }
 
 S.enable_debug_shell();
+
 
 process.on("SIGINT", function() {
   B.log("hope", "... CENTER EXITING ...");

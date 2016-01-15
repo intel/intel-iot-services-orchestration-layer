@@ -55,7 +55,7 @@ import g_spec_manager from "./spec";
 // an In object, and the items in ports of in would be deserialized to InPorts
 // 
 // The deserialized objects would have a function $serialize() so we know 
-// whether it is an deserialized object or just raw from prased_json
+// whether it is an deserialized object or just raw from parsed_json
 // 
 // To ensure there is no name conflicts, all newly created/derived fields in 
 // the deserialized object should be prefixed with $
@@ -91,6 +91,12 @@ class _InOutPortBase {
     this.$type = type;
     this.$node = node;
     _.merge(this, parsed_json);
+
+    // For compatibility
+    if ("passive" in parsed_json) {
+      delete this.passive;
+      this.no_trigger = parsed_json.passive;
+    }
   }
 
   $get_edges() {
@@ -242,7 +248,7 @@ class Node {
     this.$graph = graph;
     // default
     _.merge(this, {
-      name: "anonymous",
+      name: "",
       description: "",
       in: {},
       out: {},
@@ -250,14 +256,37 @@ class Node {
     });
 
     // load the spec as the template
-    _.merge(this, this.$get_spec());
+    var spec = this.$get_spec();
+    _.merge(this, spec);
+  
+    // don't use spec name but description
+    this.name = "";
+
     // but we cannot use the id and type brought by spec
     _.assign(this, {
       id: $hope.uniqueId("NODE_"),
       $type: "node"
     });
-    // overwite
+
+    if (!spec.is_ui) {
+      var defv = {}, configs = spec.config || [];
+      if (_.isArray(spec.extra)) {
+        configs = configs.concat(spec.extra);
+      }
+      _.forEach(configs, cfg => {
+        if ("default" in cfg) {
+          defv[cfg.name] = cfg.default;
+        }
+      });
+      this.config = defv;
+    }
+
+    // overwrite
     _.merge(this, parsed_json);
+
+    if (spec.is_ui) {
+      delete this.config;
+    }
 
     this.$binding_ = this.$get_binding();
     this.$styles_ = this.$get_styles();
@@ -276,7 +305,7 @@ class Node {
     var spec = this.$get_spec();
     // remove the duplicated primitive
     _.forOwn(ret, (v, k) => {
-      if (!_.isObject(k) && v === spec[k]) {
+      if (_.isEqual(v, spec[k])) {
         delete ret[k];
       }
     });
@@ -445,6 +474,27 @@ class Node {
     var spec = this.$get_spec();
     return !(spec && spec[io] && spec[io].ports && _.findIndex(spec[io].ports, "name", name) >= 0);
   }
+
+  $get_name() {
+    if (this.name) {
+      return this.name;
+    }
+
+    var hub, service;
+    var binding = this.$get_binding();
+    var hub_manager = $hope.app.stores.hub.manager;
+    if (binding && binding.type === "fixed") {
+      if (binding.hub) {
+        hub = hub_manager.get_hub(binding.hub);
+        if (hub) {
+          service = hub_manager.get_service(binding.hub, binding.thing, binding.service);
+        }
+      }
+    }
+
+    var spec = this.$get_spec();
+    return this.name || (service ? service.$name() : "") || spec.name || "__unknown__";
+  }
 }
 
 
@@ -464,26 +514,27 @@ class Edge {
     this.$styles_ = this.$get_styles();
 
     // deserialize the port
-    if (this.source) {
-      try {
-        this.source = graph.$get("node", this.source.node)
-                        .out.$ports_index[this.source.port];
-      } catch (e) {
-        $hope.log.warn("Graph", 
-          "Exception got when deserialize source port in edge", parsed_json, e.stack);
-        this.source = null;
-      }
+    var srcn = graph.$get("node", this.source.node);
+    if (!srcn) {
+      throw new Error("[Edge] Failed to get source node '" + this.source.node + "' of " + this.id);
     }
-    if (this.target) {
-      try {
-        this.target = graph.$get("node", this.target.node)
-                        .in.$ports_index[this.target.port];
-      } catch (e) {
-        $hope.log.warn("Graph", 
-          "Exception got when deserialize target port in edge", parsed_json, e.stack);
-        this.target = null;
-      }
-    }   
+
+    var srcp = this.source.port;
+    this.source = srcn.out.$ports_index[srcp];
+    if (!this.source) {
+      throw new Error("[Edge] Failed to get source port '" + srcp + "' of " + this.id);
+    }
+
+    var tgtn = graph.$get("node", this.target.node);
+    if (!tgtn) {
+      throw new Error("[Edge] Failed to get target node '" + this.target.node + "' of " + this.id);
+    }
+
+    var tgtp = this.target.port;
+    this.target = tgtn.in.$ports_index[tgtp];
+    if (!this.target) {
+      throw new Error("[Edge] Failed to get target port '" + tgtp + "' of " + this.id);
+    }
   }
 
   $serialize() {
@@ -585,7 +636,13 @@ export default class Graph {
       var items = (parsed_json.graph && parsed_json.graph[key]) || [];
       self[key] = [];
       for (var i = 0; i < items.length; i++) {
-        self[key].push($hope.create_object(type_mapping[type], items[i], self));
+        try {
+          self[key].push($hope.create_object(type_mapping[type], items[i], self));
+        }
+        catch(e) {
+          console.log(e);
+          $hope.notify("error", e.message);
+        }
       }
       // throw error for duplicated ids
       self["$" + key + "_index"] = $hope.array_to_hash(self[key], "id", null, true);
@@ -668,8 +725,10 @@ export default class Graph {
       _.remove(this[key], o => o.id === id);
       delete this["$" + key + "_index"][id];
 
-      // remove additional info
-      ret.$remove_styles();
+      if (ret.$remove_styles) {
+        // remove additional info
+        ret.$remove_styles();
+      }
 
       if (type === "node") {
         ret.$remove_binding();

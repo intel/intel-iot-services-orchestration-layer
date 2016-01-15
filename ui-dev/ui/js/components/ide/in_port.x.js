@@ -92,7 +92,7 @@ export default class InPort extends ReactComponent {
           <text className="hope-graph-port-default"
                 key="defval"
                 x={t.x}
-                y={t.y - 6}>
+                y={t.y - 2}>
             { val }
           </text>;
       }
@@ -103,7 +103,7 @@ export default class InPort extends ReactComponent {
             <text className="hope-graph-port-default"
                 key="defval"
                 x={t.x - linelen - r}
-                y={t.y - 2}>
+                y={t.y + 3}>
               { val }
             </text>;
         }
@@ -115,7 +115,7 @@ export default class InPort extends ReactComponent {
         <text className={"hope-graph-port-text"}
               key="name"
               x={t.x + (node.in.groups ? 10 : 5)} y={t.y + 3}>{name}</text>
-        <line className={"hope-graph-in-line" + (port.passive ? " hope-graph-dash" : "") + $hope.color(color, "stroke")}
+        <line className={"hope-graph-in-line" + (port.no_trigger ? " hope-graph-dash" : "") + $hope.color(color, "stroke")}
               x1={t.x} y1={t.y} x2={t.x - linelen} y2={t.y} />
         { circle }
         { inner_circle }

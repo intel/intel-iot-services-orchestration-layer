@@ -1,0 +1,26 @@
+{
+  "id": "analogread_1_1_startkit",
+  "name": "analogread_1_1_startkit",
+  "in": {
+    "ports": [
+      {
+        "name": "trigger"
+      }
+    ]
+  },
+  "out": {
+    "ports": [
+      {
+        "name": "value",
+        "type": "number"
+      }
+    ]
+  },
+  "config": [
+    {
+      "name": "pin",
+      "type": "int",
+      "required": true
+    }
+  ]
+}

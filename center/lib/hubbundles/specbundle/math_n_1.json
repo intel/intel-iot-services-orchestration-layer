@@ -1,0 +1,22 @@
+{
+  "id": "math_n_1_builtin",
+  "name": "math_n_1_builtin",
+  "description":"two or more number inports and one number outport",
+  "out": {
+    "ports": [{
+      "name": "out",
+      "type": "number"
+    }]
+  },
+  "in": {
+    "allow_to_add": true,
+    "ports": [{             
+      "name": "in1",
+      "type": "number"
+    },{
+      "name": "in2",
+      "type": "number"
+    }]
+  }
+
+}

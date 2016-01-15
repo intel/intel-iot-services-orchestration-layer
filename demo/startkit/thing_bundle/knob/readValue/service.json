@@ -1,0 +1,8 @@
+{
+  "name": "readValue",
+  "description": "read the value of the knob",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "switch",
+  "description": "turn on or off the buzzer. status = on",
+  "spec":"digitalwrite_1_1_startkit",
+  "ui": {
+
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "detectMotion",
+  "description": "whenever triggered, bool = (whether people moves)",
+  "spec":"digitalread_1_1_startkit",
+  "ui": {
+
+  }
+}
