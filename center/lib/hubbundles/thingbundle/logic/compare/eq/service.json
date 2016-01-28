@@ -4,5 +4,6 @@
   "spec":"compare_2_1_builtin",
   "ui":{
 
-  }
+  },
+  "doc":"builtin/logic_compare.html#eq"
 }

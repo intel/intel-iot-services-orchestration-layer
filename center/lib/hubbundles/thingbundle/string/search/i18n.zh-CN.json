@@ -1,0 +1,4 @@
+{
+  "search":"搜索子串",
+  "whether the str2 is sub string of str1, if yes, out = true, otherwise, out = false":"如果str2是str1的子串，返回true，否则返回false"
+}

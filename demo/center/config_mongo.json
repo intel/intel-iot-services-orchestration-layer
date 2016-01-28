@@ -8,7 +8,7 @@
       "$type": "http/WebApp",
       "$params": {
         "port": 8080,
-        "static": "../../../ui-dev/public",
+        "static": ["../../ui-dev/public", "../../doc"],
         "web_socket": true
       }
     },
@@ -17,7 +17,7 @@
       "$type": "http/WebApp",
       "$params": {
         "port": 3000,
-        "static": "../../../ui-user/public",
+        "static": "../../ui-user/public",
         "web_socket": true
       }
     },

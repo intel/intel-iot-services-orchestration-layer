@@ -1,0 +1,165 @@
+{
+  "assemble" : {
+    "broker_url": "http://localhost:16666/broker",
+    "base_url": "http://localhost:18888",
+
+    "web_app_for_port": {
+      "$type": "http/WebApp",
+      "$params": {
+        "port": 18888
+      }
+    },
+    "route_table": {
+      "$type": "RouteTable",
+      "$params": {
+        "$type": "Store",
+        "$params": "memory"
+      }
+    },
+    "route_rules": [{
+        "$type": "RouteRule",
+        "$params": "auto"
+      }, {
+        "$type": "RouteRule",
+        "$params": ["select", {
+          "name": "http",
+          "impl": "http"
+        }]
+      }],
+    "router": {
+      "$type": "Router",
+      "$params": ["$route_table", {
+        "rules": {
+          "send": "$route_rules",
+          "subscribe": "$route_rules",
+          "subscribe_all": "$route_rules",
+          "publish": "$route_rules"
+      }}]
+    },
+    "mnode": {
+      "$type": "MNode",
+      "$params": ["$router", {
+        "name": "hub_a",
+        "ports": {
+          "accept": [{
+            "name": "http",
+            "impl": "http",
+            "config": {
+              "app": "$web_app_for_port",
+              "base_url": "$base_url",
+              "path": "/accept",
+              "broker_url": "$broker_url"
+            }
+          }],
+          "send": [{
+            "name": "http",
+            "impl": "http",
+            "config": {
+              "broker_url": "$broker_url"
+            }
+          }],
+          "subscribe": [{
+            "name": "http",
+            "impl": "http",
+            "config": {
+              "app": "$web_app_for_port",
+              "base_url": "$base_url",
+              "path": "/subscribe",
+              "path_for_all": "/subscribe_all",
+              "broker_url": "$broker_url"
+            }
+          }],
+          "publish": [{
+            "name": "http",
+            "impl": "http",
+            "config": {
+              "broker_url": "$broker_url"
+            }
+          }]
+        }
+      }]
+    },
+
+    "hub_store": {
+      "$type": "HubStore",
+      "$params": "memory"
+    },
+    "thing_store": {
+      "$type": "ThingStore",
+      "$params": "memory"
+    },
+    "service_store": {
+      "$type": "ServiceStore",
+      "$params": "memory"
+    },
+    "spec_store": {
+      "$type": "SpecStore",
+      "$params": "memory"
+    },
+    "service_store": {
+      "$type": "ServiceStore",
+      "$params": "memory"
+    },
+    "specbundle_store": {
+      "$type": "SpecBundleStore",
+      "$params": "memory"
+    },
+    "session_store": {
+      "$type": "SessionStore",
+      "$params": "memory"
+    },
+    "graph_store": {
+      "$type": "GraphStore",
+      "$params": "memory"
+    },
+    "app_store": {
+      "$type": "AppStore",
+      "$params": "memory"
+    },    
+    "ui_store": {
+      "$type": "UiStore",
+      "$params": "memory"
+    },  
+
+    "entity_manager": {
+      "$type": "EntityManager",
+      "$params": [{
+        "hub_store": "$hub_store",
+        "thing_store": "$thing_store",
+        "service_store": "$service_store",
+        "spec_store": "$spec_store",
+        "specbundle_store": "$specbundle_store",
+        "session_store": "$session_store",
+        "graph_store": "$graph_store",
+        "app_store": "$app_store",
+        "ui_store": "$ui_store"
+      }]
+    },
+
+    "session_manager": {
+      "$type": "SessionManager",
+      "$params": {
+        "mnode" : "$mnode",
+        "em" : "$entity_manager"
+      }
+    },
+
+    "hub": {
+      "$type": "Hub",
+      "$params": {
+        "id": "$id",
+        "name" : "GroveDevice",
+        "config_path" : "$config_path",
+        "mnode": "$mnode",
+        "entity_manager": "$entity_manager",
+        "thingbundle_path": "./thing_bundle",
+        "session_manager": "$session_manager",
+        "heartbeat": {
+          "interval": 20000
+        }
+      }
+    }
+  }
+}
+
+

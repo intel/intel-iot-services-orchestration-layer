@@ -122,7 +122,10 @@ export default class WidgetLibrary extends ReactComponent {
               onChange={this._on_search}
               initialSearchString={library_store.search_string}/>
           </Row>
-          <Row>
+          <Row style={{
+            overflowY: "auto",
+            height: $hope.app.stores.ui_ide.widget_library.height - 70
+          }}>
             <Tree.Node defaultExpanded={true} className="hope-panel-lib-view">
               {bundles}
             </Tree.Node>

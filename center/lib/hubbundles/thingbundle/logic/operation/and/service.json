@@ -4,5 +4,6 @@
   "spec": "logical_op_2_1_builtin",
   "ui": {
 
-  }
+  },
+  "doc":"builtin/logic_operation.html#and"
 }

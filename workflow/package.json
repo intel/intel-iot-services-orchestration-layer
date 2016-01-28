@@ -12,7 +12,7 @@
   "name": "hope-workflow",
   "homepage": "",
   "description": "Workflow Engine of IoT Services Orchestration Layer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": ""

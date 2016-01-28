@@ -31,8 +31,9 @@ function f() {
   try {
     B.check(false, "category", "Failed");
   } catch(e) {
+    console.log("should have error:", e);
 
   }
 }
 
-f();
+f();//it should throw error

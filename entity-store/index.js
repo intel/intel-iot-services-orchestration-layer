@@ -137,6 +137,17 @@ exports.create_uistore$ = function(type, config) {
   });
 };
 
+exports.create_userstore$ = function(type, config) {
+  var UserStore = require("./lib/user.js");
+  var s;
+  return Promise.resolve().then(function() {
+    s = new UserStore(type, config);
+    return s.init$();
+  }).then(function() {
+    return s;
+  });
+};
+
 /**
  * Factories for assemble
  * @type {Object}

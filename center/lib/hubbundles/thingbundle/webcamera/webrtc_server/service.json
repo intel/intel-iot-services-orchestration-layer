@@ -4,5 +4,6 @@
   "spec": "switch_1_1_builtin",
   "ui": {
 
-  }
+  },
+  "doc":"builtin/webcamera.html#webrtc_server"
 }

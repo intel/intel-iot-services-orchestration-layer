@@ -155,7 +155,7 @@ export default class PanelNavigator extends ReactComponent {
       //var styles = node.$get_styles();
       var pt = node.$get_position();
 
-      c.strokeStyle = "white";
+      c.strokeStyle = _.isEmpty(node.$lint_result) ? "white" : "red";
       c.fillStyle = "black";
       c.beginPath();
       roundRect(pt.x * scale, pt.y * scale, nodesz.width * scale, nodesz.height * scale, 5);

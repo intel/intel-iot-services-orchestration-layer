@@ -57,7 +57,7 @@ export default class Service extends ReactComponent {
     let view = $hope.app.stores.graph.active_view;
     var service = this.props.service;
     var div = document.createElement("div");
-    ReactDOM.render(<DragFromLib scale={view ? view.zoom_scale : 1} text={service.name}/>, div);
+    ReactDOM.render(<DragFromLib scale={view ? view.zoom_scale : 1} text={service.$name()}/>, div);
 
     $(div).css("z-index", 1000);
 
@@ -82,12 +82,12 @@ export default class Service extends ReactComponent {
 
   _on_click_edit() {
     var service = this.props.service;
-    this.refs.overlay.toggle();
-    Dialog.show_create_dialog(__("Edit Service"), this._on_save_service, __("Save"), service.name, service.description);
+    this.refs.overlay.hide();
+    Dialog.show_create_dialog(__("Edit Service"), this._on_save_service, __("Save"), service.$name(), service.$description());
   }
 
   _on_delete() {
-    this.refs.overlay.toggle();
+    this.refs.overlay.hide();
     $hope.confirm(__("Delete from Server"),
       __("This would delete the service on the server. Please make sure this is what you expect!"),
       "warning", () => {
@@ -121,10 +121,17 @@ export default class Service extends ReactComponent {
     this.forceUpdate();
   }
 
+  _on_help() {
+    var service = this.props.service;
+
+    Dialog.show_html_dialog(location.origin + "/" + service.$doc());
+  }
+
   render() {
     var service = this.props.service;
     var is_builtin = service.$thing.is_builtin;
     var icon = service.$icon();
+    var name = service.$name() || __("__unknown__");
 
     var popover =
       <Popover id="PO-svc-menu">
@@ -132,9 +139,20 @@ export default class Service extends ReactComponent {
         <MenuItem onSelect={this._on_delete}>{__("Delete")}</MenuItem>
       </Popover>;
 
+    var tooltip_title =
+      <div className="hope-service-tooltip">
+        <span>{name}</span>
+        {service.doc &&
+          <span onClick={this._on_help}
+            className="fa fa-book hope-service-tooltip-icon" />
+        }
+      </div>;
+
     var tooltip =
-      <Popover id="PO-svc-desc" title={service.$name()}>
-        {service.description}
+      <Popover id="PO-svc-desc" title={tooltip_title}>
+        <div className="hope-service-tooltip">
+          {service.$description()}
+        </div>
       </Popover>;
 
     return (
@@ -148,7 +166,7 @@ export default class Service extends ReactComponent {
         </Col>
         <Overlay overlay={tooltip}>
           <Col xs={7}>
-            {service.$name() || "__unknown__"}
+            {name}
           </Col>
         </Overlay>
         {!is_builtin &&

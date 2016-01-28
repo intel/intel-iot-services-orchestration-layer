@@ -189,4 +189,18 @@ Dialog.show_svg_animation_dialog = function(title, svg) {
     </Dialog>, dlg_mount_node);
 };
 
+//////////////////////////////////////////////////////////////////
+// Show html help dialog
+//////////////////////////////////////////////////////////////////
+
+Dialog.show_html_dialog = function(url) {
+  ReactDOM.render(
+    <Dialog clazz=" html-dialog" no_footer={1} title={__("Help")} modal={{
+        dialogClassName: "html-dialog-content"
+      }}>
+      <iframe id="html-dialog-iframe" src={url} />
+    </Dialog>, dlg_mount_node);
+};
+
+
 module.exports = Dialog;

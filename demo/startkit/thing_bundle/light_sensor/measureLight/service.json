@@ -3,6 +3,6 @@
   "description": "measure the ambient light",
   "spec":"analogread_1_1_startkit",
   "ui": {
-
-  }
+  },
+  "doc":"startkit/light_sensor.html#measureLight"
 }

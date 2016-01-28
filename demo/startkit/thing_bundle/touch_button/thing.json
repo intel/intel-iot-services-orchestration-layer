@@ -1,4 +1,4 @@
 {
   "name": "touch button",
-  "description": "detect whether it is touched"
+  "description": "touch button on GPIO"
 }

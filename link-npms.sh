@@ -60,6 +60,9 @@ npm link ../session-manager
 npm link ../hub
 npm link ../workflow
 
+cd ../demo
+npm install
+
 cd ../ui-widgets
 npm install
 gulp build

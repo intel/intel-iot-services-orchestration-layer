@@ -457,7 +457,7 @@ class UIView {
     ui_store.data.send_data$(widget_id, data).then(() => {
       ui_store.emit("ui", {id: this.id, type: "ui", event: "data/sended"});
     }).catch(err => {
-      $hope.notify("error", __("Failed to send the data because"), err);
+      $hope.notify("error", __("Failed to send the data because"), err.message);
     }).done();
   }
 
@@ -823,7 +823,7 @@ class UIStore extends EventEmitter {
       var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
       _.forOwn(items, i => {
         if (i.required && (!(i.name in widget.config) || widget.config[i.name] === "")) {
-          throw new Error(widget.name + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before start."));
+          throw new Error(widget.name + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before saving."));
         }
       });
     });

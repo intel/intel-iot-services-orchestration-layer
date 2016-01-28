@@ -4,5 +4,6 @@
   "spec":"digitalread_1_1_startkit",
   "ui": {
 
-  }
+  },
+  "doc":"startkit/touch_button.html#detectTouch"
 }

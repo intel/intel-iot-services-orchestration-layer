@@ -25,9 +25,19 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 class Tabs extends ReactComponent {
-  
-  state = {
-    current: 0
+
+  constructor(props) {
+    super();
+
+    this.state = {
+      current: props.current || 0
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      current: nextProps.current || 0
+    });
   }
 
   set_active(idx, event) {

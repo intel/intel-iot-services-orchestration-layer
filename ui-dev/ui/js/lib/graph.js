@@ -293,7 +293,9 @@ class Node {
 
     // deserialze them
     this.in = new In(this.in, this);
-    this.out = new Out(this.out, this);    
+    this.out = new Out(this.out, this);
+
+    this.$lint_result = this.$lint();
   }
 
   $get_spec() {
@@ -493,7 +495,33 @@ class Node {
     }
 
     var spec = this.$get_spec();
-    return this.name || (service ? service.$name() : "") || spec.name || "__unknown__";
+    return this.name || (service ? service.$name() : "") || spec.name || __("__unknown__");
+  }
+
+  $lint() {
+    var spec = this.$get_spec();
+    if (spec.is_ui || !this.config) {
+      return null;
+    }
+
+    var errors = [];
+    var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
+    _.forOwn(items, i => {
+      if (i.required && (!(i.name in this.config) || this.config[i.name] === "")) {
+        errors.push({
+          type: "REQUIRED_CONFIG",
+          name: i.name
+        });
+      }
+    });
+
+    //TODO: other checks
+
+
+    if (_.isEmpty(errors)) {
+      return null;
+    }
+    return errors;
   }
 }
 
@@ -780,6 +808,17 @@ export default class Graph {
     return Graph.get_all_spec_ids_used(this);
   }
 
+  has_linter_error() {
+    var err = false;
+
+    _.forEach(this.nodes, node => {
+      if (!_.isEmpty(node.$lint_result)) {
+        err = true;
+        return false;
+      }
+    });
+    return err;
+  }
 
   //----------------------------------------------------------------
   // Static Methods

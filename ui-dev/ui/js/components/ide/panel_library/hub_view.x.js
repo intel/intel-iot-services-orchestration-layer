@@ -105,7 +105,7 @@ export default class HubView extends ReactComponent {
         things.push(<Tree.Node key={_key ++} 
           onToggle={_update_expand_state.bind({}, d_id, t_id)}
           defaultExpanded={t.styles.expanded}>
-          <Thing thing={t} />
+          <Thing thing={t.obj} />
           {services}
           </Tree.Node>);
       });

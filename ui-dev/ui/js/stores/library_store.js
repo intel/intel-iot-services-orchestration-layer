@@ -161,7 +161,15 @@ class View {
   }
 
   search(search) {
-    search = search.toLowerCase();
+    search = search.trim().toLowerCase();
+
+    function unmatch(o) {
+      if (o.obj.name.toLowerCase().indexOf(search) >= 0) {
+        return false;
+      }
+      return o.obj.$name().toLowerCase().indexOf(search) < 0;
+    }
+
     if (!_.isString(search) || search.length === 0) { // clear search
       this.search_string = "";
       this.render_data_for_search = {};
@@ -173,8 +181,7 @@ class View {
       this.search_string = search;
       this._dfs(this.render_data_for_search, (key, id, obj, parent) => {
         if (!obj.children) {  // leaf
-          if (obj.name.toLowerCase().indexOf(search) < 0 &&
-            parent && parent.name.toLowerCase().indexOf(search) < 0) {
+          if (unmatch(obj) && parent && unmatch(parent)) {
             delete parent.children[id];
           }       
         } else {
@@ -216,22 +223,22 @@ class HubView extends View {
     var data = {children: {}}, hub, thing;
     _.forOwn($hope.app.stores.hub.get_all_hubs(), d => {
       hub = data.children[d.id] = {
-        name: d.name,
-        description: d.description,
+        name: d.$name(),
+        description: d.$description(),
         obj: d,
         children: {}
       };
       _.forOwn(d.things, t => {
         thing = hub.children[t.id] = {
-          name: t.name,
-          description: t.description,
+          name: t.$name(),
+          description: t.$description(),
           obj: t,
           children: {}
         };
         _.forOwn(t.services, s => {
           thing.children[s.id] = {
             name: s.$name(),
-            description: s.description,
+            description: s.$description(),
             obj: s
           };
         });

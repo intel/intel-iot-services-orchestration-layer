@@ -408,9 +408,9 @@ export default class Graph extends ReactComponent {
 
             <EdgePreview ref="edge-preview" />
 
-            {view.graph.nodes.map(n => {
-              return <Node key={n.id} ref={n.id} view={view} id={n.id} />;
-            })}
+            {view.graph.nodes.map(n =>
+              <Node key={n.id} ref={n.id} view={view} id={n.id} />
+            )}
 
           </g>
         </svg>

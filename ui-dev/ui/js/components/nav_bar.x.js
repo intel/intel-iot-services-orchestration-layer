@@ -44,6 +44,14 @@ export default class NavBar extends ReactComponent {
 
   componentDidMount() {
     $hope.app.stores.app.on("app", this._on_app_event);
+
+    if (!$hope.ui_user_port) {
+      $hope.app.server.get_config$().then(cfg => {
+        $hope.ui_dev_port = cfg.ui_dev_port;
+        $hope.ui_user_port = cfg.ui_user_port;
+        this.forceUpdate();
+      });
+    }
   }
 
   componentWillUnmount() {
@@ -99,9 +107,11 @@ export default class NavBar extends ReactComponent {
           top: 16,
           right: 20
         }}>
-          <a href={location.protocol + "//" + location.hostname + ":3000"} target="_blank">
-            {__("EndUser")}
-          </a>
+          {$hope.ui_user_port &&
+            <a href={location.protocol + "//" + location.hostname + ":" + $hope.ui_user_port} target="_blank">
+              {__("EndUser")}
+            </a>
+          }
         </div>
 
         { app &&

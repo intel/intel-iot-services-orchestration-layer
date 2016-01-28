@@ -1,0 +1,4 @@
+{
+  "setColor":"设置颜色",
+  "set the color of the led strip, led_color is the 000000-FFFFFF":"设置光带上led的数量和颜色，颜色用RGB值表示，000000-ffffff。如果设置成功，输出true"
+}

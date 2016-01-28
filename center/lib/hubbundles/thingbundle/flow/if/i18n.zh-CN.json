@@ -1,0 +1,3 @@
+{
+  "if the in is true, send true in 'then' port, else send true in 'else' port":"如果‘in’输入为true，则‘then’输出true，否则‘else’端口输出true"
+}

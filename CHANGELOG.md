@@ -1,5 +1,12 @@
 Change Logs
 ===========================
+## v1.0.1
+
+* Add store based on file
+* UX optimization in WebIDE， such as warning for required configs
+* zh-CN support for all builtin services and startkit services
+* The framework of help-docs for services 
+* Various bug fixed
 
 ## v1.0.0
 

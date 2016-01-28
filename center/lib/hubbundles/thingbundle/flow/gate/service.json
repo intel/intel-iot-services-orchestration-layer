@@ -1,6 +1,6 @@
 {
   "name": "gate",
-  "description": "If the date is true, out = in, otherwise, nothing will output",
+  "description": "If the gate is true, out = in, otherwise, nothing will output",
   "spec":{
     "id": "gate_spec",
     "name": "gate_spec",
@@ -28,5 +28,6 @@
   },
   "ui": {
 
-  }
+  },
+  "doc" : "builtin/flow.html#gate"
 }

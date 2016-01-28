@@ -1,0 +1,4 @@
+{
+  "detectMotion":"检测运动",
+  "whenever triggered, bool = (whether people moves 3s before)":"当触发时，如果之前3秒内有人运动（红外变化），输出true"
+}

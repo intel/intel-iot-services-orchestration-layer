@@ -23,10 +23,12 @@
     "config": [
       {
         "name": "token",
-        "type": "string"
+        "type": "string",
+        "required": true
       }
     ]
   },
   "ui": {
-  }
+  },
+  "doc":"builtin/weibo.html#postweibo"
 }

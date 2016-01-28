@@ -13,5 +13,6 @@
         "type": "object"
       }]
     }
-  }
+  },
+  "doc" : "builtin/flow.html#merge"
 }

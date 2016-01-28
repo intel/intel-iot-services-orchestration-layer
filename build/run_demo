@@ -8,6 +8,7 @@ if [ "x$1" == "x" ]; then
   echo "  hub             start the sample hub"
   echo "  edison          start the sample hub in edison (it includes real things)"
   echo "  skartkit        start the startkit hub in edison"
+  echo "  grove           start the hub for wio-link"
   exit 1
 
 fi
@@ -31,4 +32,6 @@ case $1 in
   startkit)
     ./hub ./node_modules/hope-demo/startkit/config.json
     ;;
+  grove)
+    ./hub ./node_modules/hope-demo/grove/config.json
 esac

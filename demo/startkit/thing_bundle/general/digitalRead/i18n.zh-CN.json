@@ -1,0 +1,3 @@
+{
+  "read gpio pin's value. bool = (pin's value == 1)":"如果GPIO引脚为1，输出为true，反之输出false"
+}

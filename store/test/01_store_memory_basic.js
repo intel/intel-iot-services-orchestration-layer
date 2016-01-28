@@ -36,7 +36,7 @@ chai.should();
 describe("type list>>", function() {
   //test suported type
   var t = S.list_supported_type();
-  var support_type = ["memory", "mongo"];  //store type
+  var support_type = ["memory", "mongo", "file"];  //store type
   it("support store type", function() {
     for (var i in t) {
       support_type.should.include(t[i]);

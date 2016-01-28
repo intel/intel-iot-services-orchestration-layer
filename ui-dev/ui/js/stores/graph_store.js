@@ -143,25 +143,21 @@ class GraphStore extends EventEmitter {
     this.save_active$().then(() => {
       view.set_modified(false);
       this.emit("graph", {type: "graph", id: view.id, event: "saved"});
-      return this.check_required_configs$([view.id]);
-    }).then(() => {
       return $hope.app.server.graph.start$([view.id]);
     }).then(() => {
       this.emit("graph", {type: "graph", id: view.id, event: "started"});
     }).catch(err => {
-      $hope.notify("error", __("Failed to start workflow because"), err.toString());
+      $hope.notify("error", __("Failed to start workflow because"), err.message);
     }).done();
   }
 
   start(ids, tracing) {
-    this.check_required_configs$(ids).then(() => {
-      return $hope.app.server.graph.start$(ids, tracing);
-    }).then(() => {
+    $hope.app.server.graph.start$(ids, tracing).then(() => {
       ids.map(id => {
         this.emit("graph", {type: "graph", id: id, event: "started"});
       });
     }).catch(err => {
-      $hope.notify("error", __("Failed to start workflow because"), err.toString());
+      $hope.notify("error", __("Failed to start workflow because"), err.message);
     }).done();
   }
 
@@ -171,7 +167,7 @@ class GraphStore extends EventEmitter {
         this.emit("graph", {type: "graph", id: id, event: "stoped"});
       });
     }).catch(err => {
-      $hope.notify("error", __("Failed to stop workflow because"), err.toString());
+      $hope.notify("error", __("Failed to stop workflow because"), err.message);
     }).done();
   }
 
@@ -198,7 +194,7 @@ class GraphStore extends EventEmitter {
       view.$logidx = 0;
       this.emit("graph", {id: id, type: "graph", event: "trace/loaded"});
     }).catch(err => {
-      $hope.notify("error", __("Failed to get workflow trace because"), err.toString());
+      $hope.notify("error", __("Failed to get workflow trace because"), err.message);
     }).done();
   }
 
@@ -300,14 +296,6 @@ class GraphStore extends EventEmitter {
       d.resolve();
     }
     var method, params, view = this.active_view;
-    
-    try {
-      this.check_configs(view.id);
-    } catch(err) {
-      d.reject(err);
-      return d.promise;
-    }
-
     var data = view.graph.$serialize();
     var backend = $hope.app.server;
     if (view.info_for_new) {    // create
@@ -415,38 +403,6 @@ class GraphStore extends EventEmitter {
       }
     });
     return view;
-  }
-
-  check_required_configs$(ids) {
-    var q = [];
-    _.forEach(ids, id => {
-      if (!this.view(id)) {
-        q.push(this.load_graph$(id));
-      }
-    });
-    return $Q.all(q).then(() => {
-      _.forEach(ids, id => this.check_configs(id));
-    });
-  }
-
-  check_configs(id) {
-    var v = this.view(id);
-    if (!v) {
-      return;
-    }
-
-    _.forEach(v.graph.nodes, node => {
-      var spec = node.$get_spec();
-      if (spec.is_ui || !node.config) {
-        return;
-      }
-      var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
-      _.forOwn(items, i => {
-        if (i.required && (!(i.name in node.config) || node.config[i.name] === "")) {
-          throw new Error(node.$get_name() + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before start."));
-        }
-      });
-    });
   }
 
 

@@ -38,7 +38,7 @@ export default class Thing extends ReactComponent {
   _on_click_edit() {
     var thing = this.props.thing;
     this.refs.overlay.hide();
-    Dialog.show_create_dialog(__("Edit Thing"), this._on_save_thing, __("Save"), thing.name, thing.description);
+    Dialog.show_create_dialog(__("Edit Thing"), this._on_save_thing, __("Save"), thing.$name(), thing.$description());
   }
 
   _on_save_thing(data) {
@@ -48,16 +48,16 @@ export default class Thing extends ReactComponent {
       return $hope.notify("error", __("Invalid thing name"));
     }
     var req = {};
-    if (thing.obj.name !== name) {
-      thing.obj.name = req.name = name;
+    if (thing.name !== name) {
+      thing.name = req.name = name;
     }
-    if (thing.obj.description !== data.description) {
-      thing.obj.description = req.description = data.description;
+    if (thing.description !== data.description) {
+      thing.description = req.description = data.description;
     }
     if (_.isEmpty(req)) {
       return;
     }
-    req.id = thing.obj.id;
+    req.id = thing.id;
     $hope.trigger_action("hub/update/thing", {
       thing: req
     });
@@ -71,7 +71,7 @@ export default class Thing extends ReactComponent {
       "warning", () => {
       var thing = this.props.thing;
       $hope.trigger_action("hub/remove/thing", {
-        ids: [thing.obj.id]
+        ids: [thing.id]
       });
     });
   }
@@ -87,12 +87,12 @@ export default class Thing extends ReactComponent {
     if (!name) {
       return $hope.notify("error", __("Invalid service name"));
     }
-    if (_.find(thing.obj.services, "name", name)) {
+    if (_.find(thing.services, "name", name)) {
       return $hope.notify("error", __("This name already exists in the thing"));
     }
 
     $hope.trigger_action("hub/create/service", {
-      thing_id: thing.obj.id,
+      thing_id: thing.id,
       name: name,
       description: data.description
     });
@@ -100,6 +100,8 @@ export default class Thing extends ReactComponent {
 
   render() {
     var thing = this.props.thing;
+    var name = thing.$name();
+
     var popover =
       <Popover id="PO-thing-menu">
         <MenuItem onSelect={this._on_click_edit}>{__("Edit")}</MenuItem>
@@ -107,14 +109,23 @@ export default class Thing extends ReactComponent {
         <MenuItem onSelect={this._on_click_add}>{__("Add Service")}</MenuItem>
       </Popover>;
 
+    var tooltip =
+      <Popover id="PO-thing-desc" title={name}>
+        <div className="hope-service-tooltip">
+          {thing.$description()}
+        </div>
+      </Popover>;
+
     return (
       <Row className="hope-panel-lib-view-second-level">
         <Col xs={1}/>
         <Col className="text-center" xs={1}><ExpandSign/></Col>
-        <Col xs={9}>{thing.name}</Col>
+        <Overlay overlay={tooltip}>
+          <Col xs={9}>{name}</Col>
+        </Overlay>
         <Col xs={1} className="text-center"
             onClick={e => e.stopPropagation()}>
-          {!thing.obj.is_builtin &&
+          {!thing.is_builtin &&
             <Overlay ref="overlay" trigger="click" overlay={popover}>
               <i className="hope-panel-lib-menu fa fa-bars" />
             </Overlay>

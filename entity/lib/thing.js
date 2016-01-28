@@ -425,7 +425,8 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
   .then(function create_thing_from_json() {
     var thing_json_path = B.path.join(thing_path, "thing.json");
     var thing_json = B.fs.read_json(thing_json_path);
-    var thing = _create_static_thing(thing_json, thing_path, hubid);
+    var i18n = B.fs.load_i18n_files(thing_path);
+    var thing = _create_static_thing(thing_json, thing_path, hubid, i18n);
     thingid = thing.id;
     return thing;
   })
@@ -438,9 +439,15 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
     });
     var tasks = [];
     service_path_array.forEach(function(p) {
-      var service_json_path = B.path.join(p, "service.json");
       log("load_static_service", p);
-      var service_json = B.fs.read_json(service_json_path);
+      var service_json_path = B.path.join(p, "service.json");
+      var service_i18n = B.fs.load_i18n_files(p);
+      try {
+        var service_json = B.fs.read_json(service_json_path);
+      }
+      catch(e) {
+        check(false, "read_json", p);
+      }
       if (_.isObject(service_json.spec)) {
         log("load spec from service", service_json_path);
         var spec = Spec.create_local_spec(service_json.spec, service_json_path,
@@ -451,7 +458,7 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
         tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
 
       }
-      var service = _create_static_service(service_json, p, thing.id);
+      var service = _create_static_service(service_json, p, thing.id, service_i18n);
       thing.services.push(service.id);
       tasks.push(em.service_store.set$(service.id, service, changed_list));
     });
@@ -474,7 +481,7 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
  * @param  {String} hubid      the hub which own the thing
  * @return {Object}            the thing object
  */
-function _create_static_thing(json, thing_path, hubid) {
+function _create_static_thing(json, thing_path, hubid, i18n) {
   json.name = json.name || B.path.base(thing_path);
   json.id = json.id || (thing_path + "@" + hubid);// default id, because hubid is unique in whole system
   json.services = [];
@@ -483,6 +490,9 @@ function _create_static_thing(json, thing_path, hubid) {
   json.hub = hubid;
   json.type = "hope_thing";
   json.is_builtin = !!json.is_builtin;
+  if (i18n) {
+    json.i18n = i18n;
+  }
   return json;
 }
 
@@ -496,7 +506,7 @@ function _create_static_thing(json, thing_path, hubid) {
  * @param  {String} thing_id     the thing which own the service
  * @return {Object}              the service object
  */
-function _create_static_service(json, service_path, thing_id) {
+function _create_static_service(json, service_path, thing_id, i18n) {
   check(_.isString(json.spec), "entity/thing",
     "the json must have spec id", json.spec, service_path);
   json.name = json.name || B.path.base(service_path);
@@ -506,6 +516,9 @@ function _create_static_service(json, service_path, thing_id) {
   json.is_connect = true;
   json.own_spec = !!json.own_spec;
   json.type = "hope_service";
+  if (i18n) {
+    json.i18n = i18n;
+  }
   return json;
 }
 

@@ -190,6 +190,10 @@ export default class GraphView extends EventEmitter {
     return this.graph.$is_empty();
   }
 
+  has_linter_error() {
+    return this.graph.has_linter_error();
+  }
+
   get_bound_box() {
     // Find dimensions
     var minX = Infinity;
@@ -468,6 +472,11 @@ export default class GraphView extends EventEmitter {
     var o = this.get(type, id);
     if (o) {
       _.merge(o, data);
+
+      if (typeof o.$lint === "function") {
+        o.$lint_result = o.$lint();
+      }
+
       this.set_modified();
       this.emit(type, {id: o.id, type: type, event: "changed"});
     }
@@ -857,6 +866,7 @@ export default class GraphView extends EventEmitter {
         break;
     }
   }
+
 
   // See graph_action.js for schema of data
   handle_action(action, data) {

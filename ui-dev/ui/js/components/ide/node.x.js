@@ -24,6 +24,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+import {Popover} from "react-bootstrap";
+import Overlay from "../overlay.x";
+import LinterMessage from "./linter_msg.x";
 import In from "./in.x";
 import Out from "./out.x";
 import class_names from "classnames";
@@ -119,18 +122,51 @@ export default class Node extends ReactComponent {
     });
   }
 
-  componentDidMount() {
+  bind_track_events() {
     var dom_node = this.refs.box;
-    dom_node.addEventListener("trackstart", this._on_track_start);
-    dom_node.addEventListener("track", this._on_track);
-    dom_node.addEventListener("trackend", this._on_track_end);
+    if (dom_node) {
+      PolymerGestures.addEventListener(dom_node, "trackstart", _.noop);
+      PolymerGestures.addEventListener(dom_node, "track", _.noop);
+      PolymerGestures.addEventListener(dom_node, "trackend", _.noop);
+
+      dom_node.addEventListener("trackstart", this._on_track_start);
+      dom_node.addEventListener("track", this._on_track);
+      dom_node.addEventListener("trackend", this._on_track_end);
+    }
+  }
+
+  unbind_track_events() {
+    var dom_node = this.refs.box;
+    if (dom_node) {
+      PolymerGestures.removeEventListener(dom_node, "trackstart", _.noop);
+      PolymerGestures.removeEventListener(dom_node, "track", _.noop);
+      PolymerGestures.removeEventListener(dom_node, "trackend", _.noop);
+
+      dom_node.removeEventListener("trackstart", this._on_track_start);
+      dom_node.removeEventListener("track", this._on_track);
+      dom_node.removeEventListener("trackend", this._on_track_end);
+    }
+  }
+
+  componentDidUpdate() {
+    var view = this.props.view;
+    var node = view.get("node", this.props.id);
+    var errors = !_.isEmpty(node.$lint_result);
+
+    if (errors !== this.linter_errors) {
+      this.linter_errors = errors;
+
+      this.unbind_track_events();
+      this.bind_track_events();
+    }
+  }
+
+  componentDidMount() {
+    this.bind_track_events();
   }
 
   componentWillUnmount() {
-    var dom_node = this.refs.box;
-    dom_node.removeEventListener("trackstart", this._on_track_start);
-    dom_node.removeEventListener("track", this._on_track);
-    dom_node.removeEventListener("trackend", this._on_track_end);
+    this.unbind_track_events();
   }
 
   render() {
@@ -272,14 +308,24 @@ export default class Node extends ReactComponent {
               key="text"
               x={styles.x + styles.width / 2} 
               y={styles.y + styles.height + 18}>
-          {widget !== null ? widget : (thing ? thing.name : "---")}
+          {widget !== null ? widget : (thing ? thing.$name() : "---")}
         </text>
         );
     }
 
-    var _name = node.name || (service ? service.$name() : "") || spec.name || "__unknown__";
-    return (
-      <g className={class_names("hope-graph-node", {"hope-graph-selected": !view.edge_previewing && this._is_selected()})}>
+    var _name = node.name || (service ? service.$name() : "") || spec.name || __("__unknown__");
+    var errors = !_.isEmpty(node.$lint_result);
+    var body =
+      <g className={class_names("hope-graph-node",
+          {"hope-graph-selected": !view.edge_previewing && this._is_selected()})} >
+        {errors &&
+          <rect x={styles.x}
+                y={styles.y}
+                width={styles.width}
+                height={styles.height + (exp ? 24 : 0)}
+                strokeWidth="8"
+                stroke={this._is_selected() ? "#f00" : "#a00"} />
+        }
         <g ref="box" onClick={this._on_click}>
           <path className={"hope-graph-node-title-bar " + $hope.color(styles.color, "fill")} 
                 d={hdr_path} />
@@ -301,7 +347,16 @@ export default class Node extends ReactComponent {
         </g>
         <In view={this.props.view} id={id} />
         <Out view={this.props.view} id={id} />
-      </g>
-    );
+      </g>;
+  
+    return errors ?
+      <Overlay overlay={
+        <Popover id="PO-linter" title={__("Errors and Warnings")}>
+          <div>
+            {_.map(node.$lint_result, (msg, i) =>
+                <LinterMessage type="error" key={"E" + i} msg={msg}/>
+            )}
+          </div>
+        </Popover>} tirgger={["click", "hover", "focus"]}>{body}</Overlay> : body;
   }
 }

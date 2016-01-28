@@ -177,6 +177,19 @@ FrontEnd.prototype.api_app__send_widget_data = function(data) {
   ui_thing.on_data_from_client(data.widget, data.data);
 };
 
+FrontEnd.prototype.api_sys__get_config = function() {
+  var frontends = this.center.frontends;
+  var ret = {};
+
+  if (frontends.dev) {
+    ret.ui_dev_port = frontends.dev.web_app.$$port;
+  }
+  if (frontends.user) {
+    ret.ui_user_port = frontends.user.web_app.$$port;
+  }
+  return ret;
+};
+
 FrontEnd.prototype.api_app__list$ = function() {
   var self = this;
   return this.center.em.app__list$().then(function(apps) {

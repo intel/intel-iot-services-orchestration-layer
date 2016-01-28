@@ -24,63 +24,24 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-var fs = require("fs");
-var program = require('commander');
+export default class LinterMessage extends ReactComponent {
 
-program
-  .version('0.0.2')
-  .description('Utility for file header maintenance')
-  .usage('[options] <pattern ...>')
-  .option('-h, --head [path]', 'header file')
-  .option('-o, --old [path]', 'old header file')
-  .option('-n, --suppress', 'suppress the <newline> in output')
-  .option('-c, --comment', 'wrap as block comment')
-  .parse(process.argv);
+  static propTypes = {
+    msg: React.PropTypes.object
+  };
 
-if (!program.args.length || !program.head) {
-  program.help();
-  process.exit(0);
+  render() {
+    var m = this.props.msg;
+    var t;
+
+    switch(m.type) {
+      case "REQUIRED_CONFIG":
+        t = <span>{__("Config required") + ": "}<strong>{m.name}</strong></span>;
+        break;
+
+      default:
+        t = "unimpl. <" + JSON.stringify(m) + ">";
+    }
+    return <div className="hope-linter-error">{t}</div>
+  }
 }
-
-var BEGIN = "/******************************************************************************\n";
-var END = "*****************************************************************************/\n";
-
-function read_header(file) {
-  var header = fs.readFileSync(file, 'utf8');
-
-  if (!program.suppress) {
-     header = header + "\n";
-  }
-  if (program.comment) {
-    header = BEGIN + header + END;
-  }
-  return header;
-}
-
-try {
-  var header = read_header(program.head);
-
-  if (program.old) {
-    var old = read_header(program.old);
-  }
-} catch(e) {
-  console.error(e);
-  process.exit(-1);
-}
-
-program.args.forEach(function(file) {
-  var content = fs.readFileSync(file, 'utf8');
-  if (header === content.slice(0, header.length)) {
-    console.log(file, " [skiped]");
-    return;
-  }
-
-  var replaced = false;
-  if (old && old === content.slice(0, old.length)) {
-    content = content.slice(old.length);
-    replaced = true;
-  }
-
-  fs.writeFileSync(file, header + content, 'utf8');
-  console.log(file, replaced ? " [replaced]": " [added]");
-});

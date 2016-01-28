@@ -35,7 +35,7 @@ var fse = require("fs.extra");
 var fsf = require("fs-finder");
 var path = require("./path");
 var check = require("./check").check;
-
+var glob = require("glob");
 /**
  * Whether a path exists
  * @param  {String} p 
@@ -206,4 +206,20 @@ exports.rm = function(dir) {
  */
 exports.find_files = function(dir, filename) {
   return fsf.from(dir).findFiles(filename);
+};
+
+/**
+ * load i18n files in the folder
+ * @param  {String} dir the path of the folder which has the i18n files
+ * @return {object}     the object which contains different langs
+ */
+exports.load_i18n_files = function(dir) {
+  var self = this;
+  var files = glob.sync(path.join(dir, "i18n.*.json"));
+  var i18n = {};
+  files.forEach(function(file) {
+    var key = path.base(file).split(".")[1];
+    i18n[key] = self.read_json(file);
+  });
+  return i18n;
 };

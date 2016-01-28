@@ -1,0 +1,4 @@
+{
+  "sender":"数据发送",
+  "Whenever triggered, out = content":"只要‘trigger’有输入，立刻输出‘content’的值"
+}

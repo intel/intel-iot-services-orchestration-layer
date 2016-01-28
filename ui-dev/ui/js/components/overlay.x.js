@@ -24,31 +24,125 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {OverlayTrigger, Popover} from "react-bootstrap";
+import {Popover, Overlay} from "react-bootstrap";
+import createChainedFunction from "react-bootstrap/lib/utils/createChainedFunction";
+import contains from 'dom-helpers/query/contains';
 
-export default class Overlay extends ReactComponent {
-  show() {
-    this.refs.ot.show();
-  }
+var _mountNode = document.createElement("div");
+var _prev;
+var _tleave;
 
-  hide() {
-    this.refs.ot.hide();
-  }
+function isOneOf(one, of) {
+  return Array.isArray(of) ? of.indexOf(one) >= 0 : one === of;
+}
 
-  toggle() {
-    this.refs.ot.toggle();
-  }
+function handleMouseOut(handler, e) {
+  let target = e.currentTarget;
+  let related = e.relatedTarget || e.nativeEvent.toElement;
 
-  render() {
-    var p = this.props;
-    var o = p.overlay;
-    return (
-      <OverlayTrigger rootClose ref="ot"
-          placement={p.placement || "right"}
-          trigger={p.trigger || ["hover", "focus"]}
-          overlay={_.isString(o) ? <Popover id={o}>{o}</Popover> : o} >
-        {this.props.children}
-      </OverlayTrigger>
-    );
+  if (!related || related !== target && !contains(target, related)) {
+    handler(e);
   }
 }
+
+function cancelTimer() {
+  if (_tleave) {
+    clearTimeout(_tleave);
+    _tleave = null;
+  }
+}
+
+export default React.createClass({
+  __show() {
+    ReactDOM.unstable_renderSubtreeIntoContainer(
+      this, this._overlay, _mountNode
+    );
+    _prev = this;
+  },
+
+  __hide() {
+    ReactDOM.unmountComponentAtNode(_mountNode);
+    _prev = null;
+  },
+
+  show() {
+    cancelTimer();
+    if (_prev === this) {
+      return;
+    }
+    if (_prev) {
+      setTimeout(()=> {
+        this.__hide();
+        setTimeout(this.__show, 0);
+      }, 0);
+    }
+    else {
+      setTimeout(this.__show, 0);
+    }
+  },
+
+  hide() {
+    if (_prev !== this) {
+      return;
+    }
+    setTimeout(this.__hide, 0);
+  },
+
+  toggle() {
+    if (_prev !== this) {
+      this.show();
+    }
+    else {
+      this.hide();
+    }
+  },
+
+  getOverlayTarget() {
+    return ReactDOM.findDOMNode(this);
+  },
+
+  onMouseOut() {
+    _tleave = setTimeout(()=> {
+      _tleave = null;
+      this.hide();
+    }, 600);
+  },
+
+  render() {
+    const child = React.Children.only(this.props.children);
+    const triggerProps = child.props;
+
+    var o = this.props.overlay;
+    this._overlay = <Overlay show={true}
+      rootClose={true}
+      onHide={this.hide}
+      target={this.getOverlayTarget}>
+      {
+        React.cloneElement(_.isString(o) ? <Popover id={o}>{o}</Popover> : o, {
+          onMouseOver: cancelTimer,
+          onMouseOut: handleMouseOut.bind(this, this.hide)
+        }) 
+      }
+    </Overlay>;
+
+    const trigger = this.props.trigger || ["hover", "focus"];
+    const props = {};
+    props.onClick = createChainedFunction(triggerProps.onClick, this.props.onClick);
+
+    if (isOneOf("click", trigger)) {
+      props.onClick = createChainedFunction(this.toggle, props.onClick);
+    }
+
+    if (isOneOf("hover", trigger)) {
+      props.onMouseOver = createChainedFunction(this.show, this.props.onMouseOver, triggerProps.onMouseOver);
+      props.onMouseOut = createChainedFunction(handleMouseOut.bind(this, this.onMouseOut), this.props.onMouseOut, triggerProps.onMouseOut);
+    }
+
+    if (isOneOf("focus", trigger)) {
+      props.onFocus = createChainedFunction(this.show, this.props.onFocus, triggerProps.onFocus);
+      props.onBlur = createChainedFunction(this.props.onBlur, triggerProps.onBlur);
+    }
+
+    return React.cloneElement(child, props);
+  }
+});

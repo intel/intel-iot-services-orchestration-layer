@@ -1,4 +1,5 @@
 {
+  "name": "interval",
   "description":"send signal 1 at intervals",
   "spec": {
     "id":"interval_spec",
@@ -16,5 +17,6 @@
         "type": "int"
       }]
     }
-  }
+  },
+  "doc":"builtin/timer.html#interval"
 }

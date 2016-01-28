@@ -14,7 +14,7 @@ if [ ! -e dist/node_modules ]; then
   mkdir -p dist/node_modules
 fi
 
-PROJS="base center entity entity-store hub hub-center-shared message session-manager store workflow"
+PROJS="base center entity entity-store hub hub-center-shared message session-manager store workflow demo"
 
 for P in $PROJS; do
   echo ">>> copying $P"
@@ -69,10 +69,11 @@ cp -r ./ui-user/public ./dist/node_modules/ui-user/.
 
 
 echo ">>> demo"
-mkdir ./dist/node_modules/hope-demo
-cp -r ./demo/* ./dist/node_modules/hope-demo
-rm -rf ./dist/node_modules/hope-demo/sample/center/appbundle/*
+rm -rf ./dist/node_modules/hope-demo/center/appbundle/*
 
+echo ">>> doc"
+mkdir ./dist/node_modules/doc
+cp -r ./doc/builtin ./dist/node_modules/doc/.
 
 echo ">>> scripts"
 cp -r ./build/* ./dist

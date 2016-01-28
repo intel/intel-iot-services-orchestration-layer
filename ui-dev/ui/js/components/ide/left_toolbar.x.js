@@ -50,13 +50,26 @@ export default class LeftToolbar extends ReactComponent {
   }
 
   _on_save() {
-    $hope.confirm(__("Save to Server"),
-      __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
-      "warning", () => {
-      $hope.trigger_action("graph/save", {});
-    });
-    //$hope.trigger_action("ide/show/code",
-    //  {code: JSON.stringify(view.graph.$serialize(), null, "\t")});
+    var view = $hope.app.stores.graph.active_view;
+    if (view.has_linter_error()) {
+      $hope.confirm(__("Save to Server"),
+        __("This workflow looks like contain error(s), are you sure to deploy it on the server?"),
+        "warning", res => {
+        if (!res) {
+          $hope.trigger_action("graph/save", {});
+        }
+      }, {
+        cancelButtonText: __("Save"),
+        confirmButtonText: __("Cancel and back to edit")
+      });
+    }
+    else {
+      $hope.confirm(__("Save to Server"),
+        __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
+        "warning", () => {
+        $hope.trigger_action("graph/save", {});
+      });
+    }
   }
 
   _on_fit() {
@@ -77,17 +90,48 @@ export default class LeftToolbar extends ReactComponent {
     var view = $hope.app.stores.graph.active_view;
 
     if (view.modified) {
-      $hope.confirm(__("Save and Run"), 
-        __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
-        "warning", () => {
-        $hope.trigger_action("graph/save_and_start", {});
-      });
+      if (view.has_linter_error()) {
+        $hope.confirm(__("Save and Run"),
+          __("This workflow looks like contain error(s), are you sure to deploy and start it?"),
+          "warning", res => {
+          if (!res) {
+            $hope.trigger_action("graph/save_and_start", {});
+          }
+        }, {
+          cancelButtonText: __("YES"),
+          confirmButtonText: __("Cancel and back to edit")
+        });
+      }
+      else {
+        $hope.confirm(__("Save and Run"), 
+          __("This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!"),
+          "warning", () => {
+          $hope.trigger_action("graph/save_and_start", {});
+        });
+      }
     }
     else {
-      $hope.trigger_action("graph/start", {
-        graphs: [view.id],
-        tracing: true
-      });
+      if (view.has_linter_error()) {
+        $hope.confirm(__("Run"),
+          __("This workflow looks like contain error(s), are you sure to start it?"),
+          "warning", res => {
+          if (!res) {
+            $hope.trigger_action("graph/start", {
+              graphs: [view.id],
+              tracing: true
+            });
+          }
+        }, {
+          cancelButtonText: __("YES"),
+          confirmButtonText: __("Cancel and back to edit")
+        });
+      }
+      else {
+        $hope.trigger_action("graph/start", {
+          graphs: [view.id],
+          tracing: true
+        });
+      }
     }
   }
 

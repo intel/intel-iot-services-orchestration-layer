@@ -1,6 +1,6 @@
 {
   "name": "if",
-  "description": "if the in is true, send true in 'if' port, else send true in 'else' port",
+  "description": "if the in is true, send true in 'then' port, else send true in 'else' port",
   "spec":{
     "out": {
       "ports": [{             
@@ -20,5 +20,6 @@
   },
   "ui": {
 
-  }
+  },
+  "doc" : "builtin/flow.html#if"
 }

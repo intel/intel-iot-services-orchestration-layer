@@ -57,7 +57,10 @@ exports.create_web_app = function(config) {
   exports.setup_app(web_app);
 
   if (config.static) {
-    web_app.use(express.static(config.static));
+    var paths = _.isString(config.static) ? [config.static] : config.static;
+    _.forEach(paths, function(path) {
+      web_app.use(express.static(path));
+    });
   }
 
   web_app.all("*", function(req, res, next) {
@@ -67,7 +70,7 @@ exports.create_web_app = function(config) {
     next();
   });
 
-
+  
 
   // Start the server
   var server = require("http").createServer(web_app); // http server
@@ -82,6 +85,8 @@ exports.create_web_app = function(config) {
   web_app.$destroy = function() {
     server.destroy();
   };
+
+  web_app.$$port = config.port;
 
   return web_app;
 };

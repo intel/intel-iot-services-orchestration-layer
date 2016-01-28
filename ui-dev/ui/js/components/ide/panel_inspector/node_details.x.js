@@ -94,16 +94,16 @@ export default class NodeDetails extends ReactComponent {
     if (binding && binding.service) {
       var service = hub_manager.get_service(binding.service);
       if (service) {
-        if (!name && service.name) {
-          name = service.name;
+        if (!name && service.name) {  // pri 1: node name, pri 2: service name, pri 3: spec name
+          name = service.$name();
         }
-        if (!desc && service.description) {
-          desc = service.description;
+        if (service.description && (!desc || desc === spec.description)) {
+          desc = service.$description();
         }
       }
     }
     if (!name) {
-      name = spec.name || "__unknown__";
+      name = spec.name || __("__unknown__");
     }
 
     var trace_time, trace_data;
@@ -112,6 +112,13 @@ export default class NodeDetails extends ReactComponent {
       var date = new Date(node.$lasttim);
       trace_time = date.toLocaleTimeString();
       trace_data = $hope.to_string(v);
+    }
+
+    var show_config = !node.is_ui && _.isArray(spec.config) && spec.config.length > 0;
+    var current = 0;
+    var errors = node.$lint_result;
+    if (show_config && !_.isEmpty(errors) && _.findIndex(errors, "type", "REQUIRED_CONFIG") >= 0) {
+      current = 1;  /* Tab Config */
     }
 
     return (
@@ -134,13 +141,13 @@ export default class NodeDetails extends ReactComponent {
           </div>
         </div>
         {view.is_editing() &&
-        <Tabs key={this.state.id} >
+        <Tabs key={this.state.id} current={current} >
           <Tab title={__("Input")}>
             <div className="node-details" >
               <InputDetails id={this.state.id} />
             </div>
           </Tab>
-          {!node.is_ui && _.isArray(spec.config) && spec.config.length > 0 &&
+          {show_config &&
             <Tab title={__("Config")}>
               <ConfigDetails id={this.state.id} />
             </Tab>

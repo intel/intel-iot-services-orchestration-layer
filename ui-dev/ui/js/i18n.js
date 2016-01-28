@@ -41,9 +41,26 @@ I18n.use(LngDetector).init({
   }
 });
 
-module.exports = function(msg) {
+
+var brlang = I18n.language;
+
+module.exports = function(msg, langres) {
+  if (!_.isString(msg)) {
+    return "";
+  }
+
+  if (arguments.length === 2) {
+    if (!_.isObject(langres) || !_.isObject(langres[brlang])) {
+      return msg;
+    }
+
+    return langres[brlang][msg] || msg;
+  }
+
   return I18n.t(msg, {
-    keySeparator: "\v",
+    keySeparator: "\v", // bypass namespace
+    nsSeparator: "\v",  // bypass namespace
     defaultValue: msg
   });
 };
+

@@ -38,6 +38,7 @@ var Spec = require("./lib/spec");
 var Thing = require("./lib/thing");
 var Updater = require("./lib/update");
 var Hub = require("./lib/hub");
+var User = require("./lib/user");
 var log = B.log;
 
 exports.create_entity_manager = function(obj) {
@@ -72,6 +73,7 @@ function EntityManager(obj) {
   this.graph_store = obj.graph_store || {};
   this.app_store = obj.app_store || {};
   this.ui_store = obj.ui_store || {};
+  this.user_store = obj.user_store || {};
   this.updater = Updater.create_updater(this);
   this.event = new EventEmitter();
   this.timestamp = B.time.hrtime();//hrtime
@@ -146,7 +148,7 @@ function em_full_info(em, list, target_mnode_id) {
   });
 }
 
-//NOTE1: ALL EntityManager prototype-method are locked, do not call other prototype-method in one.
+//NOTE1: ALL EntityManager prototype-method which will modifiy the changelist are locked, do not call other prototype-method in one.
 
 /**
  * return a lock with id
@@ -1257,5 +1259,61 @@ EntityManager.prototype.ui__get_app$ = function(ui_id) {
   return self.ui_store.get$(ui_id)
   .then(function(ui_obj) {
     return self.app_store.get$(ui_obj.app);
+  });
+};
+
+
+
+
+/**
+ * add a user to the user store
+ * @param  {Object} user_obj 
+ * @return {Promise}     resolved: user_obj  
+ */
+EntityManager.prototype.user__add$ = function(user_obj) {
+  var self = this;
+  return User.add_user$(user_obj, self);
+};
+
+/**
+ * update the user. 
+ * @param  {Object} user_obj some updated prop of user, must contain 'id'
+ * @return {Promise}     resolved: the updated user
+ */
+EntityManager.prototype.user__update$ = function(user_obj) {
+  var self = this;
+  return User.update_user$(user_obj, self);
+};
+
+/**
+ * get the user obj
+ * @param  {string or array} user_ids 
+ * @return {Promise}          resolve: the user obj for obj array
+ */
+EntityManager.prototype.user__get$ = function(user_ids) {
+  var self = this;
+  return User.get_user$(user_ids, self);
+};
+
+/**
+ * remove the user
+ * @param  {string} user_id id of the user
+ * @return {Promise}         resolve: the user id
+ */
+EntityManager.prototype.user__remove$ = function(user_id) {
+  var self = this;
+  return User.remove_user$(user_id, self);
+};
+
+/**
+ * list all the user info
+ * @param  {Number} max_length the length of the list
+ * @return {Promise}            resolve: Array of the user object
+ */
+EntityManager.prototype.user__list$ = function(max_length) {
+  var self = this;
+  return self.user_store.list$(max_length)
+  .then(function(ids) {
+    return self.user_store.batch_get$(ids);
   });
 };

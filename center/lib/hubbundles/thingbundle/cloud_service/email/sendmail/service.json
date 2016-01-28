@@ -27,22 +27,27 @@
     "config": [
       {
         "name": "service",
-        "type": "string"
+        "type": "string",
+        "required": true
       },
       {
         "name": "account",
-        "type": "string"
+        "type": "string",
+        "required": true
       },
       {
         "name": "passwd",
-        "type": "string"
+        "type": "string",
+        "required": true
       },
       {
         "name": "receiver",
-        "type": "string"
+        "type": "string",
+        "required": true
       }
     ]
   },
   "ui": {
-  }
+  },
+  "doc": "builtin/email.html#sendmail"
 }

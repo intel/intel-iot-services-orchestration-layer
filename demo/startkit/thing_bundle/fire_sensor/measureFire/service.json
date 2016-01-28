@@ -4,5 +4,6 @@
   "spec":"analogread_1_1_startkit",
   "ui": {
 
-  }
+  },
+  "doc": "startkit/fire_sensor.html#measureFire"
 }

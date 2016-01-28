@@ -1,5 +1,6 @@
 {
   "name":"divide",
   "description":"out = in1 / in2",
-  "spec":"math_2_1_builtin"
+  "spec":"math_2_1_builtin",
+  "doc": "builtin/math.html#div"
 }

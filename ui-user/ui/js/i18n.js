@@ -42,8 +42,12 @@ I18n.use(LngDetector).init({
 });
 
 module.exports = function(msg) {
+  if (!_.isString(msg)) {
+    return "";
+  }
   return I18n.t(msg, {
-    keySeparator: "\v",
+    keySeparator: "\v",  // bypass namespace
+    nsSeparator: "\v",   // bypass namespace
     defaultValue: msg
   });
 };

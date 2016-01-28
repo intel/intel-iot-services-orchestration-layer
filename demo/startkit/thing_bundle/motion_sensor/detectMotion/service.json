@@ -1,8 +1,9 @@
 {
   "name": "detectMotion",
-  "description": "whenever triggered, bool = (whether people moves)",
+  "description": "whenever triggered, bool = (whether people moves 3s before)",
   "spec":"digitalread_1_1_startkit",
   "ui": {
 
-  }
+  },
+  "doc":"startkit/motion_sensor.html#detectMotion"
 }

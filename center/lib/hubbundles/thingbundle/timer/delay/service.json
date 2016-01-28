@@ -29,5 +29,6 @@
   },
   "ui": {
 
-  }
+  },
+  "doc":"builtin/timer.html#delay"
 }

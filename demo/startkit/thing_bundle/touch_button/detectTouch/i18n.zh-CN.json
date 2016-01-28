@@ -1,0 +1,4 @@
+{
+  "detectTouch":"是否触摸",
+  "Whenever triggered, bool = (whether the button is touched)":"触发时，输出按键是否被触摸"
+}

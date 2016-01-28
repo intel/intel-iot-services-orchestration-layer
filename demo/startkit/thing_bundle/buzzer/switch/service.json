@@ -4,5 +4,6 @@
   "spec":"digitalwrite_1_1_startkit",
   "ui": {
 
-  }
+  },
+  "doc": "startkit/buzzer.html#switch"
 }

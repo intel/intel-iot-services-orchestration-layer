@@ -73,11 +73,15 @@ class Service {
   }
 
   $name() {
-    return this.$get("name");
+    return __(this.$get("name"), this.i18n);
   }
 
   $description() {
-    return this.$get("description");
+    return __(this.$get("description"), this.i18n);
+  }
+
+  $doc() {
+    return __(this.doc, this.i18n);
   }
 
   $icon() {
@@ -100,6 +104,18 @@ class Thing {
       this.services[s.id] = new Service(this, s);
     });
   }
+
+  $name() {
+    return __(this.name, this.i18n);
+  }
+
+  $description() {
+    return __(this.description, this.i18n);
+  }
+
+  $doc() {
+    return __(this.doc, this.i18n);
+  }
 }
 
 class Hub {
@@ -119,6 +135,18 @@ class Hub {
     });
     this.styles = this.styles || {};
     this.styles.things = this.styles.things || {};
+  }
+
+  $name() {
+    return __(this.name, this.i18n);
+  }
+
+  $description() {
+    return __(this.description, this.i18n);
+  }
+
+  $doc() {
+    return __(this.doc, this.i18n);
   }
 
   get_all_things_using_spec(id) {

@@ -277,7 +277,7 @@ For example, we create a new npm package `ui-widgets/hope-widget-lfg/`, and its 
 ```json
 {
   "name": "hope-widget-lfg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "liquid Fill Gauge",
   "main": "index.js",
   "scripts": {

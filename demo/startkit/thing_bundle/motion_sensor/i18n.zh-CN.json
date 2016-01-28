@@ -1,0 +1,4 @@
+{
+  "motion sensor":"运动检测器",
+  "detect whether people moves":"GPIO设备，检测外界红外信号的变化，比如人的运动"
+}

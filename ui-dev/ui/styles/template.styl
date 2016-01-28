@@ -453,6 +453,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 3px;
 }
 
+.hope-input-highlighted {
+  background: $bk-0;
+  border-color: rgba(255, 0, 0, 0.8) !important;
+  box-shadow: insect 0 2px 2px rgba(0,0,0,0.075), 0 0 8px rgb(255,0,0) !important;
+}
+
 .hope-note {
   position: relative;
   background: $bk-5;
@@ -580,7 +586,6 @@ input[type="text"]:focus {
 .hope-graph-selected {
   fill: $graph-fill-on;
   stroke: $graph-stroke-on;
-  stroke-width: 1px;
 }
 
 
@@ -1305,9 +1310,43 @@ text {
   color: #ddd;
 }
 
+.html-dialog-body {
+  padding: 0px !important;
+}
+.html-dialog-content .modal-header {
+  background: green;
+  color: white;
+  padding: 8px;
+  border: 0;
+}
+.html-dialog-content .modal-content {
+  box-shadow: 5px 5px 5px rgba(128,128,128,.5);
+  width: 768px;
+}
+#html-dialog-iframe {
+  width: 100%;
+  height: 600px;
+}
+
 .hope-color-picker-modal {
   width: 365px;
 }
+
+.hope-service-tooltip {
+  min-width: 150px;
+  max-width: 250px;
+}
+
+.hope-service-tooltip-icon {
+  position: absolute;
+  right: 16px;
+  color: green;
+}
+
+.hope-linter-error {
+  color: #f00;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Templated colors

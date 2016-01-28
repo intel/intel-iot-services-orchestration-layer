@@ -85,7 +85,7 @@ export default class InPort extends ReactComponent {
         r={r} />;
     }
 
-    if ("default" in port) {
+    if ("default" in port && _.isEmpty(view.find_edge(null, port))) {
       let val = String(port.default);
       if (val.length <= 3) {
         defval =

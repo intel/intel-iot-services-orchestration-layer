@@ -109,6 +109,10 @@ function invoke(api) {
   }));
 }
 
+WebBackend.get_config$ = function() {
+  return invoke("sys.get_config");
+};
+
 WebBackend.app.list$ = function() {
   return invoke("app.list");
 };
