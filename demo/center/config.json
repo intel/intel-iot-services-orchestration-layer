@@ -3,12 +3,13 @@
     "broker_url": "http://localhost:16666/broker",
     "base_url": "http://localhost:19999",
     "appbundle_path": "./appbundle",
+    "user_json_path": "./user.json",
 
     "dev_web_app": {
       "$type": "http/WebApp",
       "$params": {
         "port": 8080,
-        "static": ["../../ui-dev/public", "../../doc"],
+        "static": ["../../ui-dev/public", "../../doc/html"],
         "web_socket": true
       }
     },
@@ -135,7 +136,13 @@
     "ui_store": {
       "$type": "UiStore",
       "$params": "memory"
-    },  
+    },
+    "user_store": {
+      "$type": "UserStore",
+      "$params": ["file", {
+        "path": "$user_json_path"
+      }]
+    },
 
     "entity_manager": {
       "$type": "EntityManager",
@@ -148,7 +155,8 @@
         "session_store": "$session_store",
         "graph_store": "$graph_store",
         "app_store": "$app_store",
-        "ui_store": "$ui_store"
+        "ui_store": "$ui_store",
+        "user_store": "$user_store"
       }]
     },
 
@@ -164,6 +172,8 @@
         "dev_web_app": "$dev_web_app",
         "user_web_app": "$user_web_app",
         "config_path": "$config_path",
+        "auth": false,
+
         "workflow_engine": {
           "$type": "WorkflowEngine",
           "$params": {

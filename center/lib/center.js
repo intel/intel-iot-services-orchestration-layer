@@ -276,9 +276,36 @@ Center.prototype.on_entities_fullinfo = function(data) {
   }).done();
 };
 
+Center.prototype._ensure_user_exists$ = function(user, role, passwd) {
+  var self = this;
+  return self.em.user__find$(user, null).then(function(u) {
+    if (u) {
+      return false;
+    }
+    self.em.user__add$({
+      id: user,
+      name: user,
+      role: role,
+      passwd: passwd,
+      appbundle_path: B.path.join(self.appbundle_path, user)
+    });
+    return true;
+  });
+};
+
 Center.prototype._init_em$ = function() {
   var self = this;
-  return self.em.app__load_from_bundle$(self.appbundle_path);
+  if (this.config.auth) {
+    // default password is ""
+    return self._ensure_user_exists$("admin", "admin", "LcCbizWvnANvw/Kc28Bfuw==").then(function(added) {
+      if (!added) {
+        // guest can be deleted
+        return Promise.resolve();
+      }
+      return self._ensure_user_exists$("guest", "guest", "7lf26KynsWJIvOEM9QWHVQ==");
+    });
+  }
+  return self.em.app__load_from_bundle$(self.appbundle_path, null);
 };
 
 Center.prototype._set_hub_timestamp$ = function(hub, timestamp) {

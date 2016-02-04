@@ -1,3 +1,4 @@
 {
-  "not":"逻辑非"
+  "not":"逻辑非",
+  "builtin/logic_operation.html#not":"builtin/logic_operation.zh-CN.html#逻辑非"
 }

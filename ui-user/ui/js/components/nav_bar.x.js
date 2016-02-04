@@ -24,22 +24,69 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Link} from "react-router";
+import {Link, History} from "react-router";
+import auth from "../lib/auth";
 
-export default class NavBar extends ReactComponent {
+export default React.createClass({
+  mixins: [ History ],
+
+  getInitialState() {
+    return {
+      logged: auth.is_logged_in()
+    };
+  },
+
+  _on_auth_event(e) {
+    switch(e.event) {
+      case "login":
+        this.setState({
+          logged: true
+        });
+        break;
+
+      case "logout":
+        this.setState({
+          logged: false
+        });
+        break;
+    }
+  },
+
+  _on_logout() {
+    auth.logout(()=> {
+      $hope.app.stores.ui.clear_cache();
+      $hope.app.stores.app.clear_cache();
+      this.history.replaceState(null, "/login");
+    });
+  },
+
+  componentDidMount() {
+    auth.on("auth", this._on_auth_event);
+  },
+
+  componentWillUnmount() {
+    auth.removeListener("auth", this._on_auth_event);
+  },
 
   render() {
     return (
       <div className="hope-nav-bar">
-        <Link to="/">
-        <img className="hope-logo" src="images/logo.png" style={{
-          width: 228,
-          height: 60,
-          padding: "5px 0 5px 15px"
-        }}/>
+        <Link to={auth.is_logged_in() ? "/app" : "/"}>
+          <img className="hope-logo" src="images/logo.png" style={{
+            width: 228,
+            height: 60,
+            padding: "5px 0 5px 15px"
+          }}/>
         </Link>
-      </div>
+
+        {this.state.logged &&
+          <div className="hope-nav-bar-bg" />
+        }
+        {this.state.logged &&
+          <div className="fa fa-lg fa-sign-out hope-nav-bar-sign-out" onClick={this._on_logout} />
+        }
+        </div>
     );
   }
-}
+});
 

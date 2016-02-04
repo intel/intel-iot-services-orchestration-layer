@@ -545,15 +545,19 @@ require("./actions/ui_action");
 require("./actions/spec_action");
 
 
+$hope.app.server.get_config$().then(cfg => {
+  $hope.ui_dev_port = cfg.ui_dev_port;
+  $hope.ui_user_port = cfg.ui_user_port;
+  $hope.ui_auth_required = cfg.ui_auth_required;
 
-// Render with initial state
-ReactDOM.render(require("./components/route.x"), document.getElementById("react-world"));
+  // Render with initial state
+  ReactDOM.render(require("./components/route.x"), document.getElementById("react-world"));
+});
 
 
 // Initial Data loading
 $Q.all([
   $hope.app.stores.spec.init$(),
-  $hope.app.stores.app.ensure_apps_loaded$()
 ]).then(function() {
   $hope.listen_system("wfe/changed", ev => {
     $hope.app.stores.ui.handle_changed_event(ev.started, ev.stoped);

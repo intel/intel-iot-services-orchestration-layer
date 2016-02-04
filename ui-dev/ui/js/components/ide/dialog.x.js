@@ -56,7 +56,9 @@ var Dialog = React.createClass({
     }
   },
   _on_click_ok() {
-    this.props.onOK();
+    if (this.props.onOK() === false) {
+      return;
+    }
     this._on_close();
   },
   _on_close() {
@@ -128,7 +130,7 @@ Dialog.show_edit_dialog = function(title, ok_cb, txt, placeholder, ok_str) {
     <Dialog title={title}
       okStr={ok_str || __("Save")}
       onOK={() => {
-        ok_cb(input.val());
+        ok_cb($("#dlg_edit_InPuT").val());
       }} >
       <Input type="text"
         id="dlg_edit_InPuT"
@@ -202,5 +204,70 @@ Dialog.show_html_dialog = function(url) {
     </Dialog>, dlg_mount_node);
 };
 
+
+//////////////////////////////////////////////////////////////////
+// Change password dialog
+//////////////////////////////////////////////////////////////////
+
+Dialog.show_chpass_dialog = function(user, ok_cb) {
+  ReactDOM.render(
+    <Dialog title={__("Change Password")}
+      onOK={() => {
+        var old = $("#dlg_chpass_old").val();
+        var np = $("#dlg_chpass_new").val();
+        var np2 = $("#dlg_chpass_new2").val();
+        if (np !== np2) {
+          $hope.alert(__("Error"), __("Password mismatched"), "error");
+          return false;
+        }
+        ok_cb(old, np);
+      }} >
+      <Input type="text" label={__("User Name")} disabled={true} defaultValue={user} />
+      <Input type="password" id="dlg_chpass_old"  label={__("Old password")} />
+      <Input type="password" id="dlg_chpass_new"  label={__("New password")} />
+      <Input type="password" id="dlg_chpass_new2" label={__("Confirm password")} />
+    </Dialog>, dlg_mount_node);
+
+  _focus_input("#dlg_chpass_old");
+};
+
+//////////////////////////////////////////////////////////////////
+// Add new user dialog
+//////////////////////////////////////////////////////////////////
+
+Dialog.show_new_user_dialog = function(cb) {
+  ReactDOM.render(
+    <Dialog title={__("Add New User")}
+      onOK={() => {
+        var name = $("#au_name").val();
+        var role = $("#au_role").val();
+        var p1 = $("#au_p1").val();
+        var p2 = $("#au_p2").val();
+        if (p1 !== p2) {
+          $hope.alert(__("Error"), __("Password mismatched"), "error");
+          return false;
+        }
+        cb({
+          name: name,
+          passwd: p1,
+          role: role
+        });
+      }} >
+      <Input type="text" id="au_name" label={__("User Name")} />
+      <div className="form-group">
+        <label className="control-label">
+          <span>{__("Role")}</span>
+        </label>
+        <select className="form-control" defaultValue="guest" id="au_role">
+          <option value="admin">{__("Administrator")}</option>
+          <option value="guest">{__("Guest")}</option>
+        </select>
+      </div>
+      <Input type="password" id="au_p1" label={__("Password")} />
+      <Input type="password" id="au_p2" label={__("Confirm password")} />
+    </Dialog>, dlg_mount_node);
+
+  _focus_input("#au_name");
+},
 
 module.exports = Dialog;

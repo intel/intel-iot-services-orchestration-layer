@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/button_buzz.zh-CN.jpg)
+![](./pic/button_buzz.zh-CN.jpg)
+
 图中每隔1s就查询按钮状态,如果按下就打开蜂鸣器,反之则关闭

@@ -27,7 +27,7 @@
         "required": true
       },
       {
-        "name": "serverip",
+        "name": "server ip",
         "type": "string",
         "default": "127.0.0.1",
         "required": true

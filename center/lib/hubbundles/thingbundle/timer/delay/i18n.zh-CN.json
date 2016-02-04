@@ -1,4 +1,5 @@
 {
   "delay":"延时触发",
-  "When the input arrives, delay sometime and send it out. When pause, all timer will delete":"当‘in’端口输入时，延时‘delay’ms后，从‘out’发出"
+  "When the input arrives, delay sometime and send it out. When pause, all timer will delete":"当‘in’端口输入时，延时‘delay’ms后，从‘out’发出",
+  "builtin/timer.html#delay":"builtin/timer.zh-CN.html#延时触发"
 }

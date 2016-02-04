@@ -25,6 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import NavBar from "./nav_bar.x";
+import Settings from "./user/settings.x";
 
 export default class HOPE extends ReactComponent {
 
@@ -56,6 +57,7 @@ export default class HOPE extends ReactComponent {
             }}>
           {this.props.children}
         </div>
+        <Settings />
       </div>
     );
   }

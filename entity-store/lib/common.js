@@ -244,11 +244,10 @@ CommonStore.prototype.size$ = function() {
   return this.store.size$();
 };
 
-/*
 CommonStore.prototype.query$ = function(filter, options) {
   return this.store.query$(filter, options);
 };
-*/
+
 CommonStore.prototype.list$ = function(max_length) {
   return this.store.list$(max_length);
 };

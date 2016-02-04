@@ -1,4 +1,5 @@
 {
   "detectTouch":"是否触摸",
-  "Whenever triggered, bool = (whether the button is touched)":"触发时，输出按键是否被触摸"
+  "Whenever triggered, bool = (whether the button is touched)":"触发时，输出按键是否被触摸",
+  "startkit/touch_button.html#detectTouch":"startkit/touch_button.zh-CN.html#是否触摸"
 }

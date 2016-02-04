@@ -29,6 +29,8 @@ var B = require("hope-base");
 var log = B.log.for_category("frontend");
 var UIThing = require("./ui_thing");
 
+var HOPE_TOKEN = "HOPE_token";
+
 function _brief(o) {
   return {
     id: o.id,
@@ -44,6 +46,23 @@ function _remove_undefined(a) {
   });
 }
 
+function get_cookie(req, key) {
+  var cs = req.headers.cookie;
+  if (cs.length > 0) {
+    var k = key + "=";
+    var sidx = cs.indexOf(k);
+    if (sidx !== -1) {
+      sidx += k.length;
+      var eidx = cs.indexOf(";", sidx);
+      if (eidx === -1) {
+        eidx = cs.length;
+      }
+      return decodeURIComponent(cs.substring(sidx, eidx));
+    } 
+  }
+  return "";
+}
+
 function FrontEnd(center, web_app, handler_url) {
   B.check(web_app.$web_socket, "frontend", 
     "The web app for the frontend should have web socket enabled");
@@ -52,6 +71,8 @@ function FrontEnd(center, web_app, handler_url) {
   this.socket = web_app.$web_socket;
   this.sub_sockets = {};
   this.api_handler = B.net.create_api_handler(web_app, handler_url);
+
+  this.token_user = {};
 }
 
 
@@ -177,7 +198,13 @@ FrontEnd.prototype.api_app__send_widget_data = function(data) {
   ui_thing.on_data_from_client(data.widget, data.data);
 };
 
-FrontEnd.prototype.api_sys__get_config = function() {
+FrontEnd.prototype.api_sys__get_config = function(req, res) {
+  if (this.center.config.auth) {
+    var tk = get_cookie(req, HOPE_TOKEN);
+    if (!tk || !this.token_user[tk]) {
+      res.clearCookie(HOPE_TOKEN);
+    }
+  }
   var frontends = this.center.frontends;
   var ret = {};
 
@@ -187,16 +214,136 @@ FrontEnd.prototype.api_sys__get_config = function() {
   if (frontends.user) {
     ret.ui_user_port = frontends.user.web_app.$$port;
   }
+  ret.ui_auth_required = !!this.center.config.auth;
   return ret;
 };
 
-FrontEnd.prototype.api_app__list$ = function() {
+FrontEnd.prototype.get_uid_from_cookie = function(req, res) {
+  var uid = null;
+  if (this.center.config.auth) {
+    var tk = get_cookie(req, HOPE_TOKEN);
+    if (!tk || !this.token_user[tk]) {
+      res.clearCookie(HOPE_TOKEN);
+      return undefined;
+    }
+    uid = this.token_user[tk];
+  }
+  return uid;
+};
+
+FrontEnd.prototype.api_user__register = function(data) {
+  B.check(_.isObject(data) && data.name && _.isString(data.passwd),
+    "frontend/user_register", "Failed to register for", data);
+  var id = B.unique_id("USER_");
   var self = this;
-  return this.center.em.app__list$().then(function(apps) {
-    var ids = [];
-    apps.forEach(function(app) {
-      ids.push(app.id);
+
+  data.id = id;
+  data.appbundle_path = B.path.join(self.center.appbundle_path, id);
+
+  return self.center.em.user__find$(data.name, null).then(function(user) {
+    if (user) {
+      throw new Error("User name already exists");
+    }
+    return self.center.em.user__add$(data);
+  });
+};
+
+FrontEnd.prototype.api_user__remove = function(id, req, res) {
+  var self = this;
+  var uid = this.get_uid_from_cookie(req, res);
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+  if (id === uid) {
+    return false;
+  }
+  return self.center.em.user__remove$(id).then(function() {
+    return true;
+  });
+};
+
+FrontEnd.prototype.api_user__login = function(name, pwd, req, res) {
+  var self = this;
+  return this.center.em.user__find$(name, pwd).then(function(user) {
+    var ret = {
+      authenticated: false
+    };
+    if (user) {
+      var tk = B.unique_id();
+      self.token_user[tk] = user.id;
+      ret.authenticated = true;
+      ret.id = user.id;
+      ret.role = user.role || "guest";
+
+      res.cookie(HOPE_TOKEN, tk, { expires: new Date(Date.now() + 24 * 60 * 60 * 1000)});
+    }
+    return ret;
+  });
+};
+
+FrontEnd.prototype.api_user__logout = function(req, res) {
+  var tk = get_cookie(req, HOPE_TOKEN);
+  if (tk) {
+    var uid = this.token_user[tk];
+    delete this.token_user[tk];
+    res.clearCookie(HOPE_TOKEN);
+    return !!uid;
+  }
+  return false;
+};
+
+FrontEnd.prototype.api_user__change_passwd = function(oldpass, newpass, req, res) {
+  B.check(_.isString(oldpass) && _.isString(newpass),
+    "frontend/user_change_passwd", "Failed to change passwd for", oldpass, newpass);
+  var self = this;
+  var uid = this.get_uid_from_cookie(req, res);
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+
+  return self.center.em.user__get$(uid).then(function(user) {
+    if (!user || user.passwd !== oldpass) {
+      return false;
+    }
+    var u = {
+      id: user.id,
+      passwd: newpass
+    };
+    return self.center.em.user__update$(u).then(function() {
+      return true;
     });
+  });
+};
+
+FrontEnd.prototype.api_user__update$ = function(data, req, res) {
+  B.check(_.isObject(data) && data.id && _.isString(data.id),
+    "frontend/user_update", "Failed to update user for", data);
+  var uid = this.get_uid_from_cookie(req, res);
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+
+  return this.center.em.user__update$(data);
+};
+
+FrontEnd.prototype.api_user__list$ = function(req, res) {
+  var uid = this.get_uid_from_cookie(req, res);
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+  return this.center.em.user__list$();
+};
+
+
+FrontEnd.prototype.api_app__list$ = function(req, res) {
+  var self = this;
+  var uid = this.get_uid_from_cookie(req, res);
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+
+  return this.center.em.app__list$(uid).then(function(apps) {
+    var ids = _.map(apps, "id");
     return self.api_app__get$(ids);
   });
 };
@@ -352,15 +499,17 @@ DevFrontEnd.prototype.init$ = function() {
 //   name: app_name
 //   description: app_desc
 // }
-DevFrontEnd.prototype.api_app__create$ = function(data) {
+DevFrontEnd.prototype.api_app__create$ = function(data, req, res) {
   B.check(_.isObject(data), "frontend/app/create", "Should be a json for app", data);
-  // app id could be generated at backend
-  if (!data.id) {
-    data.id = B.unique_id("HOPE_APP_");
-  }
+  data.id = B.unique_id("HOPE_APP_");
   data.create_time = (new Date()).getTime();
   var self = this;
-  return this.center.em.app__add$(data, this.center.appbundle_path).then(function() {
+  var uid = this.get_uid_from_cookie(req, res);
+
+  if (uid === undefined) {
+    return "__HOPE_LOGIN_REQUIRED__";
+  }
+  return this.center.em.app__add$(data, this.center.appbundle_path, uid).then(function() {
     return self.api_app__get$([data.id]).then(function(apps) {
       return apps[0];
     });

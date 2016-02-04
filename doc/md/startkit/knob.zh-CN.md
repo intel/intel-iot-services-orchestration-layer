@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/knob_buzz.zh-CN.jpg)
+![](./pic/knob_buzz.zh-CN.jpg)
+
 图中每隔1s就测量旋钮值，如果超过500就打开蜂鸣器，反之则关闭

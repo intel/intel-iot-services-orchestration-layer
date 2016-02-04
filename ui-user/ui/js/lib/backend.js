@@ -76,6 +76,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // For now we only need one implementation of above interface
 var WebBackend = {
+  user: {},
   app: {},
   ui: {},
   graph: {},
@@ -102,6 +103,10 @@ function invoke(api) {
   }, function(err) {
     $hope.log.warn("API", "[Invoke]", api, "\n            [Params]", 
       params, "\n            [Error]", err.responseText, err);
+    if (err.responseText === "__HOPE_LOGIN_REQUIRED__") {
+      location.replace("/#/login");
+      return undefined;
+    }
     if (err.responseText) {
       return new Error(err.responseText);
     }
@@ -111,6 +116,14 @@ function invoke(api) {
 
 WebBackend.get_config$ = function() {
   return invoke("sys.get_config");
+};
+
+WebBackend.user.login$ = function(name, pass) {
+  return invoke("user.login", name, pass);
+};
+
+WebBackend.user.logout$ = function() {
+  return invoke("user.logout");
 };
 
 WebBackend.app.list$ = function() {

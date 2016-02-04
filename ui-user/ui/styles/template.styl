@@ -70,6 +70,50 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
 }
 
+.hope-nav-bar a, .hope-nav-bar a:hover {
+  text-decoration: none;
+}
+
+.hope-nav-bar-sep {
+  padding: 3px 16px;
+  font-size: 18px;
+  color: $fg-3;
+}
+
+.hope-nav-bar-app {
+  padding-top: 3px;
+  font-size: 18px;
+  color: $fg-5;
+}
+
+.hope-nav-bar-bg {
+  border-top: 60px solid rgba(92,100,114,.75);
+  border-left: 100px solid transparent;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+.hope-nav-bar-sign-out {
+  cursor: pointer;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.hope-ide-switcher {
+  float: left;
+  text-align: center;
+  color: $fg-6;
+  background-color: $bk-2;
+  width: 70px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.hope-ide-switcher:hover {
+  background-color: $bk-0;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Panel
@@ -114,7 +158,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-panel-icon-min:hover {
   color: $panel-header-fg-on;
 }
-
 
 //----------------------------------------------------------------
 // Panel - Library
@@ -290,7 +333,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .node-details-tag {
   width: 100%;
-  font-size: 12px;
   background: $panel-tab-bk-on;
   overflow: auto;
   padding: 8px;
@@ -321,7 +363,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 16px;
   margin: 12px 0 0 0;
 }
-
+.hope-hover-icon-btn:hover {
+  color: $fg-6;
+}
 .hope-graph-grouped {
   stroke-width: 0px;
   fill: $graph-group-fill;
@@ -401,6 +445,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 3px;
 }
 
+.hope-input-highlighted {
+  background: $bk-0;
+  border-color: rgba(255, 0, 0, 0.8) !important;
+  box-shadow: insect 0 2px 2px rgba(0,0,0,0.075), 0 0 8px rgb(255,0,0) !important;
+}
+
 .hope-note {
   position: relative;
   background: $bk-5;
@@ -426,6 +476,28 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 8px;
   margin: 14px;
   text-align: center;
+}
+
+.hope-tbl {
+  width: 100%;
+}
+.hope-tbl th {
+  text-align: center;
+}
+.hope-tbl-row-val, .hope-tbl-row-key {
+  width: 95%;
+  padding-left: 3px;
+  background-color: #272727;
+  border: 1px solid #3d3d3d;
+}
+
+textarea:focus,
+input[type="text"]:focus {
+  border-color: rgba(255, 153, 0, 0.8);
+  outline: 0;
+  outline: thin dotted \9;
+  box-shadow: insect 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgb(255,153,0);
+  transition: border linear 0.2s, box-shadow linear 0.2s;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -497,7 +569,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-graph-selected {
   fill: $graph-fill-on;
   stroke: $graph-stroke-on;
-  stroke-width: 1px;
 }
 
 
@@ -512,19 +583,15 @@ text {
 .hope-graph-in-port, .hope-graph-out-port, .hope-graph-extract, .hope-graph-tag {
   font-family: Monaco, 'Ubuntu Mono', Consolas, monospace;
   font-size: 12px;
-  text-rendering: geometricPrecision;
-  dominant-baseline: central;
 }
 
 .hope-graph-icon, .hope-inspector-icon {
-  font-family: 'FontAwesome';
+  font-family: FontAwesome, Monaco, 'Ubuntu Mono', Consolas, monospace;
   text-anchor: middle;
-  dominant-baseline: central;
 }
 
 .hope-graph-icon-btn {
-  font-family: 'FontAwesome';
-  dominant-baseline: central;
+  font-family: FontAwesome, Monaco, 'Ubuntu Mono', Consolas, monospace;
   cursor: default;
   fill: $fg-3;
 }
@@ -549,7 +616,6 @@ text {
 .hope-graph-in-line, .hope-graph-edge, .hope-graph-edge-preview {
   stroke-width: 2px;
   fill: none;
-  pointer-events: fill;
 }
 
 .hope-graph-in-line {
@@ -566,6 +632,7 @@ text {
 
 .hope-graph-edge:hover {
   stroke-width: 5px;
+  stroke: $fg-5;
 }
 
 .hope-graph-edge.hope-graph-selected {
@@ -638,8 +705,7 @@ text {
   }
 }
 .hope-graph-blink {
-  animation: blink 0.5s ease-in-out;
-  animation-iteration-count: infinite;
+  animation: blink 0.5s ease-in-out infinite;
 }
 
 .directional-icon {
@@ -670,6 +736,7 @@ text {
 //////////////////////////////////////////////////////////////////
 
 .hope-ftabs-wrapper {
+  float: left;
   background-color: $bk-4;
   height: 100%;
   width: 100%;
@@ -758,6 +825,7 @@ text {
   position: relative;
 }
 .hope-app:hover {
+  background-color: $fg-4;
   border: 2px solid #00BAFF;
 }
 .hope-app-trash {
@@ -829,133 +897,10 @@ text {
 .hope-app-home-icon-light {
   color: red;
 }
-.hope-app-panel {
-  background-color: white;
-  height: 600px;
-  font-size: 16px;
-  border: 1px solid #666;
-  border-radius: 8px;
-  margin: 30px 20px 0 40px;
-  padding: 15px;
-}
-.hope-app-panel-name {
-  text-align: center;
-  font-size: 18px;
-  padding: 12px 0;
-}
-.hope-app-panel-label {
-  color: #00BAFF;
-  padding: 4px 10px 4px 0;
-}
-.hope-app-panel-desc {
-  height: 85px;
-  width: 209px;
-  font-size: 14px;
-  resize: none;
-  border: 0;
-}
-.hope-app-panel-btn {
-  background-color: #fcfcfc;
-  border: 1px solid #555;
-  border-radius: 8px;
-  height: 32px;
-  padding: 4px;
-  margin: 16px;
-  text-align: center;
-  cursor: pointer;
-}
-.hope-app-panel-btn:hover {
-  border: 1px solid #00BAFF;
-}
-.hope-app-panel-ui-list {
-  height: 300px;
-  overflow: auto;
-}
-.hope-app-panel-ui {
-  border: 0;
-  border-radius: 8px;
-  height: 32px;
-  margin: 6px 0;
-  padding: 4px;
-  color: black;
-  position: relative;
-}
-.hope-app-panel-ui:hover {
-  background-color: #ccc;
-}
-.hope-app-panel-ui-name {
-  width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-left: 20px;
-}
-.hope-app-panel-ui-home {
-  position: absolute;
-  left: 6px;
-  top: 6px;
-  color: #999;
-}
-.hope-app-panel-ui-home.home-ui {
-  color: #00BAFF;
-}
-.hope-app-panel-ui-trash {
-  color: #999;
-  position: absolute;
-  right: 6px;
-  top: 6px;
-}
-.hope-app-panel-ui-home:not(.home-ui):hover,
-.hope-app-panel-ui-trash:hover {
-  color: red;
-}
 .hope-app-home-list {
   list-style: none;
   overflow: auto;
   padding: 10px 20px;
-}
-.hope-activity {
-  float: left;
-  width: 200px;
-  height: 200px;
-  margin: 20px 20px 20px 0;
-  border: 2px solid #f0f0f0;
-  border-radius: 8px;
-  background-color: #f7f7f7;
-  position: relative;
-}
-.hope-activity:hover {
-  border: 2px solid #00BAFF;
-}
-.hope-activity-bar {
-  text-align: center;
-  background: #363636;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-}
-.hope-activity-icon {
-  margin: 10px 0;
-  font-size: 7em;
-  text-decoration: none;
-  font-style: normal;
-  color: white;
-}
-.hope-activity-name, .hope-activity-desc {
-  font-size: 12px;
-  text-decoration: none;
-  font-style: normal;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  color: black;
-}
-.hope-activity-name {
-  white-space: nowrap;
-  padding: 6px;
-}
-.hope-activity-desc {
-  color: #888;
-  height: 50px;
-  padding: 0 6px;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -1057,6 +1002,22 @@ text {
   background: $bk-0;
 }
 
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-btn {
+  margin-top: 8px;
+}
+.hope-login-dialog {
+  width: 750px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
 //////////////////////////////////////////////////////////////////////////
 // Templated colors
 //////////////////////////////////////////////////////////////////////////

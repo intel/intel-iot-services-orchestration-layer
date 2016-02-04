@@ -87,16 +87,7 @@ export default class InPort extends ReactComponent {
 
     if ("default" in port && _.isEmpty(view.find_edge(null, port))) {
       let val = String(port.default);
-      if (val.length <= 3) {
-        defval =
-          <text className="hope-graph-port-default"
-                key="defval"
-                x={t.x}
-                y={t.y - 2}>
-            { val }
-          </text>;
-      }
-      else {
+      if (val.length > 0) {
         var edges = view.find_edge(null, port);
         if (!edges || !edges.length) {
           defval =

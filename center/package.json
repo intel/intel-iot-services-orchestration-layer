@@ -11,7 +11,7 @@
   "name": "hope-center",
   "homepage": "",
   "description": "Orchestration Center of IoT Services Orchestration Layer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": ""
@@ -32,7 +32,9 @@
   "dependencies": {
     "commander": "^2.8.1",
     "eventemitter3": "^1.1.1",
-    "lodash": "^3.10.0"
+    "lodash": "^3.10.0",
+    "nodemailer": "^2.0.0",
+    "node-weibo-twitter":"^0.0.2"
   },
   "devDependencies": {
     "chai": "^3.0.0",

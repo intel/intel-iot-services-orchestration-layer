@@ -26,5 +26,6 @@
     }
   },
   "ui": {
-  }
+  },
+  "doc": "builtin/string.html#search"
 }

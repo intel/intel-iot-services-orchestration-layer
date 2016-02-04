@@ -31,17 +31,33 @@ import HOPE from "./hope.x";
 import AppManager from "./app/app_manager.x";
 import UI from "./ui_ide/ui_ide.x";
 import NotFound from "./not_found.x";
+import Login from "./login.x";
+import auth from "../lib/auth";
 
 let history = useBeforeUnload(createHashHistory)({
   queryKey: false
 });
 
+function requireAuth(nextState, replaceState) {
+  if ($hope.ui_auth_required && !auth.is_logged_in()) {
+    $hope.ui_redirect = nextState.location.pathname;
+    replaceState({}, '/login');
+  }
+}
+
+function redirectApp(nextState, replaceState) {
+  if (!$hope.ui_auth_required) {
+    replaceState({}, '/app');
+  }
+}
+
 export default (
-  <Router history={history}>
+  <Router history={history} >
     <Route path="/" component={HOPE}>
-      <IndexRoute component={AppManager}/>
-      <Route path="app" component={AppManager}/>
-      <Route path="ui/:id" component={UI}/>
+      <IndexRoute component={$hope.ui_auth_required && !auth.is_logged_in() ? Login : AppManager}/>
+      <Route path="login" component={Login} onEnter={redirectApp} />
+      <Route path="app" component={AppManager} onEnter={requireAuth} />
+      <Route path="ui/:id" component={UI} onEnter={requireAuth} />
       <Route path="*" component={NotFound}/>
     </Route>
   </Router>

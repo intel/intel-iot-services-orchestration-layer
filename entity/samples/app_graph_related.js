@@ -41,7 +41,7 @@ var em = E.create_entity_manager({
 
 var appbundlepath = B.path.join(__dirname, "./appbundle");
 
-em.app__load_from_bundle$(appbundlepath)
+em.app__load_from_bundle$(appbundlepath, null)
 .then(function(list) {
   console.log("==== load bundle ===");
   console.log("[changed_list]", list);

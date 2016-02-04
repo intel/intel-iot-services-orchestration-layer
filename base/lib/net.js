@@ -154,6 +154,7 @@ function APIHandler(web_app, url_path, config) {
       res.status(500).send("Error caught: params aren't an array");
       return;
     }
+    params.push(req, res);
     Promise.resolve(f.apply({}, params)).then(function(r) {
       if (_.isUndefined(r)) {
         r = {};

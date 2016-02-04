@@ -78,6 +78,8 @@ function EntityManager(obj) {
   this.event = new EventEmitter();
   this.timestamp = B.time.hrtime();//hrtime
   this.timestamp_old = this.timestamp;
+
+  this.users = {};
 }
 
 /**
@@ -921,12 +923,12 @@ EntityManager.prototype.specbundle__list_specs$ = function(specbundle_id) {
  *                                   }
  *                                 }           
  */
-EntityManager.prototype.app__load_from_bundle$ = function(appbundle_path) {
+EntityManager.prototype.app__load_from_bundle$ = function(appbundle_path, uid) {
   var changed_list = [];
   var self = this;
   var l = this.make_lock();
   return l.lock_as_promise$(function() {
-    return App.load_apps$(appbundle_path, self, changed_list)
+    return App.load_apps$(uid, appbundle_path, self, changed_list)
     .then(function() {
       return em_changed(self, changed_list);
     });
@@ -950,12 +952,13 @@ EntityManager.prototype.app__load_from_bundle$ = function(appbundle_path) {
  *                                   }
  *                                 }
  */
-EntityManager.prototype.app__add$ = function(app_obj, appbundle_path) {
+EntityManager.prototype.app__add$ = function(app_obj, appbundle_path, uid) {
   var changed_list = [];
   var self = this;
   var l = this.make_lock();
   return l.lock_as_promise$(function() {
-    return App.add_app$(app_obj, appbundle_path, self, changed_list)
+    var path = uid && self.users[uid] ? self.users[uid].appbundle_path : appbundle_path;
+    return App.add_app$(uid, app_obj, path, self, changed_list)
     .then(function() {
       return em_changed(self, changed_list);
     });
@@ -1026,9 +1029,30 @@ EntityManager.prototype.app__remove$ = function(app_id) {
   }, 10000, false);
 };
 
-EntityManager.prototype.app__list$ = function(max_length) {
+function app_list_by_uid$(self, uid) {
+  return self.app_store.query$(function(app) { return app.uid == uid; })
+  .then(function(ids) {
+    return self.app_store.batch_get$(ids);
+  });
+}
+
+EntityManager.prototype.app__list$ = function(uid) {
   var self = this;
-  return self.app_store.list$(max_length)
+  if (uid) {
+    var u = self.users[uid];
+    if (u === undefined) {
+      return self.user_store.get$(uid).then(function(user) {
+        check(user, "app_list", "Invalid user", uid);
+        self.users[uid] = user;
+        return self.app__load_from_bundle$(user.appbundle_path, uid);
+      }).then(function() {
+        return app_list_by_uid$(self, uid);
+      });
+    }
+    return app_list_by_uid$(self, uid);
+  }
+
+  return self.app_store.list$()
   .then(function(ids) {
     return self.app_store.batch_get$(ids);
   });
@@ -1272,7 +1296,10 @@ EntityManager.prototype.ui__get_app$ = function(ui_id) {
  */
 EntityManager.prototype.user__add$ = function(user_obj) {
   var self = this;
-  return User.add_user$(user_obj, self);
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return User.add_user$(user_obj, self);
+  }, 10000, false);
 };
 
 /**
@@ -1282,27 +1309,57 @@ EntityManager.prototype.user__add$ = function(user_obj) {
  */
 EntityManager.prototype.user__update$ = function(user_obj) {
   var self = this;
-  return User.update_user$(user_obj, self);
+  var u = _.cloneDeep(user_obj);
+  delete u.appbundle_path;
+  return User.update_user$(u, self);
 };
 
 /**
  * get the user obj
- * @param  {string or array} user_ids 
+ * @param  {string or array} ids 
  * @return {Promise}          resolve: the user obj for obj array
  */
-EntityManager.prototype.user__get$ = function(user_ids) {
+EntityManager.prototype.user__get$ = function(ids) {
   var self = this;
-  return User.get_user$(user_ids, self);
+  return User.get_user$(ids, self);
+};
+
+/**
+ * find the user
+ * @param  {String} name
+ * @param  {String} passwd
+ * @return {Promise}          resolve: the user obj
+ */
+EntityManager.prototype.user__find$ = function(name, passwd) {
+  var self = this;
+  return User.find_user$(name, passwd, self);
 };
 
 /**
  * remove the user
- * @param  {string} user_id id of the user
+ * @param  {string} uid id of the user
  * @return {Promise}         resolve: the user id
  */
-EntityManager.prototype.user__remove$ = function(user_id) {
+EntityManager.prototype.user__remove$ = function(uid) {
+  var changed_list = [];
   var self = this;
-  return User.remove_user$(user_id, self);
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return self.app_store.query$(function(app) { return app.uid == uid; })
+    .then(function(app_ids) {
+      var tasks = _.map(app_ids, function(app_id) {
+        return App.remove_app$(app_id, self, changed_list);
+      });
+      return Promise.all(tasks);
+    })
+    .then(function() {
+      delete self.users[uid];
+      return User.remove_user$(uid, self);
+    })
+    .then(function() {
+      return em_changed(self, changed_list);
+    });
+  }, 10000, false);
 };
 
 /**

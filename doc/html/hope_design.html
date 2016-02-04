@@ -1,0 +1,568 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #40a070; }
+code > span.fl { color: #40a070; }
+code > span.ch { color: #4070a0; }
+code > span.st { color: #4070a0; }
+code > span.co { color: #60a0b0; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #06287e; }
+code > span.er { color: #ff0000; font-weight: bold; }
+  </style>
+  <link href="data:text/css,body%20%7B%0A%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20padding%2Dright%3A%201em%3B%0A%20%20%20%20padding%2Dleft%3A%201em%3B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%20%0A%20%20%20%20border%2Dleft%3A%201px%20solid%20black%3B%0A%20%20%20%20border%2Dright%3A%201px%20solid%20black%3B%0A%20%20%20%20color%3A%20black%3B%0A%20%20%20%20font%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0A%20%20%20%20font%2Dsize%3A%20100%25%3B%0A%20%20%20%20line%2Dheight%3A%20140%25%3B%0A%20%20%20%20color%3A%20%23333%3B%20%0A%7D%0Apre%20%7B%0A%20%20%20%20border%3A%201px%20dotted%20gray%3B%0A%20%20%20%20background%2Dcolor%3A%20%23ececec%3B%0A%20%20%20%20color%3A%20%231111111%3B%0A%20%20%20%20padding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0A%20%20%20%20font%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%20%0A%20%20%20%20text%2Ddecoration%3A%20none%3B%0A%20%20%20%20color%3A%20%237a5ada%3B%20%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20border%2Dbottom%3A%201px%20dotted%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20padding%2Dbottom%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20left%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%201em%3B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2070%25%3B%0A%20%20%20%20%20%20%20%20color%3A%20gray%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%0Apre%20%7B%0A%20%20%20%20background%2Dcolor%3A%20%23FDF6E3%0A%7D%0A%0Aimg%20%7B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%0A%7D%0A%0A%2F%2F%20KeyWordTok%0A%2EsourceCode%20%2Ekw%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20DataTypeTok%0A%2EsourceCode%20%2Edt%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%0A%2F%2F%20DecValTok%20%28decimal%20value%29%2C%20BaseNTok%2C%20FloatTok%0A%2EsourceCode%20%2Edv%2C%20%2EsourceCode%20%2Ebn%2C%20%2EsourceCode%20%2Efl%20%7B%20color%3A%20%23D33682%3B%20%7D%0A%2F%2F%20CharTok%0A%2EsourceCode%20%2Ech%20%7B%20color%3A%20%23DC322F%3B%20%7D%0A%2F%2F%20StringTok%0A%2EsourceCode%20%2Est%20%7B%20color%3A%20%232AA198%3B%20%7D%0A%2F%2F%20CommentTok%0A%2EsourceCode%20%2Eco%20%7B%20color%3A%20%2393A1A1%3B%20%7D%0A%2F%2F%20OtherTok%0A%2EsourceCode%20%2Eot%20%7B%20color%3A%20%23A57800%3B%20%7D%0A%2F%2F%20AlertTok%0A%2EsourceCode%20%2Eal%20%7B%20color%3A%20%23CB4B16%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A%2F%2F%20FunctionTok%0A%2EsourceCode%20%2Efu%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20RegionMarkerTok%0A%2EsourceCode%20%2Ere%20%7B%20%7D%0A%2F%2F%20ErrorTok%0A%2EsourceCode%20%2Eer%20%7B%20color%3A%20%23D30102%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#frontend-api">Frontend API</a><ul>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#example">Example</a></li>
+</ul></li>
+<li><a href="#category">Category</a><ul>
+<li><a href="#app">App</a></li>
+<li><a href="#graph">Graph</a></li>
+<li><a href="#ui">UI</a></li>
+<li><a href="#spec">Spec</a></li>
+<li><a href="#hub">Hub</a></li>
+<li><a href="#thing">Thing</a></li>
+<li><a href="#service">Service</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="frontend-api"><a href="#frontend-api">Frontend API</a></h1>
+<h2 id="introduction"><a href="#introduction">Introduction</a></h2>
+<p>REST API provides a powerful and simple Web services API for interacting with Intel(R) <em>IoT Services Orchestration Layer</em>. The API consist of two groups:</p>
+<ul>
+<li><strong>DevFrontEnd</strong></li>
+<li><strong>UserFrontEnd</strong></li>
+</ul>
+<p>Currently, all of API using the standard <strong>POST</strong> HTTP method.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">API</th>
+<th align="left">URL</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>DevFrontEnd</code></td>
+<td align="left"><code>http://&lt;host&gt;:8080/apis/dev</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>UserFrontEnd</code></td>
+<td align="left"><code>http://&lt;host&gt;:3000/apis/user</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="example"><a href="#example">Example</a></h3>
+<p>Fetch the list of apps.</p>
+<h4 id="request"><a href="#request">Request</a></h4>
+<p>Request URL:</p>
+<p><code>http://localhost:8080/apis/dev</code></p>
+<p>Requst body:</p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.list&quot;</span>,<span class="dt">&quot;params&quot;</span>:[]}</code></pre>
+<h4 id="response"><a href="#response">Response</a></h4>
+<pre class="sourceCode json"><code class="sourceCode json">[{
+  <span class="dt">&quot;name&quot;</span>:<span class="st">&quot;A4&quot;</span>,<span class="dt">&quot;id&quot;</span>:<span class="st">&quot;HOPE_APP_184c1560&quot;</span>,<span class="dt">&quot;description&quot;</span>:<span class="st">&quot;A4 XXX&quot;</span>,
+  <span class="dt">&quot;graphs&quot;</span>:[{
+    <span class="dt">&quot;id&quot;</span>:<span class="st">&quot;GRAPH_0014b930&quot;</span>,<span class="dt">&quot;name&quot;</span>:<span class="st">&quot;G1&quot;</span>,<span class="dt">&quot;description&quot;</span>:<span class="st">&quot;&quot;</span>
+    },{
+    <span class="dt">&quot;id&quot;</span>:<span class="st">&quot;GRAPH_4058fec0&quot;</span>,<span class="dt">&quot;name&quot;</span>:<span class="st">&quot;ox&quot;</span>,<span class="dt">&quot;description&quot;</span>:<span class="st">&quot;&quot;</span>
+  }],
+  <span class="dt">&quot;uis&quot;</span>:[{
+    <span class="dt">&quot;id&quot;</span>:<span class="st">&quot;UI_1bb298f0&quot;</span>,<span class="dt">&quot;name&quot;</span>:<span class="st">&quot;U1&quot;</span>,<span class="dt">&quot;description&quot;</span>:<span class="st">&quot;&quot;</span>
+  }],
+},{
+  <span class="dt">&quot;name&quot;</span>:<span class="st">&quot;A1&quot;</span>,<span class="dt">&quot;id&quot;</span>:<span class="st">&quot;HOPE_APP_27598be0&quot;</span>,<span class="dt">&quot;description&quot;</span>:<span class="st">&quot;&quot;</span>,
+  <span class="dt">&quot;graphs&quot;</span>:[],<span class="dt">&quot;uis&quot;</span>:[]
+}]</code></pre>
+<h2 id="category"><a href="#category">Category</a></h2>
+<h3 id="app"><a href="#app">App</a></h3>
+<h4 id="app.list"><a href="#app.list">app.list</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the list of app.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.list&quot;</span>,<span class="dt">&quot;params&quot;</span>:[]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">app_info</span> ]</code></pre>
+<h4 id="app.get"><a href="#app.get">app.get</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get a list of app that given in array of app_id.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.get&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">app_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">app_info</span> ]</code></pre>
+<h4 id="app.get_widget_data"><a href="#app.get_widget_data">app.get_widget_data</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get widget data cached in server.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.get_widget_data&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;app&quot;</span>:    <span class="er">app_id</span>,
+    <span class="dt">&quot;widget&quot;</span>: <span class="er">widget_id</span>,
+ }]
+}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">widget</span> <span class="er">data</span> ]</code></pre>
+<h4 id="app.send_widget_data"><a href="#app.send_widget_data">app.send_widget_data</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Post the data to server, this data will be consumed by workflow engine.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.send_widget_data&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;app&quot;</span>:    <span class="er">app_id</span>,
+    <span class="dt">&quot;widget&quot;</span>: <span class="er">widget_id</span>,
+    <span class="dt">&quot;data&quot;</span>: <span class="er">data</span>
+ }]
+}</code></pre>
+<p><strong>Response</strong></p>
+<p>N/A</p>
+<h4 id="app.create"><a href="#app.create">app.create</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Create and return an app.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.create&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;name&quot;</span>: <span class="er">app_name</span>,
+     <span class="dt">&quot;description&quot;</span>: <span class="er">app_desc</span>
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{ <span class="er">app_info</span> }</code></pre>
+<h4 id="app.update"><a href="#app.update">app.update</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Update the app information.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.update&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;app&quot;</span>: <span class="er">app_id</span>,
+     <span class="dt">&quot;props&quot;</span>: {<span class="er">...</span>}
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="app.remove"><a href="#app.remove">app.remove</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete one app on the server, this operation will also automatically delete all
+workflows and UI belong it.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.remove&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{ <span class="dt">&quot;app&quot;</span>: <span class="er">app_id</span> }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="app.create_graph"><a href="#app.create_graph">app.create_graph</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Create a new workflow.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.create_graph&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;app&quot;</span>: <span class="er">app_id</span>,
+     <span class="dt">&quot;graph&quot;</span>: <span class="er">graph_info</span>
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="app.create_ui"><a href="#app.create_ui">app.create_ui</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Create a new UI.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;app.create_ui&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;app&quot;</span>: <span class="er">app_id</span>,
+     <span class="dt">&quot;ui&quot;</span>: <span class="er">ui_info</span>
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h3 id="graph"><a href="#graph">Graph</a></h3>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<h4 id="graph.get"><a href="#graph.get">graph.get</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get a list of workflow that given in array of graph_id.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.get&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_info</span> ]</code></pre>
+<h4 id="graph.update"><a href="#graph.update">graph.update</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Update one graph.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.update&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">graph_info</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="graph.remove"><a href="#graph.remove">graph.remove</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete workflows on the server.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.remove&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="graph.start"><a href="#graph.start">graph.start</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Start workflows on the server.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.start&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{}</code></pre>
+<h4 id="graph.stop"><a href="#graph.stop">graph.stop</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Stop workflows on the server.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.stop&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{}</code></pre>
+<h4 id="graph.status"><a href="#graph.status">graph.status</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the status of workflows, valid status is &quot;Non-exist&quot;, &quot;Working&quot;, &quot;Paused&quot;, &quot;Stopped&quot;
+or &quot;Idle&quot;.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.status&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> {
+  <span class="dt">&quot;graph&quot;</span>: <span class="er">graph_id</span>,
+  <span class="dt">&quot;status&quot;</span>: <span class="er">status</span>
+}]</code></pre>
+<h4 id="graph.trace"><a href="#graph.trace">graph.trace</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the tracing data of workflows.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;graph.trace&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">graph_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> {
+  <span class="dt">&quot;id&quot;</span>: <span class="er">graph_id</span>,
+  <span class="dt">&quot;trace&quot;</span>: [ <span class="er">Array</span> <span class="er">of</span> <span class="er">records</span> ]
+}]</code></pre>
+<h3 id="ui"><a href="#ui">UI</a></h3>
+<h4 id="ui.get"><a href="#ui.get">ui.get</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get a list of UI that given in array of ui_id.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;ui.get&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">ui_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">ui_info</span> ]</code></pre>
+<h4 id="ui.update"><a href="#ui.update">ui.update</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Update one UI.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;ui.update&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">ui_info</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h4 id="ui.remove"><a href="#ui.remove">ui.remove</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete workflows on the server.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;ui.remove&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">ui_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="er">command</span> <span class="er">log</span>}</code></pre>
+<h3 id="spec"><a href="#spec">Spec</a></h3>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<h4 id="spec_bundle.list"><a href="#spec_bundle.list">spec_bundle.list</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the list of all available spec bundle.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;spec_bundle.list&quot;</span>,<span class="dt">&quot;params&quot;</span>:[]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">spec_bundle_info</span> ]</code></pre>
+<h4 id="spec_bundle.get"><a href="#spec_bundle.get">spec_bundle.get</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the list of spec bundle that given in array of spec_bundle_id.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;spec_bundle.get&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">spec_bundle_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">spec_bundle_info</span> ]</code></pre>
+<h4 id="spec_bundle.get_for_specs"><a href="#spec_bundle.get_for_specs">spec_bundle.get_for_specs</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the list of spec bundle that includes spec in array of spec_id.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;spec_bundle.get_for_specs&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">spec_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">spec_bundle_info</span> ]</code></pre>
+<h3 id="hub"><a href="#hub">Hub</a></h3>
+<h4 id="hub.list"><a href="#hub.list">hub.list</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get the brief list of all available Hub.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;hub.list&quot;</span>,<span class="dt">&quot;params&quot;</span>:[]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> {
+  <span class="dt">&quot;id&quot;</span>: <span class="er">hub_id</span>,
+  <span class="dt">&quot;name&quot;</span>: <span class="er">hub_name</span>,
+  <span class="dt">&quot;description&quot;</span>: <span class="er">hub_desc</span>
+}]</code></pre>
+<h4 id="hub.get"><a href="#hub.get">hub.get</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get a list of Hub given in array of hub_id.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+<li><em>UserFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{<span class="dt">&quot;api&quot;</span>:<span class="st">&quot;hub.get&quot;</span>,<span class="dt">&quot;params&quot;</span>:[ <span class="er">Array</span> <span class="er">of</span> <span class="er">hub_id</span> ]}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">[ <span class="er">Array</span> <span class="er">of</span> <span class="er">hub_info</span>]</code></pre>
+<h4 id="hub.create_thing"><a href="#hub.create_thing">hub.create_thing</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Create a new thing on the Hub.</code></pre>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;hub.create_thing&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;hub&quot;</span>: <span class="er">hub_id</span>,
+    <span class="dt">&quot;thing&quot;</span>: {
+       <span class="dt">&quot;type&quot;</span>: <span class="st">&quot;hope_thing&quot;</span>,
+       <span class="dt">&quot;name&quot;</span>: <span class="er">thing_name</span>,
+       <span class="dt">&quot;description&quot;</span>: <span class="er">thing_desc</span>
+    }
+   }]
+}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;id&quot;</span>: <span class="er">thing_id</span>,
+  <span class="dt">&quot;name&quot;</span>: <span class="er">thing_name</span>,
+  <span class="dt">&quot;type&quot;</span>: <span class="st">&quot;hope_thing&quot;</span>
+}</code></pre>
+<h3 id="thing"><a href="#thing">Thing</a></h3>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<h4 id="thing.update"><a href="#thing.update">thing.update</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Update the thing information.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;thing.update&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;id&quot;</span>: <span class="er">thing_id</span>,
+     <span class="er">...</span>
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{}</code></pre>
+<h4 id="thing.remove"><a href="#thing.remove">thing.remove</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete things on the server, this operation will also automatically delete all
+services belong it.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;thing.remove&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[[ <span class="er">thing_id</span> ]]</code></pre>
+<p><strong>Response</strong></p>
+<p>N/A</p>
+<h4 id="thing.create_service"><a href="#thing.create_service">thing.create_service</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Create a new service on the Thing.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;thing.create_service&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;thing&quot;</span>: <span class="er">thing_id</span>,
+    <span class="dt">&quot;service&quot;</span>: {
+       <span class="dt">&quot;type&quot;</span>: <span class="st">&quot;hope_service&quot;</span>,
+       <span class="dt">&quot;spec&quot;</span>: <span class="er">spec_id</span> <span class="er">or</span> <span class="er">spec</span>,
+       <span class="dt">&quot;name&quot;</span>: <span class="er">service_name</span>,
+       <span class="dt">&quot;description&quot;</span>: <span class="er">service_desc</span>
+    }
+   }]
+}</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;id&quot;</span>: <span class="er">service_id</span>,
+  <span class="dt">&quot;name&quot;</span>: <span class="er">service_name</span>,
+  <span class="dt">&quot;type&quot;</span>: <span class="st">&quot;hope_service&quot;</span>
+}</code></pre>
+<h3 id="service"><a href="#service">Service</a></h3>
+<p><strong>Applicability</strong></p>
+<ul>
+<li><em>DevFrontEnd</em></li>
+</ul>
+<h4 id="service.update"><a href="#service.update">service.update</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Update the service information.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.update&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+     <span class="dt">&quot;id&quot;</span>: <span class="er">service_id</span>,
+     <span class="er">...</span>
+ }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{}</code></pre>
+<h4 id="service.remove"><a href="#service.remove">service.remove</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete services on the server, this operation will also automatically delete all codes
+for it.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.remove&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[[ <span class="er">service_id</span> ]]</code></pre>
+<p><strong>Response</strong></p>
+<p>N/A</p>
+<h4 id="service.list_files"><a href="#service.list_files">service.list_files</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Get a list of file that service had and/or expected for.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.list_files&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[ <span class="er">service_id</span> ]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;expected&quot;</span>: [ <span class="er">Array</span> <span class="er">of</span> <span class="er">filename</span> ],
+  <span class="dt">&quot;existing&quot;</span>: [ <span class="er">Array</span> <span class="er">of</span> <span class="er">filename</span> ]
+}</code></pre>
+<h4 id="service.read_file"><a href="#service.read_file">service.read_file</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Read a service file.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.read_file&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;service_id&quot;</span>: <span class="er">service_id</span>,
+    <span class="dt">&quot;file_path&quot;</span>: <span class="er">file_path</span>
+  }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;content&quot;</span>: <span class="er">String</span> <span class="er">of</span> <span class="er">file</span> <span class="er">content</span>
+}</code></pre>
+<h4 id="service.write_file"><a href="#service.write_file">service.write_file</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Write a service file.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.write_file&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;service_id&quot;</span>: <span class="er">service_id</span>,
+    <span class="dt">&quot;file_path&quot;</span>: <span class="er">file_path</span>,
+    <span class="dt">&quot;content&quot;</span>: <span class="er">String</span> <span class="er">of</span> <span class="er">file</span> <span class="er">content</span>
+  }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="er">service_brief_object</span>
+}</code></pre>
+<h4 id="service.remove_file"><a href="#service.remove_file">service.remove_file</a></h4>
+<p><strong>Description</strong></p>
+<pre><code>Delete a service file.</code></pre>
+<p><strong>Request</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="dt">&quot;api&quot;</span>:<span class="st">&quot;service.remove_file&quot;</span>,
+  <span class="dt">&quot;params&quot;</span>:[{
+    <span class="dt">&quot;service_id&quot;</span>: <span class="er">service_id</span>,
+    <span class="dt">&quot;file_path&quot;</span>: <span class="er">file_path</span>
+  }]</code></pre>
+<p><strong>Response</strong></p>
+<pre class="sourceCode json"><code class="sourceCode json">{
+  <span class="er">service_brief_object</span>
+}</code></pre>
+</body>
+</html>

@@ -291,14 +291,13 @@ StoreMemory.prototype.size$ = function() {
  * @param {Object} options   other options for query (TODO)
  * @return {Array}           array of keys
  */
-/*
 StoreMemory.prototype.query$ = function(filter, options) {
   var ret = [];
   if (check_warn(_.isFunction(filter), "store/memory", 
     "in query$, filter is not a function", filter)) {
     _.forEach(this.db, function(value, key) {
       try {
-        if (filter(value) === true) {
+        if (filter(value, options) === true) {
           ret.push(key);
         }
       } catch (e) {
@@ -308,7 +307,6 @@ StoreMemory.prototype.query$ = function(filter, options) {
   }
   return Promise.resolve(ret);
 };
-*/
 
 /**
  * async list keys 

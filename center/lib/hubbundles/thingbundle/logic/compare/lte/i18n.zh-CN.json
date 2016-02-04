@@ -1,3 +1,4 @@
 {
-  "operator <=":"小于等于 <="
+  "operator <=":"小于等于 <=",
+  "builtin/logic_compare.html#lte":"builtin/logic_compare.zh-CN.html#小于等于"
 }

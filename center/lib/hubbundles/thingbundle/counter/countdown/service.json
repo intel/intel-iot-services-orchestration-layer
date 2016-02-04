@@ -1,0 +1,35 @@
+{
+  "name": "countdown",
+  "description": "when triggered, countdown the orig value. when reset is true, reset the countdowner accoring to the orig value. when it countdown to zero, hit = true",
+  "spec":{
+    "id": "countdown_builtin_spec",
+    "name": "countdown_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "trigger"
+        },
+        {
+          "name": "reset",
+          "type": "boolean",
+          "buffered": true
+        },
+        {
+          "name": "orig",
+          "type": "int",
+          "no_trigger": true
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "hit",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "ui": {},
+  "doc" : "builtin/counter.html#countdown"
+}

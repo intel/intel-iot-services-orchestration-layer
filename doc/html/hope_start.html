@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link href="data:text/css,body%20%7B%0A%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20padding%2Dright%3A%201em%3B%0A%20%20%20%20padding%2Dleft%3A%201em%3B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%20%0A%20%20%20%20border%2Dleft%3A%201px%20solid%20black%3B%0A%20%20%20%20border%2Dright%3A%201px%20solid%20black%3B%0A%20%20%20%20color%3A%20black%3B%0A%20%20%20%20font%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0A%20%20%20%20font%2Dsize%3A%20100%25%3B%0A%20%20%20%20line%2Dheight%3A%20140%25%3B%0A%20%20%20%20color%3A%20%23333%3B%20%0A%7D%0Apre%20%7B%0A%20%20%20%20border%3A%201px%20dotted%20gray%3B%0A%20%20%20%20background%2Dcolor%3A%20%23ececec%3B%0A%20%20%20%20color%3A%20%231111111%3B%0A%20%20%20%20padding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0A%20%20%20%20font%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%20%0A%20%20%20%20text%2Ddecoration%3A%20none%3B%0A%20%20%20%20color%3A%20%237a5ada%3B%20%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20border%2Dbottom%3A%201px%20dotted%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20padding%2Dbottom%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20left%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%201em%3B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2070%25%3B%0A%20%20%20%20%20%20%20%20color%3A%20gray%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%0Apre%20%7B%0A%20%20%20%20background%2Dcolor%3A%20%23FDF6E3%0A%7D%0A%0Aimg%20%7B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%0A%7D%0A%0A%2F%2F%20KeyWordTok%0A%2EsourceCode%20%2Ekw%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20DataTypeTok%0A%2EsourceCode%20%2Edt%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%0A%2F%2F%20DecValTok%20%28decimal%20value%29%2C%20BaseNTok%2C%20FloatTok%0A%2EsourceCode%20%2Edv%2C%20%2EsourceCode%20%2Ebn%2C%20%2EsourceCode%20%2Efl%20%7B%20color%3A%20%23D33682%3B%20%7D%0A%2F%2F%20CharTok%0A%2EsourceCode%20%2Ech%20%7B%20color%3A%20%23DC322F%3B%20%7D%0A%2F%2F%20StringTok%0A%2EsourceCode%20%2Est%20%7B%20color%3A%20%232AA198%3B%20%7D%0A%2F%2F%20CommentTok%0A%2EsourceCode%20%2Eco%20%7B%20color%3A%20%2393A1A1%3B%20%7D%0A%2F%2F%20OtherTok%0A%2EsourceCode%20%2Eot%20%7B%20color%3A%20%23A57800%3B%20%7D%0A%2F%2F%20AlertTok%0A%2EsourceCode%20%2Eal%20%7B%20color%3A%20%23CB4B16%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A%2F%2F%20FunctionTok%0A%2EsourceCode%20%2Efu%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20RegionMarkerTok%0A%2EsourceCode%20%2Ere%20%7B%20%7D%0A%2F%2F%20ErrorTok%0A%2EsourceCode%20%2Eer%20%7B%20color%3A%20%23D30102%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#thing">Thing</a><ul>
+<li><a href="#introduction-of-thing">Introduction of Thing</a></li>
+<li><a href="#directory-layout">Directory Layout</a></li>
+<li><a href="#thing.json"><code>thing.json</code></a></li>
+</ul></li>
+<li><a href="#service">Service</a><ul>
+<li><a href="#introduction-of-service">Introduction of Service</a></li>
+<li><a href="#directory-layout-1">Directory Layout</a></li>
+<li><a href="#service-and-session">Service and Session</a><ul>
+<li><a href="#service-status">Service Status</a></li>
+<li><a href="#session-status">Session Status</a></li>
+</ul></li>
+<li><a href="#service.json"><code>service.json</code></a></li>
+<li><a href="#javascript-files">JavaScript Files</a><ul>
+<li><a href="#default-file-content">Default File Content</a></li>
+<li><a href="#js-files-execution-order">JS Files Execution Order</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="thing"><a href="#thing">Thing</a></h1>
+<h2 id="introduction-of-thing"><a href="#introduction-of-thing">Introduction of Thing</a></h2>
+<p><strong>Thing</strong> represents a thing which is connected with the <strong>hub</strong>. It can provide several services for user/developers. For example, <em>LED</em> is a thing, and <em>turn on</em>, <em>turn off</em>, <em>dim</em> are services of the thing.</p>
+<p>The connection between thing and hub can be wired, wireless, or builtin.</p>
+<h2 id="directory-layout"><a href="#directory-layout">Directory Layout</a></h2>
+<p>Each <strong>Thing</strong> is a directory, which is contained by the thingbundle folder and must has the <code>thing.json</code>.</p>
+<p>For example, the thingbundle path is <code>bundle/</code>, and its tree graph is as follows:</p>
+<pre><code>bundle
+|-- display
+|   `-- led
+|       `-- thing.json
+|-- sensor
+|   |-- sensor0
+|   |   `-- readme
+|   |-- sensor1
+|   |   `-- thing.json
+|   `-- sensor2
+|       `-- thing.json
+`-- doc</code></pre>
+<p>Then <em>led</em>, <em>sensor1</em> and <em>sensor2</em> are things, while <em>sensor0</em>, <em>display</em>, <em>sensor</em> and <em>doc</em> are <strong>NOT</strong> things because they don’t contain <code>thing.json</code> directly.</p>
+<h2 id="thing.json"><a href="#thing.json"><code>thing.json</code></a></h2>
+<p><code>thing.json</code> is the description JSON file of the thing. It has the following properties.</p>
+<ul>
+<li><code>id</code>: String. The unique id of the thing. Default: one created by the path and hub id.</li>
+<li><code>name</code>: String. The thing name, which will be showed in the web IDE. Default: the name of the thing folder.</li>
+<li><code>description</code>: String. The description of the thing.</li>
+<li><code>is_builtin</code>: Boolean. If true, the thing and all its services cannot be changed and removed. Default: false.</li>
+</ul>
+<h1 id="service"><a href="#service">Service</a></h1>
+<h2 id="introduction-of-service"><a href="#introduction-of-service">Introduction of Service</a></h2>
+<p><strong>Service</strong> represents one service provided by a <strong>thing</strong>. For example, <em>LED</em> is a thing, and <em>turn on</em>, <em>turn off</em>, <em>dim</em> are services of the thing.</p>
+<h2 id="directory-layout-1"><a href="#directory-layout-1">Directory Layout</a></h2>
+<p>Each <strong>Service</strong> is a thing directory’s first-level subdirectory, which must have a <code>service.json</code></p>
+<p>For example, the thing directory is <em>led/</em>, and its tree graph is as follows.</p>
+<pre><code>led
+|-- dim
+|   |-- service.json
+|   `-- a
+|       `--service.json
+|-- b
+|-- switch
+|   `-- service.json
+`-- thing.json</code></pre>
+<ul>
+<li><em>dim</em> and <em>switch</em> are services.</li>
+<li><em>a</em> is <strong>NOT</strong> service because it is not the first-level directory of <em>led</em>.</li>
+<li><em>b</em> is <strong>NOT</strong> service because is does not have service.json</li>
+</ul>
+<p><code>service.json</code> describes some properties of the service. Except for <code>service.json</code>, service directory should have the following JavaScript files.</p>
+<ul>
+<li><code>service_init.js</code>: initialize the service</li>
+<li><code>service_destroy.js</code>: destroy the service</li>
+<li><code>start.js</code>: open and initialize the session</li>
+<li><code>resume.js</code>: resume the session</li>
+<li><code>after_resume.js</code>: actions after the session resumed</li>
+<li><code>pause.js</code>: pause the session</li>
+<li><code>stop.js</code>: destroy and close the session</li>
+</ul>
+<p>If any of above file is missing, the system will create a default one in memory (not in filesystem)</p>
+<p>Besides, user can add any other files or subdirectories into the service directory.</p>
+<h2 id="service-and-session"><a href="#service-and-session">Service and Session</a></h2>
+<p>In the workflow graph, each node represents a service. When the graph starts running, each node will create a new session to execute the service. It is designed to maintain node’s own state, because each session has a sandbox to isolate each other.</p>
+<p>Note that if two nodes represent one service, they have two different sessions.</p>
+<h3 id="service-status"><a href="#service-status">Service Status</a></h3>
+<p>Service only has two status: initialized or not.</p>
+<pre><code>Not-initialized ------ service_init.js -------&gt; initialized
+    ^                                                  |
+    |                                                  |
+    `------------------service_destroy.js--------------</code></pre>
+<h3 id="session-status"><a href="#session-status">Session Status</a></h3>
+<p>Session has 3 status: <code>idle</code>, <code>paused</code>, <code>working</code>.</p>
+<p>The following table shows the state transition rules.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">current state</th>
+<th align="left">start</th>
+<th align="left">resume</th>
+<th align="left">pause</th>
+<th align="left">stop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>idle</code></td>
+<td align="left"><code>paused</code></td>
+<td align="left">invalid</td>
+<td align="left">invalid</td>
+<td align="left">invalid</td>
+</tr>
+<tr class="even">
+<td align="left"><code>paused</code></td>
+<td align="left">invalid</td>
+<td align="left"><code>working</code></td>
+<td align="left">invalid</td>
+<td align="left"><code>idle</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>working</code></td>
+<td align="left">invalid</td>
+<td align="left">invalid</td>
+<td align="left"><code>paused</code></td>
+<td align="left">invalid</td>
+</tr>
+</tbody>
+</table>
+<p>Here, <strong>invalid</strong> means the action is illegal when session is in that status.</p>
+<h2 id="service.json"><a href="#service.json"><code>service.json</code></a></h2>
+<ul>
+<li><code>id</code>: String. The unique id of the service. Default: one created by service directory path and thing id.</li>
+<li><code>name</code>: String. The name of the service. It will be showed in the web IDE.</li>
+<li><code>description</code>: String. The description of the service.</li>
+<li><code>spec</code>: <strong>Essential</strong>. String or Object. If the spec is string, it means the spec id which service links to. If the spec is object, it is service’s own spec.</li>
+<li><code>config</code>: Object. The service’s config information.</li>
+</ul>
+<h2 id="javascript-files"><a href="#javascript-files">JavaScript Files</a></h2>
+<p>This sections shows how to write these JS service files. (<code>service_init.js</code>, <code>start.js</code>, …) ### Sandbox Each JS service file runs in a sandbox, and it make sure that the service codes in each file will not affect each other or affect the framework.</p>
+<ul>
+<li>All Nodejs’s original global variables can be used in each files, such as <code>buffer</code>, <code>process</code>, <code>require</code>, <code>setTimeout</code>, …</li>
+<li>Native modules or third party modules can be required in each files. Even binary can be executed by the help of native module <code>child_process</code></li>
+<li>Each files’ global are <strong>NOT</strong> shared, except for some specific variables.</li>
+</ul>
+<p>Other useful global variables are added into the sandbox.</p>
+<h4 id="shared"><a href="#shared"><code>shared</code></a></h4>
+<p>It is a global object shared among one <strong>session</strong>. In one session, <code>start.js</code>, <code>resume.js</code>, <code>after_resume.js</code>, <code>kernel.js</code>, <code>pause.js</code>, <code>stop.js</code> will share the same object. For example, we set <code>shared.num = 1</code> in <code>start.js</code>, and we can get the value in <code>stop.js</code>.</p>
+<h4 id="service_shared"><a href="#service_shared"><code>service_shared</code></a></h4>
+<p>It is a global object shared among one <strong>service</strong> In one service directory, <code>start.js</code>, <code>resume.js</code>, <code>after_resume.js</code>, <code>kernel.js</code>, <code>pause.js</code>, <code>stop.js</code>, <code>service_init.js</code>, <code>service_destroy.js</code> will share the same object. Note that it can be shared between two different sessions which run same service.</p>
+<h4 id="hub_shared"><a href="#hub_shared"><code>hub_shared</code></a></h4>
+<p>It is a global object shared among all service JS files in one <strong>hub</strong>. It is used for implicit cooperation between different services.</p>
+<h4 id="config"><a href="#config"><code>CONFIG</code></a></h4>
+<p>It is a global readonly object. All service JS files can access it. Its value is the <code>config</code> in <code>service.json</code>.</p>
+<h4 id="in"><a href="#in"><code>IN</code></a></h4>
+<p>It is a global readonly object only used in <code>kernel.js</code>. The value is the session’s inports value, e.g. <code>{in1: value1, in2: value2}</code>.</p>
+<h4 id="donevalueand-failerr"><a href="#donevalueand-failerr"><code>done(value)</code>and <code>fail(err)</code></a></h4>
+<p>They are global functions used in <code>start.js</code>, <code>resume.js</code>, <code>pause.js</code>, <code>stop.js</code>, <code>service_init.js</code>, <code>service_destroy.js</code>. All those files will cause the transition of service/session’s status.</p>
+<ul>
+<li><code>done(value)</code> is called when the action is done successfully. The value will be sent to the framework for logging.</li>
+<li><code>fail(err)</code> is called when the action is failed. <code>err</code> can be any kinds of error message, which will be sent to the framework and showed in the web page.</li>
+<li>If <code>done</code> or <code>fail</code> is called multiple times in one action, only the first one will be processed, and the remainings are ignored.</li>
+<li>If any exceptions are thrown in above files, it will automatically call the <code>fail(exception)</code>.</li>
+</ul>
+<h4 id="sendoutoutand-senderrerr"><a href="#sendoutoutand-senderrerr"><code>sendOUT(out)</code>and <code>sendERR(err)</code></a></h4>
+<p>They are global functions used in <code>after_resume.js</code>and <code>kernel.js</code>. Only when the session is in <code>working</code> state, those two function are valid. Otherwise, they are ignored.</p>
+<ul>
+<li><code>sendOUT(out)</code> will send the <code>out</code> into the outports of the session. <code>out</code> is the key-value mapping of the outports, e.g. <code>{o1: value1, o2: value2}</code>, and <code>o1</code>,<code>o2</code> is the name of the outports.</li>
+<li><code>sendERR(err)</code>will send the <code>err</code> into the error port of the session. <code>err</code> can be any kinds of error message.</li>
+<li>If any exceptions happen, it will automatically call the <code>sendERR(exception)</code>.</li>
+</ul>
+<h3 id="default-file-content"><a href="#default-file-content">Default File Content</a></h3>
+<p>If any service JS files are missing, the system will create default content in memory.</p>
+<ul>
+<li>For <code>after_resume.js</code> and <code>kernel.js</code>, the default content is empty.</li>
+<li>For <code>start.js</code>, <code>resume.js</code>, <code>pause.js</code>, <code>stop.js</code>, <code>service_init.js</code>, <code>service_destroy.js</code>, the default content is <code>done()</code>.</li>
+</ul>
+<h3 id="js-files-execution-order"><a href="#js-files-execution-order">JS Files Execution Order</a></h3>
+<ul>
+<li>When the workflow graph starts, all sessions execute <code>start.js</code> firstly. After all starts are done, they execute <code>resume.js</code>. After all resumes are done, all sessions execute <code>after_resume.js</code>.</li>
+<li>When the workflow graph pauses, all sessions execute <code>pause.js</code>.</li>
+<li>When the workflow graph resumes, all sessions execute <code>resume.js</code>. After all resumes are done, all sessions execute <code>after_resume.js</code>.</li>
+<li><p>When the workflow graph stops, If the graph’s status is working, all sessions execute <code>paused.js</code> firstly, then after all pauses are done successfully, all sessions execute <code>stop.js</code>. If the graph’s status is paused, all sessions execute <code>stop.js</code>.</p></li>
+<li><p><code>kernel.js</code> will be executed once the session is triggered.</p></li>
+<li><p>When a session starts to run <code>start.js</code>, if the service is not initilized, it will execute <code>service_init.js</code> firstly.</p></li>
+</ul>
+</body>
+</html>

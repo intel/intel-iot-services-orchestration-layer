@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/knob_servo.zh-CN.jpg)
+![](./pic/knob_servo.zh-CN.jpg)
+
 图中每隔1s就查询旋钮值（0-1024），将该值除以10后作为电机转动角度值

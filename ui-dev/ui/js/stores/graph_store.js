@@ -212,8 +212,10 @@ class GraphStore extends EventEmitter {
     if (this.view(id)) {
       d.resolve(this.view(id));
     } else {
-      this.load_graph$(id).then(view => d.resolve(view))
-          .catch(err => d.reject(err)).done();
+      $hope.app.stores.app.ensure_apps_loaded$().then(()=> {
+        return this.load_graph$(id);
+      }).then(view => d.resolve(view))
+        .catch(err => d.reject(err)).done();
     }
     return d.promise;
   }
@@ -405,6 +407,11 @@ class GraphStore extends EventEmitter {
     return view;
   }
 
+  clear_cache() {
+    this.views = {};
+    this.active_view = null;
+    this.no_active_reason = "";
+  }
 
   // See graph_action.js for schema of data
   handle_action(action, data) {

@@ -255,7 +255,7 @@ describe("app/graph/ui add/remove/list/get", function() {
      app: 'app2' }
    };
 
-    em.app__load_from_bundle$(appbundle_path).then(function() {
+    em.app__load_from_bundle$(appbundle_path, null).then(function() {
       assert.equal(_.isEqual(em.app_store.store.db, app_in_store), true);
       assert.equal(_.isEqual(em.graph_store.store.db, graph_in_store), true);
       assert.equal(_.isEqual(em.ui_store.store.db, ui_in_store), true);

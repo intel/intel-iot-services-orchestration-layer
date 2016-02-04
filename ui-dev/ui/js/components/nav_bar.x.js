@@ -25,12 +25,24 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Link} from "react-router";
+import auth from "../lib/auth";
 
-export default class NavBar extends ReactComponent {
+export default React.createClass({
 
-  state = {
-    app: null
-  };
+  getInitialState() {
+    return {
+      app: null
+    };
+  },
+
+  _on_auth_event(e) {
+    switch(e.event) {
+      case "login":
+      case "logout":
+        this.forceUpdate();
+        break;
+    }
+  },
 
   _on_app_event(e) {
     switch(e.event) {
@@ -40,23 +52,17 @@ export default class NavBar extends ReactComponent {
         });
         break;
     }
-  }
+  },
 
   componentDidMount() {
     $hope.app.stores.app.on("app", this._on_app_event);
-
-    if (!$hope.ui_user_port) {
-      $hope.app.server.get_config$().then(cfg => {
-        $hope.ui_dev_port = cfg.ui_dev_port;
-        $hope.ui_user_port = cfg.ui_user_port;
-        this.forceUpdate();
-      });
-    }
-  }
+    auth.on("auth", this._on_auth_event);
+  },
 
   componentWillUnmount() {
     $hope.app.stores.app.removeListener("app", this._on_app_event);
-  }
+    auth.removeListener("auth", this._on_auth_event);
+  },
 
   render() {
     var store = $hope.app.stores.ide;
@@ -95,17 +101,28 @@ export default class NavBar extends ReactComponent {
 
     return (
       <div className="hope-nav-bar">
-        <Link to="/">
+        <Link to={auth.is_logged_in() ? "/app" : "/"}>
           <img className="hope-logo" src="images/logo.png" style={{
             width: 228,
             height: 60,
             padding: "5px 0 5px 15px"
           }}/>
         </Link>
+
         <div style={{
           position: "absolute",
           top: 16,
-          right: 20
+          right: 180
+        }}>
+          <a href="http://github.com/01org/intel-iot-services-orchestration-layer" target="_blank">
+            {__("Demo")}
+          </a>
+        </div>
+
+        <div style={{
+          position: "absolute",
+          top: 16,
+          right: 100
         }}>
           {$hope.ui_user_port &&
             <a href={location.protocol + "//" + location.hostname + ":" + $hope.ui_user_port} target="_blank">
@@ -127,8 +144,8 @@ export default class NavBar extends ReactComponent {
             {extra}
           </div>
         }
-        </div>
+      </div>
     );
   }
-}
+});
 

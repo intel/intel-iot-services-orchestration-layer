@@ -54,7 +54,7 @@ var fs = require("fs");
  * @param {Array} changed_list  record of changed items  
  * @return {Promise}            
  */
-exports.load_apps$ = function(bundle_path, em, changed_list) {
+exports.load_apps$ = function(uid, bundle_path, em, changed_list) {
   log("load_apps", bundle_path);
   if (!check_warn(B.fs.dir_exists(bundle_path),
    "entity/app", "dir doesnt exsits", bundle_path)) {
@@ -63,14 +63,15 @@ exports.load_apps$ = function(bundle_path, em, changed_list) {
   var tasks = [];
   fs.readdirSync(bundle_path).forEach(function(relative_path) {
     var p = B.path.join(bundle_path, relative_path);
-    if (fs.statSync(p).isDirectory()) {
-      tasks.push(_load_app$(p, em, changed_list));
+    var jsonp = B.path.join(p, "app.json");
+    if (fs.statSync(p).isDirectory() && B.fs.file_exists(jsonp)) {
+      tasks.push(_load_app$(uid, p, em, changed_list));
     }
   });
   return Promise.all(tasks);
 };
 
-function _load_app$(app_path, em, changed_list) {
+function _load_app$(uid, app_path, em, changed_list) {
   log("load_app", app_path);
   return Promise.resolve()
   .then(function create_app_from_json() {
@@ -78,6 +79,7 @@ function _load_app$(app_path, em, changed_list) {
     check(B.fs.file_exists(json_path), "entity/app", "app.json not found in", json_path);
     var app_json = B.fs.read_json(json_path);
     var app_obj = _create_app(app_json, app_path);
+    app_obj.uid = uid;
     return app_obj;
   })
   .then(function load_graphs_uis(app) {
@@ -132,7 +134,7 @@ function _create_app(json, app_path) {
   app.path = app_path;
   app.graphs = [];
   app.uis = [];
-  app.is_builtin = !!json.is_builtin
+  app.is_builtin = !!json.is_builtin;
 
 
   return app;
@@ -408,7 +410,7 @@ exports.remove_ui$ = function(uiid, em, changed_list) {
  * @param {Array} changed_list  record of changed items  
  * @return {Promise} 
  */
-exports.add_app$ = function(appjson, bundlepath, em, changed_list) {
+exports.add_app$ = function(uid, appjson, bundlepath, em, changed_list) {
   log("add app", appjson);
   return Promise.resolve()
   .then(function() {
@@ -425,6 +427,7 @@ exports.add_app$ = function(appjson, bundlepath, em, changed_list) {
     fs.mkdirSync(B.path.join(app_path, "uis"));
     B.fs.write_json(B.path.join(app_path, "app.json"), appjson);
     var app = _create_app(appjson, app_path);
+    app.uid = uid;
     return em.app_store.set$(app.id, app, changed_list);
   });
 };

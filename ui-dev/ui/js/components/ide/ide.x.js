@@ -32,6 +32,7 @@ import PanelNavigator from "./panel_navigator.x";
 import PanelInspector from "./panel_inspector.x";
 import ColorPalette from "./color_palette.x";
 import Halogen from "halogen";
+import cookie from "../../lib/cookie";
 
 import {Row, Col} from "react-bootstrap";
 import {Lifecycle} from "react-router";
@@ -79,21 +80,27 @@ export default React.createClass({
 
       case "stoped":
         if (view.is_running()) {
-          $hope.confirm(__("Replay"),
-            __("Workflow successfully stoped! Do you want replay slowly?"),
-            "warning", (res) => {
-              if (!res) {
-                view.set_debugging();
-                $hope.trigger_action("graph/replay", {graph_id: view.id});
-              }
-              else {
-                view.set_editing();
-              }
-              this.forceUpdate();
-          }, {
-            confirmButtonText: __("No"),    // swap the meaning of buttons
-            cancelButtonText: __("Yes")
-          });
+          if (cookie.get("traceable") === "1") {
+            $hope.confirm(__("Replay"),
+              __("Workflow successfully stoped! Do you want replay slowly?"),
+              "warning", (res) => {
+                if (!res) {
+                  view.set_debugging();
+                  $hope.trigger_action("graph/replay", {graph_id: view.id});
+                }
+                else {
+                  view.set_editing();
+                }
+                this.forceUpdate();
+            }, {
+              confirmButtonText: __("No"),    // swap the meaning of buttons
+              cancelButtonText: __("Yes")
+            });
+          }
+          else {
+            view.set_editing();
+            this.forceUpdate();
+          }
         }
         else {
           view.stop_auto_replay();

@@ -94,13 +94,6 @@ class AppStore extends EventEmitter {
     return this.manager.apps;
   }
 
-  update_all_apps() {
-    $hope.app.server.app.list$().done(data => {
-      this.manager.update_all_apps(data);
-      this.emit("app", {type: "app", event: "all_updated"});
-    });
-  }
-
   ensure_apps_loaded$() {
     var apps = this.get_all_apps();
     var d = $Q.defer();  
@@ -171,6 +164,10 @@ class AppStore extends EventEmitter {
     }
 
     this.active_app_by(check);
+  }
+
+  clear_cache() {
+    this.manager.clear_cache();
   }
 
 

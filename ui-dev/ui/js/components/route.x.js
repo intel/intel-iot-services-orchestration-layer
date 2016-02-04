@@ -34,6 +34,9 @@ import IDE from "./ide/ide.x";
 import UIIDE from "./ui_ide/ui_ide.x";
 import Composer from "./composer/composer.x";
 import NotFound from "./not_found.x";
+import Login from "./user/login.x";
+import UserMgmt from "./user/user_mgmt.x";
+import auth from "../lib/auth";
 
 let history = useBeforeUnload(createHashHistory)({
   queryKey: false,
@@ -50,15 +53,30 @@ let history = useBeforeUnload(createHashHistory)({
   }
 });
 
+function requireAuth(nextState, replaceState) {
+  if ($hope.ui_auth_required && !auth.is_logged_in()) {
+    $hope.ui_redirect = nextState.location.pathname;
+    replaceState({}, '/login');
+  }
+}
+
+function redirectApp(nextState, replaceState) {
+  if (!$hope.ui_auth_required) {
+    replaceState({}, '/app');
+  }
+}
+
 export default (
   <Router history={history} >
     <Route path="/" component={HOPE}>
-      <IndexRoute component={AppManager}/>
-      <Route path="app" component={AppManager}/>
-      <Route path="app_home/:id" component={AppHome}/>
-      <Route path="ide/:id" component={IDE}/>
-      <Route path="ui_ide/:id" component={UIIDE}/>
-      <Route path="composer/:id" component={Composer}/>
+      <IndexRoute component={$hope.ui_auth_required && !auth.is_logged_in() ? Login : AppManager}/>
+      <Route path="login" component={Login} onEnter={redirectApp} />
+      <Route path="users" component={UserMgmt} onEnter={requireAuth} />
+      <Route path="app" component={AppManager} onEnter={requireAuth} />
+      <Route path="app_home/:id" component={AppHome} onEnter={requireAuth} />
+      <Route path="ide/:id" component={IDE} onEnter={requireAuth} />
+      <Route path="ui_ide/:id" component={UIIDE} onEnter={requireAuth} />
+      <Route path="composer/:id" component={Composer} onEnter={requireAuth} />
       <Route path="*" component={NotFound}/>
     </Route>
   </Router>

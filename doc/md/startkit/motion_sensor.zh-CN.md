@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/motion_buzz.zh-CN.jpg)
+![](./pic/motion_buzz.zh-CN.jpg)
+
 图中每隔1s就进行运动检测，检测到运动后开启蜂鸣器警报

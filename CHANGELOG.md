@@ -1,5 +1,12 @@
 Change Logs
 ===========================
+## v1.0.2
+
+* Optional user management added, support seprated app home for each user
+* Lots of builtin services improved
+* Docs updated
+* Various bug fixed
+
 ## v1.0.1
 
 * Add store based on file

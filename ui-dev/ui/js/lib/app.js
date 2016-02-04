@@ -66,6 +66,10 @@ class AppManager {
     $hope.check(app, "AppManager", "No such app:", id);
     _.merge(app, props); 
   }
+
+  clear_cache() {
+    this.apps = {};
+  }
 }
 
 

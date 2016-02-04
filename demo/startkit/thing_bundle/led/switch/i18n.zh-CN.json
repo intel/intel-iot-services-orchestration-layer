@@ -1,4 +1,5 @@
 {
   "switch":"开关",
-  "turn on or off the led. status = on":"开关LED，并输出状态"
+  "turn on or off the led. status = on":"开关LED，并输出状态",
+  "startkit/led.html#switch":"startkit/led.zh-CN.html#开关"
 }

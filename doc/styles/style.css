@@ -78,6 +78,10 @@ pre {
     background-color: #FDF6E3
 }
 
+img {
+    max-width: 44em;
+}
+
 // KeyWordTok
 .sourceCode .kw { color: #268BD2; }
 // DataTypeTok

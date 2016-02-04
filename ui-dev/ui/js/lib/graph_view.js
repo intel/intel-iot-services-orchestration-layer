@@ -857,7 +857,7 @@ export default class GraphView extends EventEmitter {
             if (!this.$logs || this.$logidx >= len) {
               this.stop_auto_replay();
             }
-          }, 3000);
+          }, 3500);
           this.update_toolbar();
         }
         else {

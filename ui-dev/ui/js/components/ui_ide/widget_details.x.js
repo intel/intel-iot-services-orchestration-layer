@@ -281,7 +281,7 @@ export default class WidgetDetails extends ReactComponent {
         <Row key={cfg.name} className="hope-panel-details-row text-center border-bottom">
           <Row>
             <Col xs={11}>
-              <div>{cfg.display || _.capitalize(cfg.name)}</div>
+              <div>{cfg.display || cfg.name}</div>
             </Col>
             <Col xs={1}>
               <div className="fa fa-plus" onClick={this._on_add_row.bind(this, cfg)} />
@@ -340,7 +340,7 @@ export default class WidgetDetails extends ReactComponent {
     return (
       <Row key={cfg.name} className="hope-panel-details-row text-center border-bottom">
         <Col xs={5}>
-          <div>{cfg.display || _.capitalize(cfg.name)}</div>
+          <div>{cfg.display || cfg.name}</div>
         </Col>
         <Col xs={6}>
           { content }

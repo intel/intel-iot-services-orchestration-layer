@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link href="data:text/css,body%20%7B%0A%20%20%20%20margin%3A%20auto%3B%0A%20%20%20%20padding%2Dright%3A%201em%3B%0A%20%20%20%20padding%2Dleft%3A%201em%3B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%20%0A%20%20%20%20border%2Dleft%3A%201px%20solid%20black%3B%0A%20%20%20%20border%2Dright%3A%201px%20solid%20black%3B%0A%20%20%20%20color%3A%20black%3B%0A%20%20%20%20font%2Dfamily%3A%20Verdana%2C%20sans%2Dserif%3B%0A%20%20%20%20font%2Dsize%3A%20100%25%3B%0A%20%20%20%20line%2Dheight%3A%20140%25%3B%0A%20%20%20%20color%3A%20%23333%3B%20%0A%7D%0Apre%20%7B%0A%20%20%20%20border%3A%201px%20dotted%20gray%3B%0A%20%20%20%20background%2Dcolor%3A%20%23ececec%3B%0A%20%20%20%20color%3A%20%231111111%3B%0A%20%20%20%20padding%3A%200%2E5em%3B%0A%7D%0Acode%20%7B%0A%20%20%20%20font%2Dfamily%3A%20monospace%3B%0A%7D%0Ah1%20a%2C%20h2%20a%2C%20h3%20a%2C%20h4%20a%2C%20h5%20a%20%7B%20%0A%20%20%20%20text%2Ddecoration%3A%20none%3B%0A%20%20%20%20color%3A%20%237a5ada%3B%20%0A%7D%0Ah1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%20%7B%20font%2Dfamily%3A%20verdana%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20border%2Dbottom%3A%201px%20dotted%20black%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20color%3A%20%237a5ada%3B%20%7D%0Ah1%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20130%25%3B%0A%7D%0A%0Ah2%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20110%25%3B%0A%7D%0A%0Ah3%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2095%25%3B%0A%7D%0A%0Ah4%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah5%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2090%25%3B%0A%20%20%20%20%20%20%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0Ah1%2Etitle%20%7B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%20200%25%3B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20padding%2Dbottom%3A%200%2E2em%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20left%3B%0A%20%20%20%20%20%20%20%20border%3A%20none%3B%0A%7D%0A%0Adt%20code%20%7B%0A%20%20%20%20%20%20%20%20font%2Dweight%3A%20bold%3B%0A%7D%0Add%20p%20%7B%0A%20%20%20%20%20%20%20%20margin%2Dtop%3A%200%3B%0A%7D%0A%0A%23footer%20%7B%0A%20%20%20%20%20%20%20%20padding%2Dtop%3A%201em%3B%0A%20%20%20%20%20%20%20%20font%2Dsize%3A%2070%25%3B%0A%20%20%20%20%20%20%20%20color%3A%20gray%3B%0A%20%20%20%20%20%20%20%20text%2Dalign%3A%20center%3B%0A%20%20%20%20%20%20%20%20%7D%0A%0A%0Apre%20%7B%0A%20%20%20%20background%2Dcolor%3A%20%23FDF6E3%0A%7D%0A%0Aimg%20%7B%0A%20%20%20%20max%2Dwidth%3A%2044em%3B%0A%7D%0A%0A%2F%2F%20KeyWordTok%0A%2EsourceCode%20%2Ekw%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20DataTypeTok%0A%2EsourceCode%20%2Edt%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%0A%2F%2F%20DecValTok%20%28decimal%20value%29%2C%20BaseNTok%2C%20FloatTok%0A%2EsourceCode%20%2Edv%2C%20%2EsourceCode%20%2Ebn%2C%20%2EsourceCode%20%2Efl%20%7B%20color%3A%20%23D33682%3B%20%7D%0A%2F%2F%20CharTok%0A%2EsourceCode%20%2Ech%20%7B%20color%3A%20%23DC322F%3B%20%7D%0A%2F%2F%20StringTok%0A%2EsourceCode%20%2Est%20%7B%20color%3A%20%232AA198%3B%20%7D%0A%2F%2F%20CommentTok%0A%2EsourceCode%20%2Eco%20%7B%20color%3A%20%2393A1A1%3B%20%7D%0A%2F%2F%20OtherTok%0A%2EsourceCode%20%2Eot%20%7B%20color%3A%20%23A57800%3B%20%7D%0A%2F%2F%20AlertTok%0A%2EsourceCode%20%2Eal%20%7B%20color%3A%20%23CB4B16%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A%2F%2F%20FunctionTok%0A%2EsourceCode%20%2Efu%20%7B%20color%3A%20%23268BD2%3B%20%7D%0A%2F%2F%20RegionMarkerTok%0A%2EsourceCode%20%2Ere%20%7B%20%7D%0A%2F%2F%20ErrorTok%0A%2EsourceCode%20%2Eer%20%7B%20color%3A%20%23D30102%3B%20font%2Dweight%3A%20bold%3B%20%7D%0A" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#math-library">Math library</a><ul>
+<li><a href="#add">add</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="math-library"><a href="#math-library">Math library</a></h1>
+<h2 id="add"><a href="#add">add</a></h2>
+<h3 id="description"><a href="#description">Description</a></h3>
+<p><code>out</code> = <code>in1</code> + <code>in2</code></p>
+<h3 id="inport"><a href="#inport">Inport</a></h3>
+<p><code>in1</code>: Number</p>
+<p><code>in2</code>: Number</p>
+<h3 id="outport"><a href="#outport">Outport</a></h3>
+<p><code>out</code>: Number</p>
+<h3 id="example"><a href="#example">Example</a></h3>
+</body>
+</html>

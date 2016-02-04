@@ -20,5 +20,6 @@ LED
 
 ### 样例
 
-![example](./pic/button_led.zh-CN.jpg)
+![](./pic/button_led.zh-CN.jpg)
+
 图中每隔1s就查询按钮状态,如果按下就打开LED,反之则关闭

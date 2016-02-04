@@ -29,7 +29,7 @@ node merge_deps.js $PROJS
 
 echo ">>> install npm packages"
 cd ./dist
-npm install
+npm -dd install
 cd -
 
 
@@ -73,7 +73,7 @@ rm -rf ./dist/node_modules/hope-demo/center/appbundle/*
 
 echo ">>> doc"
 mkdir ./dist/node_modules/doc
-cp -r ./doc/builtin ./dist/node_modules/doc/.
+cp -r ./doc/html ./dist/node_modules/doc/.
 
 echo ">>> scripts"
 cp -r ./build/* ./dist

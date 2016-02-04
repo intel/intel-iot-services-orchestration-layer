@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @module entity/user
  */
 
+var fs = require("fs");
 var B = require("hope-base");
 var _ = require("lodash");
 var log = B.log.for_category("entity/user");
@@ -40,13 +41,23 @@ exports.add_user$ = function(user, em) {
   return em.user_store.has$(user.id)
   .then(function(ret) {
     check(!ret, "entity/user", "user already exist", user);
+    check(!B.fs.dir_exists(user.appbundle_path), "entity/user",
+     "the user path already exsit!", user.appbundle_path);
+    fs.mkdirSync(user.appbundle_path);
     return em.user_store.set$(user.id, user);
   });
 };
 
 exports.remove_user$ = function(id, em) {
   log("remove user", id);
-  return em.user_store.delete$(id);
+  return em.user_store.get$(id)
+  .then(function(user) {
+    if (!user) {
+      return false;
+    }
+    B.fs.rm(user.appbundle_path);
+    return em.user_store.delete$(id);
+  });
 };
 
 exports.get_user$ = function(id, em) {
@@ -56,6 +67,24 @@ exports.get_user$ = function(id, em) {
   } else {
     return em.user_store.batch_get$(id);
   }
+};
+
+exports.find_user$ = function(name, passwd, em) {
+  log("find user", name);
+  check(_.isString(name), "Failed to find user with", name);
+  return em.user_store.list$().then(function(ids) {
+    return em.user_store.batch_get$(ids);
+  }).then(function(users) {
+    if (!users) {
+      return null;
+    }
+    if (passwd == null) {
+      return _.find(users, "name", name);
+    }
+    return _.find(users, function(o) {
+      return o.name === name && o.passwd === passwd;
+    });
+  });
 };
 
 exports.update_user$ = function(user, em) {

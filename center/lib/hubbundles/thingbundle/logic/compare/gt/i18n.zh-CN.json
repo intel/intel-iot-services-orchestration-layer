@@ -1,3 +1,4 @@
 {
-  "operator >":"大于 >"
+  "operator >":"大于 >",
+  "builtin/logic_compare.html#gt":"builtin/logic_compare.zh-CN.html#大于"
 }

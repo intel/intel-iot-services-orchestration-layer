@@ -194,6 +194,10 @@ class UIManager {
     });
     return found;
   }
+
+  clear_cache() {
+    this.uis = {};
+  }
 }
 
 var ui_manager = new UIManager();

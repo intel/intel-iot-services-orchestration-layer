@@ -28,11 +28,11 @@ import Overlay from "../overlay.x";
 
 export default class LeftToolbar extends ReactComponent {
 
-  _on_change_theme() {
+  /*_on_change_theme() {
     var theme = $hope.app.stores.ide.theme === "hope-theme-dark" ? 
                             "hope-theme-light" : "hope-theme-dark";
     $hope.trigger_action("ide/change/theme", {theme: theme});
-  }
+  }*/
 
   _on_trash() {
     var view = $hope.app.stores.graph.active_view;
@@ -230,9 +230,6 @@ export default class LeftToolbar extends ReactComponent {
         </Overlay>
         <Overlay overlay={__("Click to auto layout the workflow")}>
           <i onClick={this._on_autolayout} className={"fa fa-sitemap"} />
-        </Overlay>
-        <Overlay overlay={__("Click to change theme")}>
-          <i onClick={this._on_change_theme} className="fa fa-cog" />
         </Overlay>
       </div>
     );

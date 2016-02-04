@@ -178,7 +178,7 @@ Store.prototype.batch_get_with_lock$ = function(key_array, process_func) {
   });
 };
 
-//Store.prototype.query$ = B.type.get_func_not_impl("filter_function", "options");
+Store.prototype.query$ = B.type.get_func_not_impl("filter_function", "options");
 
 /**
  * store's invalid key error message

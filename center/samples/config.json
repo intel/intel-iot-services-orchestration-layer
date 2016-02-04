@@ -8,7 +8,7 @@
       "$type": "http/WebApp",
       "$params": {
         "port": 8080,
-        "static": ["../ui-dev/public", "../../doc"],
+        "static": ["../ui-dev/public", "../../doc/html"],
         "web_socket": true
       }
     },

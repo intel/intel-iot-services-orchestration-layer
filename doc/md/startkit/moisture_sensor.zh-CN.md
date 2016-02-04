@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/moisture_lcd.zh-CN.jpg)
+![](./pic/moisture_lcd.zh-CN.jpg)
+
 图中每隔1s就测量湿度，将结果显示在液晶屏上

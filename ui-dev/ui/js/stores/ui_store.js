@@ -686,6 +686,8 @@ class UIStore extends EventEmitter {
       d.resolve(this.view(ui_id));
     } else {
       this.ensure_ui_bundles_ready$().then(() => {
+        return $hope.app.stores.app.ensure_apps_loaded$();
+      }).then(()=> {
         return this.load_ui$(ui_id);
       }).then(view => d.resolve(view))
         .catch(err => d.reject(err)).done();
@@ -827,6 +829,13 @@ class UIStore extends EventEmitter {
         }
       });
     });
+  }
+
+  clear_cache() {
+    this.views = {};
+    this.active_view = null;
+    this.no_active_reason = "";
+    ui_manager.clear_cache();
   }
 
   handle_action(action, data) {

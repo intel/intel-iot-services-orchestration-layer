@@ -114,24 +114,24 @@ export default class BindingDetails extends ReactComponent {
     _.forOwn(d.get_all_things_using_spec(spec.id), thing => {
       things.push(
         <MenuItem key={thing.id} onSelect={this._set_fixed_xxx_id.bind(this, "thing", thing.id)}>
-          {thing.name}
+          {thing.$name()}
         </MenuItem>
       );
 
       if (thing.id === binding.thing) {
-        curth = thing.name;
+        curth = thing.$name();
 
         _.forOwn(thing.services, svc => {
           if (svc.spec !== spec.id) {
             return;
           }
           if (svc.id === binding.service) {
-            cursvc = svc.name;
+            cursvc = svc.$name();
           }
 
           services.push(
             <MenuItem key={svc.id} onSelect={this._set_fixed_xxx_id.bind(this, "service", svc.id)}>
-              {svc.name}
+              {svc.$name()}
             </MenuItem>
           );
         });
@@ -161,7 +161,7 @@ export default class BindingDetails extends ReactComponent {
     _.forOwn(avail_hubs, d => {
       hubs.push(
         <MenuItem key={d.id} onSelect={this._set_fixed_dev.bind(this, d.id)}>
-          {d.name}
+          {d.$name()}
         </MenuItem>
       );
     });
@@ -169,7 +169,7 @@ export default class BindingDetails extends ReactComponent {
     if (binding) {
       var d = $hope.app.stores.hub.manager.get_hub(binding.hub);
       if (d && avail_hubs.indexOf(d) >= 0) {
-        curdev = d.name;
+        curdev = d.$name();
 
         if (d.get_all_services_using_spec(spec.id).length > 1) {
           div_th_svc = this.render_th_svc(spec, binding, d);

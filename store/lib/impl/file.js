@@ -308,7 +308,6 @@ StoreFile.prototype.size$ = function() {
  * @param {Object} options   other options for query (TODO)
  * @return {Array}           array of keys
  */
-/*
 StoreFile.prototype.query$ = function(filter, options) {
   var ret = [];
   if (check_warn(_.isFunction(filter), "store/file", 
@@ -316,7 +315,7 @@ StoreFile.prototype.query$ = function(filter, options) {
     var json = B.fs.read_json(this.config.path);
     _.forEach(json, function(value, key) {
       try {
-        if (filter(value) === true) {
+        if (filter(value, options) === true) {
           ret.push(key);
         }
       } catch (e) {
@@ -326,7 +325,6 @@ StoreFile.prototype.query$ = function(filter, options) {
   }
   return Promise.resolve(ret);
 };
-*/
 
 /**
  * async list keys 

@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/temp_lcd.zh-CN.jpg)
+![](./pic/temp_lcd.zh-CN.jpg)
+
 图中每隔1s就测量温度，将结果显示在液晶屏上

@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/fire_buzz.zh-CN.jpg)
+![](./pic/fire_buzz.zh-CN.jpg)
+
 图中每隔1s就测量火焰值,如果超过100就打开蜂鸣器进行警报

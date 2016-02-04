@@ -20,5 +20,6 @@
 
 ### 样例
 
-![example](./pic/light_led.zh-CN.jpg)
+![](./pic/light_led.zh-CN.jpg)
+
 图中每隔1s就测量亮度，小于100便打开LED，反之关闭

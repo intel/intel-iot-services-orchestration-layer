@@ -161,5 +161,6 @@ exports.$factories = {
   AppStore: exports.create_appstore$,
   GraphStore: exports.create_graphstore$,
   UiStore: exports.create_uistore$,
+  UserStore: exports.create_userstore$,
   SessionStore: exports.create_sessionstore$
 };
