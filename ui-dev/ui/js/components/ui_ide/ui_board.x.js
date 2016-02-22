@@ -35,10 +35,12 @@ export default class UIBoard extends ReactComponent {
 
 
   _on_change(widgets) {
-    $hope.trigger_action("ui/change_widgets", {
-      ui_id: this.props.view.id,
-      widgets: widgets
-    });
+    setTimeout(()=> {
+      $hope.trigger_action("ui/change_widgets", {
+        ui_id: this.props.view.id,
+        widgets: widgets
+      });
+    }, 0);
   }
 
   _on_drop(event, ui) {

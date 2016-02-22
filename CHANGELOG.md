@@ -1,5 +1,12 @@
 Change Logs
 ===========================
+## v1.0.3
+
+* Add support for Grove starter Kit
+* Add support for lattelanda
+* Usibility improvements
+* Various bug fixed
+
 ## v1.0.2
 
 * Optional user management added, support seprated app home for each user

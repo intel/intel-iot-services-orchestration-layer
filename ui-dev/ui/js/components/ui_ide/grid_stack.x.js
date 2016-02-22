@@ -82,15 +82,9 @@ export default class Grid extends ReactComponent {
 
   remove_widget(w) {
     _.remove(this.widgets, w);
-    if (w.$hope_is_added) {
-      var dom = ReactDOM.findDOMNode(w);
 
-      // delete DOM node delayed, prevent React error
-      setTimeout(() => {
-        this.grid.remove_widget(dom);
-      }, 0);
-    }
-    w.$hope_is_added = false;
+    var dom = ReactDOM.findDOMNode(w);
+    this.grid.remove_widget(dom, false);
   }
 
   add_widget(w) {
@@ -111,7 +105,6 @@ export default class Grid extends ReactComponent {
         var dom = ReactDOM.findDOMNode(w);
         this.grid.add_widget(dom,
           widget.x, widget.y, widget.width, widget.height, auto);
-        //dom.style["min-width"] = widget.width * 100 + "px";
       }
       w.$hope_is_added = true;
     });
@@ -120,8 +113,9 @@ export default class Grid extends ReactComponent {
 
 
   _on_widgets_changed(e, items) {
-    if (items && _.isFunction(this.props.onChange)) {
-      this.props.onChange(items.map(node => {
+    var callback = this.props.onChange;
+    if (items && _.isFunction(callback)) {
+      callback(items.map(node => {
         return {
           id: node.el.data("hopeWidgetId"),
           x: node.x,
@@ -148,14 +142,26 @@ export default class Grid extends ReactComponent {
     var gridstack = $(ReactDOM.findDOMNode(this)).gridstack(options);
     this.grid = gridstack.data("gridstack");
 
+    this.update_widgets();
+
     if (_.isFunction(this.props.onChange)) {
       gridstack.on("change", this._on_widgets_changed);
     }
-    this.update_widgets();
+  }
+
+  componentWillUnmount() {
+    this.grid.container.off("change", this._on_widgets_changed);
+    this.$destroy = true;
+
+    setTimeout(()=> {
+      this.grid.destroy();
+    }, 0);
   }
 
   componentDidUpdate() {
-    this.update_widgets();
+    setTimeout(()=> {
+      this.update_widgets();
+    }, 0);
   }
 
 
@@ -188,7 +194,7 @@ class Widget extends ReactComponent {
   };
 
   constructor(props) {
-    super();
+    super(props);
 
     this.$state = -1;
     this.$selected = false;
@@ -290,7 +296,11 @@ class Widget extends ReactComponent {
   }
 
   componentWillUnmount() {
-    this.props.hopeGrid.remove_widget(this);
+    var parent = this.props.hopeGrid;
+
+    if (!parent.$destroy) {
+      parent.remove_widget(this);
+    }
 
     if (_.isFunction(this._on_settings_changed)) {
       $hope.app.stores.ui.removeListener("ui", this._on_ui_event);

@@ -1,0 +1,23 @@
+{
+  "description":"sweep the servo",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "bool",
+        "type": "boolean"
+      }]
+    },
+    "config": [
+      {
+        "name": "pin",
+        "type": "int",
+        "required": true
+      }
+    ]
+  }
+}

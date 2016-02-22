@@ -39,6 +39,7 @@ var Thing = require("./lib/thing");
 var Updater = require("./lib/update");
 var Hub = require("./lib/hub");
 var User = require("./lib/user");
+var GroveThing = require("./lib/grove_thing");
 var log = B.log;
 
 exports.create_entity_manager = function(obj) {
@@ -610,6 +611,23 @@ EntityManager.prototype.thing__load_from_bundle$ = function(bundle_path, specbun
   var l = this.make_lock();
   return l.lock_as_promise$(function() {
     return Thing.load_static_things$(bundle_path, specbundle, hub_id, self, changed_list)
+    .then(function() {
+      return em_changed(self, changed_list);
+    });
+  }, 10000, false);
+};
+
+EntityManager.prototype.thing__load_grove_thing_via_login$ = function(grove_config, hub_id) {
+  var self = this;
+  return GroveThing.load_grove_thing_via_login$(grove_config, hub_id, self);
+}
+
+EntityManager.prototype.thing__add_grove_thing$ = function(thing_id, thing_name, grove_config, hub_id) {
+  var changed_list = [];
+  var self = this;
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return GroveThing.add_grove_thing$(thing_id, thing_name, grove_config, hub_id, self, changed_list)
     .then(function() {
       return em_changed(self, changed_list);
     });

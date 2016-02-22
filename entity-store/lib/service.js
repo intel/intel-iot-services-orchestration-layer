@@ -43,7 +43,7 @@ var service_schema = {};
 //  name: string
 //  spec: string||number 
 //  thing: string||number
-//  path: string
+//  path: string, optional
 //  is_connect: boolean
 //  type: string
 //  own_spec: boolean
@@ -55,7 +55,6 @@ function check_service_schema (value) {
     check(_.isString(value.spec) || _.isNumber(value.spec), "entity-store/service", "invalid spec", value);
     check(_.isString(value.thing) || _.isNumber(value.thing), "entity-store/service", "invalid thing", value);
     check(_.isString(value.name), "entity-store/service", "invalid name", value);
-    check(_.isString(value.path), "entity-store/service", "invalid path", value);
     check(_.isString(value.type), "entity-store/service", "invalid type", value);
     check(_.isBoolean(value.is_connect), "entity-store/service", "invalid is_connect", value);
     check(_.isBoolean(value.own_spec), "entity-store/service", "invalid own_spec", value);
