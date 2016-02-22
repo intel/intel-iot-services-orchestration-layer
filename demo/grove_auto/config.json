@@ -152,7 +152,12 @@
         "config_path" : "$config_path",
         "mnode": "$mnode",
         "entity_manager": "$entity_manager",
-        "thingbundle_path": "./thing_bundle",
+        "grove_config": {
+          "email":"your email address",
+          "password":"your password",
+          "grovebundle_path":"./grove_bundle",
+          "server":"https://cn.iot.seeed.cc"
+          },
         "session_manager": "$session_manager",
         "heartbeat": {
           "interval": 20000

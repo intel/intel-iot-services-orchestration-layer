@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var _ = require("lodash");
 var B = require("hope-base");
-
+var log = B.log.for_category("sm/sandbox");
 //create a sandbox for service_init method
 function create_service_sandbox(service_cache_obj)
 {
@@ -54,16 +54,40 @@ function create_service_sandbox(service_cache_obj)
   return sandbox;
 }
 
+function create_hub_sandbox(hub_shared_object, base_path) {
+  var sandbox = {
+    process: process,
+    Buffer: Buffer,
+    setTimeout : setTimeout,
+    clearTimeout : clearTimeout,
+    setInterval : setInterval,
+    clearInterval : clearInterval,
+    setImmediate : setImmediate,
+    clearImmediate : clearImmediate,
+    console : console,
+    require: generate_require_in_sandbox(base_path),
+    __dirname: base_path,
+    hub_shared: hub_shared_object
+  };
+  sandbox.global = sandbox;
+  return sandbox;
+}
+
 // return the require used in sandbox
 // pay attention to the relative path of the required file
 // TODO: may be the path in service_obj is relative path.
 function generate_require_in_sandbox(base_path) {
   function require_in_sandbox(p) {
+    var ret;
+    var g = {};
+    save_global_prop(g);
     if (_.isString(p) && p.substr(0, 2) !== "./" && p.substr(0, 3) !== "../") {
-      return require(p);
+      ret = require(p);
     } else {
-      return require(B.path.abs(p, base_path, true));
+      ret = require(B.path.abs(p, base_path, true));
     }
+    recover_global_prop(g);
+    return ret;
   }
   return require_in_sandbox;//return a function
 }
@@ -78,3 +102,20 @@ function create_session_sandbox(service_cache_obj, session_cache_obj) {
 
 exports.create_service_sandbox = create_service_sandbox;
 exports.create_session_sandbox = create_session_sandbox;
+exports.create_hub_sandbox = create_hub_sandbox;
+//work around
+var global_prop_list = ["Promise"];
+function save_global_prop(g) {
+  global_prop_list.forEach(function(prop) {
+    g[prop] = global[prop];
+  });
+}
+
+function recover_global_prop(g) {
+  global_prop_list.forEach(function(prop) {
+    if (g[prop] !== global[prop]) {
+      log.warn("the global prop changes:", prop);
+      global[prop] = g[prop];
+    }
+  });
+}

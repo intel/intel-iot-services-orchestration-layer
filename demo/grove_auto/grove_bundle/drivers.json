@@ -1,0 +1,1449 @@
+[{
+  "SKU": "104030003",
+  "GroveName": "Grove - 4-Digit Display",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/3/3a9f79323a82950c12fc7e69fa9fab4d.image.530x397.jpg",
+  "ClassName": "Grove4Digit",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": true,
+  "ID": 0,
+  "ConstructArgList": ["int pintx", "int pinrx"],
+  "Files": ["grove_4_digit.cpp", "grove_4_digit.h"],
+  "ClassFile": "grove_4_digit.h",
+  "Events": {},
+  "HasPowerOnFunc": true,
+  "Reads": {},
+  "InterfaceType": "UART",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_4_digit",
+  "Writes": {
+    "write_display_point": {
+      "Arguments": [
+        ["uint8_t", "display"]
+      ]
+    },
+    "write_display_digits": {
+      "Arguments": [
+        ["uint8_t", "start_pos"],
+        ["char *", "chars"]
+      ]
+    },
+    "write_clear": {
+      "Arguments": []
+    },
+    "write_display_one_digit": {
+      "Arguments": [
+        ["uint8_t", "position"],
+        ["char *", "chr"]
+      ]
+    },
+    "write_brightness": {
+      "Arguments": [
+        ["uint8_t", "brightness"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020039",
+  "GroveName": "Grove-3Axis Digital Acc(\u00b11.5g)",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/b/bb/3_aix_acc.jpg",
+  "ClassName": "GroveAccMMA7660",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": true,
+  "ID": 1,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_acc_mma7660.cpp", "grove_acc_mma7660.h"],
+  "ClassFile": "grove_acc_mma7660.h",
+  "Events": {},
+  "HasPowerOnFunc": true,
+  "Reads": {
+    "read_acceleration": {
+      "Raw": ["float *ax", "float *ay", "float *az"],
+      "Returns": [
+        ["float", "ax"],
+        ["float", "ay"],
+        ["float", "az"]
+      ],
+      "Arguments": []
+    },
+    "read_shaked": {
+      "Raw": ["uint8_t *shaked"],
+      "Returns": [
+        ["uint8_t", "shaked"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_acc_mma7660",
+  "Writes": {}
+}, {
+  "SKU": "101020078",
+  "GroveName": "Grove - Air Quality Sensor",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/101020078%201_02.jpg",
+  "ClassName": "GroveAirquality",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": true,
+  "ID": 2,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_airquality_tp401a.cpp", "grove_airquality_tp401a.h"],
+  "ClassFile": "grove_airquality_tp401a.h",
+  "Events": {},
+  "HasPowerOnFunc": true,
+  "Reads": {
+    "read_quality": {
+      "Raw": ["int *quality"],
+      "Returns": [
+        ["int", "quality"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "ANALOG",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_airquality_tp401a",
+  "Writes": {}
+}, {
+  "SKU": "101020032",
+  "GroveName": "Grove-Barometer(BMP085)",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/e/e7/Grove-Barometer.jpg/621px-Grove-Barometer.jpg",
+  "ClassName": "GroveBaroBMP085",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 3,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_baro_bmp085.cpp", "grove_baro_bmp085.h"],
+  "ClassFile": "grove_baro_bmp085.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_temperature": {
+      "Raw": ["float *temperature"],
+      "Returns": [
+        ["float", "temperature"]
+      ],
+      "Arguments": []
+    },
+    "read_altitude": {
+      "Raw": ["float *altitude"],
+      "Returns": [
+        ["float", "altitude"]
+      ],
+      "Arguments": []
+    },
+    "read_pressure": {
+      "Raw": ["int32_t *pressure"],
+      "Returns": [
+        ["int32_t", "pressure"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_baro_bmp085",
+  "Writes": {}
+}, {
+  "SKU": "101020003",
+  "GroveName": "Grove-Button",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/c/ca/Button.jpg/300px-Button.jpg",
+  "ClassName": "GroveButton",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 4,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_button.cpp", "grove_button.h"],
+  "ClassFile": "grove_button.h",
+  "Events": {
+    "button_pressed": "int16_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_pressed": {
+      "Raw": ["uint8_t *pressed"],
+      "Returns": [
+        ["uint8_t", "pressed"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_button",
+  "Writes": {}
+}, {
+  "SKU": "101020034",
+  "GroveName": "Grove-3Axis Compass",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/b/be/Axis_compass.jpg/400px-Axis_compass.jpg",
+  "ClassName": "GroveCompass",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 5,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_comp_hmc5883l.cpp", "grove_comp_hmc5883l.h"],
+  "ClassFile": "grove_comp_hmc5883l.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_compass_heading": {
+      "Raw": ["float *heading_deg"],
+      "Returns": [
+        ["float", "heading_deg"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_comp_hmc5883l",
+  "Writes": {}
+}, {
+  "SKU": "101020030",
+  "GroveName": "Grove-Digital Light",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/6/69/Digital_Light_Sensor.jpg",
+  "ClassName": "GroveDigitalLight",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": false,
+  "ID": 6,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_digital_light.cpp", "grove_digital_light.h"],
+  "ClassFile": "grove_digital_light.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_lux": {
+      "Raw": ["uint32_t *lux"],
+      "Returns": [
+        ["uint32_t", "lux"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_digital_light",
+  "Writes": {}
+}, {
+  "SKU": "103020014",
+  "GroveName": "Grove-Dry-Reed Relay",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/1/16a562af66ac52d6e0e19a7b6ec5588d.image.530x397.jpg",
+  "ClassName": "GroveDryReedRelay",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 7,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_dryreed_relay.cpp", "grove_dryreed_relay.h"],
+  "ClassFile": "grove_dryreed_relay.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_dryreed_relay",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "105020005",
+  "GroveName": "Grove-EL Driver",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/4/45c3a0b2df09759a952ae01bf5207b42.image.530x397.jpg",
+  "ClassName": "GroveEL",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 8,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_el_driver.cpp", "grove_el_driver.h"],
+  "ClassFile": "grove_el_driver.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_el_driver",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020073",
+  "GroveName": "Grove-Electromagnet",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/9/9509f6e5cb898db66420ae739bb51eb3.image.164x123.jpg",
+  "ClassName": "GroveElecMagnet",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 9,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_electromagnet.cpp", "grove_electromagnet.h"],
+  "ClassFile": "grove_electromagnet.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_electromagnet",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "111020001",
+  "GroveName": "Grove - Encoder",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/0/00a3a97e35f0ede1275ea4a989e4953c.image.530x397.jpg",
+  "ClassName": "GroveEncoder",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": true,
+  "ID": 10,
+  "ConstructArgList": ["int pintx", "int pinrx"],
+  "Files": ["grove_encoder.cpp", "grove_encoder.h"],
+  "ClassFile": "grove_encoder.h",
+  "Events": {
+    "encoder_position": "int32_t"
+  },
+  "HasPowerOnFunc": true,
+  "Reads": {
+    "read_position": {
+      "Raw": ["int32_t *position"],
+      "Returns": [
+        ["int32_t", "position"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "UART",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_encoder",
+  "Writes": {
+    "write_reset_position": {
+      "Arguments": [
+        ["int32_t", "position"]
+      ]
+    },
+    "write_enable_acceleration": {
+      "Arguments": [
+        ["uint8_t", "enable"]
+      ]
+    }
+  }
+}, {
+  "SKU": "71714fec-8911-11e5-af63-feff819cdc9f",
+  "GroveName": "Grove_Example",
+  "ImageURL": "http://www.seeedstudio.com/depot/includes/templates/bootstrap/images/ico/grove.png",
+  "ClassName": "GroveExample",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": true,
+  "ID": 11,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_example.cpp", "grove_example.h"],
+  "ClassFile": "grove_example.h",
+  "Events": {
+    "fire": "int16_t",
+    "event2": "int16_t"
+  },
+  "HasPowerOnFunc": true,
+  "Reads": {
+    "read_temp": {
+      "Raw": ["int *temp"],
+      "Returns": [
+        ["int", "temp"]
+      ],
+      "Arguments": []
+    },
+    "read_uint8_value": {
+      "Raw": ["uint8_t *value"],
+      "Returns": [
+        ["uint8_t", "value"]
+      ],
+      "Arguments": []
+    },
+    "read_with_arg": {
+      "Raw": ["float *cx", "float *cy", "float *cz", "int *degree", "int arg"],
+      "Returns": [
+        ["float", "cx"],
+        ["float", "cy"],
+        ["float", "cz"],
+        ["int", "degree"]
+      ],
+      "Arguments": [
+        ["int", "arg"]
+      ]
+    },
+    "read_compass": {
+      "Raw": ["float *cx", "float *cy", "float *cz", "int *degree"],
+      "Returns": [
+        ["float", "cx"],
+        ["float", "cy"],
+        ["float", "cz"],
+        ["int", "degree"]
+      ],
+      "Arguments": []
+    },
+    "read_acc": {
+      "Raw": ["float *ax", "float *ay", "float *az"],
+      "Returns": [
+        ["float", "ax"],
+        ["float", "ay"],
+        ["float", "az"]
+      ],
+      "Arguments": []
+    },
+    "read_humidity": {
+      "Raw": ["float *humidity"],
+      "Returns": [
+        ["float", "humidity"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_example",
+  "Writes": {
+    "write_multi_value": {
+      "Arguments": [
+        ["int", "a"],
+        ["float", "b"],
+        ["uint32_t", "c"]
+      ]
+    },
+    "write_acc_mode": {
+      "Arguments": [
+        ["uint8_t", "mode"]
+      ]
+    },
+    "write_float_value": {
+      "Arguments": [
+        ["float", "f"]
+      ]
+    }
+  }
+}, {
+  "SKU": "eedec01c-8c5a-11e5-8994-feff819cdc9f",
+  "GroveName": "Generic Analog Input",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/8/87/Pion_one_generic_analog.png",
+  "ClassName": "GenericAIn",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 12,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_generic_analog_in.cpp", "grove_generic_analog_in.h"],
+  "ClassFile": "grove_generic_analog_in.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_analog": {
+      "Raw": ["int *analog"],
+      "Returns": [
+        ["int", "analog"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "ANALOG",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_generic_analog_in",
+  "Writes": {}
+}, {
+  "SKU": "7e3306bc-8911-11e5-af63-feff819cdc9f",
+  "GroveName": "Generic Digital Input",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/e/ea/Pion_one_generic_din.png",
+  "ClassName": "GenericDIn",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 13,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_generic_digital_in.cpp", "grove_generic_digital_in.h"],
+  "ClassFile": "grove_generic_digital_in.h",
+  "Events": {
+    "input_changed": "int16_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_input": {
+      "Raw": ["uint8_t *input"],
+      "Returns": [
+        ["uint8_t", "input"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_generic_digital_in",
+  "Writes": {}
+}, {
+  "SKU": "3a9d9a84-8c59-11e5-8994-feff819cdc9f",
+  "GroveName": "Generic Digital Output",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/0/00/Pion_one_generic_dout.png",
+  "ClassName": "GenericDOut",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 14,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_generic_digital_out.cpp", "grove_generic_digital_out.h"],
+  "ClassFile": "grove_generic_digital_out.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_onoff_status": {
+      "Raw": ["int *onoff"],
+      "Returns": [
+        ["int", "onoff"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_generic_digital_out",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "63e25800-a2d2-11e5-bf7f-feff819cdc9f",
+  "GroveName": "Generic PWM/Analog Output",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/b/b4/Generic_analog_output.png",
+  "ClassName": "GenericPWMOut",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 15,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_generic_pwm_out.cpp", "grove_generic_pwm_out.h"],
+  "ClassFile": "grove_generic_pwm_out.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_pwm": {
+      "Raw": ["float *duty_percent", "uint32_t *freq"],
+      "Returns": [
+        ["float", "duty_percent"],
+        ["uint32_t", "freq"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_generic_pwm_out",
+  "Writes": {
+    "write_pwm": {
+      "Arguments": [
+        ["float", "duty_percent"]
+      ]
+    },
+    "write_pwm_with_freq": {
+      "Arguments": [
+        ["float", "duty_percent"],
+        ["uint32_t", "freq"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020083",
+  "GroveName": "Grove - Gesture v1.0",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/101020083%201_01.jpg",
+  "ClassName": "GroveGesture",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 16,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_gesture_paj7620.cpp", "grove_gesture_paj7620.h"],
+  "ClassFile": "grove_gesture_paj7620.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_motion": {
+      "Raw": ["uint8_t *motion"],
+      "Returns": [
+        ["uint8_t", "motion"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_gesture_paj7620",
+  "Writes": {}
+}, {
+  "SKU": "101020050",
+  "GroveName": "Grove-3-Axis Digital Gyro",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/f/f6/Gbgr.jpg/500px-Gbgr.jpg",
+  "ClassName": "GroveGyroITG3200",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 17,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_gyro_itg3200.cpp", "grove_gyro_itg3200.h"],
+  "ClassFile": "grove_gyro_itg3200.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_temperature": {
+      "Raw": ["float *temp"],
+      "Returns": [
+        ["float", "temp"]
+      ],
+      "Arguments": []
+    },
+    "read_gyro": {
+      "Raw": ["float *gx", "float *gy", "float *gz"],
+      "Returns": [
+        ["float", "gx"],
+        ["float", "gy"],
+        ["float", "gz"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_gyro_itg3200",
+  "Writes": {
+    "write_zerocalibrate": {
+      "Arguments": []
+    }
+  }
+}, {
+  "SKU": "105020001",
+  "GroveName": "Grove-I2C Motor Driver",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/3/3ac50a997c78858b8f960475f878e369.image.530x397.jpg",
+  "ClassName": "GroveI2CMotorDriver",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 18,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_i2c_motor_driver.cpp", "grove_i2c_motor_driver.h"],
+  "ClassFile": "grove_i2c_motor_driver.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_i2c_motor_driver",
+  "Writes": {
+    "write_i2c_address": {
+      "Arguments": [
+        ["uint8_t", "addr_7bits"]
+      ]
+    },
+    "write_enable_stepper_mode": {
+      "Arguments": [
+        ["uint8_t", "direction"],
+        ["uint8_t", "speed"]
+      ]
+    },
+    "write_dcmotor1_resume": {
+      "Arguments": []
+    },
+    "write_disable_stepper_mode": {
+      "Arguments": []
+    },
+    "write_dcmotor1_change_direction": {
+      "Arguments": []
+    },
+    "write_dcmotor_speed": {
+      "Arguments": [
+        ["uint8_t", "speed_m1"],
+        ["uint8_t", "speed_m2"]
+      ]
+    },
+    "write_dcmotor2_change_direction": {
+      "Arguments": []
+    },
+    "write_stepper_steps": {
+      "Arguments": [
+        ["uint8_t", "steps"]
+      ]
+    },
+    "write_dcmotor2_resume": {
+      "Arguments": []
+    },
+    "write_dcmotor2_break": {
+      "Arguments": []
+    },
+    "write_dcmotor1_break": {
+      "Arguments": []
+    }
+  }
+}, {
+  "SKU": "101020040",
+  "GroveName": "Grove-IR Distance Interrupter",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/e/e1/IR_Distance_Interrupter.jpg/300px-IR_Distance_Interrupter.jpg",
+  "ClassName": "GroveIRDistanceInterrupter",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 19,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_ir_distance_intr.cpp", "grove_ir_distance_intr.h"],
+  "ClassFile": "grove_ir_distance_intr.h",
+  "Events": {
+    "ir_approached": "int16_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_approach": {
+      "Raw": ["uint8_t *approach"],
+      "Returns": [
+        ["uint8_t", "approach"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_ir_distance_intr",
+  "Writes": {}
+}, {
+  "SKU": "101020026",
+  "GroveName": "Grove - Infrared Emitter",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/6/6a/Grove_-_Infrared_Emitter.jpg/400px-Grove_-_Infrared_Emitter.jpg",
+  "ClassName": "GroveIREmit",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": false,
+  "ID": 20,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_ir_emitter.cpp", "grove_ir_emitter.h"],
+  "ClassFile": "grove_ir_emitter.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_protocal_parametersbool": {
+      "Raw": ["uint8_t *start_h", "uint8_t *start_l", "uint8_t *n_short", "uint8_t *n_long"],
+      "Returns": [
+        ["uint8_t", "start_h"],
+        ["uint8_t", "start_l"],
+        ["uint8_t", "n_short"],
+        ["uint8_t", "n_long"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_ir_emitter",
+  "Writes": {
+    "write_data_hex": {
+      "Arguments": [
+        ["char *", "data_hex"]
+      ]
+    },
+    "write_protocol_parameters": {
+      "Arguments": [
+        ["uint8_t", "start_h"],
+        ["uint8_t", "start_l"],
+        ["uint8_t", "n_short"],
+        ["uint8_t", "n_long"]
+      ]
+    },
+    "write_data_hex_in_freq": {
+      "Arguments": [
+        ["uint16_t", "freq_khz"],
+        ["char *", "data_hex"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020016",
+  "GroveName": "Grove - Infrared Receiver",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/e/ee/Grove_-_Infrared_Receiver.jpg/400px-Grove_-_Infrared_Receiver.jpg",
+  "ClassName": "GroveIRRecv",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 21,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_ir_receiver.cpp", "grove_ir_receiver.h"],
+  "ClassFile": "grove_ir_receiver.h",
+  "Events": {
+    "ir_recv_data_hex": "char *",
+    "ir_recv_data_len": "uint8_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_protocol_parameters": {
+      "Raw": ["uint8_t *start_h", "uint8_t *start_l", "uint8_t *n_short", "uint8_t *n_long"],
+      "Returns": [
+        ["uint8_t", "start_h"],
+        ["uint8_t", "start_l"],
+        ["uint8_t", "n_short"],
+        ["uint8_t", "n_long"]
+      ],
+      "Arguments": []
+    },
+    "read_last_data_recved": {
+      "Raw": ["uint16_t *len", "char **data"],
+      "Returns": [
+        ["uint16_t", "len"],
+        ["char *", "data"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_ir_receiver",
+  "Writes": {}
+}, {
+  "SKU": "104020006",
+  "GroveName": "Grove - LED Bar",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/104020006%201.jpg",
+  "ClassName": "GroveLEDBar",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 22,
+  "ConstructArgList": ["int pintx", "int pinrx"],
+  "Files": ["grove_led_bar.cpp", "grove_led_bar.h"],
+  "ClassFile": "grove_led_bar.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_bits": {
+      "Raw": ["uint16_t *bits"],
+      "Returns": [
+        ["uint16_t", "bits"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "UART",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_led_bar",
+  "Writes": {
+    "write_toggle": {
+      "Arguments": [
+        ["uint8_t", "led"]
+      ]
+    },
+    "write_level": {
+      "Arguments": [
+        ["float", "level"]
+      ]
+    },
+    "write_single_led": {
+      "Arguments": [
+        ["uint8_t", "led"],
+        ["float", "brightness"]
+      ]
+    },
+    "write_bits": {
+      "Arguments": [
+        ["uint16_t", "bits"]
+      ]
+    },
+    "write_orientation": {
+      "Arguments": [
+        ["uint8_t", "green_to_red"]
+      ]
+    }
+  }
+}, {
+  "SKU": "104990089",
+  "GroveName": "Grove-WS2812 LED Strip 60",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/4/4f346dc15724a7b5a5c1383253aeefc9.image.530x397.jpg",
+  "ClassName": "GroveLedWs2812",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": false,
+  "ID": 23,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_led_ws2812.cpp", "grove_led_ws2812.h"],
+  "ClassFile": "grove_led_ws2812.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_led_ws2812",
+  "Writes": {
+    "write_clear": {
+      "Arguments": [
+        ["uint8_t", "total_led_cnt"],
+        ["char *", "rgb_hex_string"]
+      ]
+    },
+    "write_start_rainbow_flow": {
+      "Arguments": [
+        ["uint8_t", "length"],
+        ["uint8_t", "brightness"],
+        ["uint8_t", "speed"]
+      ]
+    },
+    "write_segment": {
+      "Arguments": [
+        ["uint8_t", "start"],
+        ["char *", "rgb_hex_string"]
+      ]
+    },
+    "write_stop_rainbow_flow": {
+      "Arguments": []
+    }
+  }
+}, {
+  "SKU": "101020038",
+  "GroveName": "Grove-Magnetic Switch",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/c/c0/Magnetic_Switch.jpg/400px-Magnetic_Switch.jpg",
+  "ClassName": "GroveMagneticSwitch",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 24,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_magnetic_switch.cpp", "grove_magnetic_switch.h"],
+  "ClassFile": "grove_magnetic_switch.h",
+  "Events": {
+    "mag_approached": "uint8_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_approach": {
+      "Raw": ["uint8_t *mag_approach"],
+      "Returns": [
+        ["uint8_t", "mag_approach"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_magnetic_switch",
+  "Writes": {}
+}, {
+  "SKU": "101020008",
+  "GroveName": "Grove-Moisture",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/c/ce/Moisture_sensor_.jpg",
+  "ClassName": "GroveMoisture",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 25,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_moisture.cpp", "grove_moisture.h", "grove_moisture_class.cpp", "grove_moisture_class.h"],
+  "ClassFile": "grove_moisture_class.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_moisture": {
+      "Raw": ["uint16_t *moisture"],
+      "Returns": [
+        ["uint16_t", "moisture"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "ANALOG",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_moisture",
+  "Writes": {}
+}, {
+  "SKU": "101020088",
+  "GroveName": "Grove-Multichannel Gas Sensor",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/2/28/Multi_sensor1.png",
+  "ClassName": "GroveMultiChannelGas",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": false,
+  "ID": 26,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_multichannel_gas_mics6814.cpp", "grove_multichannel_gas_mics6814.h"],
+  "ClassFile": "grove_multichannel_gas_mics6814.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_NH3": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_CH4": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_C4H10": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_NO2": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_C2H5OH": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_H2": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_C3H8": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    },
+    "read_CO": {
+      "Raw": ["float *concentration_ppm"],
+      "Returns": [
+        ["float", "concentration_ppm"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_multichannel_gas_mics6814",
+  "Writes": {}
+}, {
+  "SKU": "104030008",
+  "GroveName": "Grove - OLED Display 1.12''",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/e/ea/Toled128642.jpg/400px-Toled128642.jpg",
+  "ClassName": "GroveOLED12864",
+  "CanGetLastError": true,
+  "HasPowerOffFunc": false,
+  "ID": 27,
+  "ConstructArgList": ["int pinsda", "int pinscl"],
+  "Files": ["grove_oled_12864.cpp", "grove_oled_12864.h"],
+  "ClassFile": "grove_oled_12864.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "I2C",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_oled_12864",
+  "Writes": {
+    "write_clear": {
+      "Arguments": []
+    },
+    "write_float": {
+      "Arguments": [
+        ["uint8_t", "row"],
+        ["uint8_t", "col"],
+        ["float", "f"],
+        ["uint8_t", "decimal"]
+      ]
+    },
+    "write_base64_string": {
+      "Arguments": [
+        ["uint8_t", "row"],
+        ["uint8_t", "col"],
+        ["char *", "b64_str"]
+      ]
+    },
+    "write_scroll_right": {
+      "Arguments": [
+        ["uint8_t", "start_row"],
+        ["uint8_t", "end_row"],
+        ["uint8_t", "speed"]
+      ]
+    },
+    "write_scroll_left": {
+      "Arguments": [
+        ["uint8_t", "start_row"],
+        ["uint8_t", "end_row"],
+        ["uint8_t", "speed"]
+      ]
+    },
+    "write_string": {
+      "Arguments": [
+        ["uint8_t", "row"],
+        ["uint8_t", "col"],
+        ["char *", "str"]
+      ]
+    },
+    "write_integer": {
+      "Arguments": [
+        ["uint8_t", "row"],
+        ["uint8_t", "col"],
+        ["int32_t", "i"]
+      ]
+    },
+    "write_brightness": {
+      "Arguments": [
+        ["uint8_t", "brightness"]
+      ]
+    },
+    "write_inverse_display": {
+      "Arguments": [
+        ["uint8_t", "inverse_or_not"]
+      ]
+    },
+    "write_stop_scroll": {
+      "Arguments": []
+    }
+  }
+}, {
+  "SKU": "101020020",
+  "GroveName": "Grove-PIR Motion Sensor",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/b/bc0115270f17babe6373bce8ec1bfe8a.image.164x123.jpg",
+  "ClassName": "GrovePIRMotion",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 28,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_pir_motion.cpp", "grove_pir_motion.h"],
+  "ClassFile": "grove_pir_motion.h",
+  "Events": {
+    "ir_moved": "int16_t"
+  },
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_approach": {
+      "Raw": ["uint8_t *approach"],
+      "Returns": [
+        ["uint8_t", "approach"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": true,
+  "IncludePath": "./grove_drivers/grove_pir_motion",
+  "Writes": {}
+}, {
+  "SKU": "103020018",
+  "GroveName": "Grove-Recorder",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/Grove%20Recorder.jpg",
+  "ClassName": "GroveRecorder",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 29,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_recorder.cpp", "grove_recorder.h"],
+  "ClassFile": "grove_recorder.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_recorder",
+  "Writes": {
+    "write_play_once": {
+      "Arguments": []
+    }
+  }
+}, {
+  "SKU": "103020005",
+  "GroveName": "Grove_Relay",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/d/df3ef3f9ba7f58333235895c0d3c4fb2.image.530x397.jpg",
+  "ClassName": "GroveRelay",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 30,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_relay.cpp", "grove_relay.h"],
+  "ClassFile": "grove_relay.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_relay",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020017",
+  "GroveName": "Grove-Rotary Angle Sensor",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/4/47c18125fbb4c9db7e3104f5a3b04ef5.image.530x397.jpg",
+  "ClassName": "GroveRotaryAngle",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 31,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_rotary_angle.cpp", "grove_rotary_angle.h"],
+  "ClassFile": "grove_rotary_angle.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_angle": {
+      "Raw": ["int *angle"],
+      "Returns": [
+        ["int", "angle"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "ANALOG",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_rotary_angle",
+  "Writes": {}
+}, {
+  "SKU": "316010005",
+  "GroveName": "Grove-Servo",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/0/0f/Grove%E2%80%94Servo.jpg/600px-Grove%E2%80%94Servo.jpg",
+  "ClassName": "GroveServo",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 32,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_servo.cpp", "grove_servo.h"],
+  "ClassFile": "grove_servo.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_servo",
+  "Writes": {
+    "write_angle": {
+      "Arguments": [
+        ["int", "degree"]
+      ]
+    },
+    "write_angle_motion_in_seconds": {
+      "Arguments": [
+        ["int", "degree"],
+        ["int", "seconds"]
+      ]
+    }
+  }
+}, {
+  "SKU": "103020004",
+  "GroveName": "Grove-Solid State Relay",
+  "ImageURL": "http://www.seeedstudio.com/depot/bmz_cache/1/13c15e71c4bd4c0a0fce5faa0283f4c5.image.530x397.jpg",
+  "ClassName": "GroveSolidStateRelay",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 33,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_solid_relay.cpp", "grove_solid_relay.h"],
+  "ClassFile": "grove_solid_relay.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_solid_relay",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "103020012",
+  "GroveName": "Grove - SPDT Relay(30A)",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/SPDT%20Relay.jpg",
+  "ClassName": "GroveSPDTRelay30A",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 34,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_spdt_relay_30a.cpp", "grove_spdt_relay_30a.h"],
+  "ClassFile": "grove_spdt_relay_30a.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_spdt_relay_30a",
+  "Writes": {
+    "write_onoff": {
+      "Arguments": [
+        ["int", "onoff"]
+      ]
+    }
+  }
+}, {
+  "SKU": "107020001",
+  "GroveName": "Grove-Speaker",
+  "ImageURL": "http://www.seeedstudio.com/depot/images/product/Grove%20Speaker_01.jpg",
+  "ClassName": "GroveSpeaker",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 35,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_speaker.cpp", "grove_speaker.h"],
+  "ClassFile": "grove_speaker.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {},
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_speaker",
+  "Writes": {
+    "write_sound_stop": {
+      "Arguments": []
+    },
+    "write_sound_ms": {
+      "Arguments": [
+        ["int", "freq"],
+        ["int", "duration_ms"]
+      ]
+    },
+    "write_sound_start": {
+      "Arguments": [
+        ["int", "freq"]
+      ]
+    }
+  }
+}, {
+  "SKU": "101020015",
+  "GroveName": "Grove - Temperature Sensor",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/5/5f/Grove_Temperature_Sensor_View.jpg",
+  "ClassName": "GroveTemp",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 36,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_temp.cpp", "grove_temp.h"],
+  "ClassFile": "grove_temp.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_temp": {
+      "Raw": ["float *temperature"],
+      "Returns": [
+        ["float", "temperature"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "ANALOG",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_temp",
+  "Writes": {}
+}, {
+  "SKU": "101020019-ffff",
+  "GroveName": "Grove-Temperature&Humidity",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/3/36/Temp%26Humi.jpg",
+  "ClassName": "GroveTempHum",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 37,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_temp_hum.cpp", "grove_temp_hum.h"],
+  "ClassFile": "grove_temp_hum.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_humidity": {
+      "Raw": ["float *humidity"],
+      "Returns": [
+        ["float", "humidity"]
+      ],
+      "Arguments": []
+    },
+    "read_temperature": {
+      "Raw": ["float *celsius_degree"],
+      "Returns": [
+        ["float", "celsius_degree"]
+      ],
+      "Arguments": []
+    },
+    "read_temperature_f": {
+      "Raw": ["float *fahrenheit_degree"],
+      "Returns": [
+        ["float", "fahrenheit_degree"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_temp_hum",
+  "Writes": {}
+}, {
+  "SKU": "101020019",
+  "GroveName": "Grove-Temperature&Humidity Pro",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/7/75/Temp_humi_pro222.jpg",
+  "ClassName": "GroveTempHumPro",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 38,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_temp_hum_pro.cpp", "grove_temp_hum_pro.h"],
+  "ClassFile": "grove_temp_hum_pro.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_humidity": {
+      "Raw": ["float *humidity"],
+      "Returns": [
+        ["float", "humidity"]
+      ],
+      "Arguments": []
+    },
+    "read_temperature": {
+      "Raw": ["float *celsius_degree"],
+      "Returns": [
+        ["float", "celsius_degree"]
+      ],
+      "Arguments": []
+    },
+    "read_temperature_f": {
+      "Raw": ["float *fahrenheit_degree"],
+      "Returns": [
+        ["float", "fahrenheit_degree"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_temp_hum_pro",
+  "Writes": {}
+}, {
+  "SKU": "101020010",
+  "GroveName": "Grove - Ultrasonic Ranger",
+  "ImageURL": "http://www.seeedstudio.com/wiki/images/thumb/3/3a/Ultrasonic_Ranger.jpg/350px-Ultrasonic_Ranger.jpg",
+  "ClassName": "GroveUltraRanger",
+  "CanGetLastError": false,
+  "HasPowerOffFunc": false,
+  "ID": 39,
+  "ConstructArgList": ["int pin"],
+  "Files": ["grove_ultrasonic_ranger.cpp", "grove_ultrasonic_ranger.h"],
+  "ClassFile": "grove_ultrasonic_ranger.h",
+  "Events": {},
+  "HasPowerOnFunc": false,
+  "Reads": {
+    "read_range_in_inch": {
+      "Raw": ["float *range_inch"],
+      "Returns": [
+        ["float", "range_inch"]
+      ],
+      "Arguments": []
+    },
+    "read_range_in_cm": {
+      "Raw": ["float *range_cm"],
+      "Returns": [
+        ["float", "range_cm"]
+      ],
+      "Arguments": []
+    }
+  },
+  "InterfaceType": "GPIO",
+  "HasEvent": false,
+  "IncludePath": "./grove_drivers/grove_ultrasonic_ranger",
+  "Writes": {}
+}]

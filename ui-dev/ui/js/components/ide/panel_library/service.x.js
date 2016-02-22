@@ -165,18 +165,18 @@ export default class Service extends ReactComponent {
           <i className={"fa fa-" + (icon ? icon : "cog")}/>
         </Col>
         <Overlay overlay={tooltip}>
-          <Col xs={7}>
+          <Col className="wrap-break" xs={7}>
             {name}
           </Col>
         </Overlay>
-        {!is_builtin &&
+        {!is_builtin && service.type === "hope_service" &&
           <Col className="text-center" xs={1}>
             <Link to={`/composer/${encodeURIComponent(service.id)}`}>
               <i className="fa fa-code" />
             </Link>
           </Col>
         }
-        {!is_builtin &&
+        {!is_builtin && service.type === "hope_service" &&
           <Col className="text-center" xs={1}
             onClick={e => e.stopPropagation()}>
             <Overlay ref="overlay" trigger="click" overlay={popover}>

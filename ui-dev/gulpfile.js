@@ -113,8 +113,8 @@ gulp.task("hope_html", ["wire_html"], function () {
     return gulp.src("ui/*.html")
         .pipe($.plumber())
         .pipe($.useref({searchPath: [".tmp", "ui"]}))
-        .pipe($.if("*.js", $.uglify()))
-        .pipe($.if("*.css", $.csso()))
+        .pipe($.if(RELEASE, $.if("*.js", $.uglify())))
+        .pipe($.if(RELEASE, $.if("*.css", $.csso())))
         .pipe($.plumber.stop())
         .pipe(gulp.dest("public"));
 });
