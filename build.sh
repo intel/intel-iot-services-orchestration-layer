@@ -29,7 +29,7 @@ node merge_deps.js $PROJS
 
 echo ">>> install npm packages"
 cd ./dist
-npm install
+npm -dd install
 cd -
 
 

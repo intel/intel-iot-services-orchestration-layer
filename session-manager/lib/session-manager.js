@@ -108,7 +108,7 @@ SessionManager.prototype.init$ = function() {
         tags: msg.tags,
         config: msg.config
       };
-      return Promise.resolve("")
+      Promise.resolve("")
       .then(function prepare_init() {
         if (!self.session_cache.has(id)) {
           check(action === "start", "sm", "the session isn't in the cache and action is not start", msg);
@@ -135,7 +135,8 @@ SessionManager.prototype.init$ = function() {
       })
       .catch(function(e) {
         log.warn("session_invoke_error", e, msg, topic, from_mnode_id);
-      });
+      })
+      .done();
     });
   }
 
@@ -397,56 +398,6 @@ SessionManager.prototype.clear_all_services$ = function() {
 SessionManager.prototype.reload_service$ = function(service_id) {
   log("reload the service", service_id);
   return this.service_cache.reload_service_with_init_destroy$(service_id);
-};
-
-/**
- * run hub script in a hub sandbox. usually init or destroy in hub wide
- * @param  {string} script_path script file path
- * @return {promise}             
- */
-SessionManager.prototype.run_hub_script$ = function(script_path) {
-  log("run_hub_script", script_path);
-  var fs = require("fs");
-  var vm = require("vm");
-  var self = this;
-  var sandbox = sb.create_hub_sandbox(self.service_cache.hub_shared,
-    B.path.resolve(script_path, ".."));
-  var context = fs.readFileSync(script_path);
-  var func_string = "(function(){\n" + context + "\n})";
-  var func_script = new vm.Script(func_string, 
-        {filename: script_path + "__wrap"});
-  return new Promise(function(resolve, reject) {
-    sandbox.done = function(value)
-    {
-      log("hub script done", script_path);
-      sandbox.fail = B.type.func_noop;
-      sandbox.done = B.type.func_noop;
-      resolve(value);
-    };
-
-    sandbox.fail = function(value)
-    {
-      log.warn("hub script fail", script_path);
-      sandbox.done = B.type.func_noop;
-      sandbox.fail = B.type.func_noop;
-      reject(value);
-    };
-
-    sandbox.throwEXC = function(value)
-    {
-      log.warn("hub script throw exception", value);
-      sandbox.fail(value);
-    };
-
-    try {
-      var f = func_script.runInNewContext(sandbox);
-      f();
-    } catch(e) {
-      log.warn("hub script catch exception", e);
-      sandbox.fail(e);
-    }
-    
-  });
 };
 
 // TODO:

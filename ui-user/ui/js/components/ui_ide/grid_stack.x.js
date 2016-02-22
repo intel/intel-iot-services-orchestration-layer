@@ -55,9 +55,15 @@ export default class Grid extends ReactComponent {
 
   remove_widget(w) {
     _.remove(this.widgets, w);
+    if (w.$hope_is_added) {
+      var dom = ReactDOM.findDOMNode(w);
 
-    var dom = ReactDOM.findDOMNode(w);
-    this.grid.remove_widget(dom, false);
+      // delete DOM node delayed, prevent React error
+      setTimeout(() => {
+        this.grid.remove_widget(dom);
+      }, 0);
+    }
+    w.$hope_is_added = false;
   }
 
   add_widget(w) {
@@ -102,16 +108,8 @@ export default class Grid extends ReactComponent {
     this.update_widgets();
   }
 
-  componentWillUnmount() {
-    setTimeout(()=> {
-      this.grid.destroy();
-    }, 0);
-   }
-
   componentDidUpdate() {
-    setTimeout(()=> {
-      this.update_widgets();
-    }, 0);
+    this.update_widgets();
   }
 
 
@@ -147,7 +145,7 @@ class Widget extends ReactComponent {
 
 
   constructor(props) {
-    super(props);
+    super();
 
     // ensure data is created
     $hope.app.stores.ui.data.create_widget(props.view.get_app_id(), props.widget.id);

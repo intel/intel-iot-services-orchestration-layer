@@ -11,7 +11,7 @@
   "name": "hope-ui-dev",
   "homepage": "",
   "description": "Frontend for Developers of IoT Services Orchestration Layer",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": ""

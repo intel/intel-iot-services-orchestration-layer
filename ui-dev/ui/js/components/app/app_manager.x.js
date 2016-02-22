@@ -24,11 +24,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
 import App from "./app.x";
+import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
 import Dialog from "../ide/dialog.x";
 import SearchBox from "./search_box.x";
-import Graph from "../../lib/graph";
 
 const LAST_MODIFIED = __("Last Modified");
 const LAST_CREATED = __("Last Created");
@@ -62,27 +61,6 @@ export default class AppManager extends ReactComponent {
     $hope.log("forceUpdate", "AppManager");
 
     switch(e.event) {
-      case "created":
-        var gdata = Graph.create({
-          name: "W1",
-          description: ""
-        }).$serialize();
-        var udata = {
-          id: $hope.uniqueId("UI_"),
-          name: "U1",
-          description: ""
-        };
-        $Q.all([
-          $hope.app.server.app.create_graph$(e.appid, gdata),
-          $hope.app.server.app.create_ui$(e.appid, udata)
-        ]).then(()=> {
-          var app = $hope.app.stores.app.get_app(e.appid);
-          app.graphs.push(gdata);
-          app.uis.push(udata);
-          this.forceUpdate();
-        });
-        return;
-
       case "removed":
         _.map($hope.app.stores.graph.views, v => {
           if (!v.get_app()) {

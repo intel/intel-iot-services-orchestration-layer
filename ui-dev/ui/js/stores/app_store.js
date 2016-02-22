@@ -115,7 +115,7 @@ class AppStore extends EventEmitter {
         return;
       }
       this.manager.create_app(data);
-      this.emit("app", {type: "app", event: "created", appid: data.id});
+      this.emit("app", {type: "app", event: "created"});
     });
   }
 

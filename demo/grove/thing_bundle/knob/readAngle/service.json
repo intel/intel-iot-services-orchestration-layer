@@ -1,0 +1,24 @@
+{
+  "name": "readValue",
+  "description": "read the angle value of the knob",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+      }]
+    },
+    "out": {
+      "ports": [{
+        "name": "value",
+        "type": "number"
+      }]
+    },
+    "config": [
+    {
+      "name": "access_token",
+      "type": "string",
+      "required": true
+    }]
+  },
+  "doc":"grove/knob.html#readValue"
+}

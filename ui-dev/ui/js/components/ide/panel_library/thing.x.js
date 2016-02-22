@@ -121,7 +121,7 @@ export default class Thing extends ReactComponent {
         <Col xs={1}/>
         <Col className="text-center" xs={1}><ExpandSign/></Col>
         <Overlay overlay={tooltip}>
-          <Col className="wrap-break" xs={9}>{name}</Col>
+          <Col xs={9}>{name}</Col>
         </Overlay>
         <Col xs={1} className="text-center"
             onClick={e => e.stopPropagation()}>

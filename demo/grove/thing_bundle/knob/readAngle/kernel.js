@@ -25,27 +25,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 var request = require("request");
-var pin = CONFIG.pin;
-var val;
-if(IN.on) {
-  val = 1;
-} else {
-  val = 0;
-}
-
-var url = "http://localhost:23456/set_digital/" + pin + "/" + val;
-console.log("request:", url);
-
-request(url, function(e,res,body) {
+var access_token = CONFIG.access_token;
+var url = "https://cn.iot.seeed.cc/v1/node/GroveRotaryAngleAnalog/angle?access_token=" + access_token;
+request.get(url, function(e, res, body) {
   if(e) {
-    console.log("request fail", e);
+    console.log("error in knob value:", e);
     sendERR(e);
-  } else if (body === "ok") {
-    console.log("request done!");
-    sendOUT({status : val == 1});
   } else {
-    console.log("request fail");
-    sendERR("fail");
+    console.log("knob value:", body);
+    sendOUT({
+      value:JSON.parse(body).angle
+    })
   }
 })
-

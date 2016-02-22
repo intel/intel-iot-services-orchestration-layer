@@ -39,8 +39,6 @@ var fs = require("fs");
 var vm = require("vm");
 var log = B.log.for_category("sm/service");
 
-var hub_shared = {};
-
 exports.create_service_cache = function(base_store)
 {
   return new ServiceCache(base_store);
@@ -50,7 +48,7 @@ function ServiceCache(base_store) {
   this.type = "ServiceCache";
   this.db = {};
   this.base_store = base_store;
-  this.hub_shared = hub_shared;
+  this.shared = {}; // hub-shared, because a hub usually only have one em/service-cache
 }
 
 ServiceCache.prototype.base = function(store) {
@@ -244,7 +242,7 @@ ServiceCache.prototype.create_servcie_cache_obj = function(service_obj) {
   var service_cache_obj = {};
   service_cache_obj = _.cloneDeep(service_obj);// set the items in service_obj
   service_cache_obj.shared = {};//2, set the service shared object
-  service_cache_obj.hub_shared = hub_shared;//3, set the hub shared object
+  service_cache_obj.hub_shared = this.shared;//3, set the hub shared object
   var scripts = {
     kernel_s: prepare_script(service_cache_obj, "kernel"),
     start_s : prepare_script(service_cache_obj, "start"),
@@ -262,17 +260,15 @@ ServiceCache.prototype.create_servcie_cache_obj = function(service_obj) {
 
 //TODO: support different type of service
 function prepare_script(service_cache_obj, action) {
-  var context;
-  var func_string;
-  var func_script;
   switch (service_cache_obj.type) {
     case "hope_service":
     case "beihai_service":
     case "oic_service":
     case "ui_service":
-    case "grove_semiauto_service":
       var filepath = B.path.join(service_cache_obj.path, action + ".js");
-
+      var context;
+      var func_string;
+      var func_script;
       //1. read the content of the file
       if (B.fs.file_exists(filepath)) {
         context = fs.readFileSync(filepath);
@@ -299,34 +295,7 @@ function prepare_script(service_cache_obj, action) {
       func_script = new vm.Script(func_string, 
         {filename: service_cache_obj.path + "__" + action});
       return func_script;
-    case "grove_auto_service":
 
-      //1. read the content of the prop in service_cache_obj
-      if (!_.isUndefined(service_cache_obj.js[action])) {
-        context = service_cache_obj.js[action];
-      }
-      else if (action === "kernel" || action === "after_resume") {
-        context = "";
-      }
-      else {
-        context = "done()";
-      }
-
-      //2 wrap the function
-      if (action === "kernel") {
-        func_string = "(function(IN, CONFIG){\n" + context + "\n})";
-      }
-      else if (action === "service_init" || action === "service_destroy") {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
-      }
-      else {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
-      }
-
-      //3 new vm.Script
-      func_script = new vm.Script(func_string, 
-        {filename: service_cache_obj.path + "__" + action});
-      return func_script;
   default:
     check(false, "sm", "not support the service type:", service_cache_obj.type);
   }

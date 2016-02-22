@@ -38,12 +38,14 @@ module.exports = function(config) {
   this.mnode = B.check(config.mnode, "hub", "Should have a mnode there");
   this.em = B.check(config.entity_manager, 
     "hub", "Should have a entity_manager to create");
+  B.check(config.thingbundle_path, "hub", "should have an thingbundle");
   this.config = config;
   // could be builtin (the built_in_hub of center) or others ...
   this.type = this.config.type || "normal";
   this.config_path = config.config_path;
   config.heartbeat = config.heartbeat || {};
   this.heartbeat_interval = config.heartbeat.interval || 60000;
+  this.thingbundle_path = B.path.abs(this.config.thingbundle_path, this.config_path);
   this.sm = config.session_manager;
 };
 
@@ -66,9 +68,6 @@ Hub.prototype.get_brief = function() {
 Hub.prototype.init$ = function() {
   var self = this;
   return Promise.resolve()
-  .then(function() {
-    return self._call_init_script$();
-  })
   .then(function() {
     return self._init_em$();
   })
@@ -98,22 +97,7 @@ Hub.prototype.init$ = function() {
 
 };
 
-Hub.prototype._call_init_script$ = function() {
-  var self = this;
-  if (_.isUndefined(self.config.init_script_path)) {
-    log("no init script");
-    return;
-  }
-  var init_script_path = B.path.abs(self.config.init_script_path, self.config_path);
-  if (!B.fs.file_exists(init_script_path)) {
-    log.warn("init script not found", init_script_path);
-    return;
-  }
-  log("call init script:", init_script_path);
-  return self.sm.run_hub_script$(init_script_path);
-};
-
-
+//TODO: we should support remote thing/spec discovery
 Hub.prototype._init_em$ = function() {
   var self = this;
   return Promise.resolve()
@@ -134,22 +118,12 @@ Hub.prototype._init_em$ = function() {
       id: "SpecBundle" + self.id,
       name: "default_bundle"
     };
-    //for hope-service
-    if (self.config.thingbundle_path) {
-      var thingbundle_path = B.path.abs(self.config.thingbundle_path, self.config_path);
-      tasks.push(self.em.thing__load_from_bundle$(thingbundle_path, spec_bundle, self.id));
-    }
+
+    tasks.push(self.em.thing__load_from_bundle$(self.thingbundle_path, spec_bundle, self.id));
     
     if (self.config.specbundle_path) {
       var specbundle_path = B.path.abs(self.config.specbundle_path, self.config_path);
       tasks.push(self.em.spec__load_from_localbundle$(specbundle_path));
-    }
-
-
-    if (self.config.grove_config) {
-      B.check(self.config.grove_config.grovebundle_path, "hub", "should have grove bundle");
-      self.config.grove_config.grovebundle_path = B.path.abs(self.config.grove_config.grovebundle_path, self.config_path);
-      tasks.push(self.em.thing__load_grove_thing_via_login$(self.config.grove_config, self.id));
     }
 
     return Promise.all(tasks);
@@ -177,25 +151,7 @@ Hub.prototype.leave$ = function() {
   })
   .then(function() {
     return self.destroy_related_webapp();
-  })
-  .then(function() {
-    return self._call_destroy_script$();
   });
-};
-
-Hub.prototype._call_destroy_script$ = function() {
-  var self = this;
-  if (_.isUndefined(self.config.destroy_script_path)) {
-    log("no destroy script");
-    return;
-  }
-  var destroy_script_path = B.path.abs(self.config.destroy_script_path, self.config_path);
-  if (!B.fs.file_exists(destroy_script_path)) {
-    log.warn("destroy script not found", destroy_script_path);
-    return;
-  }
-  log("call destroy script:", destroy_script_path);
-  return self.sm.run_hub_script$(destroy_script_path);
 };
 
 Hub.prototype.destroy_related_webapp = function() {

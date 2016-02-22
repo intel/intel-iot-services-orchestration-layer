@@ -1,0 +1,29 @@
+{
+  "name": "setColor",
+  "description": "set the color of the led strip, led_color is the 000000-FFFFFF",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "led_cnt",
+        "type": "number"
+      },
+      {
+        "name": "led_color",
+        "type": "string"
+      }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    },
+    "config": [
+    {
+      "name": "access_token",
+      "type": "string",
+      "required": true
+    }]
+  },
+  "doc":"grove/led_strip.html#serColor"
+}

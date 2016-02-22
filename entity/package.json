@@ -11,7 +11,7 @@
   "name": "hope-entity",
   "homepage": "",
   "description": "Entities libraries of IoT Services Orchestration Layer",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": ""
@@ -32,8 +32,7 @@
   "dependencies": {
     "eventemitter3": "^1.1.1",
     "glob": "^5.0.14",
-    "lodash": "^3.10.0",
-    "request": "^2.60.0"
+    "lodash": "^3.10.0"
   },
   "devDependencies": {
     "chai": "^3.0.0",

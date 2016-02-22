@@ -742,10 +742,3 @@ exports.remove_service_file$ = function(service_id, file_path, em) {
     return B.fs.rm(fullpath);
   });
 };
-
-
-
-exports.is_service_path = function(service_path) {
-  return B.fs.dir_exists(service_path) && 
-  B.fs.file_exists(B.path.join(service_path, "service.json"));
-}

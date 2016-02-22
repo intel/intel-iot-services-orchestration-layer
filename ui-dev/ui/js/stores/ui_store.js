@@ -38,26 +38,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import {EventEmitter} from "events";
 import ui_manager from "../lib/ui";
 
-function is_compatible(aobj, bobj) {
-  var bkeys = _.keys(bobj);
-  for (var i = 0; i < bkeys.length; i++) {
-    var a = aobj[bkeys[i]],
-        b = bobj[bkeys[i]];
-    if (typeof a !== typeof b) {
-      return false;
-    }
-    if (typeof a === "object") {
-      if (!is_compatible(a, b)) {
-        return false;
-      }
-    }
-    else if (a !== b) {
-      return false;
-    }
-  }
-  return true;
-}
-
 class WidgetData {
   constructor(app_id, widget_id) {
     this.app_id = app_id;
@@ -406,20 +386,11 @@ class UIView {
 
   change_widgets(items) {
     var ui = this.get_ui();
-    var modified = false;
-
     items.map(w => {
-      var o = ui.$get_widget(w.id);
-      if (!is_compatible(o, w)) {
-        _.merge(o, w);
-        modified = true;
-      }
+      _.merge(ui.$get_widget(w.id), w);
     });
-
-    if (modified) {
-      this.set_modified();
-      ui_store.emit("ui", {type: "widget", event: "widget/changed"});
-    } 
+    this.set_modified();
+    ui_store.emit("ui", {type: "widget", event: "widget/changed"});
   }
 
   //////////////////////////////////////////////////////////////////
