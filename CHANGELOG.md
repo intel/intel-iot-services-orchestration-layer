@@ -1,5 +1,9 @@
 Change Logs
 ===========================
+## v1.0.4
+* Add support for makeblock MeOrion board with Intel Edison
+* Various bug fixed
+
 ## v1.0.3
 
 * Add support for Grove starter Kit

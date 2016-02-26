@@ -8,8 +8,8 @@ echo "start center ..."
 ./run_demo center > center.log &
 sleep 2
 
-echo "start lattepanda hub ..."
-./run_demo lattepanda > lattepanda.log &
+echo "start orion ediosn hub ..."
+./run_demo orion > orion.log &
 sleep 10
 
 echo "visit ip:8080 for develop, ip:3000 for ui view"

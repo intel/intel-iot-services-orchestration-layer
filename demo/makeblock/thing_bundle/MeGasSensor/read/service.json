@@ -1,0 +1,24 @@
+{
+  "description":"read the gas sensor value",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "value",
+          "type": "number"
+        }]
+    },
+    "config": [
+      {
+        "name": "pin",
+        "type": "int",
+        "required": true
+      }
+    ]
+
+  }
+}

@@ -148,7 +148,7 @@
       "$type": "Hub",
       "$params": {
         "id": "$id",
-        "name" : "Edison Board A",
+        "name" : "Hub A",
         "config_path" : "$config_path",
         "mnode": "$mnode",
         "entity_manager": "$entity_manager",

@@ -1,0 +1,24 @@
+{
+  "description":"detect whether moves",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "bool",
+          "type": "boolean"
+        }]
+    },
+    "config": [
+      {
+        "name": "pin",
+        "type": "int",
+        "required": true
+      }
+    ]
+
+  }
+}

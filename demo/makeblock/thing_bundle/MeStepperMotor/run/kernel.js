@@ -24,62 +24,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-class Tabs extends ReactComponent {
-
-  constructor(props) {
-    super();
-
-    this.state = {
-      current: props.current || 0
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      current: nextProps.current || 0
+shared.motor.moveTo(IN.target);
+console.log("steppermotor run:", shared.motor.distanceToGo());
+shared.interval_obj = setInterval(function(){
+  if (0 === shared.motor.distanceToGo()) {
+    clearInterval(shared.interval_obj);
+    console.log("run done:", shared.motor.currentPosition(), shared.motor.distanceToGo());
+    sendOUT({
+      status: true
     });
+  } else {
+    shared.motor.run();
   }
-
-  set_active(idx, event) {
-    event.preventDefault();
-    if (this.state.current !== idx && _.isFunction(this.props.onActive)) {
-      this.props.onActive(idx);
-    }
-    this.setState({current: idx});
-  }
-
-  render() {
-    var tabs = _.filter(_.isArray(this.props.children) ? this.props.children : [this.props.children], x => x.type === Tab);
-
-    var items = _.map(tabs, (item, idx) => {
-      var title = item.props.title;
-      return (
-        <li key={title} className={"hope-tabs-item" + (this.state.current === idx ? " active" : "")}>
-          <a onClick={this.set_active.bind(this, idx)}>{title}</a>
-        </li>
-        );
-    }, this);
-
-    return (
-      <div>
-        <nav className="hope-tabs-navigation">
-          <ul className="hope-tabs-item-list">
-            {items}
-          </ul>
-        </nav>
-        <article className="hope-tabs-body">
-          {tabs[this.state.current]}
-        </article>
-      </div>
-    );
-  }
-}
-
-class Tab extends ReactComponent {
-
-  render() {
-    return <div>{this.props.children}</div>;
-  }
-}
-
-export default {Tabs, Tab};
+},0);

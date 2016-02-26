@@ -381,7 +381,7 @@ export default class WidgetDetails extends ReactComponent {
             </div>
           </div>
         </div>
-        <Tabs>
+        <Tabs current={this.$tab} onActive={(i)=> this.$tab = i}>
           <Tab title={__("Basic")}>
             { this.render_cfg(NAME_CFG) }
             { spec && _.map(spec.config, cfg => this.render_cfg(cfg)) }

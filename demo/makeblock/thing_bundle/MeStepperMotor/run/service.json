@@ -1,0 +1,35 @@
+{
+  "description":"move the motor",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "target",
+        "type": "int"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "status",
+          "type": "boolean"
+          }]
+    },
+    "config": [
+      {
+        "name": "pin",
+        "type": "int",
+        "required": true
+      }, {
+        "name": "MaxSpeed",
+        "type": "int",
+        "required": true,
+        "default" : 4000
+      }, {
+        "name": "Acceleration",
+        "type": "int",
+        "required": true,
+        "default" : 1000
+      }
+    ]
+
+  }
+}

@@ -148,12 +148,11 @@
       "$type": "Hub",
       "$params": {
         "id": "$id",
-        "name" : "Lattepanda Board",
+        "name" : "EdisonMeOrion",
         "config_path" : "$config_path",
         "mnode": "$mnode",
         "entity_manager": "$entity_manager",
         "thingbundle_path": "./thing_bundle",
-        "init_script_path": "./init.js",
         "session_manager": "$session_manager",
         "heartbeat": {
           "interval": 20000
