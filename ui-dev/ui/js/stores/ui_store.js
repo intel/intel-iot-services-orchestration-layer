@@ -38,6 +38,26 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import {EventEmitter} from "events";
 import ui_manager from "../lib/ui";
 
+function is_compatible(aobj, bobj) {
+  var bkeys = _.keys(bobj);
+  for (var i = 0; i < bkeys.length; i++) {
+    var a = aobj[bkeys[i]],
+        b = bobj[bkeys[i]];
+    if (typeof a !== typeof b) {
+      return false;
+    }
+    if (typeof a === "object") {
+      if (!is_compatible(a, b)) {
+        return false;
+      }
+    }
+    else if (a !== b) {
+      return false;
+    }
+  }
+  return true;
+}
+
 class WidgetData {
   constructor(app_id, widget_id) {
     this.app_id = app_id;
