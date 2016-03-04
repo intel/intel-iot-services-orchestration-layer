@@ -1,0 +1,7 @@
+{
+  "name": "App Developer",
+  "exclude": ["pic"],
+  "subdir": ["tutor", "example", "guide"]
+}
+
+

@@ -23,18 +23,42 @@
 <li><a href="#outport">Outport</a></li>
 <li><a href="#example">Example</a></li>
 </ul></li>
+<li><a href="#search">search</a><ul>
+<li><a href="#description-1">Description</a></li>
+<li><a href="#inport-1">Inport</a></li>
+<li><a href="#outport-1">Outport</a></li>
+<li><a href="#example-1">Example</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
 <h1 id="string-library"><a href="#string-library">String library</a></h1>
 <h2 id="concat"><a href="#concat">concat</a></h2>
 <h3 id="description"><a href="#description">Description</a></h3>
-<p><code>out</code> = <code>in1</code> + <code>in2</code> + <code>in...</code></p>
+<p>This service joins all the inport value and output the result string.</p>
 <h3 id="inport"><a href="#inport">Inport</a></h3>
-<p><code>in1</code>: Any</p>
-<p><code>in2</code>: Any</p>
+<p><code>in1</code>: String.</p>
+<p><code>in2</code>: String.</p>
 <h3 id="outport"><a href="#outport">Outport</a></h3>
-<p><code>out</code>: String</p>
+<p><code>out</code>: String. <code>out</code> = <code>in1</code> + <code>in2</code></p>
 <h3 id="example"><a href="#example">Example</a></h3>
+<p><code>in1</code>: “hello”</p>
+<p><code>in2</code>: “world”</p>
+<p><code>out</code> is “helloworld”</p>
+<h2 id="search"><a href="#search">search</a></h2>
+<h3 id="description-1"><a href="#description-1">Description</a></h3>
+<p>This service finding a string(<code>str2</code>) in a string(<code>str1</code>), output true if the text is found, else output false.</p>
+<h3 id="inport-1"><a href="#inport-1">Inport</a></h3>
+<p><code>str1</code>: String. The source string.</p>
+<p><code>str2</code>: String. The sub string.</p>
+<h3 id="outport-1"><a href="#outport-1">Outport</a></h3>
+<p><code>out</code>: Boolean. If <code>str1</code> includes <code>str2</code> output true, else output false.</p>
+<h3 id="example-1"><a href="#example-1">Example</a></h3>
+<p><code>str1</code>: helloworld</p>
+<p><code>str2</code>: low</p>
+<p><code>out</code> is true</p>
+<p><code>str1</code>: helloworld</p>
+<p><code>str2</code>: abc</p>
+<p><code>out</code>: false</p>
 </body>
 </html>

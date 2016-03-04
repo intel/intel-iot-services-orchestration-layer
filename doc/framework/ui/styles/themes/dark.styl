@@ -1,0 +1,103 @@
+/******************************************************************************
+Copyright (c) 2015, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+//////////////////////////////////////////////////////////////////
+// All colors are prefixed with $
+//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////
+// User Palette - Used to customize color of ports etc.
+// Each color has 3 slots - off, normal, on, from darker to lighter
+//////////////////////////////////////////////////////////////////
+$1      = rgb(220, 50, 47)    // red
+$1-off  = darken($1, 20%)      
+$1-on   = lighten($1, 20%)    
+
+$2      = rgb(231,57,129)     // magenta
+$2-off  = darken($2, 20%)      
+$2-on   = lighten($2, 20%)    
+
+$3      = rgb(254, 151, 32)   // orange
+$3-off  = darken($3, 20%)      
+$3-on   = lighten($3, 20%)    
+
+$4      = rgb(236,215,4)      // yellow
+$4-off  = darken($4, 20%)      
+$4-on   = lighten($4, 20%)    
+
+$5      = rgb(194,205,7)      // green
+$5-off  = darken($5, 20%)      
+$5-on   = lighten($5, 20%)    
+
+$6      = rgb(78,213,199)     // cyan
+$6-off  = darken($6, 20%)      
+$6-on   = lighten($6, 20%)    
+
+$7      = rgb(53,99,235)      // blue
+$7-off  = darken($7, 20%)      
+$7-on   = lighten($7, 20%)    
+
+$8      = rgb(174,130,255)    // violet
+$8-off  = darken($8, 20%)      
+$8-on   = lighten($8, 20%)    
+
+$9      = rgb(200, 200, 200)  // gray
+$9-off  = darken($9, 20%)      
+$9-on   = lighten($9, 20%)    
+
+
+
+
+//////////////////////////////////////////////////////////////////
+// System Palette - Used by HOPE itself, in addtion to User Palette
+//////////////////////////////////////////////////////////////////
+
+//----------------------------------------------------------------
+// Shared Colors
+//----------------------------------------------------------------
+
+// Background Palette
+// ordered from dark to light, 3 is the normal
+$bk-0   = #000
+$bk-1   = #111 
+$bk-2   = #1d1d1d           
+$bk-3   = #222              // normal
+$bk-4   = #333
+$bk-5   = #363636 
+$bk-6   = #555
+
+// Foreground Palette
+// ordered from dark to light, 3 is the normal
+$fg-0   = #555              // disabled
+$fg-1   = #888
+$fg-2   = #999
+$fg-3   = #aaa              // normal
+$fg-4   = #ddd
+$fg-5   = #eee
+$fg-6   = #fff              // highlight / hover etc.
+
+$fg-error = rgb(216, 35, 10)
+

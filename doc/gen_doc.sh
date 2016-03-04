@@ -25,3 +25,10 @@ for P in md/startkit/*.md; do
   H="${B%.md}.html"
   pandoc -c styles/style.css -s -S --self-contained --toc --data-dir=md/startkit -o html/startkit/$H $P
 done
+
+
+# app developer
+
+node framework/docproj.js md/app-dev html/app-dev
+
+

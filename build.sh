@@ -72,8 +72,25 @@ echo ">>> demo"
 rm -rf ./dist/node_modules/hope-demo/center/appbundle/*
 
 echo ">>> doc"
+cd ./doc
+./gen_doc.sh
+cd framework
+npm install
+NODE_ENV=production gulp build
+cd ../..
 mkdir ./dist/node_modules/doc
 cp -r ./doc/html ./dist/node_modules/doc/.
+
+
+# app developer
+APPDEV="./dist/node_modules/doc/html/app-dev/"
+
+mkdir ./tmp
+cp -r ./doc/framework/public/{css,fonts,images,js,index.html} ./tmp
+mv $APPDEV ./tmp/doc
+mv ./tmp $APPDEV
+
+
 
 echo ">>> scripts"
 cp -r ./build/* ./dist

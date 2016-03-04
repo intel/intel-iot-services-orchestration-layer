@@ -164,10 +164,13 @@ class View {
     search = search.trim().toLowerCase();
 
     function unmatch(o) {
-      if (o.obj.name.toLowerCase().indexOf(search) >= 0) {
+      if (o.name.toLowerCase().indexOf(search) >= 0) {
         return false;
       }
-      return o.obj.$name().toLowerCase().indexOf(search) < 0;
+      if (o.obj && o.obj.$name) {
+        return o.obj.$name().toLowerCase().indexOf(search) < 0;
+      }
+      return true;
     }
 
     if (!_.isString(search) || search.length === 0) { // clear search

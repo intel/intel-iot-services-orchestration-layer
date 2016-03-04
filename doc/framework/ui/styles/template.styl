@@ -1,0 +1,132 @@
+/******************************************************************************
+Copyright (c) 2015, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+// NOTE: Please do NOT use @extend in this file
+// This would be @import by other files, and maybe under a CSS Class
+// @extend only works at root level, and it would cause failure
+// Manually write CSS code
+// instead of use @extend
+
+blockquote {
+  border-left-width: 10px;
+  background-color: rgba(128,128,128,0.05);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 15px 20px;
+  border-left: 5px solid rgba(128,128,128,0.075);
+}
+
+.breadcrumb {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.sup-header {
+  padding: 10px 0px;
+  box-shadow: 0 0 2px #999;
+  background: #F5F5F5;
+}
+
+.grid-left {
+  float: left;
+  width: 260px;
+}
+
+.grid-right {
+  position: relative;
+  margin-left: 270px;
+}
+
+.doc-margin {
+  margin: 40px 0 20px 0;
+}
+
+.doc-menu {
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.doc-menu.active {
+  color: yellow;
+}
+
+.doc-book {
+  background-color: #337ab7;
+  padding: .2em .6em .3em;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+}
+
+.doc-chapter {
+  background-color: #5bc0de;
+  padding: .2em .6em .3em;
+  margin: 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+}
+
+#header {
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+
+#body {
+  margin-top: 80px;
+  padding-bottom: 40px;
+}
+
+#side-bar {
+  position: fixed;
+  top: 80px;
+  bottom: 0;
+  overflow: auto;
+
+  a:hover, a:focus {
+    text-decoration: none !important;
+  }
+}
+
+#doc-content {
+  padding: 0 0 20px 0;
+}
+
+#footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  padding: 1em 0;
+  text-align: center;
+  color: white;
+  height: 40px;
+}

@@ -1,0 +1,19 @@
+{
+  "name":"round",
+  "description":"Output the value of a number rounded to the nearest integer",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "in",
+        "type": "number"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "out",
+          "type": "int"
+        }]
+    }
+  },
+  "doc": "builtin/math.html#round"
+}

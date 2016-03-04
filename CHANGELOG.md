@@ -1,8 +1,14 @@
 Change Logs
 ===========================
-## v1.0.4
-* Add support for makeblock MeOrion board with Intel Edison
+## v1.0.5
+
+* Add the framework of document site
+* Docs updated
 * Various bug fixed
+
+## v1.0.4
+* add support for makeblock MeOrion board with Edison
+* various bug fixed
 
 ## v1.0.3
 
