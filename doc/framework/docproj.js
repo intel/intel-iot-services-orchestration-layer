@@ -29,7 +29,7 @@ var fs = require("fs");
 var util = require("util");
 var child_process = require("child_process");
 var _ = require("lodash");
-var fse = require("fs.extra");
+var ncp = require("ncp");
 
 var J = path.join;
 
@@ -121,7 +121,7 @@ function md2html(src, tgt, id) {
   }
 
   pkg.exclude.forEach(function(dir) {
-    fse.copyRecursive(J(src, dir), J(tgt, dir), _.noop);
+    ncp(J(src, dir), J(tgt, dir));
   });
 
   delete pkg.exclude;

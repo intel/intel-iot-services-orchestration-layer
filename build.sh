@@ -72,12 +72,12 @@ echo ">>> demo"
 rm -rf ./dist/node_modules/hope-demo/center/appbundle/*
 
 echo ">>> doc"
-cd ./doc
-./gen_doc.sh
-cd framework
+cd ./doc/framework
 npm install
 NODE_ENV=production gulp build
-cd ../..
+cd ..
+./gen_doc.sh
+cd ..
 mkdir ./dist/node_modules/doc
 cp -r ./doc/html ./dist/node_modules/doc/.
 
