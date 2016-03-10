@@ -111,7 +111,7 @@ gulp.task("doc_image", function() {
 });
 
 gulp.task("fonts", function () {
-    return gulp.src(["node_modules/bootstrap/fonts/*", "node_modules/font-awesome/fonts/*"])
+    return gulp.src("node_modules/bootstrap/fonts/*")
         .pipe($.flatten())
         .pipe(gulp.dest("public/fonts"));
 });

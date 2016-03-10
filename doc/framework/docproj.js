@@ -96,11 +96,11 @@ function md2html(src, tgt, id) {
 
   if (md.length > 0) {
     var srcs = md.map(function(m) {
-      return J(src, m);
+      return '"' + J(src, m) + '"';
     });
 
     try {
-      var cmd = "pandoc -o " + J(tgt, "index.html ") + srcs.join(" ");
+      var cmd = "pandoc -o \"" + J(tgt, "index.html\" ") + srcs.join(" ");
       //console.log(cmd);
       child_process.execSync(cmd);
     }

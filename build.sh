@@ -1,8 +1,20 @@
 #!/bin/bash
 
+clean="yes"
+doc="yes"
 
-# by default, we do npm cache first
-if [ "x$1" != "xnoclean" ]; then
+for opt in $*; do
+  case $opt in
+    noclean) clean="no"
+    ;;
+    nodoc) doc="no"
+    ;;
+    *) echo "Unknown option: $opt"
+  esac
+done
+
+# by default, we clean npm cache first
+if test "$clean" = "yes"; then
   echo ">>> cleaning npm cache ..."
   echo "    You may use './build.sh noclean' to avoid cleaning npm cache"
   npm cache clean
@@ -72,12 +84,18 @@ echo ">>> demo"
 rm -rf ./dist/node_modules/hope-demo/center/appbundle/*
 
 echo ">>> doc"
-cd ./doc/framework
-npm install
-NODE_ENV=production gulp build
-cd ..
-./gen_doc.sh
-cd ..
+
+if test "$doc" = "yes"; then
+  cd ./doc/framework
+  npm install
+  NODE_ENV=production gulp build
+  cd ..
+  ./gen_doc.sh
+  cd ..
+else
+  rm -f ./dist/start_doc.sh
+fi
+
 mkdir ./dist/node_modules/doc
 cp -r ./doc/html ./dist/node_modules/doc/.
 
