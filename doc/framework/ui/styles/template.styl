@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Manually write CSS code
 // instead of use @extend
 
+
 blockquote {
   border-left-width: 10px;
   background-color: rgba(128,128,128,0.05);
@@ -39,15 +40,33 @@ blockquote {
   border-left: 5px solid rgba(128,128,128,0.075);
 }
 
-.breadcrumb {
-  padding: 0 !important;
-  margin: 0 !important;
+.nav > li {
+  margin: 20px 16px;
 }
 
+.navbar-brand,
+.navbar-nav > li > a {
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .25);
+}
+
+.nav > li > a:hover {
+  background-color: $top-navbar-active-bg;
+}
+
+.nav > li.active > a,
+.nav > li.active > a:hover,
+.nav > li.active > a:focus {
+  color: #fff;
+  background-color: $top-navbar-active-bg;
+}
+
+
 .sup-header {
-  padding: 10px 0px;
+  height: 60px;
+  padding: 20px 0px;
   box-shadow: 0 0 2px #999;
-  background: #F5F5F5;
+  background: $sup-header-bg;
 }
 
 .grid-left {
@@ -57,7 +76,7 @@ blockquote {
 
 .grid-right {
   position: relative;
-  margin-left: 270px;
+  margin-left: 285px;
 }
 
 .doc-margin {
@@ -65,31 +84,72 @@ blockquote {
 }
 
 .doc-menu {
+  white-space: nowrap;
   vertical-align: baseline;
   border-radius: .25em;
 }
 
-.doc-menu.active {
-  color: yellow;
+.doc-menu.doc-book.active {
+  background-color: $left-navbar-level-1-active-bg;
+  border: $left-navbar-level-1-active-border;
+  color: $left-navbar-level-1-active-color;
+}
+
+.doc-menu.doc-chapter.active {
+  background-color: $left-navbar-level-2-active-bg;
+  border: $left-navbar-level-2-active-border;
+  color: $left-navbar-level-2-active-color;
+}
+
+.doc-menu.doc-section.active {
+  background-color: $left-navbar-level-3-active-bg;
+  color: $left-navbar-level-3-active-color;
 }
 
 .doc-book {
-  background-color: #337ab7;
-  padding: .2em .6em .3em;
+  background-color: $left-navbar-level-1-bg;
+  border: $left-navbar-level-1-border;
+  color: $left-navbar-level-1-color;
+  padding: .4em .6em .4em;
   font-size: 24px;
   font-weight: bold;
   line-height: 1;
-  color: #fff;
 }
 
 .doc-chapter {
-  background-color: #5bc0de;
-  padding: .2em .6em .3em;
-  margin: 10px 0;
+  background-color: $left-navbar-level-2-bg;
+  border: $left-navbar-level-2-border;
+  color: $left-navbar-level-2-color;
+  padding: .4em .6em .4em;
+  margin: 6px 0;
   font-size: 18px;
   font-weight: bold;
   line-height: 1;
-  color: #fff;
+}
+
+.icon-right {
+  color: $left-navbar-level-2-icon-color;
+  font-size: 10px;
+  float: right;
+  top: 4px;
+}
+
+.icon-right:hover {
+  color: $left-navbar-level-2-icon-hover-color;
+  cursor: pointer;
+}
+
+.doc-section {
+  background-color: $left-navbar-level-3-bg;
+  color: $left-navbar-level-3-color;
+  padding: 8px 0px 4px 30px;
+  margin: 4px 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.section-list a:not(:first-child) div {
+  border-top: 1px dashed #ccc;
 }
 
 #header {
@@ -99,17 +159,29 @@ blockquote {
   left: 0;
   right: 0;
   overflow: hidden;
+  background-color: $header-bg;
+}
+
+#top-navbar {
+  height: 80px;
+}
+
+#logo {
+  margin-top: 20px;
+  height: 40px;
 }
 
 #body {
-  margin-top: 80px;
-  padding-bottom: 40px;
+  background-color: $body-bg;
+  margin-top: 160px;
+  padding-bottom: $footer-height;
 }
 
 #side-bar {
   position: fixed;
-  top: 80px;
-  bottom: 0;
+  top: 150px;
+  padding-right: 10px;
+  bottom: $footer-height;
   overflow: auto;
 
   a:hover, a:focus {
@@ -117,8 +189,36 @@ blockquote {
   }
 }
 
+#doc-title {
+  text-align: center;
+}
+
 #doc-content {
-  padding: 0 0 20px 0;
+  padding-bottom: 10px;
+
+  img {
+    max-width: 100%;
+  }
+
+  h2 {
+    color: #2388db;
+  }
+
+  div.figure {
+    text-align: center;
+  }
+
+  .btn {
+    background-color: $content-navbtn-bg;
+    color: $content-navbtn-color;
+    border: $content-navbtn-border;
+  }
+
+  .btn.disabled {
+    background-color: $content-navbtn-disabled-bg;
+    color: $content-navbtn-disabled-color;
+    border: $content-navbtn-disabled-border;
+  }
 }
 
 #footer {
@@ -128,5 +228,8 @@ blockquote {
   padding: 1em 0;
   text-align: center;
   color: white;
-  height: 40px;
+  height: $footer-height;
+  background-color: $footer-bg;
+
+  padding-top: 20px;
 }

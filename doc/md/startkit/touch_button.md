@@ -18,7 +18,7 @@ hen triggered, detect whether the button is touched. If so, output true, otherwi
 
 `bool`: boolean. true means it is touched, otherwise, false.
 
-### 样例
+### Example
 
 ![](./pic/touch_buzz.jpg)
 

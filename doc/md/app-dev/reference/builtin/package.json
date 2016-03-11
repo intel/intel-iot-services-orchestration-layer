@@ -1,0 +1,60 @@
+{
+  "name": "Builtin Services",
+  "rel-dir": "../../../builtin",
+  "rel-scan-regexp": "^\\#\\#\\s(.+)\\n",
+  "rel-children": [{
+    "name": "email",
+    "files": "email.md",
+    "scan": true
+  }, {
+    "name": "weibo",
+    "files": "weibo.md",
+    "scan": true
+  }, {
+    "name": "counter",
+    "files": "counter.md",
+    "scan": true
+  }, {
+    "name": "flow control",
+    "files": "flow.md",
+    "scan": true
+  }, {
+    "name": "logical operator",
+    "files": ["logic_compare.md", "logic_operation.md"],
+    "children": [{
+      "id": "eq", "name": "operator =="
+    }, {
+      "id": "gt", "name": "operator >"
+    }, {
+      "id": "gte", "name": "operator >="
+    }, {
+      "id": "lt", "name": "operator <"
+    }, {
+      "id": "lte", "name": "operator <="
+    }, "and", "not", "or"]
+  }, {
+    "name": "math",
+    "files": "math.md",
+    "scan": true
+  }, {
+    "name": "string",
+    "files": "string.md",
+    "scan": true
+  }, {
+    "name": "timer",
+    "files": "timer.md",
+    "scan": true
+  }, {
+    "name": "user defined",
+    "files": "user_defined.md",
+    "children": [{
+      "id": "f", "name": "func"
+    }]
+  }, {
+    "name": "Web camera",
+    "files": "webcamera.md",
+    "scan": true
+  }]
+}
+
+

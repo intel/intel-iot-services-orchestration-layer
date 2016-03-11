@@ -1,0 +1,63 @@
+{
+  "name": "Starter Kits",
+  "rel-dir": "../../../startkit",
+  "rel-scan-regexp": "^\\#\\#\\s(.+)\\n",
+  "rel-children": [{
+    "name": "Button",
+    "files": "button.md",
+    "scan": true
+  }, {
+    "name": "Buzzer",
+    "files": "buzz.md",
+    "scan": true
+  }, {
+    "name": "Fire Sensor",
+    "files": "fire_sensor.md",
+    "scan": true
+  }, {
+    "name": "Knob",
+    "files": "knob.md",
+    "scan": true
+  }, {
+    "name": "LCD Keyboard",
+    "files": "lcd_keyboard.md",
+    "scan": true
+  }, {
+    "name": "led",
+    "files": "led.md",
+    "scan": true
+  }, {
+    "name": "Light Sensor",
+    "files": "light_sensor.md",
+    "scan": true
+  }, {
+    "name": "Moisture Sensor",
+    "files": "moisture_sensor.md",
+    "scan": true
+  }, {
+    "name": "Motion Sensor",
+    "files": "motion_sensor.md",
+    "scan": true
+  }, {
+    "name": "Relay",
+    "files": "relay.md",
+    "scan": true
+  }, {
+    "name": "Servo",
+    "files": "servo.md",
+    "scan": true
+  }, {
+    "name": "Sound Sensor",
+    "files": "sound_sensor.md",
+    "scan": true
+  }, {
+    "name": "Thermometer",
+    "files": "temperature.md",
+    "scan": true
+  }, {
+    "name": "Touch Button",
+    "files": "touch_button.md",
+    "scan": true
+  }]
+}
+

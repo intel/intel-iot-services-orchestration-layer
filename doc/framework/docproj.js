@@ -50,6 +50,112 @@ function check_pandoc() {
   }
 }
 
+function rel2html(src, tgt, pkg, child) {
+  var relp = tgt.replace(htmldir, "");
+  var reldir = pkg["rel-dir"];
+  var files = _.isString(child.files) ? [child.files] : child.files;
+  var id = child.id || child.name;
+  
+  // combine all md
+  var md = "";
+  files.forEach(function(f) {
+    var p = J(src, J(reldir, f));
+    md = md + "\n\n\n" + fs.readFileSync(p, "utf-8");
+  });
+
+  var pics = [];
+
+  // replace the prefix of path, search ![]( IMAGE_FILE_PATH )
+  var rximg = /\!\[\]\(([^\)]+)/gm;
+  var s;
+  while ((s = rximg.exec(md)) !== null) {
+    pics.push(s[1]);
+  }
+  pics = _.uniq(pics);
+
+  pics.forEach(function(f) {
+    var p = J(src, J(reldir, f));
+    var t = J(tgt, path.basename(f));
+
+    if (!fs.existsSync(p)) {
+      console.error("File not found:", p);
+      return;
+    }
+
+    if (fs.existsSync(t)) {
+      fs.unlinkSync(t);
+    }
+    fs.linkSync(p, t);
+
+    var oldstr = "![](" + f;
+    var newstr = "![](./doc" + relp + "/" + path.basename(f);
+    md = md.split(oldstr).join(newstr);
+  });
+
+  var children = [];
+
+  // get all the service's name, starts with ##
+  if (child.scan) {
+    var relscrex = pkg["rel-scan-regexp"];
+    var rex = _.isString(child.scan) ? child.scan : child.scan === true && relscrex ? relscrex : "^\#\#\s(.+)\\n";
+    var hashhash = new RegExp(rex, "gm");
+    var s;
+    while ((s = hashhash.exec(md)) !== null) {
+      var name = s[1].trim();
+      children.push({
+        id: name,
+        name: name,
+        href: name
+      });
+    }
+  }
+
+  if (_.isArray(child.children)) {
+    child.children.forEach(function (c) {
+      var id, name, href;
+      if (_.isString(c)) {
+        id = name = href = c;
+      }
+      else {
+        id = c.id || c.name;
+        name = c.name || c.id;
+        href = c.href || c.id || c.name;
+      }
+      children.push({
+        id: id,
+        name: name,
+        href: href
+      });
+    });
+  }
+
+  tgt = J(tgt, id);
+  if (!fs.existsSync(tgt)) {
+    fs.mkdirSync(tgt);
+  }
+
+  // save as tmp file, and invoke pandoc convert to HTML
+  var tmp = J(".", Date.now() + ".md");
+  fs.writeFileSync(tmp, md, "utf-8");
+
+  try {
+    var cmd = "pandoc -o \"" + J(tgt, "index.html\" ") + tmp;
+    //console.log(cmd);
+    child_process.execSync(cmd);
+  }
+  catch(e) {
+    console.error(e)
+  }
+  fs.unlinkSync(tmp);
+
+  return {
+    id: id,
+    name: child.name,
+    doc: true,
+    children: children
+  };
+}
+
 function md2html(src, tgt, id) {
   var pkg = {
     exclude: [],
@@ -79,8 +185,6 @@ function md2html(src, tgt, id) {
     }
 
     var p = J(src, entry);
-    //console.log(p);
-
     var stat = fs.statSync(p);
     if (stat.isDirectory()) {
       subdir.push(entry);
@@ -123,6 +227,19 @@ function md2html(src, tgt, id) {
   pkg.exclude.forEach(function(dir) {
     ncp(J(src, dir), J(tgt, dir));
   });
+
+  var relchildren = pkg["rel-children"];
+  if (_.isArray(relchildren) && relchildren.length > 0) {
+    var children = pkg.children || [];
+
+    relchildren.forEach(function(child) {
+      children.push(rel2html(src, tgt, pkg, child));
+    });
+
+    pkg.children = children;
+    delete pkg["rel-children"];
+    delete pkg["rel-dir"];
+  }
 
   delete pkg.exclude;
   delete pkg.subdir;

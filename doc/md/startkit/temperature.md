@@ -18,7 +18,7 @@ measure and report the temperature value (centi-degree)
 
 `value`: number. the temperature (centi-degree)
 
-### 样例
+### Example
 
 ![](./pic/temp_lcd.jpg)
 

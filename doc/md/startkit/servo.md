@@ -16,7 +16,7 @@ let servo to rotate some certain angle (0-180).
 
 ### Output
 
-`status`: boolean. if secceeds, output true.
+`status`: boolean. if succeeds, output true.
 
 ### Example
 

@@ -20,5 +20,6 @@
         "required": true
       }
     ]
-  }
+  },
+  "doc": "lattepanda/servo.html#set"
 }

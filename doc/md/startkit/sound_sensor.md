@@ -19,7 +19,7 @@ measure the ambient sound volume
 
 `value`: number. the volume of the sound
 
-### 样例
+### Example
 
 ![](./pic/sound_lcd.jpg)
 

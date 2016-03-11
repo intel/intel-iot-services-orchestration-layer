@@ -13,5 +13,6 @@
         "type": "boolean"
       }]
     }
-  }
+  },
+  "doc": "lattepanda/lcd.html#set"
 }

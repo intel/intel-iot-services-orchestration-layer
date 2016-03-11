@@ -280,7 +280,7 @@ Hub.prototype.define_rpc$ = function() {
   return mnode.enable_rpc$()
   .then(function() {
     mnode.define_rpc("add_hope_thing", function(thing) {
-      return self.em.thing__add_hope_thing$(thing, self.config.thingbundle_path)
+      return self.em.thing__add_hope_thing$(thing, B.path.abs(self.config.thingbundle_path, self.config_path))
       .then(function(data) {
         return self._prepare_emchanged_data(data);
       });

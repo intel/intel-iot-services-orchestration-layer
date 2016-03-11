@@ -8,7 +8,6 @@
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
         <!-- build:css css/vendor.css -->
-        <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.css" />
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.css" />
         <!-- endbuild -->
@@ -25,16 +24,14 @@
     <body class="doc-theme-dark">
         <!-- HEADER -->
         <div id="header">
-            <div class="navbar-inverse">
-                <div class="container navbar-inverse">
-                    <img class="brand navbar-brand" src="images/logo.png">
-                    <ul id="top-navbar" class="nav navbar-nav nav-pills">
-                      <li class="active"><a href="/">Home</a></li>
+            <div class="container">
+                <img id="logo" src="images/logo.png">
+                <ul id="top-navbar" class="nav navbar-nav nav-pills navbar-right">
+                  <li><a href="/">Home</a></li>
 
-                      <!-- DOC BOOK -->
+                  <!-- DOC BOOK -->
 
-                    </ul>
-                </div>
+                </ul>
             </div>
 
             <div class="sup-header">
@@ -70,7 +67,7 @@
         </div>
 
         <!-- FOOTER -->
-        <div id="footer" class="navbar-inverse">
+        <div id="footer">
             Copyright (C) 2015-2016 Intel, ALL RIGHTS RESERVED.
         </div>
 

@@ -19,5 +19,6 @@
         "required": true
       }
     ]
-  }
+  },
+  "doc": "lattepanda/general.html#analogRead"
 }

@@ -1,6 +1,6 @@
 {
   "name": "hope-doc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Doc of IoT Services Orchestration Layer",
   "main": "index.js",
   "scripts": {

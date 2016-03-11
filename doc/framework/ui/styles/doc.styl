@@ -34,9 +34,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   @import "./template"
 }
 
-@import "./themes/light"
+@import "./themes/blue"
 
-.doc-theme-light {
+.doc-theme-blue {
   @import "./template"
 }
 
@@ -46,14 +46,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 body {
-  background: #f3f3f3 !important;
   position: relative;
   min-height: 100%;
   width: 100%;
 }
 
-#doc-content img {
-  max-width: 100%;
+h1 {
+  margin-top: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #eee;
 }
 
 //////////////////////////////////////////////////////////////////
@@ -69,4 +70,41 @@ body {
 .container, .container-fluid {
   padding-left: 0 !important
   padding-right: 0 !important
+}
+
+.breadcrumb {
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: inherit !important;
+}
+
+.breadcrumb > li + li:before {
+  padding: 0 5px;
+  color: #aaa;
+  content: ">";
+}
+
+.navbar-nav > li > a {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.center {
+  text-align: center;
+}
+
+.right {
+  text-align: right;
+}
+
+.margin-top {
+  margin-top: 10px;
+}
+
+.margin-left {
+  margin-left: 10px;
+}
+
+.margin-right {
+  margin-right: 10px;
 }

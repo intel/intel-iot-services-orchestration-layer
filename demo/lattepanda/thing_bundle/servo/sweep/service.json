@@ -8,7 +8,7 @@
     },
     "out": {
       "ports": [{
-        "name": "bool",
+        "name": "status",
         "type": "boolean"
       }]
     },
@@ -19,5 +19,6 @@
         "required": true
       }
     ]
-  }
+  },
+  "doc": "lattepanda/servo.html#sweep"
 }
