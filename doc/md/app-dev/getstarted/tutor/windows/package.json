@@ -1,6 +1,7 @@
 {
   "name": "Windows",
-  "exclude": []
+  "navigator": true,
+  "entry_message": "Enter the Tutorial"
 }
 
 

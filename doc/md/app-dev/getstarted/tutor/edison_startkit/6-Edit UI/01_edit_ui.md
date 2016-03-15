@@ -4,6 +4,6 @@
 
 ![](./doc/pic/startkit/create_ui.gif)  
 
-- Binding UI's data scource
+- Binding UI's data source
  
  ![](./doc/pic/startkit/binding_ui.gif)

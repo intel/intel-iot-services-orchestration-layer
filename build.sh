@@ -101,7 +101,7 @@ cp -r ./doc/html ./dist/node_modules/doc/.
 
 
 # app developer
-APPDEV="./dist/node_modules/doc/html/app-dev/"
+APPDEV="./dist/node_modules/doc/html/app-dev"
 
 mkdir ./tmp
 cp -r ./doc/framework/public/{css,fonts,images,js,index.html} ./tmp

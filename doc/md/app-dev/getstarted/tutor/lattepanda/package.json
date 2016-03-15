@@ -1,6 +1,7 @@
 {
   "name": "LattePanda(Win10)",
-  "exclude": []
+  "navigator": true,
+  "entry_message": "Enter the Tutorial"
 }
 
 

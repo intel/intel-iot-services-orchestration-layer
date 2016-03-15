@@ -52,6 +52,8 @@ As mentioned, Node.js >=0.12 need to be installed first. After that, run followi
 
 *NOTE* As the setup and the following build stage heavily uses NPM, it should be connected to internet and do please configure NPM correctly if you are behind a proxy. You may use `npm config edit` and then configure the related proxy items.
 
+*NOTE* To build optional doc system, we need to install pandoc >= v1.16.0.2 at first, see [Pandoc](http://pandoc.org/installing.html) for details.
+
 ```shell
     # If your Node.js isn't installed by NVM, you might need sudo to run this
 
@@ -67,9 +69,11 @@ Development of each projects are basically same as normal node.js projects. Howe
 
 ### Build
 
-To build, simply run
+To build basic iSOL without doc system, simply run
 
-    ./build.sh
+```shell
+    ./build.sh nodoc
+```
 
 All necessary stuff would be built into `./dist` which could be immediately used anywhere.
 
