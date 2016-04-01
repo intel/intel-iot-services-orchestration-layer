@@ -1,0 +1,18 @@
+{
+  "description":"set the level-angle of the camera-holder",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "angle",
+        "type": "number"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  },
+  "doc": "tank/holder.html#horizon"
+}

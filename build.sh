@@ -26,7 +26,7 @@ if [ ! -e dist/node_modules ]; then
   mkdir -p dist/node_modules
 fi
 
-PROJS="base center entity entity-store hub hub-center-shared message session-manager store workflow demo"
+PROJS="base center entity entity-store http-broker hub hub-center-shared message session-manager store workflow demo"
 
 for P in $PROJS; do
   echo ">>> copying $P"
@@ -101,16 +101,10 @@ cp -r ./doc/html ./dist/node_modules/doc/.
 
 
 # app developer
-APPDEV="./dist/node_modules/doc/html/app-dev"
-
-mkdir ./tmp
-cp -r ./doc/framework/public/{css,fonts,images,js,index.html} ./tmp
-mv $APPDEV ./tmp/doc
-mv ./tmp $APPDEV
-
+cp -r ./doc/framework/public/{css,fonts,images,img,js,index.html} ./dist/node_modules/doc/html/app-dev/.
 
 
 echo ">>> scripts"
 cp -r ./build/* ./dist
-chmod ugo+x ./dist/center ./dist/hub ./dist/run_demo ./dist/start_edison_demo.sh ./dist/start_mock_demo.sh
+chmod ugo+x ./dist/center ./dist/hub ./dist/run_demo ./dist/start_edison_demo.sh ./dist/start_mock_demo.sh ./dist/start_doc.sh
 

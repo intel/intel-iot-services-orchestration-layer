@@ -161,6 +161,20 @@ exports.read_json = function(filename) {
   return fse.readJsonSync(filename);
 };
 
+
+var stripJsonComments = require("strip-json-comments");
+/**
+ * read json file and json has comments inside
+ * @param  {String} filename full path of the json file
+ * @return {Object}          plain_object
+ */
+exports.read_json_with_comments = function(filename) {
+  // the output of readFileSync is a buffer, need converted to string
+  // as strip takes string and uses its methods
+  return JSON.parse(stripJsonComments(fs.readFileSync(filename).toString()));
+};
+
+
 /**
  * write plain_object to a json file 
  * @param  {String} filename full path of the json file

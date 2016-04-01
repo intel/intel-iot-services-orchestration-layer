@@ -134,18 +134,21 @@ Center.prototype.leave$ = function() {
     tasks.push(self.mnode.clean_accepts$());
     return Promise.all(tasks);
   }).then(function() {
-    self.destroy_related_webapp();
+    return self.destroy_related_webapp$();
+  }).finally(function() {
+    return self.mnode.dispose$();
   });
 };
 
 Center.prototype.destroy_related_webapp = function() {
+  var all = [];
   if (this.config.user_web_app) {
-    this.config.user_web_app.$destroy();
+    all.push(this.config.user_web_app.$destroy());
   }
   if (this.config.dev_web_app) {
-    this.config.dev_web_app.$destroy();
+    all.push(this.config.dev_web_app.$destroy());
   }
-  this.mnode.destroy_its_webapp();
+  return Promise.all(all);
 };
 
 Center.prototype.on_hub_claimed = function(hub_info) {
@@ -361,9 +364,8 @@ Center.prototype.workflow_start$ = function(graph_id, tracing) {
       // The specs we got from database is an array
       // However, the engine expects a hashtable for the specs 
       // so need index it first
-      return self.workflow_engine.start$(graph, 
-        _.indexBy(specs, "id"), tracing).then(function() {
-        });
+      return self.workflow_engine.start$(graph,
+        _.keyBy(specs, "id"), tracing);
     });
   });
 };

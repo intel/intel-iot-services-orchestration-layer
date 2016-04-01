@@ -70,7 +70,7 @@ var AppHome = React.createClass({
       return $hope.notify("error", __("Invalid workflow name"));
     }
     var app = $hope.app.stores.app.get_app(this.state.app.id);
-    if (_.find(app.graphs, "name", name) || $hope.app.stores.graph.find_view(this.state.app.id, name)) {
+    if (_.find(app.graphs, ["name", name]) || $hope.app.stores.graph.find_view(this.state.app.id, name)) {
       return $hope.notify("error", __("This name already exists"));
     }
     // We directly create an graph object and then transit
@@ -100,9 +100,9 @@ var AppHome = React.createClass({
       if (_.isEmpty(app.graphs)) {
         return [];
       }
-      return $hope.app.server.graph.status$(_.pluck(app.graphs, "id"));
+      return $hope.app.server.graph.status$(_.map(app.graphs, "id"));
     }).then((sts) => {
-      var working = _.pluck(_.filter(sts, "status", "Working"), "graph");
+      var working = _.map(_.filter(sts, ["status", "Working"]), "graph");
       this.setState({
         app: app,
         working: working

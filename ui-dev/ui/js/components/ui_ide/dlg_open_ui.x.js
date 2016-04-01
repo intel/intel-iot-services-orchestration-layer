@@ -67,7 +67,7 @@ export default class DlgOpenUI extends ReactComponent {
   render_app(app, all_others) {
     var uis = [];
     _.forEach(app.uis, ui => {
-      if (all_others || !_.find($hope.app.stores.ui.views, "id", ui.id)) {
+      if (all_others || !_.find($hope.app.stores.ui.views, ["id", ui.id])) {
         uis.push(
           <div className={"hv-center hope-open-dialog-item" + (this.state.selected_id === ui.id ? " selected" : "")}
               key={ui.id}

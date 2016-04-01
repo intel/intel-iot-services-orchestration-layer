@@ -474,7 +474,7 @@ class Node {
   $is_added_port(name, type) {
     var io = type || "in";
     var spec = this.$get_spec();
-    return !(spec && spec[io] && spec[io].ports && _.findIndex(spec[io].ports, "name", name) >= 0);
+    return !(spec && spec[io] && spec[io].ports && _.findIndex(spec[io].ports, ["name", name]) >= 0);
   }
 
   $get_name() {
@@ -745,7 +745,7 @@ export default class Graph {
 
   // return the removed obj
   $remove(type, id) {
-    $hope.check(_.contains(["node", "edge", "tag"], type),
+    $hope.check(_.includes(["node", "edge", "tag"], type),
       "Graph/remove", "Such type doesn't support remove: ", type);
     var key = type + "s";
     var ret = this["$" + key + "_index"][id];
@@ -768,7 +768,7 @@ export default class Graph {
 
   // add the already created obj (maybe removed just now)
   $add(o) {
-    $hope.check(_.contains(["node", "edge", "tag"], o.$type),
+    $hope.check(_.includes(["node", "edge", "tag"], o.$type),
       "Graph/add", "Such type doesn't support add: ", o);
     var key = o.$type + "s";
     $hope.check(!this["$" + key + "_index"][o.id], "Graph/add",

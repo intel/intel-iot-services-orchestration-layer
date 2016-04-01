@@ -110,6 +110,11 @@ gulp.task("doc_image", function() {
         .pipe(gulp.dest("public/images"));
 });
 
+gulp.task("fancybox_image", function() {
+    return gulp.src("node_modules/fancybox/dist/img/**/*")
+        .pipe(gulp.dest("public/img"));
+});
+
 gulp.task("fonts", function () {
     return gulp.src("node_modules/bootstrap/fonts/*")
         .pipe($.flatten())
@@ -122,7 +127,7 @@ gulp.task("clean", function () {
         { read: false }).pipe($.rimraf());
 });
 
-gulp.task("build", ["doc_css", "doc_js", "doc_html", "doc_image", "fonts"], function() {
+gulp.task("build", ["doc_css", "doc_js", "doc_html", "doc_image", "fancybox_image", "fonts"], function() {
 });
 
 gulp.task("watch_js", make_bundle(true)); // rebundle in case any dep changed

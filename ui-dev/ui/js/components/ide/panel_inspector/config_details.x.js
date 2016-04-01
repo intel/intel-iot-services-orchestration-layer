@@ -298,7 +298,7 @@ export default class ConfigDetails extends ReactComponent {
     else {
       content =
         <input type="text"
-            className={"hope-inspector-detail-field" + (v ? "" : " hope-input-highlighted")}
+            className={"hope-inspector-detail-field" + ((!cfg.required || v) ? "" : " hope-input-highlighted")}
             value={v}
             onChange={this._on_change_xxx.bind(this, cfg)} />;
     }

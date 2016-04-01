@@ -45,6 +45,11 @@ Promise.prototype.done = function(onFulfilled, onRejected) {
   });
 };
 
+// add finally into Promise (chang global variable)
+Promise.prototype.finally = function(cb) {
+  return this.then(cb, cb);
+};
+
 //----------------------------------------------------------------
 // Top Level helpers: 
 // later, log, to_string, to_short_string, check, assert, hash_string
@@ -89,10 +94,22 @@ exports.unique_id = function(prefix) {
   return prefix + uuid.v1().replace(/\-/g, "_");
 };
 
+var stripJsonComments = require("strip-json-comments");
+/**
+ * This is more powerful than JSON.parse, and it allows that json contains
+ * comments
+ * @param  {String} json JSON format but allows comments
+ * @return {Object}      Parsed result
+ */
+exports.parse_json = function(json) {
+  return JSON.parse(stripJsonComments(json));
+};
+
 //----------------------------------------------------------------
 // other helpers categorized in sub-namespaces
 //----------------------------------------------------------------
 exports.type = require("./lib/type");
+exports.debug = require("./lib/debug");
 exports.path = require("./lib/path");
 exports.lock = require("./lib/lock");
 exports.fs = require("./lib/fs");
@@ -100,3 +117,4 @@ exports.test = require("./lib/test");
 exports.assemble = require("./lib/assemble");
 exports.net = require("./lib/net");
 exports.time = require("./lib/time");
+exports.web = require("./lib/web");

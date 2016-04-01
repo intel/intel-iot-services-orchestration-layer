@@ -308,7 +308,7 @@ global.$hope = (function() {
           if (k[0] === "$") {   // don't store these fields start with $
             return;
           }
-          if (_.contains(excluded_fields, k)) {
+          if (_.includes(excluded_fields, k)) {
             return;
           }
           x = _serialize_an_item(v);
@@ -441,7 +441,7 @@ global.$hope = (function() {
   //////////////////////////////////////////////////////////////////
   // level could be "success", "info", "warning", "error"
   ret.notify = function(level, ...args) {
-    $hope.check(_.contains(["success", "info", "warning", "error"], level),
+    $hope.check(_.includes(["success", "info", "warning", "error"], level),
      "notify", "Unknown level of notification:", level);
     args = args || [""];
     args = args.join(" ");

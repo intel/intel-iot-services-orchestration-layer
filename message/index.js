@@ -35,66 +35,24 @@ var B = require("hope-base");
 //----------------------------------------------------------------
 // Get all port impls registered first
 //----------------------------------------------------------------
-var Port = require("./lib/port");
+var BrokerClient = require("./lib/broker_client");
 
-function register_port_impl_file(impl_name, file_path) {
-  var impl = require(file_path);
-  ["accept", "subscribe", "send", "publish"].forEach(function(type) {
-    if (_.isFunction(impl[type])) {
-      Port.register_impl(type, impl_name, impl[type]);
+
+B.fs.ls(B.path.dir(module.filename) + "/impl_broker_clients")
+  .files(".js").each(function(name, fp, base) {
+    var impl = require(fp);
+    if (_.isFunction(impl)) {
+      BrokerClient.register_impl(base, impl);
     }
   });
-}
-
-B.fs.ls(B.path.dir(module.filename) + "/lib/impl_ports")
-  .files(".js").each(function(name, fp, base) {
-    register_port_impl_file(base, fp);
-  });
 
 
 
-var MNode = require("./lib/mnode");
-var Route = require("./lib/router");
-var RouteTable = require("./lib/route_table");
-var RouteRule = require("./lib/route_rule");
 
-
-exports.create_mnode = MNode.create;
-
-exports.create_router = Route.create;
-
-exports.create_route_rule = RouteRule.create;
-
-exports.create_route_table = RouteTable.create;
-
-exports.create_port = Port.create;
-
-exports.port_types = ["accept", "send", "subscribe", "publish"];
-
-var impls = 
-exports.impls = {};
-
-B.fs.ls(B.path.dir(module.filename) + "/lib/impl_deps")
-  .files(".js").each(function(name, fp, base) {
-    impls[base] = require(fp);
-  });
-
-
+exports.MNode = require("./lib/mnode");
 
 
 exports.$factories = {
-  MNode:  exports.create_mnode,
-  Router:  exports.create_router,
-  RouteRule: exports.create_route_rule,
-  RouteTable: exports.create_route_table,
-  Port: exports.create_port
+  MNode:  exports.MNode.create$
 };
 
-// Add factories from impls
-// e.g. http/broker
-_.forOwn(impls, function(impl, impl_name) {
-  // add the prefix
-  _.forOwn(impl.$factories || {}, function(_f, _n) {
-    exports.$factories[impl_name + "/" + _n] = _f;
-  });
-});

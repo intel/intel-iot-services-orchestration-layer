@@ -93,7 +93,7 @@ var AppPanel = React.createClass({
     e.stopPropagation();
 
     var app = this.props.app;
-    var graphs = _.pluck(app.graphs, "id");
+    var graphs = _.map(app.graphs, "id");
     if (graphs.length === 0) {
       return;
     }
@@ -124,7 +124,7 @@ var AppPanel = React.createClass({
       return $hope.notify("error", __("Invalid UI name"));
     }
     var app = $hope.app.stores.app.get_app(this.props.app.id);
-    if (_.find(app.uis, "name", name) || $hope.app.stores.ui.find_view(this.props.app.id, name)) {
+    if (_.find(app.uis, ["name", name]) || $hope.app.stores.ui.find_view(this.props.app.id, name)) {
       return $hope.notify("error", __("This name already exists"));
     }
     var ui = $hope.app.stores.ui.create_ui(this.props.app.id, {

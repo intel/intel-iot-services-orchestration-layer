@@ -333,7 +333,7 @@ class WidgetView extends View {
         _.forOwn(b.$catalogs, (c, c_name) => {
           catalog = null;
           _.forOwn(c, s => {
-            var instances = _.filter(widgets, "spec", s.id);
+            var instances = _.filter(widgets, ["spec", s.id]);
             if (!instances || instances.length === 0) {
               return;
             }

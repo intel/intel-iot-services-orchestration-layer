@@ -27,8 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var _ = require("lodash");
 var B = require("hope-base");
 var EventEmitter = require("eventemitter3");
-var Port = require("./port");
-var consts = require("./consts");
+var BrokerClient = require("./broker_client");
 
 var log = B.log.for_category("message/mnode");
 
@@ -38,87 +37,43 @@ var MNode =
 /**
  * A Message Node
  * config is optional, it may contains {
- *   id: ...,        // otherwise would automatically generate one
- *   ports: {
- *     accept: [[params], [params]], // other ports beyond default local. each 
- *       // elements (params) are in format of {
- *       //   name: ...
- *       //   impl: e.g. event, http etc.
- *       //   config: ...
- *       // }
- *     ...
- *   }
+ *   id: ...,         // otherwise would automatically generate one
+ *   brokers: [{      // a list of broker definitioin
+ *     type: ...
+ *     config: {}
+ *   },  ...]
  * }
  *
- * A Message Node would have a bunch of Ports for in / out messages. Each Port 
- * could be described as a PortAddress which is a plain object in format of {
- *   mnode_id: ...
- *   name: use this to get it from the MNode.ports
- *   type: send / accept / subscribe / publish
- *   impl: the actual implementor class for the port
- *   data: {...}   // this is customize by each impl. itself, e.g. it may 
- *                    contain the URL address to visit a HTTP based port
- * }
- * 
  * @exports message/mnode
  */
-module.exports = function MNode(router, config) {
-  B.check(_.isObject(router), "message/mnode/create", "Need a router");
-  config = config || {};
+module.exports = function MNode(config) {
+  this.config = config = config || {};
 
-  this.router = router;
   this.id = config.id || B.unique_id("MNODE_");
   this.name = config.name || "<" + config.id + ">";
+
+  this.broker_clients = [];
+  // We specially handle local broker client instead of putting it into 
+  // the broker_clients array above
+  this.disable_local_broker = config.disable_local_broker;
+  this.local_broker_client = null;
+  this.events_broker = new EventEmitter();
 
   B.check_warn(!_.isObject(all_mnodes_in_this_process[this.id]), 
     "message/mnode/create", "id already used in this process", this.id);
 
   this.events = {
-    accept: new EventEmitter(),
+    accept: {
+      topics: {},
+      event: new EventEmitter()
+    },
     subscribe: {},
-    subscribe_all: new EventEmitter()
+    subscribe_all: {
+      topics: {},
+      event: new EventEmitter()
+    }
   };
 
-  // need to know all listened topics, however, this is a private member
-  // e.g. _events that might be changed in the future
-  // so we workaround it by ourselves
-  var _topics = this.events.subscribe_all.$hope_topics = {};
-  var f_on = this.events.subscribe_all.on.bind(this.events.subscribe_all);
-  this.events.subscribe_all.on = function(_t, _f) {
-    _topics[_t] = true;
-    f_on(_t, _f);
-  };
-
-  this.ports = {
-    accept: new B.type.IndexedArray("name"),
-    send: new B.type.IndexedArray("name"),
-    subscribe: new B.type.IndexedArray("name"),
-    publish: new B.type.IndexedArray("name")    
-  };
-
-  // by default, it should have local ports in place, which is event based
-  this.ports.accept.push(Port.get_impl("accept", "event").create(this, 
-    consts.LOCAL_PORT_NAME));
-  this.ports.send.push(Port.get_impl("send", "event").create(this, 
-    consts.LOCAL_PORT_NAME));
-  this.ports.subscribe.push(Port.get_impl("subscribe", "event").create(this, 
-    consts.LOCAL_PORT_NAME));
-  this.ports.publish.push(Port.get_impl("publish", "event").create(this, 
-    consts.LOCAL_PORT_NAME));
-
-  // other ports are added from config
-  config.ports = config.ports || {};
-
-  var self = this;
-  ["accept", "send", "subscribe", "publish"].forEach(function(_type) {
-    var _src = config.ports[_type] || [];
-    var _tgt = self.ports[_type];
-    _src.forEach(function(_port) {
-      B.check(_.isObject(_port), "message/mnode", "Port config should be object", self.config);
-      _tgt.push(Port.create.call(Port, self, _type, _port.impl,
-        _port.name, _port.config));
-    });
-  });
 
   // RPC sessions
   this.rpc = {
@@ -137,54 +92,53 @@ module.exports = function MNode(router, config) {
 MNode.event = new EventEmitter();
 
 
-MNode.create = function(router, config) {
-  return new MNode(router, config);
+MNode.create$ = function(config) {
+  var m = new MNode(config);
+  return m.init$().then(function() {
+    return m;
+  });
 };
 
-
-MNode.dispose = function(mnode_id) {
+MNode.dispose$ = function(mnode_id) {
   var n = all_mnodes_in_this_process[mnode_id];
   if (n) {
     delete all_mnodes_in_this_process[mnode_id];
     MNode.event.emit("removed", n);
+    return n.dispose$();
+  } else {
+    return Promise.resolve();
   }
 };
 
-MNode.prototype.destroy_its_webapp = function() {
-  if (this.ports.accept.index.http && this.ports.accept.index.http.config.app) {
-    this.ports.accept.index.http.config.app.$destroy();
+
+MNode.prototype.init$ = function() {
+  var bc_config = this.config.brokers || [];
+  if (!_.isArray(bc_config)) {
+    bc_config = [bc_config];
   }
-  if (this.ports.subscribe.index.http && this.ports.subscribe.index.http.config.app) {
-    this.ports.subscribe.index.http.config.app.$destroy();
-  }
+  var self = this;
+  // need to keep the order of the broker_clients in config
+  var todos = [];
+  _.forOwn(bc_config, function(v, k) {
+    todos.push(BrokerClient.create$(v.type, self, v).then(function(bc) {
+      self.broker_clients[k] = bc;
+    }));
+  });
+  todos.push(BrokerClient.create$("events", self).then(function(bc) {
+    self.local_broker_client = bc;
+  }));
+  return Promise.all(todos);
 };
+
+MNode.prototype.dispose$ = function() {
+  return Promise.all(this.broker_clients.map(function(bc) {
+    return bc.dispose$();
+  }));
+};
+
 
 MNode.prototype.updated = function() {
   MNode.event.emit("updated", this);
-};
-
-
-MNode.prototype.get_route_info = function() {
-  var r = {
-    id: this.id,
-    ports: {
-      accept: [],
-      send: [],
-      subscribe: [],
-      publish: []
-    }
-  };
-  function _get_address(to_arr, from_arr) {
-    from_arr.forEach(function(p) {
-      to_arr.push(p.get_addr());
-    });
-  }
-  _get_address(r.ports.accept, this.ports.accept.array);
-  _get_address(r.ports.send, this.ports.send.array);
-  _get_address(r.ports.subscribe, this.ports.subscribe.array);
-  _get_address(r.ports.publish, this.ports.publish.array);
-
-  return r;
 };
 
 
@@ -200,7 +154,7 @@ MNode.get_mnode_in_this_process = function(mnode_id) {
   return all_mnodes_in_this_process[mnode_id];
 };
 
-MNode.get_all_mnodes_in_this_process = function(mnode_id) {
+MNode.get_all_mnodes_in_this_process = function() {
   return all_mnodes_in_this_process;
 };
 
@@ -212,14 +166,47 @@ MNode.prototype.get_mnode_in_this_process = function(mnode_id) {
   return MNode.get_mnode_in_this_process(mnode_id);
 };
 
-//----------------------------------------------------------------
-// Ports
-//----------------------------------------------------------------
-MNode.prototype.get_port_from_addr = function(addr) {
-  B.check(addr.mnode_id === this.id, "message/get_port_from_addr",
-    "Mismatched mnode_id: this is", this.id, " but addr is ", addr);
-  return this.ports[addr.type].get(addr.name);
+MNode.prototype.validate_income_msg = function(msg, from_broker) {
+  if (this.is_in_this_process(msg.from.mnode_id) && from_broker && !this.disable_local_broker) {
+    if (from_broker !== this.local_broker_client) {
+      return false;
+    }
+  }
+  return true;
 };
+
+
+//----------------------------------------------------------------
+// Message Envelop
+//----------------------------------------------------------------
+var _msg_seq = 1;
+
+function _encode_send_msg(from_mnode_id, to_mnode_id, topic, msg, options) {
+  return {
+    type: "send",
+    from: from_mnode_id,
+    to: to_mnode_id,
+    topic: topic,
+    message: msg,
+    options: options,
+    seq: _msg_seq++,
+    timestamp: Date.now()
+  };
+}
+
+function _encode_publish_msg(from_mnode_id, topic, msg, options) {
+  return {
+    type: "publish",
+    from: from_mnode_id,
+    topic: topic,
+    message: msg,
+    options: options,
+    seq: _msg_seq++,
+    timestamp: Date.now()
+  };
+}
+
+
 
 //----------------------------------------------------------------
 // Accept
@@ -232,81 +219,71 @@ MNode.prototype.get_port_from_addr = function(addr) {
  */
 MNode.prototype.accept$ = function(topic, cb) {
   log("accept", topic, "[by]", this.name);
-  this.events.accept.on(topic, cb);
-  return Promise.resolve();
+  var has_subscribed = this.events.accept.topics[topic];
+  this.events.accept.topics[topic] = true;
+  this.events.accept.event.on(topic, cb);
+  if (has_subscribed) {
+    return Promise.resolve();
+  } else {
+    return Promise.all(this.broker_clients.map(function(bc) {
+      return bc.accept$(topic);
+    }));
+  }
 };
 
 MNode.prototype.remove_accept$ = function(topic, cb) {
   log("remove_accept", "[topic]", topic, "[for]", cb ? "one cb" : "all cbs", "[by]", this.name);
-  if (cb) {
-    this.events.accept.removeListener(topic, cb);
-  } else {
-    this.events.accept.removeAllListeners(topic);
+  if (!this.events.accept.topics[topic]) {
+    return Promise.resolve();
   }
-  return Promise.resolve();
+  if (cb) {
+    this.events.accept.event.removeListener(topic, cb);
+  } else {
+    this.events.accept.event.removeAllListeners(topic);
+  }
+  if (this.events.accept.event.listeners(topic, true)) {
+    return Promise.resolve();
+  } else {
+    delete this.events.accept.topics[topic];
+    return Promise.all(this.broker_clients.map(function(bc) {
+      return bc.unaccept$(topic);
+    }));
+  }
 };
 
 MNode.prototype.clean_accepts$ = function() {
   log("clean_accepts", "[by]", this.name);
-  this.events.accept.removeAllListeners();
+  this.events.accept.event.removeAllListeners();
   return Promise.resolve();
 };
 
 
-MNode.prototype.on_message_for_accept = function(msg, accept_port) {
-  log("ACCEPTED", msg);
-  this.events.accept.emit(msg.topic, msg.message, msg.topic, msg.from.mnode_id);
+MNode.prototype.on_message_for_accept = function(msg, from_broker) {
+  if (this.validate_income_msg(msg, from_broker)) {
+    log("ACCEPTED", msg);
+    this.events.accept.event.emit(msg.topic, msg.message, msg.topic, msg.from);
+  }
 };
 
 //----------------------------------------------------------------
 // Subscribe
 //----------------------------------------------------------------
 
-// Unlike send/accept which is always 1:1 mapping
-// It subscribes multiple ports while the target also publish to multiple ports
-// So we need to use this function to filter all messages it receives, to ensure
-// for one message, it would be handled by the subscriber only once
-// We do so by ensure that for a mnode_id, we should only accept the publish msg
-// from only one publish port while ingores msg from other publish ports
-// 
-// It resolves if accepts this message, otherwise rejects
-MNode.prototype.is_published_message_from_right_port$ = function(msg, port) {
-  // if port already cached and no need to check router
-  var m = this.events.subscribe[msg.from.mnode_id];
-  if (m && m.port)  {
-    return new Promise(function(resolve, reject) {
-      if (m.port === port) {
-        resolve();
-      } else {
-        reject();
-      }
-    });
-  } 
 
-  // check router
-  return this.router.check_address_for_published_message$(port, msg.from);
-    
+MNode.prototype.on_message_for_subscribe = function(msg, from_broker) {
+  var e = this.events.subscribe[msg.from];
+  if (e && this.validate_income_msg(msg, from_broker)) {
+    log("SUBSCRIBE ARRIVED", msg);
+    e.event.emit(msg.topic, msg.message, msg.topic, msg.from);
+  }
 };
 
 
-MNode.prototype.on_message_for_subscribe = function(msg, sub_port) {
-  var self = this;
-  this.is_published_message_from_right_port$(msg, sub_port).then(function() {
-    var e = self.events.subscribe[msg.from.mnode_id];
-    if (e) {
-      log("SUBSCRIBE ARRIVED", msg);
-      e.event.emit(msg.topic, msg.message, msg.topic, msg.from.mnode_id);
-    }
-  }).done();  
-};
-
-
-MNode.prototype.on_message_for_subscribe_all = function(msg, sub_port) {
-  var self = this;
-  this.is_published_message_from_right_port$(msg, sub_port).then(function() {
+MNode.prototype.on_message_for_subscribe_all = function(msg, from_broker) {
+  if (this.validate_income_msg(msg, from_broker)) {
     log("SUBSCRIB_ALL ARRIVED", msg);
-    self.events.subscribe_all.emit(msg.topic, msg.message, msg.topic, msg.from.mnode_id);
-  }).done();
+    this.events.subscribe_all.event.emit(msg.topic, msg.message, msg.topic, msg.from);
+  }
 };
 
 
@@ -315,8 +292,6 @@ MNode.prototype.subscribe$ = function(mnode_id, topic, cb) {
   if (!this.events.subscribe[mnode_id]) {
     this.events.subscribe[mnode_id] = {
       topics: {},
-      port: null,
-      info: null,
       event: new EventEmitter()
     };
   }
@@ -328,60 +303,60 @@ MNode.prototype.subscribe$ = function(mnode_id, topic, cb) {
   if (has_subscribed) {
     return Promise.resolve();
   } else {
-    if (m.port) {
-      return m.port.subscribe$(m.info, topic);
-    } else {
-      return this.router.get_info_for_subscribe$(this, mnode_id).then(function(info) {
-        m.port = info.port;
-        m.info = info.info;
-        return m.port.subscribe$(m.info, topic);
-      });
+    if (this.is_in_this_process(mnode_id) && !this.disable_local_broker) {
+      return this.local_broker_client.subscribe$(mnode_id, topic);
     }
+    return Promise.all(this.broker_clients.map(function(bc) {
+      return bc.subscribe$(mnode_id, topic);
+    }));
   }
 };
 
 MNode.prototype.subscribe_all$ = function(topic, cb) {
   log("subscribe_all", "[topic]", topic, "[by]", this.name);
-  var has_subscribed = (this.events.subscribe_all.listeners(topic, true) > 0);
-  this.events.subscribe_all.on(topic, cb);
+  var has_subscribed = this.events.subscribe_all.topics[topic];
+  this.events.subscribe_all.topics[topic];
+  this.events.subscribe_all.event.on(topic, cb);
   if (has_subscribed) {
     return Promise.resolve();
   } 
-  return this.router.get_info_for_subscribe_all$(this).then(function(info_arr) {
-    return Promise.all(info_arr.map(function(info) {
-      return info.port.subscribe_all$(topic);
-    }));
+  var todos = this.broker_clients.map(function(bc) {
+      return bc.subscribe_all$(topic);
   });
+  if (!this.disable_local_broker) {
+    todos.push(this.local_broker_client.subscribe_all$(topic));
+  }
+  return Promise.all(todos);
 };
 
 MNode.prototype.unsubscribe$ = function(mnode_id, topic, cb) {
   log("unsubscribe", "[mnode]", mnode_id, "[topic]", topic,
     "[for]", cb ? "one cb" : "all cbs", "[by]", this.name);
   var m = this.events.subscribe[mnode_id];
-  if (!m) {
-    return;
+  if (!m || !m.topics[topic]) {
+    return Promise.resolve();
   }
   if (cb) {
     m.event.removeListener(topic, cb);
   } else {
     m.event.removeAllListeners(topic);
   }
-  var to_unsubscribe = [];
-  _.forOwn(m.topics, function(k) {
-    if (!m.event.listeners(k, true)) {
-      delete m.topics[k];     
-      to_unsubscribe.push(k);
+  var need_unsub = false;
+  if (!m.event.listeners(topic, true)) {  // no listeners now
+    need_unsub = true;
+    delete m.topics[topic];
+    if (_.isEmpty(m.topics)) {
+      delete this.events.subscribe[mnode_id];
     }
-  });
-  if (_.isEmpty(m.topics)) {
-    delete this.events.subscribe[mnode_id];
   }
-  if (to_unsubscribe.length) {
-    return Promise.all(to_unsubscribe.map(function(t) {
-      return m.port.unsubscribe$(m.info, t);
-    }));
-  } else {
-    return Promise.resolve();
+  if (need_unsub) {
+    if (this.is_in_this_process(mnode_id) && !this.disable_local_broker) {
+      return this.local_broker_client.unsubscribe$(mnode_id, topic);
+    } else {
+      return Promise.all(this.broker_clients.map(function(bc) {
+        return bc.unsubscribe$(mnode_id, topic);
+      }));
+    }
   }
 };
 
@@ -406,25 +381,32 @@ MNode.prototype.clean_subscribe$ = function(mnode_id) {
 
 MNode.prototype.unsubscribe_all$ = function(topic, cb) {
   log("subscribe_all", "[topic]", topic, "[by]", this.name);
+  if (!this.events.subscribe_all.topics[topic]) {
+    return Promise.resolve();
+  }
   if (cb) {
-    this.events.subscribe_all.removeListener(topic, cb);
+    this.events.subscribe_all.event.removeListener(topic, cb);
   } else {
-    this.events.subscribe_all.removeAllListeners(topic);
+    this.events.subscribe_all.event.removeAllListeners(topic);
   }
   if (this.events.subscribe_all.listeners(topic, true)) {
     return Promise.resolve();
   } else {
-    delete this.events.subscribe_all.$hope_topics[topic];
-    return Promise.all(this.ports.subscribe.array.map(function(p) {
-      return p.unsubscribe_all$(topic);
-    }));
+    delete this.events.subscribe_all.topics[topic];
+    var todos = this.broker_clients.map(function(bc) {
+      return bc.unsubscribe_all$(topic);
+    });
+    if (!this.disable_local_broker) {
+      todos.push(this.local_broker_client.unsubscribe_all$(topic));
+    }
+    return Promise.all(todos);
   }
 };
 
 MNode.prototype.clean_subscribe_all$ = function() {
   log("clean_subscribe_all");
   var self = this;
-  return Promise.all(Object.keys(this.events.subscribe_all.$hope_topics)
+  return Promise.all(Object.keys(this.events.subscribe_all.topics)
     .map(function(topic) {
       return self.unsubscribe_all$(topic);
     }));
@@ -436,10 +418,14 @@ MNode.prototype.clean_subscribe_all$ = function() {
 // Send
 //----------------------------------------------------------------
 MNode.prototype.send$ = function(mnode_id, topic, data) {
-  return this.router.get_info_for_send$(this, mnode_id).then(function(info) {
-    log("SEND", mnode_id, topic, data);
-    return info.port.send$(info.info, topic, data);
-  });
+  var msg = _encode_send_msg(this.id, mnode_id, topic, data);
+  if (this.is_in_this_process(mnode_id) && !this.disable_local_broker) {
+    return this.local_broker_client.send$(mnode_id, topic, msg);
+  } else {
+    return Promise.all(this.broker_clients.map(function(bc) {
+      return bc.send$(mnode_id, topic, msg);
+    }));
+  }
 };
 
 
@@ -448,18 +434,19 @@ MNode.prototype.send$ = function(mnode_id, topic, data) {
 //----------------------------------------------------------------
 MNode.prototype.publish$ = function(topic, data) {
   var self = this;
+  var msg = _encode_publish_msg(this.id, topic, data);
   // we added additional Promise.resolve() to ensure publish$ and 
   // subscribe$ has same number of then in internal, this ensures port.sub 
   // and port.pub is executed in order, for local event impl.
-
   return Promise.resolve().then(function() {
-    return self.router.get_info_for_publish$(self).then(function(info_arr) {
-      log("PUBLISH", topic, data);
-      return Promise.all(info_arr.map(function(info) {
-        return info.port.publish$(topic, data);
-      }));
+    log("PUBLISH", topic, data);
+    var todos = self.broker_clients.map(function(bc) {
+      return bc.publish$(topic, msg);
     });
-
+    if (!this.disable_local_broker) {
+      todos.push(self.local_broker_client.publish$(topic, msg));
+    }
+    return Promise.all(todos);
   });
 };
 

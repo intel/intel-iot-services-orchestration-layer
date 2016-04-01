@@ -835,7 +835,7 @@ APIHandler.prototype.composer__save_spec = function(req) {
     var sj = JSON.parse(fs.readFileSync(p));
     sj.spec = JSON.parse(req.content);
     fs.writeFileSync(p, JSON.stringify(sj, null, 4));
-    var spec = _.find(master_spec_bundle.specs, "id", sj.spec.id);
+    var spec = _.find(master_spec_bundle.specs, ["id", sj.spec.id]);
     if (spec) {
       _.merge(spec, sj.spec);
     }

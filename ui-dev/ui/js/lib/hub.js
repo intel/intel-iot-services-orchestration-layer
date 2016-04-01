@@ -271,7 +271,7 @@ class HubManager {
     if (arguments.length === 1) {
       var th;
       _.forOwn(this.hubs, hub => {
-        th = _.find(hub.things, "id", arguments[0]);
+        th = _.find(hub.things, ["id", arguments[0]]);
         if (th) {
           return false;
         }
@@ -290,7 +290,7 @@ class HubManager {
       var svc;
       _.forOwn(this.hubs, hub => {
         _.forOwn(hub.things, t => {
-          svc = _.find(t.services, "id", arguments[0]);
+          svc = _.find(t.services, ["id", arguments[0]]);
           if (svc) {
             return false;
           }

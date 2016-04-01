@@ -417,6 +417,10 @@ class UIView {
         _.merge(o, w);
         modified = true;
       }
+
+      if (typeof o.$lint === "function") {
+        o.$lint_result = o.$lint();
+      }
     });
 
     if (modified) {
@@ -760,14 +764,6 @@ class UIStore extends EventEmitter {
     }
 
     var method, params, view = this.active_view;
-
-    try {
-      this.check_configs(view.id);
-    } catch(err) {
-      d.reject(err);
-      return d.promise;
-    }
-
     var data = view.get_ui().$serialize();
     var backend = $hope.app.server;
     if (view.info_for_new) {    // create
@@ -841,26 +837,6 @@ class UIStore extends EventEmitter {
     }
 
     delete this.views[id];
-  }
-
-  check_configs(id) {
-    var v = this.view(id);
-    if (!v) {
-      return;
-    }
-
-    _.forEach(v.get_ui().widgets, widget => {
-      var spec = widget.$get_spec();
-      if (!spec || !widget.config) {
-        return;
-      }
-      var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
-      _.forOwn(items, i => {
-        if (i.required && (!(i.name in widget.config) || widget.config[i.name] === "")) {
-          throw new Error(widget.name + " " + __("required config") + ": " + i.name + __(", Please set it in inspector panel before saving."));
-        }
-      });
-    });
   }
 
   clear_cache() {

@@ -193,7 +193,7 @@ function build_dependency(json) {
     c = v;
     if (_.isString(v)) {
       if (v[0] === "$") {
-        v = _.trimLeft(v, "$");
+        v = _.trimStart(v, "$");
         p = json;
         c = json[k] = {
           $_ref: v,

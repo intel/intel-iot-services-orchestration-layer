@@ -55,11 +55,13 @@ function scroll_to_top() {
 function page_404() {
   doc_content.html("404");
   scroll_to_top();
+  resize();
 }
 
 function page_empty(path) {
   update_doc_path(path);
   doc_content.empty();
+  resize();
 }
 
 function top_navbar_item_click(id, ch4) {
@@ -107,7 +109,6 @@ function top_navbar_item_click(id, ch4) {
       }
 
       var chy = $("<div class='section-list'></div>");
-      var exp = false;
 
       side_bar.append(chy);
 
@@ -119,9 +120,7 @@ function top_navbar_item_click(id, ch4) {
       });
 
       divy.click(()=> {
-        if (!exp) {
-          do_expcol();
-        }
+        do_expcol();
       });
       divy.append(icon);
 
@@ -130,11 +129,10 @@ function top_navbar_item_click(id, ch4) {
       }
 
       function do_expcol() {
-        if (exp) {
-          chy.empty();
-          icon.removeClass("glyphicon-minus").addClass("glyphicon-plus");
-        }
-        else {
+        var plus = icon.hasClass("glyphicon-plus");
+        side_bar.find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+        side_bar.find(".section-list").empty();
+        if (plus) {
           y.children.forEach(z => {
             var pathz = pathy + "/" + z.id;
             var hz = $("<a href='#" + pathz + "'><div id='" + ___(pathz) +
@@ -144,7 +142,6 @@ function top_navbar_item_click(id, ch4) {
           });
           icon.removeClass("glyphicon-plus").addClass("glyphicon-minus");
         }
-        exp = !exp;
       }
     });
   });
@@ -191,6 +188,21 @@ function load_path(path, callback) {
     }
     else {
       scroll_to_top();
+    }
+
+    var imgs = doc_content.find("img");
+    if (imgs.length > 0) {
+      _.forEach(imgs.filter(".viewer"), img => {
+        $(img).fancybox({
+          type: "image",
+          href: $(img).attr("src")
+        });
+      });
+
+      imgs.one("load", resize);
+    }
+    else {
+      resize();
     }
   });
 }
@@ -370,6 +382,12 @@ function hashchange() {
   navigate_seg_4(sg[0], sg[1], sg[2], sg[3]);
 }
 
+function resize() {
+  var docheight = $(document).height();
+  var winheight = $(window).height();
+  $('body').css('position', winheight < docheight ? "relative" : "absolute");
+}
+
 $(()=> {
   $Q($.ajax({
     type: "GET",
@@ -384,4 +402,4 @@ $(()=> {
   })).done();
 });
 
-$(window).on("hashchange", hashchange);
+$(window).on("hashchange", hashchange).on("resize", resize);

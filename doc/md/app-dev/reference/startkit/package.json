@@ -1,7 +1,7 @@
 {
   "name": "Starter Kits",
   "rel-dir": "../../../startkit",
-  "rel-scan-regexp": "^\\#\\#\\s(.+)\\n",
+  "rel-scan-regexp": "^\\#\\#\\s(.+)",
   "rel-children": [{
     "name": "Button",
     "files": "button.md",
@@ -23,7 +23,7 @@
     "files": "lcd_keyboard.md",
     "scan": true
   }, {
-    "name": "led",
+    "name": "LED",
     "files": "led.md",
     "scan": true
   }, {

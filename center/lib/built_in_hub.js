@@ -37,7 +37,7 @@ var _ = require("lodash");
 exports.create$ = function(_center) {
   var id = _center.id + "__built_in_hub__";
   var assemble = B.fs.read_json(B.path.resolve(__dirname, "./built_in_hub.json"));
-  assemble.mnode.$params[1].id = id + "__mnode__";
+  assemble.mnode.$params.id = id + "__mnode__";
   var hub;
   return Hub.start$({
     id: id, 
@@ -110,7 +110,7 @@ exports.init$ = function(hub, center) {
           }
         } else if (c.type === "ui") {
           return center.em.ui__get$(ids).then(function(uis) {
-            var _app_ids = _.pluck(uis || [], "app");
+            var _app_ids = _.map(uis || [], "app");
             if (c.cmd === "set") {
               to_change = _.union(to_change, _app_ids);
             } else if (c.cmd === "delete") {

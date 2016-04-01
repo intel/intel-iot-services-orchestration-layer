@@ -44,7 +44,7 @@ function _parse_ports_spec(spec_ports_json, ports_json) {
   // added ports
   var ports = (spec_ports_json.ports || []).concat(ports_json.added_ports || []);
   // amended
-  var ports_idx = _.indexBy(ports, "name");  
+  var ports_idx = _.keyBy(ports, "name");  
   _.forEach(ports_json.amended_ports || [], function(p) {
     B.check(ports_idx[p.name], "workflow/node", 
       "Failed to amend port: name doesn't exist", p, spec_ports_json);

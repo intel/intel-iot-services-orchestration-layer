@@ -1,9 +1,12 @@
 #!/bin/sh
 
-
-
-cd message
+cd http-broker
 npm install
+npm link ../base
+
+cd ../message
+npm install
+npm link ../http-broker
 npm link ../base
 
 
@@ -78,3 +81,11 @@ bower --allow-root install
 npm install
 npm link ../ui-widgets
 gulp build
+
+
+cd ../doc/framework
+npm install
+
+
+
+cd ../..

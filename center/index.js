@@ -42,7 +42,8 @@ var Workflow = require("hope-workflow");
 var G = require("./lib/globals");
 
 var asm = B.assemble.create(M.$factories);
-asm.add_factories(Store.$factories)
+asm.add_factories(B.web.$factories)
+   .add_factories(Store.$factories)
    .add_factories(EntityStore.$factories)
    .add_factories(Entity.$factories)
    .add_factories(SessionManager.$factories)

@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Overlay from "../overlay.x";
+import Tbb from "../toolbar_button.x";
 
 export default class LeftToolbar extends ReactComponent {
 
@@ -172,9 +172,7 @@ export default class LeftToolbar extends ReactComponent {
       if (view.is_running()) {
         return (
           <div className="hope-left-toolbar">
-            <Overlay overlay={__("Click to stop the workflow")}>
-              <i onClick={this._on_stop} className="fa fa-stop" />
-            </Overlay>
+            <Tbb icon="stop" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
           </div>
         );
       }
@@ -185,21 +183,11 @@ export default class LeftToolbar extends ReactComponent {
         var len = logs ? logs.length : 0;
         return (
           <div className="hope-left-toolbar">
-            <Overlay overlay={__("Click to stop the workflow")}>
-              <i onClick={this._on_stop} className="fa fa-circle-o-notch" />
-            </Overlay>
-            <Overlay overlay={__("Continue")}>
-              <i onClick={this._on_step.bind(this, "go")} className={"fa fa-arrow-circle-right" + (view.is_auto_replaying() ? " disabled" : "")} />
-            </Overlay>
-            <Overlay overlay={__("Step forward")}>
-              <i onClick={this._on_step.bind(this, "step")} className={"fa fa-step-forward" + (logs && idx < len - 1 ? "" : " disabled")} />
-            </Overlay>
-            <Overlay overlay={__("Step backward")}>
-              <i onClick={this._on_step.bind(this, "back")} className={"fa fa-step-backward" + (logs && idx > 0 ? "" : " disabled")} />
-            </Overlay>
-            <Overlay overlay={__("Back to the beginning")}>
-              <i onClick={this._on_step.bind(this, "begin")} className={"fa fa-fast-backward" + (logs && idx !== 0 ? "" : " disabled")} />
-            </Overlay>
+            <Tbb icon="circle-o-notch" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
+            <Tbb icon="arrow-circle-right" tips={__("Continue")} onClick={this._on_step.bind(this, "go")} enabled={!view.is_auto_replaying()} />
+            <Tbb icon="step-forward" tips={__("Step forward")} onClick={this._on_step.bind(this, "step")} enabled={logs && idx < len - 1} />
+            <Tbb icon="step-backward" tips={__("Step backward")} onClick={this._on_step.bind(this, "back")} enabled={logs && idx > 0} />
+            <Tbb icon="fast-backward" tips={__("Back to the beginning")} onClick={this._on_step.bind(this, "begin")} enabled={logs && idx !== 0} />
           </div>
         );
       }
@@ -207,30 +195,14 @@ export default class LeftToolbar extends ReactComponent {
 
     return (
       <div className="hope-left-toolbar">
-        <Overlay overlay={__("Click to show or hide the library")}>
-          <i onClick={this._on_click_library} className={"fa fa-list" + (panel.library.visible ? " disabled" : "")} />
-        </Overlay>
-        <Overlay overlay={__("Click to run the workflow")}>
-          <i onClick={this._on_run} className="fa fa-play" />
-        </Overlay>
-        <Overlay overlay={__("Click to save the workflow")}>
-          <i onClick={this._on_save} className={"fa fa-floppy-o" + (view && view.modified ? "" : " disabled")} />
-        </Overlay>
-        <Overlay overlay={__("Click to delete the selected objects")}>
-          <i onClick={this._on_trash} className={"fa fa-trash-o" + (selected ? "" : " disabled")} />
-        </Overlay>
-        <Overlay overlay={__("Undo")}>
-          <i onClick={this._on_undo} className={"fa fa-undo" + (undo_stack_len <= undo_times ? " disabled" : "")} />
-        </Overlay>
-        <Overlay overlay={__("Redo")}>
-          <i onClick={this._on_redo} className={"fa fa-repeat" + (undo_times === 0 ? " disabled" : "")} />
-        </Overlay>
-        <Overlay overlay={__("Click to fit the view")}>
-          <i onClick={this._on_fit} className={"fa fa-arrows-alt"} />
-        </Overlay>
-        <Overlay overlay={__("Click to auto layout the workflow")}>
-          <i onClick={this._on_autolayout} className={"fa fa-sitemap"} />
-        </Overlay>
+        <Tbb icon="list" tips={__("Click to show or hide the library")} onClick={this._on_click_library} enabled={!panel.library.visible} always={true} />
+        <Tbb icon="play" tips={__("Click to run the workflow")} onClick={this._on_run} />
+        <Tbb icon="floppy-o" tips={__("Click to save the workflow")} onClick={this._on_save} enabled={view && view.modified} />
+        <Tbb icon="trash-o" tips={__("Click to delete the selected objects")} onClick={this._on_trash} enabled={selected} />
+        <Tbb icon="undo" tips={__("Undo")} onClick={this._on_undo} enabled={undo_stack_len > undo_times} />
+        <Tbb icon="repeat" tips={__("Redo")} onClick={this._on_redo} enabled={undo_times > 0} />
+        <Tbb icon="arrows-alt" tips={__("Click to fit the view")} onClick={this._on_fit} />
+        <Tbb icon="sitemap" tips={__("Click to auto layout the workflow")} onClick={this._on_autolayout} />
       </div>
     );
   }

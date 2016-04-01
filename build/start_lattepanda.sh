@@ -1,4 +1,5 @@
-killall node
+echo "killing all existing node.js process ..."
+cmd.exe /c "taskkill /f /im node.exe 2>nul"
 
 echo "start message broker ..."
 ./run_demo broker > broker.log &

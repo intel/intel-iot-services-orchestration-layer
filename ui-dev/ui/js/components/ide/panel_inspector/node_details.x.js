@@ -117,7 +117,7 @@ export default class NodeDetails extends ReactComponent {
     var show_config = !node.is_ui && _.isArray(spec.config) && spec.config.length > 0;
     var current = 0;
     var errors = node.$lint_result;
-    if (show_config && !_.isEmpty(errors) && _.findIndex(errors, "type", "REQUIRED_CONFIG") >= 0) {
+    if (show_config && !_.isEmpty(errors) && _.findIndex(errors, ["type", "REQUIRED_CONFIG"]) >= 0) {
       current = 1;  /* Tab Config */
     }
 
@@ -152,7 +152,7 @@ export default class NodeDetails extends ReactComponent {
               <ConfigDetails id={this.state.id} />
             </Tab>
           }
-          <Tab title={__("Tag")}>
+          {/*<Tab title={__("Tag")}>
             <div className="node-details">
               <div className="node-details-tag">
                 <TagsDetails id={this.state.id} />
@@ -165,7 +165,7 @@ export default class NodeDetails extends ReactComponent {
                 <BindingDetails id={this.state.id} />
               </div>
             </div>
-          </Tab>
+          </Tab>*/}
         </Tabs>
       }
       {view.is_debugging() && trace_time &&

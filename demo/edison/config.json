@@ -1,165 +1,62 @@
 {
-  "assemble" : {
-    "broker_url": "http://localhost:16666/broker",
-    "base_url": "http://localhost:18888",
+  // Type of this instance. It could be:
+  //      center  - which takes role of orchestration center
+  //      hub     - which is a service hub
+  "type": "hub",
 
-    "web_app_for_port": {
-      "$type": "http/WebApp",
-      "$params": {
-        "port": 18888
-      }
-    },
-    "route_table": {
-      "$type": "RouteTable",
-      "$params": {
-        "$type": "Store",
-        "$params": "memory"
-      }
-    },
-    "route_rules": [{
-        "$type": "RouteRule",
-        "$params": "auto"
-      }, {
-        "$type": "RouteRule",
-        "$params": ["select", {
-          "name": "http",
-          "impl": "http"
-        }]
-      }],
-    "router": {
-      "$type": "Router",
-      "$params": ["$route_table", {
-        "rules": {
-          "send": "$route_rules",
-          "subscribe": "$route_rules",
-          "subscribe_all": "$route_rules",
-          "publish": "$route_rules"
-      }}]
-    },
-    "mnode": {
-      "$type": "MNode",
-      "$params": ["$router", {
-        "name": "hub_a",
-        "ports": {
-          "accept": [{
-            "name": "http",
-            "impl": "http",
-            "config": {
-              "app": "$web_app_for_port",
-              "base_url": "$base_url",
-              "path": "/accept",
-              "broker_url": "$broker_url"
-            }
-          }],
-          "send": [{
-            "name": "http",
-            "impl": "http",
-            "config": {
-              "broker_url": "$broker_url"
-            }
-          }],
-          "subscribe": [{
-            "name": "http",
-            "impl": "http",
-            "config": {
-              "app": "$web_app_for_port",
-              "base_url": "$base_url",
-              "path": "/subscribe",
-              "path_for_all": "/subscribe_all",
-              "broker_url": "$broker_url"
-            }
-          }],
-          "publish": [{
-            "name": "http",
-            "impl": "http",
-            "config": {
-              "broker_url": "$broker_url"
-            }
-          }]
-        }
-      }]
-    },
+  // Optional - give a meaningful name for this instance
+  // It isn't the id of this instance so no need to be unique
+  "name": "Edison Board",
 
-    "hub_store": {
-      "$type": "HubStore",
-      "$params": "memory"
-    },
-    "thing_store": {
-      "$type": "ThingStore",
-      "$params": "memory"
-    },
-    "service_store": {
-      "$type": "ServiceStore",
-      "$params": "memory"
-    },
-    "spec_store": {
-      "$type": "SpecStore",
-      "$params": "memory"
-    },
-    "service_store": {
-      "$type": "ServiceStore",
-      "$params": "memory"
-    },
-    "specbundle_store": {
-      "$type": "SpecBundleStore",
-      "$params": "memory"
-    },
-    "session_store": {
-      "$type": "SessionStore",
-      "$params": "memory"
-    },
-    "graph_store": {
-      "$type": "GraphStore",
-      "$params": "memory"
-    },
-    "app_store": {
-      "$type": "AppStore",
-      "$params": "memory"
-    },    
-    "ui_store": {
-      "$type": "UiStore",
-      "$params": "memory"
-    },  
+  // Optional - ID of this instance, and need to be globally unique
+  // id: "an_unique_id_here",   
 
-    "entity_manager": {
-      "$type": "EntityManager",
-      "$params": [{
-        "hub_store": "$hub_store",
-        "thing_store": "$thing_store",
-        "service_store": "$service_store",
-        "spec_store": "$spec_store",
-        "specbundle_store": "$specbundle_store",
-        "session_store": "$session_store",
-        "graph_store": "$graph_store",
-        "app_store": "$app_store",
-        "ui_store": "$ui_store"
-      }]
-    },
 
-    "session_manager": {
-      "$type": "SessionManager",
-      "$params": {
-        "mnode" : "$mnode",
-        "em" : "$entity_manager"
-      }
-    },
+  // Defines how it can talk with other instances in the system
+  // instances talk with each other through a message broker
+  // typical message brokers could be mqtt etc., or a HTTP broker 
+  // implemented by this project. Please check documentation for details
+  "broker": {
+    "type": "http",       // would use HTTP broker 
+    "broker_url": "http://127.0.0.1:16666",     // URL of that broker
+    "my_port": 18888      // assign a TCP/IP port for this instance to talk with broker
+                          // if there is multiple instances in same machine
+                          // they cann't share the same TCP/IP port
+  },
 
-    "hub": {
-      "$type": "Hub",
-      "$params": {
-        "id": "$id",
-        "name" : "A Edison",
-        "config_path" : "$config_path",
-        "mnode": "$mnode",
-        "entity_manager": "$entity_manager",
-        "thingbundle_path": "./thing_bundle",
-        "session_manager": "$session_manager",
-        "heartbeat": {
-          "interval": 20000
-        }
-      }
+  // Optional - Defines the log behavior. By default log is disabled
+  "log": {
+    "enabled": true,      // enable the log or not
+    "verbose": true,      // show details or not
+    "show_error_of_any_category": true, // show error log even if its category is disabled
+    "show_warn_of_any_category": true,  // show warn log even if its category is disabled
+    "levels": {           // which level of log would be printed out
+      "debug": false,
+      "info": true,
+      "warn": true,
+      "error": true
+    },
+    "categories": {       // show (or not show) log of specific category
+      "*":      false,    // allow to use wildcard
+      "message": false,
+      "center": true,
+      "entity": false,
+      "hub": true,
+      "heartbeat": false,
+      "sm" : false
     }
+  },
+
+
+
+  // Optional - Where to store the Things and Services
+  //            by default it is ./thing_bundle
+  "thingbundle_path": "./thing_bundle",
+
+
+  // Optional - Defines frequencies to report the heartbeat to center
+  "heartbeat": {
+    "interval": 20000   // heartbeat by every this amount of milliseconds
   }
+
 }
-
-

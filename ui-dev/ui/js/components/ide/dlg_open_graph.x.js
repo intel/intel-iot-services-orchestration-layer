@@ -67,7 +67,7 @@ export default class DlgOpenGraph extends ReactComponent {
   render_app(app, all_others) {
     var graphs = [];
     _.forEach(app.graphs, g => {
-      if (all_others || !_.find($hope.app.stores.graph.views, "id", g.id)) {
+      if (all_others || !_.find($hope.app.stores.graph.views, ["id", g.id])) {
         graphs.push(
           <div className={"hv-center hope-open-dialog-item" + (this.state.selected_id === g.id ? " selected" : "")}
               key={g.id}

@@ -57,7 +57,7 @@ export default class Node extends ReactComponent {
 
   _on_click_circle(name) {
     var spec = this.props.spec;
-    var port = _.find(spec.in.ports, "name", name);
+    var port = _.find(spec.in.ports, ["name", name]);
 
     if (port.buffered) {
       delete port.buffered;
@@ -74,7 +74,7 @@ export default class Node extends ReactComponent {
 
   _on_click_line(name) {
     var spec = this.props.spec;
-    var port = _.find(spec.in.ports, "name", name);
+    var port = _.find(spec.in.ports, ["name", name]);
 
     if (port.no_trigger) {
       delete port.no_trigger;
@@ -101,7 +101,7 @@ export default class Node extends ReactComponent {
 
     for (var i = 1; i < $hope.config.max_ports_per_side; i++) {
       name = type + i;
-      if (!_.find(ports, "name", name)) {
+      if (!_.find(ports, ["name", name])) {
         break;
       }
     }
@@ -119,7 +119,7 @@ export default class Node extends ReactComponent {
     var spec = this.props.spec;
     var ports = spec[type].ports;
 
-    _.remove(ports, "name", name);
+    _.remove(ports, p => p.name === name);
     this.forceUpdate();
     if (this.props.onChanged) {
       this.props.onChanged(spec);
@@ -128,7 +128,7 @@ export default class Node extends ReactComponent {
 
   _on_change_defval(name, e) {
     var spec = this.props.spec;
-    var port = _.find(spec.in.ports, "name", name);
+    var port = _.find(spec.in.ports, ["name", name]);
 
     this.setState({
       [name]: e.target.value

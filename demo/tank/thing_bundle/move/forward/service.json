@@ -1,0 +1,17 @@
+{
+  "description":"forward or not",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "on",
+        "type": "boolean"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  }
+}

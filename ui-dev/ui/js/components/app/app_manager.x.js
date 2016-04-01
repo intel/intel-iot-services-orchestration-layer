@@ -64,12 +64,12 @@ export default class AppManager extends ReactComponent {
     switch(e.event) {
       case "created":
         var gdata = Graph.create({
-          name: "W1",
+          name: "Default Workflow",
           description: ""
         }).$serialize();
         var udata = {
           id: $hope.uniqueId("UI_"),
-          name: "U1",
+          name: "Default UI",
           description: ""
         };
         $Q.all([
@@ -127,7 +127,7 @@ export default class AppManager extends ReactComponent {
       return $hope.notify("error", __("Invalid App name"));
     }
     var apps = $hope.app.stores.app.get_all_apps();
-    if (_.find(apps, "name", name)) {
+    if (_.find(apps, ["name", name])) {
       return $hope.notify("error", __("This name already exists"));
     }
 

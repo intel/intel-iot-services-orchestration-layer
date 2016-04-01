@@ -54,7 +54,7 @@ export default class Grid extends ReactComponent {
   }
 
   remove_widget(w) {
-    _.remove(this.widgets, w);
+    _.pull(this.widgets, w);
 
     var dom = ReactDOM.findDOMNode(w);
     this.grid.remove_widget(dom, false);
@@ -244,7 +244,7 @@ class Widget extends ReactComponent {
 
 class UnknownWidget extends Widget {
   
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate() {
     return false;
   }
 

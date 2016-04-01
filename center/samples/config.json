@@ -1,7 +1,7 @@
 {
   "assemble" : {
-    "broker_url": "http://localhost:16666/broker",
-    "base_url": "http://localhost:19999",
+    "broker_url": "http://127.0.0.1:16666/broker",
+    "base_url": "http://127.0.0.1:19999",
     "appbundle_path": "./appbundle",
 
     "dev_web_app": {

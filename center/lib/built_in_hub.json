@@ -2,34 +2,11 @@
   "thingbundle_path": "./hubbundles/thingbundle",
   "specbundle_path": "./hubbundles/specbundle",
   
-  "route_table": {
-    "$type": "RouteTable",
-    "$params": {
-      "$type": "Store",
-      "$params": "memory"
-    }
-  },
-  "route_rules": [{
-      "$type": "RouteRule",
-      "$params": ["select", {
-        "impl": "event"
-      }]
-    }],
-  "router": {
-    "$type": "Router",
-    "$params": ["$route_table", {
-      "rules": {
-        "send": "$route_rules",
-        "subscribe": "$route_rules",
-        "subscribe_all": "$route_rules",
-        "publish": "$route_rules"
-    }}]
-  },
   "mnode": {
     "$type": "MNode",
-    "$params": ["$router", {
+    "$params": {
       "name": "built-in hub"
-    }]
+    }
   },
 
   "hub_store": {

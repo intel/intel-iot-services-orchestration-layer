@@ -29,15 +29,7 @@ import Service from "./service.x";
 import Thing from "./thing.x";
 import Hub from "./hub.x";
 
-var _key = 0;
-
-
 export default class HubView extends ReactComponent {
-
-  static propTypes = {
-    defaultExpanded: React.PropTypes.bool
-  };
-
 
   render() {
 
@@ -78,14 +70,6 @@ export default class HubView extends ReactComponent {
     }
 
     var hubs = [], things, services;
-    // We used getInitialState in Tree.Node
-    // So to ensure everytime we changed the defaultExpanded property
-    // it always get updated, we need to set the key carefully
-    // so generate a new key upon change of properties thus a new 
-    // component would be created and getInitialState would be invoked
-    if (_key > 10000) {
-      _key = 0;
-    }
     _.forOwn(hub_view.get_render_data().children, (d, d_id) => {
       things = [];
       _.forOwn(d.children, (t, t_id) => {
@@ -94,22 +78,22 @@ export default class HubView extends ReactComponent {
           let spec_loaded = s.obj.$get_spec() ? true : false;
           services.push(<Tree.Node key={s.name}>
             <Service
-              service={s.obj} 
-              draggable={spec_loaded}
+              service={s.obj}
+              draggable={true}
               error={!spec_loaded}
               onDoubleClick={_add_node.bind({}, s.obj, 0, 0)}/> 
             </Tree.Node>);
         });
 
         
-        things.push(<Tree.Node key={_key ++} 
+        things.push(<Tree.Node key={t.name} 
           onToggle={_update_expand_state.bind({}, d_id, t_id)}
           defaultExpanded={t.styles.expanded}>
           <Thing thing={t.obj} />
           {services}
           </Tree.Node>);
       });
-      var hnode = (<Tree.Node key={_key ++} 
+      var hnode = (<Tree.Node key={d.name} 
         onToggle={_update_expand_state.bind({}, d_id, undefined)}
         defaultExpanded={d.styles.expanded}> 
         <Hub hub={d.obj} />

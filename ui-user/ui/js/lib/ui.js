@@ -103,7 +103,7 @@ class UI {
   }
 
   $find_widget(name) {
-    return _.find(this.widgets, "name", name);
+    return _.find(this.widgets, ["name", name]);
   }
 
   $alloc_widget_name(prefix) {

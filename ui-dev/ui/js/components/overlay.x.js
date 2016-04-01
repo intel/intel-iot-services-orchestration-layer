@@ -54,6 +54,9 @@ function cancelTimer() {
 
 export default React.createClass({
   __show() {
+    if (!this._overlay) {
+      return;
+    }
     ReactDOM.unstable_renderSubtreeIntoContainer(
       this, this._overlay, _mountNode
     );
@@ -113,17 +116,18 @@ export default React.createClass({
     const triggerProps = child.props;
 
     var o = this.props.overlay;
-    this._overlay = <Overlay show={true}
-      rootClose={true}
-      onHide={this.hide}
-      target={this.getOverlayTarget}>
-      {
-        React.cloneElement(_.isString(o) ? <Popover id={o}>{o}</Popover> : o, {
-          onMouseOver: cancelTimer,
-          onMouseOut: handleMouseOut.bind(this, this.hide)
-        }) 
-      }
-    </Overlay>;
+    this._overlay = o ?
+      <Overlay show={true}
+        rootClose={true}
+        onHide={this.hide}
+        target={this.getOverlayTarget}>
+        {
+          React.cloneElement(_.isString(o) ? <Popover id={o}>{o}</Popover> : o, {
+            onMouseOver: cancelTimer,
+            onMouseOut: handleMouseOut.bind(this, this.hide)
+          }) 
+        }
+      </Overlay> : null;
 
     const trigger = this.props.trigger || ["hover", "focus"];
     const props = {};

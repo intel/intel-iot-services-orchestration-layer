@@ -1,4 +1,15 @@
-killall node
+
+echo "killing all existing node.js process ..."
+case "$(uname -s)" in
+
+   CYGWIN*|MINGW*|MSYS*)
+     cmd.exe /c "taskkill /f /im node.exe 2>nul"
+     ;;
+
+   *)
+     killall node 2>/dev/null
+     ;;
+esac
 
 echo "start message broker ..."
 ./run_demo broker > broker.log &

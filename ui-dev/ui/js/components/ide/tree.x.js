@@ -54,6 +54,7 @@ var Node = React.createClass({
   displayName: "TreeNode",
 
   propTypes: {
+    defaultExpanded: React.PropTypes.bool,
     onToggle: React.PropTypes.func      // function(new_expand_state)
   },
 
@@ -75,7 +76,15 @@ var Node = React.createClass({
   },
 
   getInitialState() {
-    return {};
+    return {
+      expanded: this.props.defaultExpanded
+    };
+  },
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      expanded: nextProps.defaultExpanded
+    });
   },
 
   render() {
@@ -102,9 +111,11 @@ var Node = React.createClass({
              onClick={this._on_toggle} >
           {normal_children}
         </div>
-        <Collapse in={!this.state.expanded}>
-          <div>{children}</div>
-        </Collapse>
+        {this.props.defaultExpanded !== undefined &&
+          <Collapse in={this.state.expanded}>
+            <div>{children}</div>
+          </Collapse>
+        }
       </div>
     );
   }

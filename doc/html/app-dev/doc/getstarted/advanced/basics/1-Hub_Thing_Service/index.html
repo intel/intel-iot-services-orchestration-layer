@@ -1,0 +1,16 @@
+<h1 id="hub-thing-and-service">Hub, Thing and Service</h1>
+<h2 id="service">Service</h2>
+<p>In the IDE of creating workflow, we could drag various <strong>Services</strong> from the left panel and drop them to into the right side canvas. A <strong>Service</strong> represents something invokable functionality, i.e. it could accept some messages from its inports, and send out some messages through its outports.</p>
+<h2 id="thing">Thing</h2>
+<p>These <strong>Services</strong> are actually functionalities of certain <strong>Things</strong>. A <strong>Thing</strong> could be a physical device, for example, a lamp, then its &quot;Services&quot; could be &quot;Turn ON&quot;, &quot;Turn Off&quot;, &quot;Set Color&quot; etc. A <strong>Thing</strong> could be a collection of cloud services as well, for example, the Thing could be &quot;DropBox&quot;, and its Services could be &quot;store a file&quot;, &quot;fetch a file&quot; etc.</p>
+<h2 id="hub">Hub</h2>
+<p><strong>Things</strong> are managed by &quot;Hubs&quot;. For example, an Edison Board could be a <strong>Hub</strong>, and manages multiple sensors connected to it, and these sensors are &quot;Things&quot; and each may have some &quot;report&quot; <strong>Service</strong> to send out the data it colloect.</p>
+<h2 id="under-the-hood">Under the Hood</h2>
+<p>Internally inside Intel(r) IoT Services Orchestration Layer, each <strong>Hub</strong> is a Node.js process thats running some code provided by Intel(r) IoT Services Orchestration Layer. Each <strong>Service</strong> is some JavaScript code that running inside this Node.js process. You may see <a href="#getstarted/advanced/add_service">Add Service</a> for more details.</p>
+<h2 id="example">Example</h2>
+<p>As illustrated by the figure below, there are two <strong>Hubs</strong> (hub_a and hub_b) listed at the left side panel, each corresponding to a physical board (which has a Node.js process running on top of it).</p>
+<p>On hub_a, &quot;fan&quot; is one of its <strong>Things</strong> which has a <strong>Service</strong> so called &quot;switch&quot;, which represents the phyiscal fan connected to the board.</p>
+<div class="figure">
+<img src="./doc/pic/advanced/basics/Hub_Thing_Service.png" class="viewer" />
+
+</div>

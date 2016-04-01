@@ -14,7 +14,7 @@ fi
 
 case $1 in 
   broker)
-    node center/start_http_broker.js
+    node http-broker/bin/start_broker 16666
     ;;
   center)
     node center/center demo/center/config.json

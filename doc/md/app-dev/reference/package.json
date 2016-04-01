@@ -1,6 +1,6 @@
 {
   "name": "Reference",
-  "subdir": ["builtin", "startkit", "lattepanda"]
+  "subdir": ["builtin", "startkit", "lattepanda", "tank"]
 }
 
 

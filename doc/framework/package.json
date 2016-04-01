@@ -38,8 +38,9 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "fancybox": "^3.0.0",
     "jquery": "^2.2.1",
-    "lodash": "^4.5.1",
+    "lodash": "^4.6.1",
     "ncp": "^2.0.0",
     "q": "^1.4.1"
   }

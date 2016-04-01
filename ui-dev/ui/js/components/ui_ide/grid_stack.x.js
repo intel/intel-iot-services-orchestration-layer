@@ -24,9 +24,10 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 import class_name from "classnames";
-
+import {Popover} from "react-bootstrap";
+import Overlay from "../overlay.x";
+import LinterMessage from "../linter_msg.x";
 
 function get_widget_impl(widget) {
   var spec = $hope.app.stores.spec.get_spec(widget.spec);
@@ -81,7 +82,7 @@ export default class Grid extends ReactComponent {
   }
 
   remove_widget(w) {
-    _.remove(this.widgets, w);
+    _.pull(this.widgets, w);
 
     var dom = ReactDOM.findDOMNode(w);
     this.grid.remove_widget(dom, false);
@@ -196,8 +197,6 @@ class Widget extends ReactComponent {
   constructor(props) {
     super(props);
 
-    this.$state = -1;
-    this.$selected = false;
     this.DEBUG = true;
 
     if (_.isFunction(this._on_settings_changed)) {
@@ -307,52 +306,37 @@ class Widget extends ReactComponent {
     }
   }
 
-  shouldComponentUpdate(nextProps) {
-    var widget = nextProps.widget;
-    var data_manager = $hope.app.stores.ui.data;
-    var latest_state = data_manager.get_state(widget.id);
-    var selected = this._is_selected(widget.id);
-    var gw = nextProps.gw || this.props.gw;
-    if (latest_state === this.$state && selected === this.$selected && gw === this.$gw) {
-      return false;
-    }
-    this.$state = latest_state;
-    this.$selected = selected;
-    this.$gw = gw;
-    return true;
-  }
-
   render(children) {
     var widget = this.props.widget;
+    var err = !_.isEmpty(widget.$lint_result);
+    var ov = err ? <Popover id="PO-linter" title={__("Errors")}>
+      <div>
+        {_.map(widget.$lint_result, (msg, i) =>
+            <LinterMessage type="error" key={"E" + i} msg={msg}/>
+        )}
+      </div>
+    </Popover> : null;
+
     return (
-      <div className={"grid-stack-item" + (this.$selected ? " selected" : "")}
+      <Overlay key={widget.id} overlay={ov} tirgger={["click", "hover", "focus"]}>
+        <div className={"grid-stack-item" + (err ? " errors" : this._is_selected() ? " selected" : "")}
            data-hope-widget-id={widget.id}
-           key={widget.id}
            data-gs-no-resize={widget.no_resize || false}
            data-gs-no-move={widget.no_move || false}
            data-gs-locked={widget.locked || false} >
-        <div className={class_name("grid-stack-item-content", 
-          "hope-ui-widget", widget.className)}
-          onClick={this._on_content_click}>
-          {children}
+          <div className={class_name("grid-stack-item-content", 
+            "hope-ui-widget", widget.className)}
+            onClick={this._on_content_click}>
+            {children}
+          </div>
         </div>
-      </div>
-    );
+      </Overlay>);
   }
 }
 
 class UnknownWidget extends Widget {
-  
-  shouldComponentUpdate(nextProps) {
-    var widget = nextProps.widget;
-    var selected = this._is_selected(widget.id);
-    var gw = nextProps.gw || this.props.gw;
-    if (selected === this.$selected && gw === this.$gw) {
-      return false;
-    }
-    this.$selected = selected;
-    this.$gw = gw;
-    return true;
+  shouldComponentUpdate() {
+    return false;
   }
 
   render() {

@@ -1,5 +1,12 @@
 Change Logs
 ===========================
+## v1.0.6
+
+* Support MQTT protocol in message layer
+* Support DFRobot Devastator Robot Kit with Intel Edison inside
+* Add many documents about startup, advanced usage,  example and reference 
+* Other bug fix and improvements
+
 ## v1.0.5
 
 * Add the framework of document site

@@ -1,7 +1,7 @@
 {
   "name": "LattePanda",
   "rel-dir": "../../../lattepanda",
-  "rel-scan-regexp": "^\\#\\#\\s(.+)\\n",
+  "rel-scan-regexp": "^\\#\\#\\s(.+)",
   "rel-children": [{
     "name": "General",
     "files": "general.md",

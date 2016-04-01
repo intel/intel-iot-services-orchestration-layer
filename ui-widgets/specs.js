@@ -80,29 +80,6 @@ var specs = [{
     type: "string",
     default: "Command"
   }, {
-    name: "action",
-    type: "option",
-    default: "event",
-    options: [{
-      name: "Message output",
-      value: "event"
-    }, {
-      name: "UI switch",
-      value: "ui"
-    }]
-  }, {
-    name: "message",
-    type: "string",
-    depend: "$$.action === 'event'"
-  }, {
-    name: "target_ui",
-    display: "Target UI",
-    type: "option",
-    options: "__HOPE_APP_UI_LIST__",
-    depend: "$$.action === 'ui'"
-  }],
-
-  extra: [{
     name: "style",
     type: "option",
     default: "default",
@@ -128,6 +105,30 @@ var specs = [{
       name: "Link",
       value: "link"
     }]
+  }, {
+    name: "action",
+    type: "option",
+    default: "event",
+    options: [{
+      name: "Message",
+      value: "event"
+    }, {
+      name: "UI Switch",
+      value: "ui"
+    }, {
+      name: "Two Events",
+      value: "twoev"
+    }]
+  }, {
+    name: "message",
+    type: "string",
+    depend: "$$.action === 'event'"
+  }, {
+    name: "target_ui",
+    display: "Target UI",
+    type: "option",
+    options: "__HOPE_APP_UI_LIST__",
+    depend: "$$.action === 'ui'"
   }],
 
   in: {
@@ -136,7 +137,7 @@ var specs = [{
   out: {
     ports: [{
       name: "event",      // name of widget
-      type: "string"
+      type: "any"
     }]
   }
 },
@@ -590,6 +591,55 @@ var specs = [{
   },
   out: {
     ports: []
+  }
+},
+/////////////////////////////////////////////////
+{
+  id:           "hope/ui/four_arrows",
+  type:         "spec",
+  is_ui:        true,
+  catalog:      "basic",
+  name:         "Four Arrows",
+  description:  "Four Arrows",
+  icon:         "arrows",
+
+  use_ract:     true,
+  data_cache_size: 1,
+
+  config: [{
+    name: "relev",
+    display: "Release Event",
+    type: "boolean",
+    default: true
+  }, {
+    name: "color",
+    display: "Default Color",
+    type: "color",
+    default: "#EEE"
+  }, {
+    name: "pressed",
+    display: "Pressed Color",
+    type: "color",
+    default: "#D43F3A"
+  }],
+
+  in: {
+    ports: []
+  },
+  out: {
+    ports: [{
+      name: "N",
+      type: "boolean"
+    }, {
+      name: "S",
+      type: "boolean"
+    }, {
+      name: "W",
+      type: "boolean"
+    }, {
+      name: "E",
+      type: "boolean"
+    }]
   }
 },
 /////////////////////////////////////////////////

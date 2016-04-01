@@ -40,7 +40,7 @@ export default class PieWidget extends Widget {
 
     var data = [], idx = 0;
     _.forOwn(input, (v, k) => {
-      var color = _.result(_.find(w.config.colors, 'name', k), 'value') || DEFAULT_COLORS[idx++ % DEFAULT_COLORS.length];
+      var color = _.result(_.find(w.config.colors, ["name", k]), "value") || DEFAULT_COLORS[idx++ % DEFAULT_COLORS.length];
       data.push({
         label: k,
         value: v,

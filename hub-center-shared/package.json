@@ -30,10 +30,8 @@
   },
   "scripts": {},
   "dependencies": {
-    "chalk": "^1.1.0",
     "eventemitter3": "^1.1.1",
-    "lodash": "^3.10.0",
-    "mute-stream": "0.0.5"
+    "lodash": "^4.6.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",

@@ -87,7 +87,7 @@ module.exports = {
   "Edit Service": "编辑Service",
   "Edge": "边",
   "Extract Field": "字段提取",
-  "Errors and Warnings": "错误和警告",
+  "Errors": "错误",
   "Error": "错误",
   "fixed": "静态指定",
   "Failed to load due to ": "加载失败，因为： ",

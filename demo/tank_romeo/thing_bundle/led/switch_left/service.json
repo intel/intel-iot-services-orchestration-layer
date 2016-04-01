@@ -1,0 +1,18 @@
+{
+  "description":"switch the left led",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "on",
+        "type": "boolean"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  },
+  "doc": "tank/led.html#switch_left"
+}

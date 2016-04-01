@@ -31,14 +31,8 @@ import Tree from "../ide/tree.x";
 import Spec from "../ide/panel_library/spec.x";
 import Bundle from "../ide/panel_library/bundle.x";
 
-var _key = 0;
-
 
 export default class WidgetLibrary extends ReactComponent {
-
-  static propTypes = {
-    defaultExpanded: React.PropTypes.bool
-  };
 
   _on_search(search) {
     $hope.trigger_action("library/search_widget_spec", {search: search});
@@ -71,14 +65,6 @@ export default class WidgetLibrary extends ReactComponent {
     }
 
     var bundles = [], catalogs, specs;
-    // We used getInitialState in Tree.Node 
-    // So to ensure everytime we changed the defaultExpanded property
-    // it always get updated, we need to set the key carefully
-    // so generate a new key upon change of properties thus a new 
-    // component would be created and getInitialState would be invoked
-    if (_key > 10000) {
-      _key = 0;
-    }
     _.forOwn(view.get_render_data().children, (b, b_id) => {
       catalogs = [];
       _.forOwn(b.children, (c, c_id) => {
@@ -93,7 +79,7 @@ export default class WidgetLibrary extends ReactComponent {
             </Tree.Node>);
         });
         
-        catalogs.push(<Tree.Node key={_key ++} 
+        catalogs.push(<Tree.Node key={c.name} 
           onToggle={_update_expand_state.bind({}, b_id, c_id)}
           defaultExpanded={c.styles.expanded}> 
           <Tree.Item text={c.name} indent={1} 
@@ -101,7 +87,7 @@ export default class WidgetLibrary extends ReactComponent {
           {specs}
           </Tree.Node>);
       });
-      bundles.push(<Tree.Node key={_key ++} 
+      bundles.push(<Tree.Node key={b_id} 
         onToggle={_update_expand_state.bind({}, b_id, undefined)}
         defaultExpanded={b.styles.expanded}> 
         <Bundle bundle={b.obj}/>

@@ -42,6 +42,7 @@ var widgets = {
   "hope/ui/switch":    require("./generated/switch"),
   "hope/ui/editbox":   require("./generated/editbox"),
   "hope/ui/light":     require("./generated/light"),
+  "hope/ui/four_arrows": require("./generated/fourarrow"),
 
   // WebRTC
   "hope/ui/webrtc":    require("./generated/webrtc")

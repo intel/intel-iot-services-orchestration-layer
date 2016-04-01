@@ -285,8 +285,12 @@ class GraphStore extends EventEmitter {
     }
     if (_.isArray(stoped)) {
       _.forEach(stoped, id => {
-        if (this.active_view && this.active_view.id === id) {
-          this.emit("graph", {type: "graph", id: id, event: "status/changed"});
+        var v = this.view(id);
+        if (v) {
+          v.set_editing();
+          if (this.active_view && this.active_view.id === id) {
+            this.emit("graph", {type: "graph", id: id, event: "status/changed"});
+          }
         }
       });
     }

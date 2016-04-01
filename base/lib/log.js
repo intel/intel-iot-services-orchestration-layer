@@ -95,8 +95,8 @@ var options = {
   default_seq_width: 5,
   default_category_width: 10,
   default_action_width: 15,
-  ignore_category_for_error: true,
-  ignore_category_for_warn: true,
+  show_error_of_any_category: true,
+  show_warn_of_any_category: true,
   levels: {
     debug: false,
     info: true,
@@ -111,10 +111,10 @@ function configure_options(updated_options) {
 
 
 function need_log(level, category) {
-  if (level === "warn" && options.ignore_category_for_warn) {
+  if (level === "warn" && options.show_warn_of_any_category) {
     return options.levels.warn;
   }
-  if (level === "error" && options.ignore_category_for_error) {
+  if (level === "error" && options.show_error_of_any_category) {
     return options.levels.error;
   }
   // for a/b/c, we only select its root, i.e. a
@@ -125,7 +125,7 @@ function need_log(level, category) {
 
 
 function raw_category_string(category) {
-  return _.padRight(category, options.default_category_width);
+  return _.padEnd(category, options.default_category_width);
 }
 
 function format_category_string(level, category) {
@@ -133,10 +133,10 @@ function format_category_string(level, category) {
 }
 
 function format_seq_string() {
-  return colors.seq(_.padLeft(seq.toString(), options.default_seq_width)) + " ";
+  return colors.seq(_.padStart(seq.toString(), options.default_seq_width)) + " ";
 }
 
-var _empty_leading_str = _.padRight("", 
+var _empty_leading_str = _.padEnd("", 
   options.default_category_width + options.default_seq_width + 3);
 // for multiple line messags, we need to ensure its left side is aligned to
 // left space for contents starting from 2nd line
@@ -239,7 +239,7 @@ var log =
  * @param {string} category The category
  * @param {string} title The title
  */
-module.exports = _.restParam(function(category, title, args) {
+module.exports = _.rest(function(category, title, args) {
   raw_log("info", -1, category, title, args);
 });
 
@@ -262,7 +262,7 @@ log.raw = raw_log;
  * @param  {string} category The category
  * @param  {string} title    The title
  */
-log.debug = _.restParam(function(category, title, args) {
+log.debug = _.rest(function(category, title, args) {
   raw_log("debug", -1, category, title, args);
 });
 

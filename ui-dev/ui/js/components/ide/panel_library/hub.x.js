@@ -64,7 +64,7 @@ export default class Hub extends ReactComponent {
     if (!name) {
       return $hope.notify("error", __("Invalid thing name"));
     }
-    if (_.find(hub.things, "name", name)) {
+    if (_.find(hub.things, ["name", name])) {
       return $hope.notify("error", __("This name already exists in the hub"));
     }
     $hope.trigger_action("hub/create/thing", {

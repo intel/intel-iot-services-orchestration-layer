@@ -40,7 +40,7 @@
     "i18next": "~2.0.23",
     "i18next-browser-languagedetector": "0.0.14",
     "inherits": "~2.0.1",
-    "lodash": "~3.10.0",
+    "lodash": "^4.6.1",
     "q": "~1.4.1",
     "react": "~0.14.7",
     "react-bootstrap": "~0.28.2",

@@ -1,4 +1,6 @@
-killall node
+echo "killing all existing node.js process ..."
+killall node 2>/dev/null
+
 
 echo "start message broker ..."
 ./run_demo broker > broker.log &

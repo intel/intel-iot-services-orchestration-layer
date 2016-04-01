@@ -128,7 +128,7 @@ export default React.createClass({
         break;
 
       case "readed/file":
-        if (!_.find(this.files, "name", e.name)) {
+        if (!_.find(this.files, ["name", e.name])) {
           this.files.push({
             name: e.name,
             type: _.endsWith(e.name, ".js") ? "javascript" : "json",
@@ -139,7 +139,7 @@ export default React.createClass({
         break;
 
       case "written/file":
-        let wf = _.find(this.files, "name", e.name);
+        let wf = _.find(this.files, ["name", e.name]);
         if (wf && this.is_modified(wf)) {
           this.set_modified(wf, false);
         }
@@ -170,7 +170,7 @@ export default React.createClass({
   },
 
   _open(name) {
-    var idx = _.findIndex(this.files, "name", name);
+    var idx = _.findIndex(this.files, ["name", name]);
 
     if (idx >= 0) {
       this._switch(idx);
@@ -211,7 +211,7 @@ export default React.createClass({
     $hope.confirm(__("Delete"),
       __("This would delete the file on the server. Please make sure this is what you expect!"),
       "warning", () => {
-      var f = _.find(this.files, "name", name);
+      var f = _.find(this.files, ["name", name]);
       if (f) {
         this._close_force(f);
       }

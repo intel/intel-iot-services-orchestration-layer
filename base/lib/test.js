@@ -194,7 +194,7 @@ DataMonitor.prototype.wait$ = function(data_arr, is_in_order, timeout) {
   if (timeout > 0) {
     timer = setTimeout(function() {
       _finish();
-      _reject(wait_str + "TIMEOUT with Data Not Recived: " + all);
+      _reject(wait_str + "TIMEOUT with Data Not Received: " + all);
     }, timeout);
   }
 

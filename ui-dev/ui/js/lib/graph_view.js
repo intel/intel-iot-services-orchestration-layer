@@ -666,7 +666,7 @@ export default class GraphView extends EventEmitter {
           if (this.selected_port && this.selected_port.$node === n) {
             this.unselect_port();
           }
-          _.remove(this.copied_nodes, n.id);
+          _.pull(this.copied_nodes, n.id);
           delete this.selected_nodes[n.id];
           this.graph.$remove("node", n.id);
         });

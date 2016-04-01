@@ -32,7 +32,7 @@
   "dependencies": {
     "commander": "^2.8.1",
     "eventemitter3": "^1.1.1",
-    "lodash": "^3.10.0",
+    "lodash": "^4.6.1",
     "nodemailer": "^2.0.0",
     "node-weibo-twitter":"^0.0.2"
   },

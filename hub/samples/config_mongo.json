@@ -1,9 +1,9 @@
 {
   "assemble" : {
-    "broker_url": "http://localhost:16666/broker",
-    "base_url": "http://localhost:18888",
+    "broker_url": "http://127.0.0.1:16666/broker",
+    "base_url": "http://127.0.0.1:18888",
     "thingbundle_path": "./thingbundle",
-    "mongodb_url": "mongodb://localhost:27017/hub",
+    "mongodb_url": "mongodb://127.0.0.1:27017/hub",
     "web_app_for_port": {
       "$type": "http/WebApp",
       "$params": {

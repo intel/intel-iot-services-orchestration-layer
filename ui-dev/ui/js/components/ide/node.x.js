@@ -24,13 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Popover} from "react-bootstrap";
-import Overlay from "../overlay.x";
-import LinterMessage from "./linter_msg.x";
-import In from "./in.x";
-import Out from "./out.x";
 import class_names from "classnames";
 import color from "color";
+import {Popover} from "react-bootstrap";
+import Overlay from "../overlay.x";
+import LinterMessage from "../linter_msg.x";
+import In from "./in.x";
+import Out from "./out.x";
 import FONT_AWESOME from "../../lib/font-awesome.js";
 
 export default class Node extends ReactComponent {
@@ -351,7 +351,7 @@ export default class Node extends ReactComponent {
   
     return errors ?
       <Overlay overlay={
-        <Popover id="PO-linter" title={__("Errors and Warnings")}>
+        <Popover id="PO-linter" title={__("Errors")}>
           <div>
             {_.map(node.$lint_result, (msg, i) =>
                 <LinterMessage type="error" key={"E" + i} msg={msg}/>

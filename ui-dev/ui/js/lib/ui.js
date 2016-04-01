@@ -33,7 +33,7 @@ function get_spec_config(id) {
   if (spec) {
     var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
     _.forOwn(items, item => {
-      if (item.name) {
+      if (item.name && ("default" in item)) {
         config[item.name] = item.default;
       }
     });
@@ -59,6 +59,8 @@ class Widget {
     _.merge(this, {config: get_spec_config(json.spec)}, json);
     // TODO might need to reorg
     $hope.dummy_widget_data_generator.add_widgets(json.id);
+
+    this.$lint_result = this.$lint();
   }
 
   $get_spec() {
@@ -74,6 +76,32 @@ class Widget {
       return spec.data_cache_size;
     }
     return defval === undefined ? 1 : defval;
+  }
+
+  $lint() {
+    var spec = this.$get_spec();
+    if (!spec || !this.config) {
+      return null;
+    }
+
+    var errors = [];
+    var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
+    _.forOwn(items, i => {
+      if (i.required && (!(i.name in this.config) || this.config[i.name] === "")) {
+        errors.push({
+          type: "REQUIRED_CONFIG",
+          name: i.name
+        });
+      }
+    });
+
+    //TODO: other checks
+
+
+    if (_.isEmpty(errors)) {
+      return null;
+    }
+    return errors;
   }
 }
 
@@ -105,7 +133,7 @@ class UI {
   }
 
   $find_widget(name) {
-    return _.find(this.widgets, "name", name);
+    return _.find(this.widgets, ["name", name]);
   }
 
   $alloc_widget_name(prefix) {
@@ -137,6 +165,18 @@ class UI {
 
   $serialize() {
     return $hope.serialize(this, true);
+  }
+
+  has_linter_error() {
+    var err = false;
+
+    _.forEach(this.widgets, w => {
+      if (!_.isEmpty(w.$lint_result)) {
+        err = true;
+        return false;
+      }
+    });
+    return err;
   }
 }
 

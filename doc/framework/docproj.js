@@ -97,7 +97,7 @@ function rel2html(src, tgt, pkg, child) {
   // get all the service's name, starts with ##
   if (child.scan) {
     var relscrex = pkg["rel-scan-regexp"];
-    var rex = _.isString(child.scan) ? child.scan : child.scan === true && relscrex ? relscrex : "^\#\#\s(.+)\\n";
+    var rex = _.isString(child.scan) ? child.scan : child.scan === true && relscrex ? relscrex : "^\#\#\s(.+)";
     var hashhash = new RegExp(rex, "gm");
     var s;
     while ((s = hashhash.exec(md)) !== null) {
@@ -193,6 +193,20 @@ function md2html(src, tgt, id) {
       md.push(entry);
     }
   });
+
+  if (pkg.subdir) {
+    fs.readdirSync(src).sort().forEach(function(entry) {
+      if (_.includes(pkg.exclude, entry)) {
+        return;
+      }
+
+      var p = J(src, entry);
+      var stat = fs.statSync(p);
+      if (stat.isFile() && _.endsWith(p, ".md") && !_.includes(md, entry)) {
+        md.push(entry);
+      }
+    });
+  }
 
   if (!fs.existsSync(tgt)) {
     fs.mkdirSync(tgt);

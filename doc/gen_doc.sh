@@ -35,8 +35,22 @@ for P in md/startkit/*.md; do
 done
 
 
+# lattepanda
+
+mkdir -p html/lattepanda
+cp -r styles html/lattepanda/.
+# cp -r md/lattepanda/pic html/lattepanda/.
+
+for P in md/lattepanda/*.md; do
+  B="$(basename $P)"
+  H="${B%.md}.html"
+  pandoc -c styles/style.css --toc -o html/lattepanda/$H $P
+done
+
+
 # app developer
 
-node framework/docproj.js md/app-dev html/app-dev
+mkdir -p html/app-dev/doc
+node framework/docproj.js md/app-dev html/app-dev/doc
 
 

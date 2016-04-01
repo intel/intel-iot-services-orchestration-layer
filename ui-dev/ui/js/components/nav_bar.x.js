@@ -114,8 +114,8 @@ export default React.createClass({
           top: 16,
           right: 180
         }}>
-          <a href="http://github.com/01org/intel-iot-services-orchestration-layer" target="_blank">
-            {__("Demo")}
+          <a href={location.origin + "/app-dev"} target="_blank">
+            {__("Help")}
           </a>
         </div>
 

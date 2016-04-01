@@ -79,7 +79,7 @@ exports.find_user$ = function(name, passwd, em) {
       return null;
     }
     if (passwd == null) {
-      return _.find(users, "name", name);
+      return _.find(users, ["name", name]);
     }
     return _.find(users, function(o) {
       return o.name === name && o.passwd === passwd;

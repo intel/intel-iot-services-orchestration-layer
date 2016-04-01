@@ -176,9 +176,9 @@ Hub.prototype.leave$ = function() {
     return self.mnode.publish$(P.HUB_LEAVE, self.get_brief());
   })
   .then(function() {
-    return self.destroy_related_webapp();
+    return self.mnode.dispose$();
   })
-  .then(function() {
+  .finally(function() {
     return self._call_destroy_script$();
   });
 };
@@ -198,9 +198,6 @@ Hub.prototype._call_destroy_script$ = function() {
   return self.sm.run_hub_script$(destroy_script_path);
 };
 
-Hub.prototype.destroy_related_webapp = function() {
-  this.mnode.destroy_its_webapp();
-};
 
 /**
  * 1, send CLAIM_AS_HUB to the new sensor

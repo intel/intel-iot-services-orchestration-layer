@@ -24,17 +24,31 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Overlay from "../overlay.x";
+import Tbb from "../toolbar_button.x";
 
 export default class LeftToolbar extends ReactComponent {
 
   _on_save() {
-    $hope.confirm(__("Save to Server"),
-      __("This would overwrite the UI deployed on the server. Please make sure this is what you expect!"),
-      "warning", () => {
-      $hope.trigger_action("ui/save", {});
-    });
-
+    var view = $hope.app.stores.ui.active_view;
+    if (view.get_ui().has_linter_error()) {
+      $hope.confirm(__("Save to Server"),
+        __("This UI looks like contain error(s), are you sure to deploy it on the server?"),
+        "warning", res => {
+        if (!res) {
+          $hope.trigger_action("ui/save", {});
+        }
+      }, {
+        cancelButtonText: __("Save"),
+        confirmButtonText: __("Cancel and back to edit")
+      });
+    }
+    else {
+      $hope.confirm(__("Save to Server"),
+        __("This would overwrite the UI deployed on the server. Please make sure this is what you expect!"),
+        "warning", () => {
+        $hope.trigger_action("ui/save", {});
+      });
+    }
   }
 
   _on_trash() {
@@ -54,12 +68,8 @@ export default class LeftToolbar extends ReactComponent {
 
     return (
       <div className="hope-left-toolbar"> 
-        <Overlay overlay={__("Click to save the UI")}>
-          <i onClick={this._on_save} className={"fa fa-floppy-o" + (view && view.modified ? "" : " disabled")} />
-        </Overlay>
-        <Overlay overlay={__("Click to delete the selected widgets")}>
-          <i onClick={this._on_trash} className={"fa fa-trash-o" + (selected ? "" : " disabled")} />
-        </Overlay>
+        <Tbb icon="floppy-o" tips={__("Click to save the UI")} enabled={view && view.modified} onClick={this._on_save} />
+        <Tbb icon="trash-o" tips={__("Click to delete the selected widgets")} enabled={selected} onClick={this._on_trash} />
       </div>
     );
   }

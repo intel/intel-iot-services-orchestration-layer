@@ -107,7 +107,7 @@ export default React.createClass({
             if (view.info_for_new && view.info_for_new.app_id === a.id) {
               return true;
             }
-            return _.find(a.uis, "id", view.id);
+            return _.find(a.uis, ["id", view.id]);
           });
         }
         if (e.event === "set_active") {

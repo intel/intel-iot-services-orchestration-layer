@@ -51,12 +51,13 @@ export default class LightWidget extends Widget {
   render() {
     var w = this.props.widget;
     return super.render(
-      <div style={{
+      <div className="hv-center" style={{
+        height: this.get_height(),
         width: "100%"
       }}>
         <div>
-          <div className={"indicator-light" + (this.$status ? " on" : "")} />
-          <div className="indicator-text">{(this.$status ? w.config.on : w.config.off) || ""}</div>
+          <span className={"indicator-light" + (this.$status ? " on" : "")} />
+          <span className="indicator-text">{(this.$status ? w.config.on : w.config.off) || ""}</span>
         </div>
       </div>
     );

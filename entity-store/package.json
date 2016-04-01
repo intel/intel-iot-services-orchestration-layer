@@ -30,7 +30,7 @@
   },
   "scripts": {},
   "dependencies": {
-    "lodash": "^3.10.0"
+    "lodash": "^4.6.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",

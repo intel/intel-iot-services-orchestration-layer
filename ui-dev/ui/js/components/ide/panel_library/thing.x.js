@@ -87,7 +87,7 @@ export default class Thing extends ReactComponent {
     if (!name) {
       return $hope.notify("error", __("Invalid service name"));
     }
-    if (_.find(thing.services, "name", name)) {
+    if (_.find(thing.services, ["name", name])) {
       return $hope.notify("error", __("This name already exists in the thing"));
     }
 

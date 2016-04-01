@@ -16,7 +16,7 @@ To understand this by a demo, please go through the instructions below and we do
 
 ## How to Start for Framework Developers
 
-These are steps to setup on Linux to start contributing to the framework. It's workable on Windows under cygwin environment.
+These are steps to setup on Linux to start contributing to the framework. It's workable on Windows under cygwin/mingw(e.g. gitbash) environment.
 
 ### Node.js
 
@@ -30,9 +30,10 @@ The framework consists of multiple projects:
 * store - Abstraction layer for data. It provides the same abstracted API for databases, in memory hash tables, remote data providers etc.
 * entity-store - Stores for various basic data used by the framework, for example, hub, thing, service, app, etc.
 * entity - Higher level APIs upon entity-store, in particular, it provides application level lock to maintain certain data consistency between multiple stores.
+* http-broker - A broker using HTTP protocol
 * message - Abstraction layer for message infrastructures. It provides the same abstracted message APIs (send, pub/sub) built upon node.js event, mqtt, http broker, or any other actual implementations.
 * session-manager - It handles the invokation of services. The consumption of services are organized as sessions.
-* wfe - Workflow Engine. 
+* workflow - Workflow Engine. 
 * hub - Major logic of creating and hosting a Hub
 * center - Major logic of creating and hosting an Orchestration Center
 * hub-center-shared - Some shared logic of hub and center
@@ -69,13 +70,17 @@ Development of each projects are basically same as normal node.js projects. Howe
 
 ### Build
 
-To build basic iSOL without doc system, simply run
+To build, simply run
 
 ```shell
     ./build.sh nodoc
 ```
 
 All necessary stuff would be built into `./dist` which could be immediately used anywhere.
+
+If you need documentation system built as well, pleas remove the `nodoc` option.
+
+By default, this script would clean the cached npm packages so every npm package would be downloaded again. If you hope to reuse the packages already downloaded, please add the option `noclean`
 
 ### Run Demo Project
 
@@ -111,5 +116,12 @@ To shutdown the demo, you need run `killall node` to kill all `Node.js` processe
 
 ## Documentation
 
-There are some documentation (we will add many more in near future) located at `./doc`. They are created in MD format while you could run `./gen_doc.sh` to get a HTML version, if `pandoc` has been installed. Initial existing documentation are more focused about how to manually add new services into the framework. More documentation is working in progress and would be released together with v1.0 couple months later, including starter guide and how to add new customized UI widgets,
-etc.
+The solution comes with a documentation system as well. The documentation are created in MD format and could be generated into HTML files by running `./gen_doc.sh` in `doc` subfolder, if `pandoc` has been installed already. 
+
+After it is built, one may run `./dev-doc.sh` to view the documentations in browser. 
+
+There are other ways to read the documentation in browser:
+
+* After entire project is built (without `nodoc` option), one may enter `./dist` and run command `./start_doc.sh`
+
+* Or in the HTML5 IDE of this solution, click the link `Help` in the top right corner.
