@@ -1,0 +1,34 @@
+<h1 id="add-spec">Add Spec</h1><p>Add following codes into <code>ui-widgets/specs.js</code>:</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+  <span class="dt">id</span><span class="op">:</span>           <span class="st">&quot;hope/ui/radio&quot;</span><span class="op">,</span>
+  <span class="dt">type</span><span class="op">:</span>         <span class="st">&quot;spec&quot;</span><span class="op">,</span>
+  <span class="dt">is_ui</span><span class="op">:</span>        <span class="kw">true</span><span class="op">,</span>
+  <span class="dt">catalog</span><span class="op">:</span>      <span class="st">&quot;basic&quot;</span><span class="op">,</span>
+  <span class="dt">name</span><span class="op">:</span>         <span class="st">&quot;Radio&quot;</span><span class="op">,</span>
+  <span class="dt">description</span><span class="op">:</span>  <span class="st">&quot;Radio Control&quot;</span><span class="op">,</span>
+  <span class="dt">icon</span><span class="op">:</span>         <span class="st">&quot;dot-circle-o&quot;</span><span class="op">,</span>
+
+  <span class="dt">use_ract</span><span class="op">:</span>     <span class="kw">true</span><span class="op">,</span>
+  <span class="dt">data_cache_size</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span>
+
+  <span class="dt">config</span><span class="op">:</span> [<span class="op">{</span>
+    <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;align&quot;</span><span class="op">,</span>
+    <span class="dt">type</span><span class="op">:</span> <span class="st">&quot;option&quot;</span><span class="op">,</span>
+    <span class="dt">default</span><span class="op">:</span> <span class="st">&quot;center&quot;</span><span class="op">,</span>
+    <span class="dt">options</span><span class="op">:</span> [<span class="st">&quot;left&quot;</span><span class="op">,</span> <span class="st">&quot;center&quot;</span><span class="op">,</span> <span class="st">&quot;right&quot;</span>]
+  <span class="op">},</span> <span class="op">{</span>
+    <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;buttons&quot;</span><span class="op">,</span>
+    <span class="dt">type</span><span class="op">:</span> <span class="st">&quot;object&quot;</span><span class="op">,</span>
+    <span class="dt">sub_type</span><span class="op">:</span> <span class="st">&quot;string&quot;</span><span class="op">,</span>
+    <span class="dt">headers</span><span class="op">:</span> [<span class="st">&quot;Name&quot;</span><span class="op">,</span> <span class="st">&quot;Value&quot;</span>]
+  <span class="op">}</span>]<span class="op">,</span>
+
+  <span class="kw">in</span><span class="op">:</span> <span class="op">{</span>
+    <span class="dt">ports</span><span class="op">:</span> []
+  <span class="op">},</span>
+  <span class="dt">out</span><span class="op">:</span> <span class="op">{</span>
+    <span class="dt">ports</span><span class="op">:</span> [<span class="op">{</span>
+      <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;value&quot;</span><span class="op">,</span>
+      <span class="dt">type</span><span class="op">:</span> <span class="st">&quot;string&quot;</span>
+    <span class="op">}</span>]
+  <span class="op">}</span>
+<span class="op">}</span></code></pre></div><h1 id="add-entry">Add Entry</h1><p>Add following code into <code>ui-widgets/index.js</code>:</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="st">&quot;hope/ui/radio&quot;</span><span class="op">:</span>     <span class="at">require</span>(<span class="st">&quot;./generated/radio&quot;</span>)<span class="op">,</span></code></pre></div>

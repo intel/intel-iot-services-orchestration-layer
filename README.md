@@ -14,114 +14,110 @@ The middleware also contains one or multiple Service Hubs which actually manages
 
 To understand this by a demo, please go through the instructions below and we do have a demo (with simulated devices and services) project as well.
 
-## How to Start for Framework Developers
+## Important Notes
 
-These are steps to setup on Linux to start contributing to the framework. It's workable on Windows under cygwin/mingw(e.g. gitbash) environment.
+### Contribute to the Development Project
 
-### Node.js
+This project is called as a Release Project.
 
-Node.js with version >= 0.12 is required.
+It is read only to host the releases, to help contribute to this project, please go to its Development Project (git URL to be published soon). 
 
-### Projects
+The reason is that the solution is quite complicated. So for each release, it needs some building processing (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
 
-The framework consists of multiple projects:
+So to make the installation much easier, we will build the Development Project and put the ready-to-run solution here. Thus end users no need to build by themselves if start from this Release Project. 
 
-* base - Basic helper libraries including log etc.
-* store - Abstraction layer for data. It provides the same abstracted API for databases, in memory hash tables, remote data providers etc.
-* entity-store - Stores for various basic data used by the framework, for example, hub, thing, service, app, etc.
-* entity - Higher level APIs upon entity-store, in particular, it provides application level lock to maintain certain data consistency between multiple stores.
-* http-broker - A broker using HTTP protocol
-* message - Abstraction layer for message infrastructures. It provides the same abstracted message APIs (send, pub/sub) built upon node.js event, mqtt, http broker, or any other actual implementations.
-* session-manager - It handles the invokation of services. The consumption of services are organized as sessions.
-* workflow - Workflow Engine. 
-* hub - Major logic of creating and hosting a Hub
-* center - Major logic of creating and hosting an Orchestration Center
-* hub-center-shared - Some shared logic of hub and center
-* ui-dev - Frontend code (running inside browser) for application developers
-* ui-user - Frontend code (running inside browser) for end users
-* ui-widgets - UI widgets for ui-dev and ui-user
-* demo - Samples of configurations, services etc. for center and hub
-* build - scripts to build the distributed version
+However, if you hope to contribute to this project (bug fix, new enhancements etc.), you should work on the Development Project instead of this.
 
-Some of these projects may reference (i.e. require) others, so npm link is needed during the development. There is `link-npms.sh` to help build the dependencies.
+### Proxies
 
-### Start to Develop the Framework
+As this is a solution based on Node.js, so the installation may touch npm (Node.js Package Manager) which would download and install dependant packages from internet.
 
-As mentioned, Node.js >=0.12 need to be installed first. After that, run following commands to setup the environment. 
+So if you are behind a firewall / proxy, you may need to configure the proxy settings of your npm so you could download and install. You may do this by run `npm config edit` to open npm's configuration file, and configure related proxy items inside it. For example, add these lines in it
 
-*NOTE* these start with # are comments and don't need to type in command shell. And you might need sudo to execute this depends on your setup of Node.js
-
-*NOTE* As the setup and the following build stage heavily uses NPM, it should be connected to internet and do please configure NPM correctly if you are behind a proxy. You may use `npm config edit` and then configure the related proxy items.
-
-*NOTE* To build optional doc system, we need to install pandoc >= v1.16.0.2 at first, see [Pandoc](http://pandoc.org/installing.html) for details.
-
-```shell
-    # If your Node.js isn't installed by NVM, you might need sudo to run this
-
-    # Install related tools such as gulp, babel etc.
-    ./dev-install.sh
-
-    # npm link the projects to setup the dependencies
-    ./link-npms.sh
+```
+proxy=http://my_proxy:proxy_port
+https-proxy=http://my_proxy:proxy_port
 ```
 
-Development of each projects are basically same as normal node.js projects. However, the ui-widgets,`ui-dev` and `ui-user` are frontend code so need to manually run `gulp build` under each's folder each time upon change, or run `gulp watch` to automatically build upon change.
+Please replace the `my_proxy` and `proxy_port` in above example accordingly.
 
+## Installation
 
-### Build
+First, Node.js with version >= 0.12 is required. And you might need to configure npm proxy settings as mentioned above.
 
-To build, simply run
+Secondly, if you are using Windows, you need a shell environment to run scripts. You may install cygwin, or gitbash (which is a MingGW)
 
-```shell
-    ./build.sh nodoc
-```
-
-All necessary stuff would be built into `./dist` which could be immediately used anywhere.
-
-If you need documentation system built as well, pleas remove the `nodoc` option.
-
-By default, this script would clean the cached npm packages so every npm package would be downloaded again. If you hope to reuse the packages already downloaded, please add the option `noclean`
-
-### Run Demo Project
-
-To help understand the framework, a demo project is created. There are two ways to run the demo project. 
-
-The first one does NOT need to build first. You may simiply run following commands after the environment is ready (e.g. have `npm install` etc.)
+With that, under the shell, you may `git clone` this project (or download the zip and uncompress it) and `npm install` under it for necessary additional packages. Below is an example of installing it 
 
 ```shell
-    # Start a sample HTTP broker at background
-    ./run broker&
-    # wait some seconds, run this to create an 
-    # orchestration center at background
-    ./run center&
-    # wait some seconds, run this to create an 
-    # hub at background with multiple simulated 
-    # services / devicesat inside it to play with
-    ./run hub&
+  # Instead of git clone, you may download the zip of project through
+  # github webpage and then uncompress it
+  git clone https://github.com/01org/intel-iot-services-orchestration-layer
+
+  cd intel-iot-services-orchestration-layer
+
+  # this would install all dependent npm packages for this
+  npm install
 ```
 
-After that, you may navigate to `http://localhost:8080` in browser for HTML5 UI for application developers, and `http://localhost:3000` for HTML5 UI for end users. You may replace localhost to real ip/host if you need to remotely connect to it.
-
-Another way is to start the demo contained in the distribution built by `./build.sh`. Simple changed directory to `./dist` and run `./start_mock_demo.sh` to start the demo project.
-
-To shutdown the demo, you need run `killall node` to kill all `Node.js` processes we started by `./run` or `./start_mock_demo.sh`.
-
-## Convention
-
-* Functions that serve for Constructor should start with the captial letter with Camel convention, e.g. `MyClass`
-* Functions that are pure function would be small cases concated with underscore, e.g. `my_funtion`
-* Functions that are async should return a promise, and the name should end with $. e.g. `my_function$`
-* Indent with 2 spaces, no TAB
-* Each line can only have 80 characters at most
 
 ## Documentation
 
-The solution comes with a documentation system as well. The documentation are created in MD format and could be generated into HTML files by running `./gen_doc.sh` in `doc` subfolder, if `pandoc` has been installed already. 
+You may choose ANY of the following options to read the documentation.
 
-After it is built, one may run `./dev-doc.sh` to view the documentations in browser. 
+* Run `./start_doc.sh`
+* In the HTML5 IDE of this solution, click the link `Help` on the top right 
+* (Under Construction...) Read the [wiki of this project] (https://github.com/01org/intel-iot-services-orchestration-layer/wiki)
 
-There are other ways to read the documentation in browser:
+### Demos
 
-* After entire project is built (without `nodoc` option), one may enter `./dist` and run command `./start_doc.sh`
+To help understand the framework, a demo project is created. There are couple ways to run the demo project. 
 
-* Or in the HTML5 IDE of this solution, click the link `Help` in the top right corner.
+### Run Demo in Seperated Shells
+
+One way is to run the Broker, Center and Hub in seperated shells. (Please read the documentation for the concepts of Broker, Center and Hub).
+
+Firstly, open a shell and start a Broker based on HTTP in it.
+```shell
+    # Kill all existing Node.js processes
+    # This only needed to do once before start Broker
+    killall node 2>/dev/null
+
+    # Start a sample HTTP Broker
+    ./run_demo broker
+```
+
+Then open another shell and start the center
+```shell
+    # Start a sample Center
+    ./run_demo center
+```
+
+Then open another shell and start a Hub (named hub_a)
+```shell
+    # Start a sample Hub
+    ./run_demo hub 
+```
+
+(Optional) You may open the 4th shell to start another Hub (named hub_b), although this isn't always necessary
+```shell
+    # Start another sample Hub
+    ./run_demo hub_b 
+```
+
+
+After that, you may navigate to `http://localhost:8080` in browser for HTML5 UI for application developers, and `http://localhost:3000` for HTML5 UI for end users. You may replace localhost to real ip/host if you need to remotely connect to it.
+
+### Run Demo with One Command
+
+Above explains the details of running the demo, we have created a helper script to include all of the above, so instead of openning 4 shells and start related components, you may run the demo via running this script:
+
+```shell
+  # This contains all steps above
+  ./start_mock_demo.sh
+```
+
+After that, it is the same as above, i.e. open the browser to navigate the UIs.
+
+If running in this way, there would be logs saved as `xxx.log`. `xxx` corresponds to broker, center, mock_hub, mock_hub_b etc.
+

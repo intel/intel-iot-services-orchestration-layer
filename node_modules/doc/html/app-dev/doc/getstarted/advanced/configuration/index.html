@@ -1,0 +1,93 @@
+<h1 id="configuration-for-center-and-hub">Configuration for Center and Hub</h1><p>As mentioned in <a href="#getstarted/advanced/basics/2-Center_Hub_Broker">Center/Hub/Broker</a>, when start a <strong>Center</strong> or a <strong>Hub</strong>, a configuration file is needed (usually <code>./config.json</code> by default) to specify the behaviors of <strong>Center</strong> or <strong>Hub</strong>, e.g. which <strong>Broker</strong> it would use, whether it would print out log messages etc.</p><p>The best way to learn the configuration is to read the <code>config.json</code> in demos. It is well commented for every items.</p><p>For example, this is what we used to create a <strong>Center</strong> in demo.</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+  <span class="co">// Type of this instance. It could be:</span>
+  <span class="co">//      center  - which takes role of orchestration center</span>
+  <span class="co">//      hub     - which is a service hub</span>
+  <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;center&quot;</span><span class="op">,</span>
+
+  <span class="co">// Optional - give a meaningful name for this instance</span>
+  <span class="co">// It isn&#39;t the id of this instance so no need to be unique</span>
+  <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;Center&quot;</span><span class="op">,</span>
+
+  <span class="co">// Optional - ID of this instance, and need to be globally unique</span>
+  <span class="co">// id: &quot;an_unique_id_here&quot;,   </span>
+
+
+  <span class="co">// Defines how it can talk with other instances in the system</span>
+  <span class="co">// instances talk with each other through a message broker</span>
+  <span class="co">// typical message brokers could be mqtt etc., or a HTTP broker </span>
+  <span class="co">// implemented by this project. Please check documentation for details</span>
+  
+  <span class="st">&quot;broker&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;http&quot;</span><span class="op">,</span>       <span class="co">// would use HTTP broker </span>
+    <span class="st">&quot;broker_url&quot;</span><span class="op">:</span> <span class="st">&quot;http://127.0.0.1:16666&quot;</span><span class="op">,</span>     <span class="co">// URL of that broker</span>
+    <span class="st">&quot;my_port&quot;</span><span class="op">:</span> <span class="dv">19999</span>      <span class="co">// assign a TCP/IP port for this instance to talk with broker</span>
+                          <span class="co">// if there is multiple instances in same machine</span>
+                          <span class="co">// they cann&#39;t share the same TCP/IP port</span>
+  <span class="op">},</span>
+  
+  <span class="co">/* </span>
+<span class="co">  // Example of using mqtt broker</span>
+<span class="co">  &quot;broker&quot;: {</span>
+<span class="co">    &quot;type&quot;: &quot;mqtt&quot;,</span>
+<span class="co">    &quot;url&quot;: &quot;mqtt://127.0.0.1&quot;,  // the url of the mqtt server</span>
+<span class="co">    &quot;only_support_mqtt_3_1&quot;: true     // set to true if the mqtt server doesn&#39;t</span>
+<span class="co">                                      // support mqtt 3.1.1 or higher</span>
+<span class="co">  },</span>
+<span class="co">  */</span>
+
+  <span class="co">// Optional - Defines the log behavior. By default log is disabled</span>
+  <span class="st">&quot;log&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;enabled&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>      <span class="co">// enable the log or not</span>
+    <span class="st">&quot;verbose&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>      <span class="co">// show details or not</span>
+    <span class="st">&quot;show_error_of_any_category&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span> <span class="co">// show error log even if its category is disabled</span>
+    <span class="st">&quot;show_warn_of_any_category&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>  <span class="co">// show warn log even if its category is disabled</span>
+    <span class="st">&quot;levels&quot;</span><span class="op">:</span> <span class="op">{</span>           <span class="co">// which level of log would be printed out</span>
+      <span class="st">&quot;debug&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;info&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+      <span class="st">&quot;warn&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+      <span class="st">&quot;error&quot;</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="op">},</span>
+    <span class="st">&quot;categories&quot;</span><span class="op">:</span> <span class="op">{</span>       <span class="co">// show (or not show) log of specific category</span>
+      <span class="st">&quot;*&quot;</span><span class="op">:</span>      <span class="kw">false</span><span class="op">,</span>    <span class="co">// allow to use wildcard</span>
+      <span class="st">&quot;message&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;center&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+      <span class="st">&quot;entity&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;hub&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;heartbeat&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;workflow&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+      <span class="st">&quot;sm&quot;</span> <span class="op">:</span> <span class="kw">false</span>
+    <span class="op">}</span>
+  <span class="op">},</span>
+
+
+  <span class="co">// Optional - Configuration about the port for the HTML5 UI present to developers</span>
+  <span class="co">//            by default it is opened at port 8080</span>
+  <span class="st">&quot;web_for_developer&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;port&quot;</span><span class="op">:</span> <span class="dv">8080</span>
+  <span class="op">},</span>
+
+  <span class="co">// Optional - Configuration about the port for the HTML5 UI present to end users</span>
+  <span class="co">//            i.e. the UI created by developers</span>
+  <span class="co">//            by default it is opened at port 3000</span>
+  <span class="st">&quot;web_for_end_users&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;port&quot;</span><span class="op">:</span> <span class="dv">3000</span> 
+  <span class="op">},</span>
+
+
+  <span class="co">// Optional - Where to store the applications (workflows, UIs etc.)</span>
+  <span class="co">// By default, it is ./appbundle</span>
+  <span class="st">&quot;app_bundle_path&quot;</span><span class="op">:</span> <span class="st">&quot;./appbundle&quot;</span><span class="op">,</span>
+
+  <span class="co">// Optional - Where to store the user profiles, it&#39;s ./user.json by default</span>
+  <span class="st">&quot;user_json_path&quot;</span><span class="op">:</span> <span class="st">&quot;./user.json&quot;</span><span class="op">,</span>
+  <span class="co">// Optional - Whether a user need login before use the system</span>
+  <span class="st">&quot;authenticate&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+
+  <span class="co">// Optional - Defines frequencies of Heartbeat server in this center</span>
+  <span class="st">&quot;heartbeat_sever&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;check_interval&quot;</span><span class="op">:</span> <span class="dv">30000</span><span class="op">,</span>    <span class="co">// milliseconds to check whether a hub is dropped or not</span>
+    <span class="st">&quot;drop_threshold&quot;</span><span class="op">:</span> <span class="dv">120000</span>    <span class="co">// set a hub as disconnected if it hasn&#39;t send</span>
+                                <span class="co">// heartbeat to this server for this amount of milliseconds</span>
+  <span class="op">}</span>
+
+<span class="op">}</span></code></pre></div><p>Furthermore, this section would be describe the configurable items in this configuration file.</p>
