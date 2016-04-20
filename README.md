@@ -69,7 +69,7 @@ You may choose ANY of the following options to read the documentation.
 * In the HTML5 IDE of this solution, click the link `Help` on the top right 
 * (Under Construction...) Read the [wiki of this project] (https://github.com/01org/intel-iot-services-orchestration-layer/wiki)
 
-### Demos
+## Demos
 
 To help understand the framework, a demo project is created. There are couple ways to run the demo project. 
 
