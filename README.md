@@ -22,7 +22,7 @@ This project is called as a Release Project.
 
 It is read only to host the releases, to help contribute to this project, please go to its Development Project (git URL to be published soon). 
 
-The reason is that the solution is quite complicated. So for each release, it needs some building processing (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
+The reason is that the solution is quite complicated. So for each release, it needs some building process (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
 
 So to make the installation much easier, we will build the Development Project and put the ready-to-run solution here. Thus end users no need to build by themselves if start from this Release Project. 
 
@@ -32,7 +32,7 @@ However, if you hope to contribute to this project (bug fix, new enhancements et
 
 As this is a solution based on Node.js, so the installation may touch npm (Node.js Package Manager) which would download and install dependant packages from internet.
 
-So if you are behind a firewall / proxy, you may need to configure the proxy settings of your npm so you could download and install. You may do this by run `npm config edit` to open npm's configuration file, and configure related proxy items inside it. For example, add these lines in it
+So if you are behind a firewall / proxy, you may need to configure the proxy settings of your npm so you could download and install. You may do this by running `npm config edit` in your shell (command line prompt) to open npm's configuration file, and configure related proxy items inside it. For example, add these lines in it
 
 ```
 proxy=http://my_proxy:proxy_port
@@ -63,7 +63,7 @@ With that, under the shell, you may `git clone` this project (or download the zi
 
 ## Documentation
 
-You may choose ANY of the following options to read the documentation.
+You may choose **ANY** of the following options to read the documentation.
 
 * Run `./start_doc.sh`
 * In the HTML5 IDE of this solution, click the link `Help` on the top right 
@@ -77,23 +77,27 @@ To help understand the framework, a demo project is created. There are couple wa
 
 One way is to run the Broker, Center and Hub in seperated shells. (Please read the documentation for the concepts of Broker, Center and Hub).
 
-Firstly, open a shell and start a Broker based on HTTP in it.
+Firstly, open a shell and kill all existing running instances of Node.js - this avoids that there is already a demo running at background.
 ```shell
     # Kill all existing Node.js processes
-    # This only needed to do once before start Broker
+    # This only needs to do once before start Broker
     killall node 2>/dev/null
+```
 
+Then, still in this shell, start a Broker based on HTTP in it.
+```shell
     # Start a sample HTTP Broker
     ./run_demo broker
 ```
 
-Then open another shell and start the center
+
+Then open another (i.e. the 2nd) shell and start the center
 ```shell
     # Start a sample Center
     ./run_demo center
 ```
 
-Then open another shell and start a Hub (named hub_a)
+Then open another (i.e. the 3rd) shell and start a Hub (named hub_a)
 ```shell
     # Start a sample Hub
     ./run_demo hub 
