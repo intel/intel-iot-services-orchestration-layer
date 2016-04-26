@@ -47,17 +47,29 @@ First, Node.js with version >= 0.12 is required. And you might need to configure
 
 Secondly, if you are using Windows, you need a shell environment to run scripts. You may install cygwin, or gitbash (which is a MingGW)
 
+### Install from github
+
 With that, under the shell, you may `git clone` this project (or download the zip and uncompress it) and `npm install` under it for necessary additional packages. Below is an example of installing it 
 
-```shell
+```bash
   # Instead of git clone, you may download the zip of project through
   # github webpage and then uncompress it
-  git clone https://github.com/01org/intel-iot-services-orchestration-layer
+  git clone https://github.com/01org/intel-iot-services-orchestration-layer iot-sol
 
-  cd intel-iot-services-orchestration-layer
+  cd iot-sol
 
   # this would install all dependent npm packages for this
   npm install
+```
+
+### Install from npm
+
+As this solution is also published in npm with the name `iot-sol`. So instead of installing from github, you may also install it simply with the command below
+
+```bash
+  npm install iot-sol
+  # npm installs it to local node_modules so need cd to it to play with it
+  cd node_modules/iot-sol
 ```
 
 
@@ -78,33 +90,33 @@ To help understand the framework, a demo project is created. There are couple wa
 One way is to run the Broker, Center and Hub in seperated shells. (Please read the documentation for the concepts of Broker, Center and Hub).
 
 Firstly, open a shell and kill all existing running instances of Node.js - this avoids that there is already a demo running at background.
-```shell
+```bash
     # Kill all existing Node.js processes
     # This only needs to do once before start Broker
     killall node 2>/dev/null
 ```
 
 Then, still in this shell, start a Broker based on HTTP in it.
-```shell
+```bash
     # Start a sample HTTP Broker
     ./run_demo broker
 ```
 
 
 Then open another (i.e. the 2nd) shell and start the center
-```shell
+```bash
     # Start a sample Center
     ./run_demo center
 ```
 
 Then open another (i.e. the 3rd) shell and start a Hub (named hub_a)
-```shell
+```bash
     # Start a sample Hub
     ./run_demo hub 
 ```
 
 (Optional) You may open the 4th shell to start another Hub (named hub_b), although this isn't always necessary
-```shell
+```bash
     # Start another sample Hub
     ./run_demo hub_b 
 ```
@@ -116,7 +128,7 @@ After that, you may navigate to `http://localhost:8080` in browser for HTML5 UI 
 
 Above explains the details of running the demo, we have created a helper script to include all of the above, so instead of openning 4 shells and start related components, you may run the demo via running this script:
 
-```shell
+```bash
   # This contains all steps above
   ./start_mock_demo.sh
 ```
@@ -124,4 +136,30 @@ Above explains the details of running the demo, we have created a helper script 
 After that, it is the same as above, i.e. open the browser to navigate the UIs.
 
 If running in this way, there would be logs saved as `xxx.log`. `xxx` corresponds to broker, center, mock_hub, mock_hub_b etc.
+
+## Advanced Topics
+
+To understand more about the iot-sol, it's highly recommended to read the documentation (e.g. by `./start_doc.sh`) in get_started/advanced category. 
+
+In high level, iot-sol has these components (Read documentation for more explanations):
+
+* `Center`: It's a Node.js process that manages all of the workflows and also offers the HTML5 UI for developers and end users.
+
+* `Hub`: It's also a Node.js process. It hosts many "Things" and the services (the nodes used to compose a workflow) offered by these "Things". For example, a Hub running on Edison may have a Thing so called "LED" which has three services "turn_on", "turn_off", "get_status". And another Hub (running on gateway of Cloud) may have a Thing so called "Gmail" which has services such as "fetch_mail", "send_mail", etc.
+
+* `Broker`: Center and Hubs are communicated with the help of Broker. The Broker could be a MQTT, or the built-in HTTP broker written in Node.js (need to start that manaully). The Center and Hub don't talk with each directly. Instead, they send messages to Broker, and Broker would dispatch them to the right target. This removes a lot of dependencies related to cmmunication channels and make deployment much more flexible. Center and Hub has corresponding configuration items to define which broker they are using.
+
+A solution may have multiple Hubs in entire system. These Hubs would roll up the information about the services they hosted to the Center. Thus in Center, developers could compose a workflow that employs these services. The workflow is stored at Center. When center executes the workflow, based on the logic defined by developer in the workflow, the Center knows which service need to be invoked, and then it sends command to the corresponding Hub which hosts the required service, and the Hub would execute this service. The service may further send out some message and would be disptached to Center to drive the next step of the Workflow.
+
+The communcation between Center and Hub is going through Broker, therefore, Center and Hub could be deployed very flexibly, either sperately on different physical machines / processes (e.g. one in gateway while the other in cloud), or locally on the same machine (e.g. all in the same Edison board).
+
+In above demos, we use `run_demo` to start related center or hub. And if you look into the actual code of the `run_demo` script, you would find the normal way to start center / hub is 
+
+* Normal way to start a center: `./center [path-to-a-configuration]`
+* * Normal way to start a center: `./hub [path-to-a-configuration]`
+
+They all need a configuration file provided (default to `./config.json` if not supplied). Details about the configuration file is also documented in get_started/advanced category of the documentation.
+
+
+
 
