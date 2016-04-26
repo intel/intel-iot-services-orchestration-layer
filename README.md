@@ -156,7 +156,7 @@ The communcation between Center and Hub is going through Broker, therefore, Cent
 In above demos, we use `run_demo` to start related center or hub. And if you look into the actual code of the `run_demo` script, you would find the normal way to start center / hub is 
 
 * Normal way to start a center: `./center [path-to-a-configuration]`
-* * Normal way to start a center: `./hub [path-to-a-configuration]`
+* Normal way to start a center: `./hub [path-to-a-configuration]`
 
 They all need a configuration file provided (default to `./config.json` if not supplied). Details about the configuration file is also documented in get_started/advanced category of the documentation.
 
