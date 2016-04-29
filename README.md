@@ -20,7 +20,7 @@ To understand this by a demo, please go through the instructions below and we do
 
 This project is called as a Release Project.
 
-It is read only to host the releases, to help contribute to this project, please go to its Development Project (git URL to be published soon). 
+It is read only to host the releases, to help contribute to this project, please go to its [Development Project] (https://github.com/01org/intel-iot-services-orchestration-layer-dev). 
 
 The reason is that the solution is quite complicated. So for each release, it needs some building process (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
 
