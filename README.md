@@ -77,9 +77,9 @@ As this solution is also published in npm with the name `iot-sol`. So instead of
 
 You may choose **ANY** of the following options to read the documentation.
 
-* Run `./start_doc.sh`
-* In the HTML5 IDE of this solution, click the link `Help` on the top right 
-* (Under Construction...) Read the [wiki of this project] (https://github.com/01org/intel-iot-services-orchestration-layer/wiki)
+* Read our [online document](http://01org.github.io/intel-iot-services-orchestration-layer)
+* Offline in your shell, run `./start_doc.sh`
+* When you are in the HTML5 IDE of this solution, click the link `Help` on the top right 
 
 ## Demos
 
