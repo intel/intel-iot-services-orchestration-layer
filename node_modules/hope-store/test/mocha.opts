@@ -1,3 +1,0 @@
---require test/support/common
---reporter spec
---timeout 5000
