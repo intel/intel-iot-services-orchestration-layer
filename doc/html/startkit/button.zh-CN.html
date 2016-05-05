@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#按钮">按钮</a><ul>
+<li><a href="#是否按下">是否按下</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#样例">样例</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="按钮">按钮</h1>
+<h2 id="是否按下">是否按下</h2>
+<h3 id="描述">描述</h3>
+<p>有输入时，该按键是否处于被按下的状态，如果是，输出true，反之输出false</p>
+<h3 id="配置">配置</h3>
+<p><code>pin</code>: 整数. 该按键连接的GPIO引脚. 必填项</p>
+<h3 id="输入">输入</h3>
+<p><code>trigger</code>: 任何类型. 触发信号, 每来一次输入做一次是否按下的判断</p>
+<h3 id="输出">输出</h3>
+<p><code>bool</code>: 布尔值. true表示按键被按下, false表示没有按下</p>
+<h3 id="样例">样例</h3>
+<div class="figure">
+<img src="./pic/button_buzz.zh-CN.jpg" />
+
+</div>
+<p>图中每隔1s就查询按钮状态,如果按下就打开蜂鸣器,反之则关闭</p>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "timer",
+  "description": "timer control, such as delay and interval",
+  "is_builtin": true
+}

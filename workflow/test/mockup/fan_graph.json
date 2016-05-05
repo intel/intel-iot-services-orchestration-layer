@@ -1,0 +1,68 @@
+{
+  "version": "1.0.1",
+  "type": "graph",
+  "id": "GRAPH_fan_test",
+  "name": "demo",
+  "description": "",
+  "timestamp": 1446086478235,
+  "specs": [],
+  "bindings": {
+  },
+  "graph": {
+    "nodes": [
+      {
+        "spec": "report",
+        "id": "node_report_1"
+      },
+      {
+        "spec": "report",
+        "id": "node_report_2"
+      },
+      {
+        "spec": "switch",
+        "id": "node_switch_1"
+      },
+      {
+        "spec": "compare",
+        "id": "node_compare_1"
+      }
+    ],
+    "edges": [
+      {
+        "id": "edge_1",
+        "source": {
+          "node": "node_report_1",
+          "port": "data"
+        },
+        "target": {
+          "node": "node_compare_1",
+          "port": "in1"
+        }
+      },
+      {
+        "id": "edge_2",
+        "source": {
+          "node": "node_report_2",
+          "port": "data"
+        },
+        "target": {
+          "node": "node_compare_1",
+          "port": "in2"
+        }
+      },
+      {
+        "id": "edge_3",
+        "source": {
+          "node": "node_compare_1",
+          "port": "bool"
+        },
+        "target": {
+          "node": "node_switch_1",
+          "port": "on"
+        }
+      }
+    ],
+    "tags": []
+  },
+  "app": "hope_app"
+}

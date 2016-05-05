@@ -1,0 +1,93 @@
+{
+  // Type of this instance. It could be:
+  //      center  - which takes role of orchestration center
+  //      hub     - which is a service hub
+  "type": "center",
+
+  // Optional - give a meaningful name for this instance
+  // It isn't the id of this instance so no need to be unique
+  "name": "Center",
+
+  // Optional - ID of this instance, and need to be globally unique
+  // id: "an_unique_id_here",   
+
+
+  // Defines how it can talk with other instances in the system
+  // instances talk with each other through a message broker
+  // typical message brokers could be mqtt etc., or a HTTP broker 
+  // implemented by this project. Please check documentation for details
+  
+  "broker": {
+    "type": "http",       // would use HTTP broker 
+    "broker_url": "http://127.0.0.1:16666",     // URL of that broker
+    "my_port": 19999      // assign a TCP/IP port for this instance to talk with broker
+                          // if there is multiple instances in same machine
+                          // they cann't share the same TCP/IP port
+  },
+  
+  /* 
+  // Example of using mqtt broker
+  "broker": {
+    "type": "mqtt",
+    "url": "mqtt://127.0.0.1",  // the url of the mqtt server
+    "only_support_mqtt_3_1": true     // set to true if the mqtt server doesn't
+                                      // support mqtt 3.1.1 or higher
+  },
+  */
+
+  // Optional - Defines the log behavior. By default log is disabled
+  "log": {
+    "enabled": true,      // enable the log or not
+    "verbose": true,      // show details or not
+    "show_error_of_any_category": true, // show error log even if its category is disabled
+    "show_warn_of_any_category": true,  // show warn log even if its category is disabled
+    "levels": {           // which level of log would be printed out
+      "debug": false,
+      "info": true,
+      "warn": true,
+      "error": true
+    },
+    "categories": {       // show (or not show) log of specific category
+      "*":      false,    // allow to use wildcard
+      "message": false,
+      "center": true,
+      "entity": false,
+      "hub": false,
+      "heartbeat": false,
+      "workflow": false,
+      "sm" : false
+    }
+  },
+
+
+  // Optional - Configuration about the port for the HTML5 UI present to developers
+  //            by default it is opened at port 8080
+  "web_for_developer": {
+    "port": 8080
+  },
+
+  // Optional - Configuration about the port for the HTML5 UI present to end users
+  //            i.e. the UI created by developers
+  //            by default it is opened at port 3000
+  "web_for_end_users": {
+    "port": 3000 
+  },
+
+
+  // Optional - Where to store the applications (workflows, UIs etc.)
+  // By default, it is ./appbundle
+  "app_bundle_path": "./appbundle",
+
+  // Optional - Where to store the user profiles, it's ./user.json by default
+  "user_json_path": "./user.json",
+  // Optional - Whether a user need login before use the system
+  "authenticate": false,
+
+  // Optional - Defines frequencies of Heartbeat server in this center
+  "heartbeat_sever": {
+    "check_interval": 30000,    // milliseconds to check whether a hub is dropped or not
+    "drop_threshold": 120000    // set a hub as disconnected if it hasn't send
+                                // heartbeat to this server for this amount of milliseconds
+  }
+
+}

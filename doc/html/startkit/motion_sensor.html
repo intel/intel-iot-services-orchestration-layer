@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#motion-sensor">Motion Sensor</a><ul>
+<li><a href="#detectmotion">detectMotion</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#input">Input</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="motion-sensor">Motion Sensor</h1>
+<h2 id="detectmotion">detectMotion</h2>
+<h3 id="description">Description</h3>
+<p>detect whether people moves according to the change of IR value</p>
+<h3 id="config">Config</h3>
+<p><code>pin</code>: int. The gpio pin which is attached by the sensor</p>
+<h3 id="input">Input</h3>
+<p><code>trigger</code>: any type. It is a trigger signal, and whenever it comes, the service will detect motion</p>
+<h3 id="output">Output</h3>
+<p><code>bool</code>: boolean. true means people moves (IR value changes) in the last 3s</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/motion_buzz.jpg" />
+
+</div>
+<p>It will detect whether people moves in every 1s, if people moves, the buzzer starts buzzing, otherwise, the buzzer stop buzzing.</p>
+</body>
+</html>

@@ -1,8 +1,0 @@
-<p>Download the source code <a href="http://bl.ocks.org/brattonc/5e5ce9beee483220e2f6#liquidFillGauge.js">liquidFillGauge.js</a> and save it to <code>ui-widgets/hope-widget-liquid-fill-gauge/third_party/</code> with a little changes like follows:</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> d3 <span class="op">=</span> <span class="at">require</span>(<span class="st">&quot;d3&quot;</span>)<span class="op">;</span>
-<span class="va">exports</span>.<span class="at">liquidFillGaugeDefaultSettings</span> <span class="op">=</span> <span class="kw">function</span>()<span class="op">{</span>
-    <span class="cf">return</span> <span class="op">{</span>
-        ...
-<span class="op">}</span>
-<span class="va">exports</span>.<span class="at">loadLiquidFillGauge</span> <span class="op">=</span> <span class="kw">function</span>(elementId<span class="op">,</span> value<span class="op">,</span> config) <span class="op">{</span>
-    <span class="cf">if</span>(config <span class="op">==</span> <span class="kw">null</span>) config <span class="op">=</span> <span class="at">liquidFillGaugeDefaultSettings</span>()<span class="op">;</span>
-    ...</code></pre></div>

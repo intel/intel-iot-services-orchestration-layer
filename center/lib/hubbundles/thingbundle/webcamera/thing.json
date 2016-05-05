@@ -1,0 +1,5 @@
+{
+  "name": "webcamera",
+  "description": "related service with web camera",
+  "is_builtin": true
+}

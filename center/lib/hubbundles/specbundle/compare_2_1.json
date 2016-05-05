@@ -1,0 +1,18 @@
+{
+    "id": "compare_2_1_builtin",
+    "name": "compare_2_1_builtin",
+    "description": "compare two inports and send a boolean result",
+    "out": {
+      "ports": [{
+        "name": "bool",
+        "type": "boolean"
+      }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "in1"
+      },{
+        "name": "in2"
+        }]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "id": "lcd_1_1_startkit",
+    "name": "lcd_1_1_startkit",
+    "out": {
+      "ports": [{             
+        "name": "status",
+        "type": "boolean"
+      }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "content",
+        "type": "string"
+      }]
+    }
+}

@@ -1,0 +1,5 @@
+{
+  "switch":"开关",
+  "turn on or off the relay. status = on":"开关继电器，输出当前状态",
+  "startkit/relay.html#switch":"startkit/relay.zh-CN.html#开关"
+}

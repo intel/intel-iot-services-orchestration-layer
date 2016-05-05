@@ -1,0 +1,27 @@
+{
+  "description":"listen on the message from the broker",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "on",
+        "type": "boolean"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "message",
+        "type": "string"
+      }]
+    },
+    "config": [
+      {
+        "name": "server",
+        "required": true
+      }, {
+        "name": "topic",
+        "type": "string",
+        "required": true
+      }
+    ]
+  }
+}

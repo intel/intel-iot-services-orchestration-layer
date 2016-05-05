@@ -1,0 +1,99 @@
+#!/usr/bin/env node
+// -*- mode: js -*-
+
+var Center = require("./index");
+
+var program = require("commander");
+var _ = require("lodash");
+var B = require("hope-base");
+var S = require("hope-hub-center-shared");
+
+var version = "3.0.0";
+
+process.on("uncaughtException", function(err) {
+    console.log(">>>>> Unhandled Exception >>>>>>");
+    if (_.isError(err)) {
+      console.log(err.stack);
+    } else {
+      console.log(B.to_string(err));
+    }
+});
+
+
+program
+  .version(version)
+  .usage("[config-file]")
+  .option("-c, --config-dump", "Show generated configration");
+
+program.name = "center";
+
+program.parse(process.argv);
+
+if (program.args.length > 1) {
+  program.help();
+}
+
+var processed_config = S.process_config(program.args[0] || "./config.json");
+
+var config = processed_config.generated_config;
+
+
+// TODO hard code the conversion of some paths currently, maybe need a more general solution
+function _resolve_path(access_str) {
+  var x = _.get(config, access_str);
+  if (x) {
+    if (_.isArray(x)) {
+      var paths = x.map(function(p) {
+        return B.path.abs(p, config.config_path);
+      });
+      _.set(config, access_str, paths);
+    }
+    else {
+      _.set(config, access_str, B.path.abs(x, config.config_path));
+    }
+  }
+} 
+_resolve_path("assemble.dev_web_app.$params.static");
+_resolve_path("assemble.user_web_app.$params.static");
+_resolve_path("assemble.user_json_path");
+
+// Fix the id of device and mnode
+if (!config.id) {
+  config.id = S.get_instance_id(
+    B.path.abs("./.id", module.filename),
+    config.config_path);
+}
+
+var mnode_params = _.get(config, "assemble.mnode.$params");
+if (mnode_params && !mnode_params.id) {
+  mnode_params.id = config.id + "__mnode__";
+}
+
+if (program.configDump) {
+  console.log("\n>>>>>> Generated Configuration >>>>>>\n");
+  console.log(B.to_string(config, 10));
+  console.log("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+}
+
+
+
+B.debug.enable_debug_shell();
+
+
+process.on("SIGINT", function() {
+  B.log("hope", "... CENTER EXITING ...");
+  Center.stop$().then(function() {
+    B.log("hope", "Center exit safely");
+    process.exit(0);
+  }).catch(function(err) {
+    B.log.error("hope", "Error when center exit", err);
+    process.exit(1);
+
+  }).done();
+});
+
+
+Center.start$(config).done();
+
+
+

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if [ $# -ge 1 ]; then
+  PORT=$1
+else
+  echo "No port specified and would use default port 16666."
+  echo "To use customized port, run it would a number as argument"
+  echo "       e.g. ./http_broker 12345"
+  echo ""
+  PORT=16666
+fi
+
+
+echo "... Starting HTTP Broker at port $PORT"
+node ./node_modules/hope-http-broker/bin/start_broker $PORT

@@ -1,0 +1,33 @@
+{
+  "name": "gate",
+  "description": "If the gate is true, out = in, otherwise, nothing will output",
+  "spec":{
+    "id": "gate_spec",
+    "name": "gate_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "gate",
+          "type": "boolean",
+          "no_trigger": true
+        },
+        {
+          "name": "in",
+          "type": "any"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "any"
+        }
+      ]
+    }
+  },
+  "ui": {
+
+  },
+  "doc" : "builtin/flow.html#gate"
+}

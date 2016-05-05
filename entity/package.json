@@ -1,0 +1,42 @@
+{
+  "author": {
+    "name": "Zidong Jiang",
+    "email": "zidong.jiang@intel.com"
+  },
+  "contributors": [
+    {
+      "name": "Zidong Jiang"
+    }
+  ],
+  "name": "hope-entity",
+  "homepage": "",
+  "description": "Entities libraries of IoT Services Orchestration Layer",
+  "version": "1.0.3",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.12"
+  },
+  "readme": "",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": ""
+  },
+  "scripts": {},
+  "dependencies": {
+    "eventemitter3": "^1.1.1",
+    "glob": "^5.0.14",
+    "lodash": "^4.6.1",
+    "request": "^2.60.0"
+  },
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0"
+  }
+}

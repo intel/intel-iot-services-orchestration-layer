@@ -1,0 +1,24 @@
+{
+  "description":"detect whether on the black line",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "value",
+          "type": "int"
+        }]
+    },
+    "config": [
+      {
+        "name": "pin",
+        "type": "int",
+        "required": true
+      }
+    ]
+
+  }
+}

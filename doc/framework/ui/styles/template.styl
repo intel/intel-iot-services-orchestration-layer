@@ -1,0 +1,241 @@
+/******************************************************************************
+Copyright (c) 2015, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+// NOTE: Please do NOT use @extend in this file
+// This would be @import by other files, and maybe under a CSS Class
+// @extend only works at root level, and it would cause failure
+// Manually write CSS code
+// instead of use @extend
+
+
+blockquote {
+  border-left-width: 10px;
+  background-color: rgba(128,128,128,0.05);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  padding: 15px 20px;
+  border-left: 5px solid rgba(128,128,128,0.075);
+}
+
+.nav > li {
+  margin: 20px 16px;
+}
+
+.navbar-brand,
+.navbar-nav > li > a {
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .25);
+}
+
+.nav > li > a:hover {
+  background-color: $top-navbar-active-bg;
+}
+
+.nav > li.active > a,
+.nav > li.active > a:hover,
+.nav > li.active > a:focus {
+  color: #fff;
+  background-color: $top-navbar-active-bg;
+}
+
+
+.sup-header {
+  height: 60px;
+  padding: 20px 0px;
+  box-shadow: 0 0 2px #999;
+  background: $sup-header-bg;
+}
+
+.grid-left {
+  float: left;
+  width: 260px;
+}
+
+.grid-right {
+  position: relative;
+  margin-left: 285px;
+}
+
+.doc-margin {
+  margin: 40px 0 20px 0;
+}
+
+.doc-menu {
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
+}
+
+.doc-menu.doc-book.active {
+  background-color: $left-navbar-level-1-active-bg;
+  border: $left-navbar-level-1-active-border;
+  color: $left-navbar-level-1-active-color;
+}
+
+.doc-menu.doc-chapter.active {
+  background-color: $left-navbar-level-2-active-bg;
+  border: $left-navbar-level-2-active-border;
+  color: $left-navbar-level-2-active-color;
+}
+
+.doc-menu.doc-section.active {
+  background-color: $left-navbar-level-3-active-bg;
+  color: $left-navbar-level-3-active-color;
+}
+
+.doc-book {
+  background-color: $left-navbar-level-1-bg;
+  border: $left-navbar-level-1-border;
+  color: $left-navbar-level-1-color;
+  padding: .4em .6em .4em;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.doc-chapter {
+  background-color: $left-navbar-level-2-bg;
+  border: $left-navbar-level-2-border;
+  color: $left-navbar-level-2-color;
+  padding: .4em .6em .4em;
+  margin: 6px 0;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.icon-right {
+  color: $left-navbar-level-2-icon-color;
+  font-size: 10px;
+  float: right;
+  top: 4px;
+}
+
+.icon-right:hover {
+  color: $left-navbar-level-2-icon-hover-color;
+  cursor: pointer;
+}
+
+.doc-section {
+  background-color: $left-navbar-level-3-bg;
+  color: $left-navbar-level-3-color;
+  padding: 8px 0px 4px 30px;
+  margin: 4px 0;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.section-list a:not(:first-child) div {
+  border-top: 1px dashed #ccc;
+}
+
+img.viewer {
+  cursor: zoom-in;
+}
+
+#header {
+  z-index: 99;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background-color: $header-bg;
+}
+
+#top-navbar {
+  height: 80px;
+}
+
+#logo {
+  margin-top: 20px;
+  height: 40px;
+}
+
+#body {
+  background-color: $body-bg;
+  margin-top: 160px;
+  padding-bottom: $footer-height;
+}
+
+#side-bar {
+  position: fixed;
+  top: 150px;
+  padding-right: 10px;
+  bottom: $footer-height;
+  overflow: auto;
+
+  a:hover, a:focus {
+    text-decoration: none !important;
+  }
+}
+
+#doc-title {
+  text-align: center;
+}
+
+#doc-content {
+  padding-bottom: 10px;
+
+  img {
+    max-width: 100%;
+  }
+
+  h2 {
+    color: #2388db;
+  }
+
+  div.figure {
+    text-align: center;
+  }
+
+  .btn {
+    background-color: $content-navbtn-bg;
+    color: $content-navbtn-color;
+    border: $content-navbtn-border;
+  }
+
+  .btn.disabled {
+    background-color: $content-navbtn-disabled-bg;
+    color: $content-navbtn-disabled-color;
+    border: $content-navbtn-disabled-border;
+  }
+}
+
+#footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1em 0;
+  text-align: center;
+  color: white;
+  height: $footer-height;
+  background-color: $footer-bg;
+
+  padding-top: 20px;
+}

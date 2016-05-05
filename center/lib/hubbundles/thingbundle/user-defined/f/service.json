@@ -1,0 +1,21 @@
+{
+  "name":"f",
+  "description":" out = f(x)",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "x"
+        }]
+    },
+    "out": {
+      "ports": [{
+          "name": "out"
+        }]
+    },
+    "config": [{
+        "name": "f(x)",
+        "type": "string"
+      }]
+  },
+  "doc":"builtin/user_defined.html#f"
+}

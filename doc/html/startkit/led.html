@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#led">LED</a><ul>
+<li><a href="#switch">switch</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#input">Input</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="led">LED</h1>
+<h2 id="switch">switch</h2>
+<h3 id="description">Description</h3>
+<p>Turn on or off the LED, and output the status.</p>
+<h3 id="config">Config</h3>
+<p><code>pin</code>: int. the gpio pin which is attached by the LED</p>
+<h3 id="input">Input</h3>
+<p><code>on</code>: boolean. true means turn on, false means turn off.</p>
+<h3 id="output">Output</h3>
+<p><code>status</code>: boolean. the running status of the LED</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/button_led.jpg" />
+
+</div>
+<p>Check the button status in every 1s. If it is pressed, turn on the LED, otherwise, turn off.</p>
+</body>
+</html>

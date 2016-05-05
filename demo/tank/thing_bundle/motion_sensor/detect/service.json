@@ -1,0 +1,16 @@
+{
+  "description":"detect whether IR changes",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "bool",
+        "type": "boolean"
+      }]
+    }
+  }
+}

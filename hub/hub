@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+// -*- mode: js -*-
+
+var Hub = require("./index");
+
+var program = require("commander");
+var _ = require("lodash");
+var B = require("hope-base");
+var S = require("hope-hub-center-shared");
+
+var version = "3.0.0";
+
+
+process.on("uncaughtException", function(err) {
+    console.log(">>>>> Unhandled Exception >>>>>>");
+    if (_.isError(err)) {
+      console.log(err.stack);
+    } else {
+      console.log(B.to_string(err));
+    }
+});
+
+
+program
+  .version(version)
+  .usage("[config-file]")
+  .option("-c, --config-dump", "Show generated configration");
+
+program.name = "hub";
+
+program.parse(process.argv);
+
+if (program.args.length > 1) {
+  program.help();
+}
+
+
+var processed_config = S.process_config(program.args[0] || "./config.json");
+
+var config = processed_config.generated_config;
+
+
+if (!config.id) {
+  config.id = S.get_instance_id(
+    B.path.abs("./.id", module.filename),
+    config.config_path);
+}
+
+var mnode_params = _.get(config, "assemble.mnode.$params");
+if (mnode_params && !mnode_params.id) {
+  mnode_params.id = config.id + "__mnode__";
+}
+
+if (program.configDump) {
+  console.log("\n>>>>>> Generated Configuration >>>>>>\n");
+  console.log(B.to_string(config, 10));
+  console.log("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n");
+}
+
+
+B.debug.enable_debug_shell();
+
+
+function grace_exit() {
+  B.log("hope", "... HUB EXITING ...");
+  Hub.stop$().then(function() {
+   B.log("hope", "Hub exit safely");
+    process.exit(0);
+  }).catch(function(err) {
+    B.log.error("hope", "Error when hub exit", err);
+    process.exit(1);
+  }).done();
+}
+
+process.on("SIGINT", grace_exit);
+
+process.on("message", function(data) {
+  B.log("hope", "message from parent", data);
+  if (data === "exit") {
+    grace_exit();
+  }
+});  
+
+Hub.start$(config).done();
+

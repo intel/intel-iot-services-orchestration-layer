@@ -1,0 +1,18 @@
+{
+  "description":"set the content of the lcd",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "content",
+        "type": "string"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  },
+  "doc": "lattepanda/lcd.html#set"
+}

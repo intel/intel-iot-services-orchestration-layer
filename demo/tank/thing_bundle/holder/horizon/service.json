@@ -1,0 +1,17 @@
+{
+  "description":"rotate horizontal",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "angle",
+        "type": "number"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "status",
+        "type": "boolean"
+      }]
+    }
+  }
+}

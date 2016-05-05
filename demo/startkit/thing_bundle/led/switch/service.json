@@ -1,0 +1,9 @@
+{
+  "name": "switch",
+  "description": "turn on or off the led. status = on",
+  "spec":"digitalwrite_1_1_startkit",
+  "ui": {
+
+  },
+  "doc":"startkit/led.html#switch"
+}

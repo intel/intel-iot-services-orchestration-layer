@@ -1,0 +1,26 @@
+{
+  "id": "digitalread_1_1_startkit",
+  "name": "digitalread_1_1_startkit",
+  "in": {
+    "ports": [
+      {
+        "name": "trigger"
+      }
+    ]
+  },
+  "out": {
+    "ports": [
+      {
+        "name": "bool",
+        "type": "boolean"
+      }
+    ]
+  },
+  "config": [
+    {
+      "name": "pin",
+      "type": "int",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "rotate":"转动",
+  "control the servo's angle (0-180)":"控制电机旋转角度（0-180），如果成功，输出true",
+  "startkit/servo.html#rotate":"startkit/servo.zh-CN.html#转动"
+}

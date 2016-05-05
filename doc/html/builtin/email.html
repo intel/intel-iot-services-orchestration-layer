@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#email">email</a><ul>
+<li><a href="#sendmail">sendmail</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="email">email</h1>
+<h2 id="sendmail">sendmail</h2>
+<h3 id="description">Description</h3>
+<p>Send a message to the recipient via an email service provider.</p>
+<p>This service is implemented by <a href="https://github.com/nodemailer/nodemailer">nodemailer</a></p>
+<p>At this stage, only supports plain-text body, and don't support the network proxy.</p>
+<h3 id="config">Config</h3>
+<p><code>service</code>: String. your email service provider, such as Gmail,QQ,126,163,Hotmail,iCloud, see <a href="https://github.com/nodemailer/nodemailer-wellknown/blob/master/services.json">nodemailer-wellknown</a> for details.</p>
+<p><code>account</code>: String. the registered username of your email, probably it is your email address.</p>
+<p><code>passwd</code>: String. the password for the username (password for mail client, might be different from login's)</p>
+<p><code>receiver</code>: String. the email address of recipient.</p>
+<h3 id="inport">Inport</h3>
+<p><code>text</code>: String. the content of email.</p>
+<p><code>subject</code>: String. the subject of email.</p>
+<h3 id="outport">Outport</h3>
+<p><code>status</code>: Boolean. output <em>true</em> if send email successfully, otherwise output <em>false</em>.</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/email.jpg" />
+
+</div>
+<p>In this case, user(hope@126.com) may send an email to hope@intel.com, which subject as “this is a title” and text as “this is a text”.</p>
+</body>
+</html>

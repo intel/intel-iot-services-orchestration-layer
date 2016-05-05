@@ -1,0 +1,22 @@
+{
+  "name":"not",
+  "description":" bool = !in",
+  "spec":{
+    "out": {
+      "ports": [{             
+        "name": "bool",
+        "type": "boolean"
+      }]
+    },
+    "in": {
+      "ports": [{             
+        "name": "in",
+        "type": "boolean"
+      }]
+    }
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/logic_operation.html#not"
+}

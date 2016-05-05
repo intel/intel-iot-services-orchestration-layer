@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#运动检测器">运动检测器</a><ul>
+<li><a href="#检测运动">检测运动</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#样例">样例</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="运动检测器">运动检测器</h1>
+<h2 id="检测运动">检测运动</h2>
+<h3 id="描述">描述</h3>
+<p>根据外界红外信号的变化来判断是否有人运动。</p>
+<h3 id="配置">配置</h3>
+<p><code>pin</code>: 整数. 该传感器连接的GPIO引脚. 必填项</p>
+<h3 id="输入">输入</h3>
+<p><code>trigger</code>: 任何类型. 触发信号, 每来一次输入做一次运动判断</p>
+<h3 id="输出">输出</h3>
+<p><code>bool</code>: 布尔值. true表示3s之内有人运动（红外变化）</p>
+<h3 id="样例">样例</h3>
+<div class="figure">
+<img src="./pic/motion_buzz.zh-CN.jpg" />
+
+</div>
+<p>图中每隔1s就进行运动检测，检测到运动后开启蜂鸣器警报</p>
+</body>
+</html>

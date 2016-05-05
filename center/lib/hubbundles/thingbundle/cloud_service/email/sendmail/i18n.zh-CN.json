@@ -1,0 +1,5 @@
+{
+  "sendmail":"发邮件",
+  "builtin/email.html#sendmail":"builtin/email.zh-CN.html#发邮件",
+  "send an email by providing the servicename, username, passwd, receiver, subject and text":"参数意义如下： servicename：邮件服务商（126，qq等），username：寄件人邮箱，passwd：邮箱客户端密码，receiver：发件人邮箱，subject：标题，text：正文"
+}

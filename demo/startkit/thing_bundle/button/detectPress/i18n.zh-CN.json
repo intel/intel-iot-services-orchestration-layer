@@ -1,0 +1,5 @@
+{
+  "detectPress":"是否按下",
+  "startkit/button.html#detectPress":"startkit/button.zh-CN.html#是否按下",
+  "Whenever triggered, bool = (whether the button is pressed)":"如果按下，输出为true，否则为false"
+}

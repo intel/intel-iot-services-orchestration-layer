@@ -1,0 +1,55 @@
+{
+  "author": {
+    "name": "Kanghua Yu",
+    "email": "kanghuax.yu@intel.com"
+  },
+  "contributors": [
+    {
+      "name": "Kanghua Yu"
+    }
+  ],
+  "name": "hope-ui-widgets",
+  "homepage": "",
+  "description": "Widgets of IoT Services Orchestration Layer",
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "index.js",
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.10"
+  },
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "d3": "^3.5.8",
+    "d3-gauge-x": "^0.2.1",
+    "hope-widget-digital-clock": "^2.0.5",
+    "hope-widget-liquid-fill-gauge": "^2.0.6"
+  },
+  "devDependencies": {
+    "babel-eslint": "^4.1.6",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.11.3",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.3.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-csso": "^1.0.1",
+    "gulp-if": "^2.0.0",
+    "gulp-inject": "^3.0.0",
+    "gulp-insert": "^0.5.0",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "~1.2.2",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-stylus": "^2.1.1",
+    "gulp-uglify": "~1.5.1",
+    "gulp-util": "^3.0.7",
+    "lodash": "^4.6.1"
+  }
+}

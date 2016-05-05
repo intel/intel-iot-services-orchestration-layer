@@ -1,0 +1,4 @@
+{
+  "name":"fan",
+  "description":"Fan on Edison GPIO 0"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "keyboard_1_1_startkit",
+  "name": "keyboard_1_1_startkit",
+  "in": {
+    "ports": [
+      {
+        "name": "trigger"
+      }
+    ]
+  },
+  "out": {
+    "ports": [
+      {
+        "name": "bool",
+        "type": "boolean"
+      }
+    ]
+  }
+}

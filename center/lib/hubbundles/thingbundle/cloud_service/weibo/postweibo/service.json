@@ -1,0 +1,34 @@
+{
+  "name": "postweibo",
+  "description": "post weibo by providing the OAUTH code and content",
+  "spec":{
+    "id": "postweibo_builtin_spec",
+    "name": "postweibo_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "status",
+          "type": "bool"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "token",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "ui": {
+  },
+  "doc":"builtin/weibo.html#postweibo"
+}

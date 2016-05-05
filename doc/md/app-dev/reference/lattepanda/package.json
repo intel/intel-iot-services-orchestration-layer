@@ -1,0 +1,20 @@
+{
+  "name": "LattePanda",
+  "rel-dir": "../../../lattepanda",
+  "rel-scan-regexp": "^\\#\\#\\s(.+)",
+  "rel-children": [{
+    "name": "General",
+    "files": "general.md",
+    "scan": true
+  }, {
+    "name": "LCD",
+    "files": "lcd.md",
+    "scan": true
+  }, {
+    "name": "Servo",
+    "files": "servo.md",
+    "scan": true
+  }]
+}
+
+

@@ -1,0 +1,5 @@
+{
+  "name": "logical compare",
+  "description": "many functuons for logical compare, such like equal, above, below, ...",
+  "is_builtin": true
+}

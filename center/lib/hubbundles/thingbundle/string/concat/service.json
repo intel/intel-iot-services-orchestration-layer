@@ -1,0 +1,6 @@
+{
+  "name":"concat",
+  "description":"out = in1 + in2",
+  "spec":"string_n_1_builtin",
+  "doc": "builtin/string.html#concat"
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="TOC">
+<ul>
+<li><a href="#moisture-sensor">Moisture Sensor</a><ul>
+<li><a href="#measuremoist">measureMoist</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#input">Input</a></li>
+<li><a href="#output">Output</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="moisture-sensor">Moisture Sensor</h1>
+<h2 id="measuremoist">measureMoist</h2>
+<h3 id="description">Description</h3>
+<p>measure the moisture value of soil</p>
+<h3 id="config">Config</h3>
+<p><code>pin</code>: int. the aio pin which is attached by the sensor</p>
+<h3 id="input">Input</h3>
+<p><code>trigger</code>: any type. trigger signal, and whenever it comes, the sensor will measure and report the moisture value.</p>
+<h3 id="output">Output</h3>
+<p><code>value</code>: number. the value of the moisture</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/moisture_lcd.jpg" />
+
+</div>
+<p>It measure the moisture in every 1s, and show the value in the LCD</p>
+</body>
+</html>

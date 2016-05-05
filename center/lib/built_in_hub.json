@@ -1,0 +1,95 @@
+{
+  "thingbundle_path": "./hubbundles/thingbundle",
+  "specbundle_path": "./hubbundles/specbundle",
+  
+  "mnode": {
+    "$type": "MNode",
+    "$params": {
+      "name": "built-in hub"
+    }
+  },
+
+  "hub_store": {
+    "$type": "HubStore",
+    "$params": "memory"
+  },
+  "thing_store": {
+    "$type": "ThingStore",
+    "$params": "memory"
+  },
+  "service_store": {
+    "$type": "ServiceStore",
+    "$params": "memory"
+  },
+  "spec_store": {
+    "$type": "SpecStore",
+    "$params": "memory"
+  },
+  "service_store": {
+    "$type": "ServiceStore",
+    "$params": "memory"
+  },
+  "specbundle_store": {
+    "$type": "SpecBundleStore",
+    "$params": "memory"
+  },
+  "session_store": {
+    "$type": "SessionStore",
+    "$params": "memory"
+  },
+  "graph_store": {
+    "$type": "GraphStore",
+    "$params": "memory"
+  },
+  "app_store": {
+    "$type": "AppStore",
+    "$params": "memory"
+  },    
+  "ui_store": {
+    "$type": "UiStore",
+    "$params": "memory"
+  },  
+
+  "entity_manager": {
+    "$type": "EntityManager",
+    "$params": [{
+      "hub_store": "$hub_store",
+      "thing_store": "$thing_store",
+      "service_store": "$service_store",
+      "spec_store": "$spec_store",
+      "specbundle_store": "$specbundle_store",
+      "session_store": "$session_store",
+      "graph_store": "$graph_store",
+      "app_store": "$app_store",
+      "ui_store": "$ui_store"
+    }]
+  },
+
+  "session_manager": {
+    "$type": "SessionManager",
+    "$params": {
+      "mnode" : "$mnode",
+      "em" : "$entity_manager"
+    }
+  },
+
+  "hub": {
+    "$type": "Hub",
+    "$params": {
+      "id": "$id",
+      "name" : "** Builtin **",
+      "config_path" : "$config_path",
+      "mnode": "$mnode",
+      "entity_manager": "$entity_manager",
+      "thingbundle_path": "$thingbundle_path",
+      "specbundle_path": "$specbundle_path",
+      "session_manager": "$session_manager",
+      "type": "builtin",
+      "heartbeat": {
+        "interval": 20000
+      }
+    }
+  }
+}
+
+

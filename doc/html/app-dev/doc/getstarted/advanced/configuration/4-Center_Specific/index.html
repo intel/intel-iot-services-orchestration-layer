@@ -1,0 +1,29 @@
+<h1 id="configuration-of-center">Configuration of Center</h1><p>Center has two web servers provided, one to offer the HTML5 IDE for app developers and the other provides the HTML5 user interface for end users, and we need to set the ports to be used by these web servers.</p><p>In addition, there are multiple paths could be configured, e.g. where the applications are stored, where the user profile is stored etc.</p><p><strong>Center</strong> tracks the online/offline status of <strong>Hub</strong> by using heartbeat. So there is a heartbeat server on <strong>Center</strong> and need to be configured as well.</p><table style="width:100%;"><colgroup><col width="15%" /><col width="10%" /><col width="23%" /><col width="51%" /></colgroup><thead><tr class="header"><th align="left">config field</th><th align="left">optional</th><th align="left">available values</th><th align="left">description</th></tr></thead><tbody><tr class="odd"><td align="left">web_for_developer</td><td align="left">yes</td><td align="left">a JSON object with port field to set</td><td align="left">defines the web server for app developer</td></tr><tr class="even"><td align="left">web_for_end_users</td><td align="left">yes</td><td align="left">a JSON object with port field to set</td><td align="left">defines the web server for end users</td></tr><tr class="odd"><td align="left">app_bundle_path</td><td align="left">yes</td><td align="left">by defult it is &quot;./appbundle&quot;</td><td align="left">where to store the applications (workflows, UI etc.)</td></tr><tr class="even"><td align="left">user_json_path</td><td align="left">yes</td><td align="left">by defult it is &quot;./user.json&quot;</td><td align="left">where to store the usesr profiles</td></tr><tr class="odd"><td align="left">authenticate</td><td align="left">yes</td><td align="left">true / false (default)</td><td align="left">whether we enabled user system or not</td></tr><tr class="even"><td align="left">heartbeat_server</td><td align="left">yes</td><td align="left">a JSON object with check_interval and drop_threshold fileds</td><td align="left">check_interval defines by every how many milliseconds the server would check the heartbeat status of all Hubs, and drop_threshold means that a Hub would be considered as offline if Center doesn't receive its heartbeat message for such long milliseconds</td></tr></tbody></table><h2 id="example">Example</h2><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">// Optional - Configuration about the port for the HTML5 UI present to developers</span>
+<span class="co">//            by default it is opened at port 8080</span>
+<span class="st">&quot;web_for_developer&quot;</span><span class="op">:</span> <span class="op">{</span>
+  <span class="st">&quot;port&quot;</span><span class="op">:</span> <span class="dv">8080</span>
+<span class="op">},</span>
+
+<span class="co">// Optional - Configuration about the port for the HTML5 UI present to end users</span>
+<span class="co">//            i.e. the UI created by developers</span>
+<span class="co">//            by default it is opened at port 3000</span>
+<span class="st">&quot;web_for_end_users&quot;</span><span class="op">:</span> <span class="op">{</span>
+  <span class="st">&quot;port&quot;</span><span class="op">:</span> <span class="dv">3000</span> 
+<span class="op">},</span>
+
+
+<span class="co">// Optional - Where to store the applications (workflows, UIs etc.)</span>
+<span class="co">// By default, it is ./appbundle</span>
+<span class="st">&quot;app_bundle_path&quot;</span><span class="op">:</span> <span class="st">&quot;./appbundle&quot;</span><span class="op">,</span>
+
+<span class="co">// Optional - Where to store the user profiles, it&#39;s ./user.json by default</span>
+<span class="st">&quot;user_json_path&quot;</span><span class="op">:</span> <span class="st">&quot;./user.json&quot;</span><span class="op">,</span>
+<span class="co">// Optional - Whether a user need login before use the system</span>
+<span class="st">&quot;authenticate&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+
+<span class="co">// Optional - Defines frequencies of Heartbeat server in this center</span>
+<span class="st">&quot;heartbeat_sever&quot;</span><span class="op">:</span> <span class="op">{</span>
+  <span class="st">&quot;check_interval&quot;</span><span class="op">:</span> <span class="dv">30000</span><span class="op">,</span>    <span class="co">// milliseconds to check whether a hub is dropped or not</span>
+  <span class="st">&quot;drop_threshold&quot;</span><span class="op">:</span> <span class="dv">120000</span>    <span class="co">// set a hub as disconnected if it hasn&#39;t send</span>
+                              <span class="co">// heartbeat to this server for this amount of milliseconds</span>
+<span class="op">}</span></code></pre></div>

@@ -1,0 +1,9 @@
+{
+  "name": "measureFire",
+  "description": "measure the fire value",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  },
+  "doc": "startkit/fire_sensor.html#measureFire"
+}

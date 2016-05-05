@@ -1,0 +1,9 @@
+{
+  "name": "measureTemp",
+  "description": "measure the ambient temperature, degree centigrade",
+  "spec":"analogread_1_1_startkit",
+  "ui": {
+
+  },
+  "doc":"startkit/temperature.html#measureTemp"
+}

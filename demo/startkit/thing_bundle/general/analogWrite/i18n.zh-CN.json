@@ -1,0 +1,3 @@
+{
+  "pwm output with duty = value/255. status is true if succeed":"PWM占空比为value/255，如果成功输出为true"
+}

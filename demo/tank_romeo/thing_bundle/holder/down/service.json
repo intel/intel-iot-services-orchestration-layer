@@ -1,0 +1,17 @@
+{
+  "description":"pitch down the holder by 10 degree",
+  "spec": {
+    "in": {
+      "ports": [{
+        "name": "trigger"
+        }]
+    },
+    "out": {
+      "ports": [{
+        "name": "angle",
+        "type": "number"
+      }]
+    }
+  },
+  "doc": "tank/holder.html#down"
+}

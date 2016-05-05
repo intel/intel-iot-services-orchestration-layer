@@ -1,0 +1,8 @@
+{
+  "name": "digitalRead",
+  "description": "read gpio pin's value. bool = (pin's value == 1)",
+  "spec":"digitalread_1_1_startkit",
+  "ui": {
+
+  }
+}

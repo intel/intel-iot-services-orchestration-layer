@@ -1,0 +1,4 @@
+{
+  "name": "relay",
+  "description": "control the relay on GPIO"
+}
