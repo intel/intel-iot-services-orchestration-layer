@@ -18,15 +18,17 @@ To understand this by a demo, please go through the instructions below and we do
 
 ### Contribute to the Development Project
 
-This project is called as a Release Project.
+The master(default) branch of this project is called as a Release Project.
 
-It is read only to host the releases, to help contribute to this project, please go to its [Development Project] (https://github.com/01org/intel-iot-services-orchestration-layer-dev). 
+This branch simply host the releases of this solution which is immediately ready-to-go after you have it downloaded.
 
-The reason is that the solution is quite complicated. So for each release, it needs some building process (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
+However, if you decide to help contribute to this project, you need to switch to its [dev branch] (https://github.com/01org/intel-iot-services-orchestration-layer-dev/tree/dev). If you cloned from github, you may switch by simply `git checkout dev`. We call this dev branch as Development Project.
 
-So to make the installation much easier, we will build the Development Project and put the ready-to-run solution here. Thus end users no need to build by themselves if start from this Release Project. 
+The reason is that the solution is quite complicated. Thus for each release, it needs some building process (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
 
-However, if you hope to contribute to this project (bug fix, new enhancements etc.), you should work on the Development Project instead of this.
+So to make the installation much easier, we will build the Development Project (the dev branch) and put the ready-to-run solution here in master branch. Thus end users no need to build by themselves if she/he directly start from this Release Project. 
+
+However, if you hope to contribute to this project (bug fix, new enhancements etc.), you should work on the Development Project instead.
 
 ### Proxies
 
