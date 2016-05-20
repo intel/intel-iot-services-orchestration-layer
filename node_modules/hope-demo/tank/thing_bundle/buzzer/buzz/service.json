@@ -1,6 +1,7 @@
 {
   "description":"switch the buzzer",
   "spec": {
+    "id": "__HOPE__/demo/tank/buzzer/buzz",
     "in": {
       "ports": [{
         "name": "on",

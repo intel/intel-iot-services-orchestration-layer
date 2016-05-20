@@ -2,7 +2,7 @@
   "name": "count",
   "description": "when triggered, count and output the current number. when reset is true, reset the counter",
   "spec":{
-    "id": "count_builtin_spec",
+    "id": "__HOPE__/builtin/counter/count",
     "name": "count_builtin_spec",
     "in": {
       "ports": [

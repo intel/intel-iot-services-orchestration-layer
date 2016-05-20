@@ -1,6 +1,7 @@
 {
   "description":"backward or not",
   "spec": {
+    "id": "__HOPE__/demo/tank/move/backward",
     "in": {
       "ports": [{
         "name": "on",

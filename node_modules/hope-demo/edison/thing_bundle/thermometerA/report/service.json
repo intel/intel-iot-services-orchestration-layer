@@ -1,7 +1,7 @@
 {
   "description":"report the temprature at intervals",
   "spec": {
-    "id":"thermometer_report_001",
+    "id":"__HOPE__/demo/edison/thermometer_report_001",
     "name": "thermometer report",
     "in": {
       "ports": [{

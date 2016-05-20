@@ -1,6 +1,7 @@
 {
   "description":"forward or not",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/move/forward",
     "in": {
       "ports": [{
         "name": "on",

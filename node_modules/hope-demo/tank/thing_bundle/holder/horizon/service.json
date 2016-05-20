@@ -1,6 +1,7 @@
 {
   "description":"rotate horizontal",
   "spec": {
+    "id": "__HOPE__/demo/tank/holder/horizon",
     "in": {
       "ports": [{
         "name": "angle",

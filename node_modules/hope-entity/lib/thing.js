@@ -164,8 +164,9 @@ exports.add_hope_service$ = function(service, specbundle, em, changed_list) {
         "builtin thing cannot add service", thing);
       check(thing.type === "hope_thing", "entity/service",
         "the thing is not hope_thing", thing);
-      thing.services.push(service.id);
-      thing.services = _.uniq(thing.services);
+      if (thing.services.indexOf(service.id) < 0) {
+        thing.services.push(service.id);
+      }
       thing_path = thing.path;
       return em.thing_store.set$(thing.id, thing, changed_list);
     });
@@ -191,7 +192,9 @@ exports.add_hope_service$ = function(service, specbundle, em, changed_list) {
       var spec = Spec.create_local_spec(service.spec, service_json_path,
         specbundle_obj.path, specbundle_obj.id, B.path.dir_base(service_json_path));
       service.spec = spec.id;
-      specbundle_obj.specs.push(spec.id);
+      if (specbundle_obj.specs.indexOf(spec.id) < 0) {
+        specbundle_obj.specs.push(spec.id);
+      }
       service.own_spec = true;
       tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
       tasks.push(em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list));      
@@ -208,9 +211,6 @@ function prepare_update_service(service) {
   delete service.own_spec;
   delete service.type;
   delete service.is_connect;
-  if (_.isObject(service.spec)) {
-    delete service.spec.id;
-  }
 }
 /**
  * update the exsiting hope_service.
@@ -268,8 +268,9 @@ exports.update_hope_service$ = function(service, specbundle, em, changed_list) {
       var spec = Spec.create_local_spec(service.spec, json_path,
         specbundle_obj.path, specbundle_obj.id, B.path.dir_base(json_path));
       service.spec = spec.id;
-      specbundle_obj.specs.push(spec.id);
-      specbundle_obj.specs = _.uniq(specbundle_obj.specs);
+      if (specbundle_obj.specs.indexOf(spec.id) < 0) {
+        specbundle_obj.specs.push(spec.id);
+      }
       service.own_spec = true;
       tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
       tasks.push(em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list));
@@ -450,6 +451,16 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
       }
       if (_.isObject(service_json.spec)) {
         log("load spec from service", service_json_path);
+        if (!service_json.spec.id) {
+          service_json.spec.id = B.unique_id("__HOPE_SPEC__");
+          try {
+            B.fs.write_json(service_json_path, service_json);
+            log.warn("add spec_id to service.json under", p);
+          }
+          catch(e) {
+            check(false, "write_json", e, p);
+          }
+        }
         var spec = Spec.create_local_spec(service_json.spec, service_json_path,
           specbundle.path, specbundle.id, B.path.dir_base(service_json_path));
         service_json.spec = spec.id;
@@ -748,4 +759,4 @@ exports.remove_service_file$ = function(service_id, file_path, em) {
 exports.is_service_path = function(service_path) {
   return B.fs.dir_exists(service_path) && 
   B.fs.file_exists(B.path.join(service_path, "service.json"));
-}
+};

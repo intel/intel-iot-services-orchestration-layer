@@ -143,7 +143,7 @@ exports.add_grove_thing$ = function(thing_id, thing_name, grove_config, hub_id, 
       }
       B.check(!_.isUndefined(service), "entity/grove_thing", "service json should not be undefined", item);
       var spec = service.spec;
-      spec.id = "spec_" + item.class_name + item.port_name + item.service_name + thing_id;
+      spec.id = "spec_" + item.class_name + item.service_name;
       spec.specbundle = specbundle_obj.id;
       if (item.service_path) {
         spec.config[0].default = thing_id;

@@ -2,7 +2,7 @@
   "name": "sender",
   "description": "Whenever triggered, out = content",
   "spec":{
-    "id": "sender_spec",
+    "id": "__HOPE__/builtin/flow/sender",
     "name": "sender_spec",
     "in": {
       "ports": [

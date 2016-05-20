@@ -1,6 +1,7 @@
 {
   "description":"sweep the servo",
   "spec": {
+    "id": "__HOPE__/demo/lattepanda/servo/sweep",
     "in": {
       "ports": [{
         "name": "trigger"

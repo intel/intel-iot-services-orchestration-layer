@@ -2,7 +2,7 @@
   "name": "camera",
   "description": "turn on/off the camera",
   "spec":{
-    "id": "webrtc_camera_spec",
+    "id": "__HOPE__/builtin/webcamera/camera",
     "name": "webrtc_camera_spec",
     "in": {
       "ports": [

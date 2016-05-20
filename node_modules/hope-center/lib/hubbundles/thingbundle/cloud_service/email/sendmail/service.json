@@ -2,7 +2,7 @@
   "name": "sendmail",
   "description": "send an email by providing the servicename, username, passwd, receiver, subject and text",
   "spec":{
-    "id": "sendmail_builtin_spec",
+    "id": "__HOPE__/builtin/cloud_service/email/sendmail",
     "name": "sendmail_builtin_spec",
     "in": {
       "ports": [

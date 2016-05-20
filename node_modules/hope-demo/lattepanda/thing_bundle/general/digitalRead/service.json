@@ -1,6 +1,7 @@
 {
   "description":"read digital pin's value",
   "spec": {
+    "id": "__HOPE__/demo/lattepanda/general/diread",
     "in": {
       "ports": [{
         "name": "trigger"

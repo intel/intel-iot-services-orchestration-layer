@@ -1,6 +1,7 @@
 {
   "description":"turn right or not",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/move/turn_right",
     "in": {
       "ports": [{
         "name": "on",

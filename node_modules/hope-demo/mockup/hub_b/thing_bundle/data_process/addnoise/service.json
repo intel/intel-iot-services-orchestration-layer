@@ -1,6 +1,7 @@
 {
   "description":"add noise to the source data",
   "spec": {
+    "id": "__HOPE__/demo/mockup/hub_b/data_process/addnoise",
     "in": {
       "ports": [{
         "name": "before",

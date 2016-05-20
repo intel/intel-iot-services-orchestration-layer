@@ -1,7 +1,7 @@
 {
   "name":"or",
   "description":" bool = (in1 || in2)",
-  "spec":"logical_op_2_1_builtin",
+  "spec":"__HOPE__/builtin/logical_op_2_1",
   "ui":{
 
   },

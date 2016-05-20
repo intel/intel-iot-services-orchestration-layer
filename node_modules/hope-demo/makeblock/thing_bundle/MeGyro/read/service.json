@@ -1,6 +1,7 @@
 {
   "description":"read acceleration of 3-axis",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/3axis/read",
     "in": {
       "ports": [{
         "name": "trigger"

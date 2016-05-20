@@ -1,6 +1,7 @@
 {
   "description":"report the angle value at intervals",
   "spec": {
+    "id": "__HOPE__/demo/edison/rotate_sensor/report",
     "in": {
       "ports": [{
         "name": "interval",

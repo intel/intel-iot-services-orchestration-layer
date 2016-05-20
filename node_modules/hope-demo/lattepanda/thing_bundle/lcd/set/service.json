@@ -1,6 +1,7 @@
 {
   "description":"set the content of the lcd",
   "spec": {
+    "id": "__HOPE__/demo/lattepanda/lcd/set",
     "in": {
       "ports": [{
         "name": "content",

@@ -2,7 +2,7 @@
   "name": "postweibo",
   "description": "post weibo by providing the OAUTH code and content",
   "spec":{
-    "id": "postweibo_builtin_spec",
+    "id": "__HOPE__/builtin/cloud_service/weibo/postweibo",
     "name": "postweibo_builtin_spec",
     "in": {
       "ports": [

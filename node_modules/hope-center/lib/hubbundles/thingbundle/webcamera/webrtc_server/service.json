@@ -1,7 +1,7 @@
 {
   "name": "webrtc server",
   "description": "turn on/off the webrtc server",
-  "spec": "switch_1_1_builtin",
+  "spec": "__HOPE__/builtin/switch_1_1",
   "ui": {
 
   },

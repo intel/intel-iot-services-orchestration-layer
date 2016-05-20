@@ -1,6 +1,7 @@
 {
   "description":"pushlish a message to the mqtt broker",
    "spec": {
+    "id": "__HOPE__/demo/mockup/hub_a/mqtt/pushlish",
     "in": {
       "ports": [{
         "name": "message",

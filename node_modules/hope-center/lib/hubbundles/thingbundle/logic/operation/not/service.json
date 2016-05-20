@@ -2,6 +2,7 @@
   "name":"not",
   "description":" bool = !in",
   "spec":{
+    "id": "__HOPE__/builtin/logical/not",
     "out": {
       "ports": [{             
         "name": "bool",

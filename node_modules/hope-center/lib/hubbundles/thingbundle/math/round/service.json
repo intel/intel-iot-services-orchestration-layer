@@ -2,6 +2,7 @@
   "name":"round",
   "description":"Output the value of a number rounded to the nearest integer",
   "spec": {
+    "id": "__HOPE__/builtin/math/round",
     "in": {
       "ports": [{
         "name": "in",

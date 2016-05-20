@@ -1,5 +1,5 @@
 {
-  "id": "string_n_1_builtin",
+  "id": "__HOPE__/builtin/string_n_1",
   "name": "string_n_1_builtin",
   "description":"two or more string inports and one string outport",
   "out": {

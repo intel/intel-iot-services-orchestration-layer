@@ -1,6 +1,7 @@
 {
   "description":"turn on or turn off the device",
   "spec": {
+    "id": "__HOPE__/demo/mockup/hub_a/fan/switch",
     "in": {
       "ports": [{
         "name": "on",

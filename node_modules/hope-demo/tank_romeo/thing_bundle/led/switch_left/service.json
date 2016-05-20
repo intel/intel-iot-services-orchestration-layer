@@ -1,6 +1,7 @@
 {
   "description":"switch the left led",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/led/switch_left",
     "in": {
       "ports": [{
         "name": "on",

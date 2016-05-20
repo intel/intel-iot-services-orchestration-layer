@@ -2,6 +2,7 @@
   "name":"random",
   "description":"generate random number between [min, max]",
   "spec": {
+    "id": "__HOPE__/builtin/math/random",
     "in": {
       "ports": [{
         "name": "min",

@@ -1,6 +1,7 @@
 {
   "description":"pitch down the holder by 10 degree",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/holder/down",
     "in": {
       "ports": [{
         "name": "trigger"

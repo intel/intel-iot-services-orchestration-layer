@@ -50,6 +50,30 @@ Promise.prototype.finally = function(cb) {
   return this.then(cb, cb);
 };
 
+// Promise.all() will reject with the reason of the first rejected promise
+// in its argument so no way to know the results of all promises
+// Use this to get status of all promises, no matter it is resolved or rejected
+// it returns an corresponding array, with each element in the following format 
+// {
+//   v: the resolved result or the rejected reason
+//   status: "resolved" or "rejected"
+// }
+Promise.finish_all = function(promises) {
+  return Promise.all(promises.map(function(p) {
+    return p.then(function(r) {
+      return {
+        v: r,
+        status: "resolved"
+      };
+    }).catch(function(e) {
+      return {
+        v: e,
+        status: "rejected"
+      };
+    });
+  }));
+};
+
 //----------------------------------------------------------------
 // Top Level helpers: 
 // later, log, to_string, to_short_string, check, assert, hash_string
