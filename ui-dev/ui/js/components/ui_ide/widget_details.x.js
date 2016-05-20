@@ -25,8 +25,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col} from "react-bootstrap";
-import {Tabs, Tab} from "../ide/tabs.x";
-import Dialog from "../ide/dialog.x";
+import {Tabs, Tab} from "../common/tabs.x";
+import Dialog from "../common/dialog.x";
 import FONT_AWESOME from "../../lib/font-awesome.js";
 
 var NAME_CFG = {
@@ -369,17 +369,19 @@ export default class WidgetDetails extends ReactComponent {
     return (
       <div>
         <div className="hope-inspector-header" >
-          <div className="hope-inspector-icon">
-            { FONT_AWESOME[(spec && spec.is_ui && spec.icon) || "cog"] }
-          </div>
-          <div className="hope-inspector-detail">
+          <Col xs={3}>
+            <div className="hope-inspector-icon">
+              { FONT_AWESOME[(spec && spec.is_ui && spec.icon) || "cog"] }
+            </div>
+          </Col>
+          <Col xs={9}>
             <div className="hope-inspector-detail-name">
               { (spec && spec.is_ui && spec.name) || __("Unknown")}
             </div>
             <div className="hope-inspector-detail-desc">
               { (spec && spec.is_ui && spec.description) || __("Unknown") }
             </div>
-          </div>
+          </Col>
         </div>
         <Tabs current={this.$tab} onActive={(i)=> this.$tab = i}>
           <Tab title={__("Basic")}>

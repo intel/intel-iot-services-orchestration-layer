@@ -24,11 +24,30 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Panel from "./panel.x";
+import Frame from "../common/frame.x";
+import FONT_AWESOME from "../../lib/font-awesome.js";
 
 export default class PanelNavigator extends ReactComponent {
 
   componentDidMount() {
+    this._bind_track_events();
+    $hope.app.stores.graph.on("graph", this._on_graph_event);
+  }
+
+  componentWillUnmount() {
+    var dom_node = this.refs.canvas;
+    if (dom_node) {
+      PolymerGestures.removeEventListener(dom_node, "trackstart", _.noop);
+      PolymerGestures.removeEventListener(dom_node, "track", _.noop);
+      PolymerGestures.removeEventListener(dom_node, "trackend", _.noop);
+      dom_node.removeEventListener("trackstart", this._on_track_start);
+      dom_node.removeEventListener("track", this._on_track);
+      dom_node.removeEventListener("trackend", this._on_track_end);
+    }
+    $hope.app.stores.graph.removeListener("graph", this._on_graph_event);
+  }
+
+  _bind_track_events() {
     var dom_node = this.refs.canvas;
     PolymerGestures.addEventListener(dom_node, "trackstart", _.noop);
     PolymerGestures.addEventListener(dom_node, "track", _.noop);
@@ -36,18 +55,6 @@ export default class PanelNavigator extends ReactComponent {
     dom_node.addEventListener("trackstart", this._on_track_start);
     dom_node.addEventListener("track", this._on_track);
     dom_node.addEventListener("trackend", this._on_track_end);
-    $hope.app.stores.graph.on("graph", this._on_graph_event);
-  }
-
-  componentWillUnmount() {
-    var dom_node = this.refs.canvas;
-    PolymerGestures.removeEventListener(dom_node, "trackstart", _.noop);
-    PolymerGestures.removeEventListener(dom_node, "track", _.noop);
-    PolymerGestures.removeEventListener(dom_node, "trackend", _.noop);
-    dom_node.removeEventListener("trackstart", this._on_track_start);
-    dom_node.removeEventListener("track", this._on_track);
-    dom_node.removeEventListener("trackend", this._on_track_end);
-    $hope.app.stores.graph.removeListener("graph", this._on_graph_event);
   }
 
   _on_graph_event() {
@@ -80,20 +87,24 @@ export default class PanelNavigator extends ReactComponent {
     }
   }
 
-  _on_click_min(e) {
-    var navigator = $hope.app.stores.ide.panel.navigator;
-    navigator.visible = !navigator.visible;
-    this.forceUpdate();
-    setTimeout(this.redraw.bind(this), 0);
-    e.stopPropagation();
+  _on_expand(expanded) {
+    if (expanded) {
+      this._bind_track_events();
+      this.redraw();
+    }
+
+    var fx = this.props.onExpand;
+    if (fx) {
+      fx(expanded);
+    }
   }
 
   redraw() {
     var view = $hope.app.stores.graph.active_view;
-    if (!view || !this.refs.canvas) {
+    var canvas = this.refs.canvas;
+    if (!view || !canvas) {
       return;
     }
-    var canvas = this.refs.canvas;
     var c = canvas.getContext("2d");
 
     // Reset origin
@@ -166,6 +177,15 @@ export default class PanelNavigator extends ReactComponent {
       c.fillText(icon, (pt.x + nodesz.width / 2) * scale, (pt.y + nodesz.height / 2) * scale);
     });
 
+    c.font = (36 * scale) + "px FontAwesome";
+    c.fillStyle = "yellow";
+    view.graph.nodes.forEach(node => {
+      if (node.is_debug) {
+        var pt = node.$get_position();
+        c.fillText(FONT_AWESOME["eye"], (pt.x + nodesz.width - 20) * scale, (pt.y + 10) * scale);
+      }
+    });
+
     // Scaled view rectangle
     var graph_svg = $hope.app.stores.ide.graph_svg;
     var vx = Math.round( (-view.offset.dx / view.zoom_scale - minX) * scale );
@@ -221,22 +241,15 @@ export default class PanelNavigator extends ReactComponent {
   render() {
     var nav = $hope.app.stores.ide.panel.navigator;
 
-    var minbtn = <i onClick={this._on_click_min}
-      className={"hope-panel-icon-min fa fa-" + (nav.visible ? "minus-square-o" : "plus-square-o")} />;
-
     return (
-      <Panel icon="eye" id="navigator" title={__("Navigator")}
-            left={nav.left}
-            top={nav.top}
-            width={nav.width}
-            height={nav.height}
-            visible={nav.visible}
-            buttons={minbtn} >
-        <canvas width={(nav.width - 2) + "px"}
-                height={(nav.height - 24) + "px"}
-                className="hope-graph-background"
-                ref="canvas" />
-      </Panel>
+      <Frame clazz="hope-navigator" title={__("Navigator")} expanded={true} onExpand={this._on_expand}>
+        <div className="text-center">
+          <canvas width={(nav.width - 2) + "px"}
+              height={(nav.height - 24) + "px"}
+              className="hope-graph-background"
+              ref="canvas" />
+        </div>
+      </Frame>
     );
   }
 }

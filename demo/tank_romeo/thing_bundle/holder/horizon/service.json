@@ -1,6 +1,7 @@
 {
   "description":"set the level-angle of the camera-holder",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/holder/horizon",
     "in": {
       "ports": [{
         "name": "angle",

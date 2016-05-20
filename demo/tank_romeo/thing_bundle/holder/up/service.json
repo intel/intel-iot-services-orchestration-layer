@@ -1,6 +1,7 @@
 {
   "description":"pitch the holder up by 10 degree",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/holder/up",
     "in": {
       "ports": [{
         "name": "trigger"

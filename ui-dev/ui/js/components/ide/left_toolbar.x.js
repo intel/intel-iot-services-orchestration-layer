@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Tbb from "../toolbar_button.x";
+import Tbb from "../common/toolbar_button.x";
 
 export default class LeftToolbar extends ReactComponent {
 
@@ -33,11 +33,6 @@ export default class LeftToolbar extends ReactComponent {
                             "hope-theme-light" : "hope-theme-dark";
     $hope.trigger_action("ide/change/theme", {theme: theme});
   }*/
-
-  _on_trash() {
-    var view = $hope.app.stores.graph.active_view;
-    $hope.trigger_action("graph/remove/selected", {graph_id: view.id});
-  }
 
   _on_undo() {
     var view = $hope.app.stores.graph.active_view;
@@ -82,14 +77,11 @@ export default class LeftToolbar extends ReactComponent {
     $hope.trigger_action("graph/autolayout", {graph_id: view.id});
   }
 
-  _on_click_library() {
-    $hope.app.stores.ide.toggle_library();
-  }
-
   run(trace) {
     var view = $hope.app.stores.graph.active_view;
 
     view.tracing = trace;
+    view.debug_traces = [];
 
     if (view.modified) {
       if (view.has_linter_error()) {
@@ -156,55 +148,50 @@ export default class LeftToolbar extends ReactComponent {
   }
 
   render() {
-    var undo_stack_len = 0;
-    var undo_times = 0;
-    var selected = false;
     var view = $hope.app.stores.graph.active_view;
-    var panel = $hope.app.stores.ide.panel;
-
     if (!view) {
       return <div className="hope-left-toolbar" />;
     }
 
-    if (view) {
-      selected = view.has_selections();
-      undo_stack_len = view.undo_stack.length;
-      undo_times = view.undo_times;
+    var undo_stack_len = view.undo_stack.length;
+    var undo_times = view.undo_times;
 
-      if (view.is_running()) {
-        return (
-          <div className="hope-left-toolbar">
-            <Tbb icon="stop" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
-          </div>
-        );
-      }
+    var fit = <Tbb icon="arrows-alt"
+        tips={__("Click to fit the view")}
+        onClick={this._on_fit} />;
 
-      if (view.is_debugging()) {
-        var logs = view.$logs;
-        var idx = view.$logidx || 0;
-        var len = logs ? logs.length : 0;
-        return (
-          <div className="hope-left-toolbar">
-            <Tbb icon="circle-o-notch" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
-            <Tbb icon="arrow-circle-right" tips={__("Continue")} onClick={this._on_step.bind(this, "go")} enabled={!view.is_auto_replaying()} />
-            <Tbb icon="step-forward" tips={__("Step forward")} onClick={this._on_step.bind(this, "step")} enabled={logs && idx < len - 1} />
-            <Tbb icon="step-backward" tips={__("Step backward")} onClick={this._on_step.bind(this, "back")} enabled={logs && idx > 0} />
-            <Tbb icon="fast-backward" tips={__("Back to the beginning")} onClick={this._on_step.bind(this, "begin")} enabled={logs && idx !== 0} />
-          </div>
-        );
-      }
+    if (view.is_running()) {
+      return (
+        <div className="hope-left-toolbar">
+          <Tbb icon="stop" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
+          {fit}
+        </div>
+      );
+    }
+
+    if (view.is_debugging()) {
+      var logs = view.$logs;
+      var idx = view.$logidx || 0;
+      var len = logs ? logs.length : 0;
+      return (
+        <div className="hope-left-toolbar">
+          <Tbb icon="circle-o-notch" tips={__("Click to stop the workflow")} onClick={this._on_stop} />
+          <Tbb icon="arrow-circle-right" tips={__("Continue")} onClick={this._on_step.bind(this, "go")} enabled={!view.is_auto_replaying()} />
+          <Tbb icon="step-forward" tips={__("Step forward")} onClick={this._on_step.bind(this, "step")} enabled={logs && idx < len - 1} />
+          <Tbb icon="step-backward" tips={__("Step backward")} onClick={this._on_step.bind(this, "back")} enabled={logs && idx > 0} />
+          <Tbb icon="fast-backward" tips={__("Back to the beginning")} onClick={this._on_step.bind(this, "begin")} enabled={logs && idx !== 0} />
+        </div>
+      );
     }
 
     return (
       <div className="hope-left-toolbar">
-        <Tbb icon="list" tips={__("Click to show or hide the library")} onClick={this._on_click_library} enabled={!panel.library.visible} always={true} />
-        <Tbb icon="bug" tips={__("Click to run the workflow with tracing")} onClick={this.run.bind(this, true)} />
         <Tbb icon="play" tips={__("Click to run the workflow")} onClick={this.run.bind(this, false)} />
+        <Tbb icon="bug" tips={__("Click to run the workflow with tracing")} onClick={this.run.bind(this, true)} />
         <Tbb icon="floppy-o" tips={__("Click to save the workflow")} onClick={this._on_save} enabled={view && view.modified} />
-        <Tbb icon="trash-o" tips={__("Click to delete the selected objects")} onClick={this._on_trash} enabled={selected} />
         <Tbb icon="undo" tips={__("Undo")} onClick={this._on_undo} enabled={undo_stack_len > undo_times} />
         <Tbb icon="repeat" tips={__("Redo")} onClick={this._on_redo} enabled={undo_times > 0} />
-        <Tbb icon="arrows-alt" tips={__("Click to fit the view")} onClick={this._on_fit} />
+        {fit}
         <Tbb icon="sitemap" tips={__("Click to auto layout the workflow")} onClick={this._on_autolayout} />
       </div>
     );

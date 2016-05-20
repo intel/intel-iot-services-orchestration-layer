@@ -1,6 +1,7 @@
 {
   "description":"read the resistor value",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/res/read",
     "in": {
       "ports": [{
         "name": "trigger"

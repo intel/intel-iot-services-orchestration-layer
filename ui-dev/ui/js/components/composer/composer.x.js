@@ -28,7 +28,7 @@ import {History, Lifecycle} from "react-router";
 import {Row, Col} from "react-bootstrap";
 import Node from "./node.x";
 import Editor from "./editor.x";
-import Dialog from "../ide/dialog.x";
+import Dialog from "../common/dialog.x";
 
 export default React.createClass({
 
@@ -54,6 +54,7 @@ export default React.createClass({
     this.expected = [];
     this.accepts = [];
     this.exists = [];
+    this.spec_id = null;
 
     return {
       spec: {},
@@ -89,6 +90,7 @@ export default React.createClass({
     }
     let spec = $hope.serialize(origin_spec, true, ["id", "path", "specbundle"]);
     this.setState({spec: spec});
+    this.spec_id = origin_spec.id || $hope.uniqueId("SPEC__");
     this.files.push({
       name: __("Specification"),
       type: "json",
@@ -165,7 +167,9 @@ export default React.createClass({
       var f = this.files[idx];
       if (f && f.editor) {
         f.editor.focus();
+        f.editor.resize(false);
       }
+      this.forceUpdate();
     });
   },
 
@@ -254,26 +258,42 @@ export default React.createClass({
   },
 
   _on_save() {
-    var f = this.files[this.state.active];
-    if (this.is_modified(f)) {
-      $hope.confirm(__("Save"),
-        __("This would overwrite the spec deployed on the server. Please make sure this is what you expect!"),
-        "warning", () => {
-        if (this.state.active === 0) {
-          $hope.trigger_action("composer/save/spec", {
-            service_id: this.service_id,
-            spec: this.state.spec
-          });
-        }
-        else {
-          $hope.trigger_action("composer/write/file", {
-            service_id: this.service_id,
-            file_path: f.name,
-            content: f.content
-          });
-        }
-      });
+    var modified;
+    _.forEach(this.files, f => {
+      if (this.is_modified(f)) {
+        modified = true;
+        return false;
+      }
+    });
+    if (!modified) {
+      return;
     }
+
+    $hope.confirm(__("Save All"),
+      __("This would overwrite the service deployed on the server. Please make sure this is what you expect!"),
+      "warning", this._on_save_all);
+  },
+
+  _on_save_all() {
+    _.forEach(this.files, f => {
+      this.set_modified(f, false);
+      if (f === this.files[0]) {
+        var ss = _.cloneDeep(this.state.spec);
+        ss.id = this.spec_id;
+
+        $hope.trigger_action("composer/save/spec", {
+          service_id: this.service_id,
+          spec: ss
+        });
+      }
+      else {
+        $hope.trigger_action("composer/write/file", {
+          service_id: this.service_id,
+          file_path: f.name,
+          content: f.content
+        });
+      }
+    });
   },
 
   _on_spec_changed(spec) {
@@ -282,7 +302,7 @@ export default React.createClass({
     this.set_modified(f0, true);
     var editor = f0.editor;
     if (editor) {
-      editor.setValue(f0.content, 1);
+      editor.setValue(f0.content, -1);
     }
   },
 
@@ -324,11 +344,12 @@ export default React.createClass({
   },
 
   render_file_list() {
+    var af = this.files[this.state.active];
     return _.map(this.accepts, f => {
       var exist = this.exists.indexOf(f) >= 0;
       var key = "flst_" + f.replace(/\./g, "_");
       return (
-        <Row className={"hope-composer-file" + (exist ? " exists" : "")}
+        <Row className={"hope-composer-file" + (exist ? " exists" : "") + (af && f === af.name ? " active" : "")}
             key={key}
             onDoubleClick={this._open.bind(this, f)}>
           <Col xs={11}>
@@ -401,22 +422,22 @@ export default React.createClass({
           </div>
         </Col>
         <Col xs={1} style={{
-          width: store.node.width
+          width: store.node.width,
+          height: store.editor.height
         }}>
-          <Row>
-            <Node width={store.node.width}
+          <Node width={store.node.width}
               spec={this.state.spec}
+              active={this.state.active === 0}
               onChanged={this._on_spec_changed} />
-          </Row>
           <Row className="hope-composer-separator">
             {__("Package Files")}
           </Row>
-          <Row>
+          <div className="hope-composer-file-list">
             { this.render_file_list() }
-          </Row>
-          <Row className="text-center">
-            <i onClick={this._on_create_file} className="fa fa-plus hope-composer-file-add" />
-          </Row>
+            <Row className="text-center">
+              <i onClick={this._on_create_file} className="fa fa-plus hope-composer-file-add" />
+            </Row>
+          </div>
         </Col>
         <Col xs={10} style={{width: store.editor.width}}>
           <Row style={{height: store.file_tabs.height}}>

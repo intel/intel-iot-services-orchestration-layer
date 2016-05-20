@@ -2,6 +2,7 @@
   "name": "if",
   "description": "if the in is true, send true in 'then' port, else send true in 'else' port",
   "spec":{
+    "id": "__HOPE__/builtin/flow/if",
     "out": {
       "ports": [{             
         "name": "then",

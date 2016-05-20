@@ -25,6 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import class_names from "classnames";
+import FONT_AWESOME from "../../lib/font-awesome.js";
 
 export default class Edge extends ReactComponent {
 
@@ -54,13 +55,22 @@ export default class Edge extends ReactComponent {
     });
   }
 
+  _on_trash(e) {
+    e.stopPropagation();
+
+    $hope.trigger_action("graph/remove/edge", {
+      graph_id: this.props.view.id, 
+      id: this.props.id
+    });
+  }
+
   render() {
     var view = this.props.view;
     var edge = view.get("edge", this.props.id);
     var s = view.get_outport_position(edge.source);
     var t = view.get_inport_position(edge.target);
     var styles = edge.$get_styles() || {};
-    var extract;
+    var extract, trash;
 
     t.x -= $hope.config.graph.inport_line_length;
 
@@ -90,21 +100,42 @@ export default class Edge extends ReactComponent {
       c2Y = t.y;
     }
 
+    function P(z) {
+      var nt = 1 - z, nt2 = nt * nt, nt3 = nt2 * nt;
+      var t2 = z * z, t3 = t2 * z;
+      var x = (nt3 * s.x) + (3 * nt2 * z * c1X) + (3 * nt * t2 * c2X) + (t3 * t.x);
+      var y = (nt3 * s.y) + (3 * nt2 * z * c1Y) + (3 * nt * t2 * c2Y) + (t3 * t.y);
+      return {x, y};
+    }
+
     var path = [
         "M", s.x, s.y,
         "C", c1X, c1Y, c2X, c2Y, t.x, t.y
         ].join(" ");
     
+    var cp = P(0.5);
+
     if ("field" in edge) {
-      var cx = (s.x + t.x) / 2;
-      var cy = (s.y + t.y) / 2;
       var w = (edge.field.length + 1) * 7.4;
       w = w < 42 ? 42 : w;
       extract = (
         <g className={"hope-graph-extract" + $hope.color(styles.color, "stroke")}>
-          <rect x={cx - w / 2} y={cy - 5} rx={3} ry={3} width={w} height={15} />
-          <text x={cx} y={cy + 6}>{edge.field}</text>
+          <rect x={cp.x - w / 2} y={cp.y - 5} rx={3} ry={3} width={w} height={15} />
+          <text x={cp.x} y={cp.y + 6}>{edge.field}</text>
         </g>
+      );
+    }
+
+    if (this._is_selected()) {
+      if ("field" in edge) {
+        cp = P(t.y > s.y ? 0.33 : 0.67);
+      }
+      trash = (
+        <text className="hope-graph-icon edge-ctrl"
+            onClick={this._on_trash}
+            x={cp.x} y={cp.y - 5}>
+          {FONT_AWESOME["trash"]}
+        </text>
       );
     }
 
@@ -116,6 +147,7 @@ export default class Edge extends ReactComponent {
         )} >
         <path className={(edge.no_store ? "hope-graph-dash" : "") + $hope.color(styles.color, "stroke", "hover")} d={path} />
         {extract}
+        {trash}
       </g>
     );
   }

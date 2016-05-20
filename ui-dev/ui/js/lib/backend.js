@@ -236,6 +236,14 @@ WebBackend.graph.trace$ = function(ids) {
   return invoke("graph.trace", ids);
 };
 
+WebBackend.graph.debug_trace$ = function(ids, limit) {
+  return invoke("graph.debug_trace", ids, limit);
+};
+
+WebBackend.graph.set_debug_for_node$ = function(graph_id, node_id, is_debug) {
+  return invoke("graph.set_debug_for_node", {graph_id, node_id, is_debug});
+};
+
 WebBackend.graph.status$ = function(ids) {
   return invoke("graph.status", ids);
 };
@@ -298,7 +306,7 @@ WebBackend.thing.create_service$ = function(thing_id, name, desc) {
       name: name,
       description: desc,
       spec: {
-        name: name,
+        id: $hope.uniqueId("SPEC__"),
         in: {
           "ports": []
         },

@@ -24,9 +24,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Tabs, Tab} from "../tabs.x";
 import {Row, Col} from "react-bootstrap";
-import Dialog from "../dialog.x";
+import Frame from "../../common/frame.x";
+import Dialog from "../../common/dialog.x";
 
 export default class EdgeDetails extends ReactComponent {
 
@@ -52,8 +52,12 @@ export default class EdgeDetails extends ReactComponent {
     }
   }
 
-  _on_change_field(e) {
+  _change_edge() {
     var view = $hope.app.stores.graph.active_view;
+    $hope.trigger_action("graph/change/edge", {graph_id: view.id, id: this.props.id}, {});
+  }
+
+  _on_change_field(e) {
     if (e.target.value.length > 0) {
       this.state.edge.field = e.target.value;
     }
@@ -61,11 +65,10 @@ export default class EdgeDetails extends ReactComponent {
       delete this.state.edge.field;
     }
     this.forceUpdate();
-    view.change("edge", this.props.id, null);
+    this._change_edge();
   }
 
   _on_change_nostore(e) {
-    var view = $hope.app.stores.graph.active_view;
     if (e.target.checked) {
       this.state.edge.no_store = true;
     }
@@ -73,14 +76,13 @@ export default class EdgeDetails extends ReactComponent {
       delete this.state.edge.no_store;
     }
     this.forceUpdate();
-    view.change("edge", this.props.id, null);
+    this._change_edge();
   }
 
   _on_color_selected(i) {
-    var view = $hope.app.stores.graph.active_view;
     this.state.edge.$merge_styles({color: i});
     this.forceUpdate();
-    view.change("edge", this.props.id, null);
+    this._change_edge();
   }
 
   _on_click_color_palette(e) {
@@ -127,60 +129,51 @@ export default class EdgeDetails extends ReactComponent {
     }
 
     return (
-      <div>
-        <div className="hope-inspector-header" >
-          <div className={"hope-inspector-icon fa fa-long-arrow-right" + $hope.color(styles.color)} />
-          <div className="hope-inspector-detail">
-            <div className="hope-inspector-detail-name">{__("Edge")}</div>
-            <div className="hope-inspector-detail-desc">{__("Simple connection")}</div>
-          </div>
-        </div>
+      <div style={{height: this.props.height + "px", overflowY: "auto"}}>
         { valdiv }
         {view.is_editing() &&
-        <Tabs>
-          <Tab title={__("Details")}>
-            <Row className="hope-panel-details-row text-center border-bottom">
-              <Col xs={6}>
-                <div>{__("Extract Field")}</div>
-              </Col>
-              <Col xs={4}>
-                <input type="text"
-                  className="hope-inspector-detail-field"
-                  value={edge.field || ""}
-                  onChange={this._on_change_field} />
-              </Col>
-              <Col xs={2}>
-                <i className="fa fa-question-circle hope-hover-icon-btn"
-                  onClick={this._on_show_extractor} />
-              </Col>
-            </Row>
-            <Row className="hope-panel-details-row text-center border-bottom">
-              <Col xs={6}>
-                <div>{__("No Store")}</div>
-              </Col>
-              <Col xs={1}>
-                <input type="checkbox"
-                  className="hope-inspector-detail-checkbox"
-                  checked={edge.no_store}
-                  onChange={this._on_change_nostore} />
-              </Col>
-              <Col xs={2}>
-                <i className="fa fa-question-circle hope-hover-icon-btn"
-                  onClick={this._on_show_nostore} />
-              </Col>
-            </Row>
-            <Row className="hope-panel-details-row text-center">
-              <Col xs={6}>
-                <div>{__("Color")}</div>
-              </Col>
-              <Col xs={1}>
-                <i ref="color"
-                  className={"fa fa-circle" + $hope.color(styles.color, "color", "hover")}
-                  onClick={this._on_click_color_palette} />
-              </Col>
-            </Row>
-          </Tab>
-        </Tabs>
+        <Frame title={__("Properties")} expanded={true}>
+          <Row className="hope-panel-details-row text-center border-bottom">
+            <Col xs={6}>
+              <div className="cfg-name">{__("Extract Field")}</div>
+            </Col>
+            <Col xs={4}>
+              <input type="text"
+                className="hope-inspector-detail-field"
+                value={edge.field || ""}
+                onChange={this._on_change_field} />
+            </Col>
+            <Col xs={2}>
+              <i className="fa fa-question-circle hope-hover-icon-btn"
+                onClick={this._on_show_extractor} />
+            </Col>
+          </Row>
+          <Row className="hope-panel-details-row text-center border-bottom">
+            <Col xs={6}>
+              <div className="cfg-name">{__("No Store")}</div>
+            </Col>
+            <Col xs={1}>
+              <input type="checkbox"
+                className="hope-inspector-detail-checkbox"
+                checked={edge.no_store}
+                onChange={this._on_change_nostore} />
+            </Col>
+            <Col xs={2}>
+              <i className="fa fa-question-circle hope-hover-icon-btn"
+                onClick={this._on_show_nostore} />
+            </Col>
+          </Row>
+          <Row className="hope-panel-details-row text-center">
+            <Col xs={6}>
+              <div className="cfg-name">{__("Color")}</div>
+            </Col>
+            <Col xs={1}>
+              <i ref="color"
+                className={"fa fa-circle" + $hope.color(styles.color, "color", "hover")}
+                onClick={this._on_click_color_palette} />
+            </Col>
+          </Row>
+        </Frame>
       }
       </div>
     );

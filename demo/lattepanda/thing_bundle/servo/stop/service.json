@@ -1,6 +1,7 @@
 {
   "description":"stop the servo",
   "spec": {
+    "id": "__HOPE__/demo/lattepanda/servo/stop",
     "in": {
       "ports": [{
         "name": "trigger"

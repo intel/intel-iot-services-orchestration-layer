@@ -10,7 +10,7 @@ There is a executable binary `lcd` in the service folder. If you equip the lcd_k
 
 In the `kernel.js`, we implemet the servcie as follows
 
-```
+```javascript
 console.log("lcd_display", IN.content);
 var spawn = require("child_process").spawn;
 var child = spawn("./lcd", [IN.content], {cwd: __dirname});

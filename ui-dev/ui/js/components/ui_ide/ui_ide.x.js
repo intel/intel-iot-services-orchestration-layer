@@ -28,7 +28,7 @@ import LeftToolbar from "./left_toolbar.x";
 import WidgetLibrary from "./widget_library.x";
 import PanelInspector from "./panel_inspector.x";
 import UIBoard from "./ui_board.x";
-import Breadcrumb from "../breadcrumb.x";
+import Breadcrumb from "../common/breadcrumb.x";
 import {Row, Col} from "react-bootstrap";
 import {Lifecycle} from "react-router";
 

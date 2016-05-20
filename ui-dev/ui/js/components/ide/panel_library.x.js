@@ -26,7 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col} from "react-bootstrap";
 import class_names from "classnames";
-import SearchBox from "./search_box.x";
+import SearchBox from "../common/search_box.x";
 import HubView from "./panel_library/hub_view.x";
 import SpecView from "./panel_library/spec_view.x";
 
@@ -51,11 +51,6 @@ export default class PanelLibrary extends ReactComponent {
 
   _on_collapse_all() {
     $hope.trigger_action("library/collapse_all", {});
-  }
-
-  _on_click_min(e) {
-    $hope.app.stores.ide.toggle_library();
-    e.stopPropagation();
   }
 
   render() {
@@ -90,7 +85,6 @@ export default class PanelLibrary extends ReactComponent {
         <div className="hope-panel-header" >
           <i className={"hope-panel-icon fa fa-list"} />
           <span className="hope-panel-title">{__("Library")}</span>
-          <i onClick={this._on_click_min} className="hope-panel-icon-min fa fa-times-circle" />
         </div>
         <div className="hope-panel-body">
           <Row>

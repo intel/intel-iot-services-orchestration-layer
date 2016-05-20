@@ -189,7 +189,6 @@ module.exports = {
   "This would discard the changes of workflow. Please make sure this is what you expect!": "该操作将放弃对工作流的修改，确定要这样做吗？",
   "This would discard the changes of UI. Please make sure this is what you expect!": "该操作将放弃对UI的修改，确定要这样做吗？",
   "This would delete the file on the server. Please make sure this is what you expect!": "该操作将文件从服务器永久删除，确定要这样做吗？",
-  "This would overwrite the spec deployed on the server. Please make sure this is what you expect!": "该操作将重写服务器上的文件，确定要这样做吗？",
   "This would overwrite the UI deployed on the server. Please make sure this is what you expect!": "该操作将重写服务器上的UI，确定要这样做吗？",
   "This would create or overwrite the workflow deployed on the server. Please make sure this is what you expect!": "该操作将新建或者重写服务器上的工作流，确定要这样做吗？",
   "This would delete the thing on the server. Please make sure this is what you expect!": "该操作将Thing从服务器永久删除，确定要这样做吗？",

@@ -31,5 +31,6 @@ $hope.register_action({         // params of Action
   "ide/hide/code":    null,   // {}
   "ide/move/panel":   null,   // {panel: ..., left: ..., top: ...}
   "ide/show/palette": null,   // {x: ..., y: ..., onSelect: a_func}
-  "ide/hide/palette": null    // {}
+  "ide/hide/palette": null,   // {},
+  "ide/toggle/sidebar": null  // {button: ...}
 });

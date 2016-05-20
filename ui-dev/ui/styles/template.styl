@@ -373,23 +373,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .hope-inspector-icon {
-  position: relative;
-  float: left;
   color: $panel-inspector-icon;
   font-size: 36px;
   text-align: center;
-  min-width: 50px;
-  margin: 6px 6px 0px;
+  cursor: pointer;
 }
 
 .hope-inspector-icon:hover {
   color: $fg-6;
-}
-
-.hope-inspector-detail {
-  position: relative;
-  float: left;
-  width: 180px;
 }
 
 .hope-inspector-detail-name {
@@ -400,6 +391,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  width: 100%;
 }
 
 .hope-inspector-detail-desc {
@@ -412,6 +404,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 16px;
   text-overflow: ellipsis;
   overflow: hidden;
+  width: 100%;
 }
 .hope-inspector-time {
   color: $fg-3;
@@ -427,7 +420,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .node-details {
   background: $panel-inspector-details-bk;
   color: $panel-inspector-details-fg;
-  height: 100%;
+  padding: 0 0 6px 0;
 }
 .node-details-tag {
   width: 100%;
@@ -510,32 +503,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: 0;
   border-radius: 3px;
 }
+div.hope-graph-icon-btn:hover {
+  color: $fg-6;
+}
 
 .border-bottom {
-  border-bottom: 1px solid $bk-0;
+  border-bottom: 1px solid $bk-2;
 }
-.padding-left {
-  padding-left: 6px;
-}
-.margin-tb {
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.margin-top {
-  margin-top: 8px;
-}
-.z-index-top {
-  z-index: 99;
-}
-.match-parent {
-  height: 100%;
-  width: 100%;
-}
+
 
 .hope-panel-details-row {
   margin-top: 2px;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.cfg-name {
+  color: white;
+  font-weight: bold;
 }
 
 .hope-inspector-detail-field {
@@ -548,7 +533,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .hope-input-highlighted {
-  background: $bk-0;
   border-color: rgba(255, 0, 0, 0.8) !important;
   box-shadow: insect 0 2px 2px rgba(0,0,0,0.075), 0 0 8px rgb(255,0,0) !important;
 }
@@ -701,6 +685,25 @@ text {
   text-anchor: middle;
 }
 
+.hope-graph-icon.dbg {
+  font-size: 30px;
+  fill: rgba(0, 0, 0, 0.9);
+}
+
+.node-ctrl:hover {
+  fill: yellow;
+}
+.node-ctrl {
+  cursor: default;
+  font-size: 24px;
+  fill: $fg-6;
+  animation: x-ctrl-fade-in 0.5s;
+}
+@keyframes x-ctrl-fade-in {
+  0% { fill: $bk-3;font-size: 16px;}
+  100% { fill: $fg-6;font-size: 24px;}
+}
+
 .hope-graph-icon-btn {
   font-family: FontAwesome, Monaco, 'Ubuntu Mono', Consolas, monospace;
   cursor: default;
@@ -748,6 +751,16 @@ text {
 
 .hope-graph-edge.hope-graph-selected {
   stroke: $fg-6;
+}
+
+.edge-ctrl:hover {
+  fill: yellow;
+}
+.edge-ctrl {
+  cursor: default;
+  font-size: 24px;
+  fill: $fg-6;
+  animation: x-ctrl-fade-in 0.5s;
 }
 
 @keyframes edge-heartbeats {
@@ -950,6 +963,10 @@ text {
 }
 .hope-open-dialog-item.selected {
   background-color: #286090;
+}
+.hope-open-dialog-item.add-new {
+  background-color: $fg-4;
+  color: $bk-6;
 }
 .hope-open-dialog-ui-home {
   position: absolute;
@@ -1222,6 +1239,10 @@ text {
   padding: 6px;
   color: $fg-3;
 }
+.hope-composer-file-list {
+  overflow-y: auto;
+  height: 35%;
+}
 .hope-composer-file {
   text-align: center;
   font-style: italic;
@@ -1232,6 +1253,9 @@ text {
   font-style: normal;
   font-weight: bold;
   color: $fg-6;
+}
+.hope-composer-file.active {
+  background-color: #2F3129;
 }
 .hope-composer-file:hover {
   background: $6;
@@ -1254,12 +1278,14 @@ text {
   color: $fg-6;
 }
 .hope-composer-node {
-  min-height: 400px;
-  max-height: 600px;
+  height: 60%;
   overflow-y: auto;
   overflow-x: hidden;
   background: $panel-inspector-details-bk;
   color: $panel-inspector-details-fg;
+}
+.hope-composer-node.active {
+  background-color: #2F3129;
 }
 .hope-composer-node .hope-graph-icon:hover {
   cursor: pointer;
@@ -1395,6 +1421,201 @@ text {
   padding: 10px 0 0 0;
 }
 
+.hope-sidebar {
+  color: $fg-3;
+  background-color: #303030;
+}
+.hope-sidebar-tabs {
+  width: 35px;
+  height: 100%;
+  background-color: #222;
+  overflow: hidden;
+}
+
+.hope-sidebar-button {
+  padding: 6px;
+  display: inline-block;
+  cursor: default;
+  color: #888;
+  text-align: center;
+  transform-origin: 17px 18px;
+  transform: rotate(90deg);
+  min-height: 80px;
+  min-width: 80px;
+}
+
+.hope-sidebar-button.active {
+  background-color: #303030 !important;
+  color: #f0f0f0;
+  margin-top: 0;
+}
+
+.hope-sidebar-button:hover {
+  background-color: #444;
+}
+
+.splitter {
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 10;
+  width: 3px;
+  background-color: black;
+}
+
+.splitter.vertical {
+  bottom: 0px;
+  border-left: 1px solid #222;
+}
+
+.hope-navigator {
+  position: absolute;
+  bottom: 0;
+  left: 1px;
+  right: 1px;
+}
+
+.hope-debugger-toolbar {
+  padding: 0 0 0 12px;
+  border-bottom: 1px solid #000000;
+  background-color: #252525;
+
+  i {
+    font-size: 16px;
+    color: #ccc;
+    padding: 5px 5px 5px;
+  }
+  i.show-filter.filled-filter {
+    color: #f00;
+  }
+  i.show-filter.empty-filter {
+    color: #fff;
+  }
+  i.hide-filter.filled-filter {
+    color: #800;
+  }
+  i.hide-filter.empty-filter {
+    color: #888;
+  }
+  .disabled {
+    color: $left-toolbar-fg-off;
+  }
+}
+
+.hope-filter-panel {
+  width: 100%;
+  height: 60px;
+  padding: 4px;
+  background-color: #555;
+}
+.hope-filter-text {
+  width: 60%;
+  margin-right: 8px
+}
+
+.hope-filter-tag {
+  display: inline-block;
+  margin: 2px 0 0 0;
+  padding: 2px 12px;
+  border-radius: 8px;
+}
+.hope-filter-tag.active,
+.hope-filter-tag:hover {
+  background-color: #222;
+}
+
+.hope-debugger-output {
+  overflow-y: scroll;
+  position: absolute;
+  top: 31px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+.hope-debugger-output.offset-top {
+  top: 91px;
+}
+.hope-debugger-msg {
+  border: 1px solid transparent;
+  border-left: 5px solid transparent;
+  border-bottom: 1px solid #252525;
+  padding: 4px 2px 6px;
+}
+
+.hope-debugger-msg.active {
+  border: 1px dashed red;
+  border-left: 5px solid yellow;
+}
+
+.hope-debugger-msg.buddy {
+  border-left: 5px solid yellow;
+}
+
+.hope-debugger-msg:hover {
+  border-left: 5px solid green !important;
+}
+
+.hope-debugger-msg-name {
+  color: #a66;
+  float: right;
+  margin: 0 8px;
+}
+.hope-debugger-label {
+  display: inline-block;
+  margin: 0px 8px 4px 8px;
+  padding: 2px 4px;
+}
+.hope-debugger-msg-data {
+  color: #111;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.hope-debugger-msg.grey .hope-debugger-msg-data {
+  color: #222;
+  background-color: #505050;
+}
+
+.hope-frame {
+
+  .title {
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgba(31, 31, 31, 0.64)), color-stop(1, #2e2e2e));
+    background-image: -moz-linear-gradient(90deg, rgba(31, 31, 31, 0.64) 0%, #2e2e2e 100%);
+
+    i {
+      width: 16px;
+      text-align: center;
+      color: white;
+    }
+
+    span {
+      color: #c7eebb;
+    }
+  }
+}
+
+.toggle-bar {
+  position: absolute;
+  height: 40px;
+  width: 10px;
+  z-index: 2;
+  padding: 10px 3px;
+  background-color: #888;
+}
+
+.toggle-bar.left {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.toggle-bar.right {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.toggle-bar:hover {
+  color: white;
+}
 
 //////////////////////////////////////////////////////////////////////////
 // Templated colors

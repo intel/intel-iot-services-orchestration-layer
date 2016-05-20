@@ -2,7 +2,7 @@
   "name": "delay",
   "description": "When the input arrives, delay sometime and send it out. When pause, all timer will delete",
   "spec":{
-    "id": "delay_spec",
+    "id": "__HOPE__/builtin/timer/delay",
     "name": "delay_spec",
     "in": {
       "ports": [

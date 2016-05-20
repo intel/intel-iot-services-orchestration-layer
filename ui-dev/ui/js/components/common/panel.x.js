@@ -37,16 +37,21 @@ export default class Panel extends ReactComponent {
 
   static propTypes = {
     icon: React.PropTypes.string.isRequired,
-    id: React.PropTypes.string.isRequired
+    onTrack: React.PropTypes.func.isRequired
   };
 
   _on_click(e) {
     e.stopPropagation();
-    $hope.trigger_action("ide/hide/palette", {});
+    if (this.props.onClick) {
+      this.props.onClick(e);
+    }
   }
 
   _on_key(e) {
     e.stopPropagation();
+    if (this.props.onKey) {
+      this.props.onKey(e);
+    }
   }
 
   _on_track(e) {
@@ -55,13 +60,7 @@ export default class Panel extends ReactComponent {
         left: this.state.left + e.ddx,
         top: this.state.top + e.ddy
       },
-      () => {
-        $hope.trigger_action("ide/move/panel", {
-          panel: this.props.id,
-          left: this.state.left,
-          top: this.state.top
-        });
-      });
+      () => this.props.onTrack(this.state.left, this.state.top));
   }
 
   componentDidMount() {

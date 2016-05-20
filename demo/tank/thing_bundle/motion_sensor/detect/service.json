@@ -1,6 +1,7 @@
 {
   "description":"detect whether IR changes",
   "spec": {
+    "id": "__HOPE__/demo/tank/motion_sensor/detect",
     "in": {
       "ports": [{
         "name": "trigger"

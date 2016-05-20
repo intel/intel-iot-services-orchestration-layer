@@ -52,12 +52,17 @@ export default class BindingDetails extends ReactComponent {
     });
   }
 
+  _change_node() {
+    var view = $hope.app.stores.graph.active_view;
+    $hope.trigger_action("graph/change/node", {graph_id: view.id, id: this.props.id}, {});
+  }
+
   _set_type(type) {
     if (type === NO_BINDING) {
       var view = $hope.app.stores.graph.active_view;
       var node = view.get("node", this.props.id);
       node.$remove_binding();
-      view.change("node", this.props.id, null);
+      this._change_node();
     }
     this.setState({
       type: type
@@ -81,7 +86,7 @@ export default class BindingDetails extends ReactComponent {
       };
     }
     node.$set_binding(b2);
-    view.change("node", this.props.id, null);
+    this._change_node();
     this.forceUpdate();
   }
 
@@ -91,7 +96,7 @@ export default class BindingDetails extends ReactComponent {
     var binding = node.$get_binding();
     binding[xxx] = id;
     node.$set_binding(binding);
-    view.change("node", this.props.id, null);
+    this._change_node();
     this.forceUpdate();
   }
 
@@ -103,7 +108,7 @@ export default class BindingDetails extends ReactComponent {
     var b2 = _.clone(binding);
     b2.widget = id;
     node.$set_binding(b2);
-    view.change("node", this.props.id, null);
+    this._change_node();
     this.forceUpdate();
   }
 

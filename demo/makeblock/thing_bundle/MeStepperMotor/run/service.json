@@ -1,6 +1,7 @@
 {
   "description":"move the motor",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/motor/run",
     "in": {
       "ports": [{
         "name": "target",

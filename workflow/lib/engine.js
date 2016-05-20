@@ -78,6 +78,9 @@ Engine.prototype.load = function(graph_json, specs) {
   var w = new Workflow(this, graph_json, specs);
   w.load();
   this.workflows[w.id] = w;
+  this.event.emit("workflow_load", {
+    id: w.id
+  });
   return w;
 };
 
@@ -126,6 +129,10 @@ Engine.prototype.get_trace = function(graph_id) {
 };
 
 Engine.prototype.get_debug_trace = function(graph_id) {
+  var f = this.workflows[graph_id];
+  if (!f) {
+    return [];
+  }
   return this.ensure_get_workflow(graph_id).debug_trace;
 };
 

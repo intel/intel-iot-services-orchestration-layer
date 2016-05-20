@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Panel from "./panel.x";
+import Panel from "../common/panel.x";
 import WidgetDetails from "./widget_details.x";
 
 export default class PanelInspector extends ReactComponent {
@@ -34,6 +34,14 @@ export default class PanelInspector extends ReactComponent {
     inspector.visible = !inspector.visible;
     this.forceUpdate();
     e.stopPropagation();
+  }
+
+  _on_track(left, top) {
+    $hope.trigger_action("ui_ide/move/panel", {
+      panel: "inspector",
+      left: left,
+      top: top
+    });
   }
 
   render() {
@@ -52,7 +60,8 @@ export default class PanelInspector extends ReactComponent {
       className={"hope-panel-icon-min fa fa-" + (inspector.visible ? "minus-square-o" : "plus-square-o")} />;
 
     return (
-      <Panel icon="info" id="inspector" title={__("Inspector")}
+      <Panel icon="info" title={__("Inspector")}
+            onTrack={this._on_track}
             left={inspector.left}
             top={inspector.top}
             width={inspector.width}

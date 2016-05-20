@@ -42,7 +42,7 @@ export default class ToolbarButton extends ReactComponent {
   }
 
   render() {
-    return <Overlay overlay={this.props.tips}>
+    return <Overlay placement={this.props.placement} overlay={this.props.tips}>
       <i onClick={this._on_click} className={"fa fa-" + this.props.icon + (this.enabled() ? "" : " disabled")} />
     </Overlay>;
   }

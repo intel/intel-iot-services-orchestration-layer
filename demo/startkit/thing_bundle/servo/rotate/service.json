@@ -2,6 +2,7 @@
   "name": "rotate",
   "description": "control the servo's angle (0-180)",
   "spec": {
+    "id": "__HOPE__/demo/startkit/servo/rotate",
     "in": {
       "ports": [{
         "name": "angle",

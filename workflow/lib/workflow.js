@@ -71,6 +71,9 @@ function Workflow(engine, graph_json, specs) {
   this.status = "unloaded";
   this.id = graph_json.id;
 
+  /* for on-fly debug */
+  this.json = graph_json;
+
   /**
    * Event are in format of {
    *   type: "...", e.g. "node" etc.
@@ -321,7 +324,7 @@ Workflow.prototype.emit_debug = function(node, data) {
   if (!node.is_debug) {
     return;
   }
-  this.emit("debug", {
+  this.event.emit("debug", {
     seq: this.seq_event++,
     time: Date.now(),
     workflow_id: this.id,
@@ -333,7 +336,9 @@ Workflow.prototype.emit_debug = function(node, data) {
 // TODO: WE enforce the update of the json as well. THis isn't an elegant way 
 // but works well so far
 Workflow.prototype.set_debug_for_node = function(node_id, is_debug) {
-  this.nodes[node_id].is_debug = is_debug;
+  var n = this.nodes[node_id];
+  B.check(n, "workflow/workflow", "Node to set_debug doesn't exist", node_id, is_debug);
+  n.is_debug = is_debug;
   _.forEach(this.json.graph.nodes, function(n) {
     if (n.id === node_id) {
       n.is_debug = is_debug;

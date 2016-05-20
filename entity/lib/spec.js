@@ -147,7 +147,8 @@ function _create_local_bundle(json, bundle_path) {
 
 function _create_local_spec(json, spec_path, bundle_path, bundle_id, name) {
   json.name = json.name || name || _spec_default_name(spec_path, bundle_path);
-  json.id = json.id || _spec_default_id(bundle_id, _spec_default_name(spec_path, bundle_path));
+  json.id = json.id || B.unique_id("__HOPE_SPEC__");
+  // json.id = json.id || _spec_default_id(bundle_id, _spec_default_name(spec_path, bundle_path));
   json.path = spec_path;
   json.specbundle = bundle_id;
   return json;

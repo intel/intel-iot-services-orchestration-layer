@@ -26,7 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {History} from "react-router";
 import auth from "../../lib/auth";
-import Dialog from "../ide/dialog.x";
+import Dialog from "../common/dialog.x";
 
 export default React.createClass({
   mixins: [ History ],

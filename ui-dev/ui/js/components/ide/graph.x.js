@@ -244,8 +244,8 @@ export default class Graph extends ReactComponent {
 
     var offset = this.props.view.offset;
 
-    var x = offset.dx % span;
-    var y = offset.dy % span;
+    var x = offset.dx % span - 1;
+    var y = offset.dy % span - 1;
 
     // Comment this line to go plaid
     c.clearRect(0, 0, width, height);

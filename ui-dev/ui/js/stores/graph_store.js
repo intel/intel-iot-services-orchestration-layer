@@ -116,6 +116,7 @@ class GraphStore extends EventEmitter {
     this.ensure_graph_loaded$(id).then(view => {
       this.active_view = view;
       this.no_active_reason = "";
+      view.listen_graph_debug();
       this.emit("graph", {type: "graph", id: id, event: "set_active"});
     }).catch(err => {
       $hope.check_warn(false, "Graph", "failed due to", err);
@@ -139,6 +140,7 @@ class GraphStore extends EventEmitter {
       this.emit("graph", {type: "graph", id: view.id, event: "saved"});
       return $hope.app.server.graph.start$([view.id]);
     }).then(() => {
+      view.set_running();
       this.emit("graph", {type: "graph", id: view.id, event: "started"});
     }).catch(err => {
       $hope.notify("error", __("Failed to start workflow because"), err.message);
@@ -148,6 +150,9 @@ class GraphStore extends EventEmitter {
   start(ids, tracing) {
     $hope.app.server.graph.start$(ids, tracing).then(() => {
       ids.map(id => {
+        var view = this.view(id);
+        view.set_running();
+
         this.emit("graph", {type: "graph", id: id, event: "started"});
       });
     }).catch(err => {
@@ -158,11 +163,45 @@ class GraphStore extends EventEmitter {
   stop(ids) {
     return $hope.app.server.graph.stop$(ids).then(() => {
       ids.map(id => {
-        this.emit("graph", {type: "graph", id: id, event: "stoped"});
+        this.after_stop(id);
       });
     }).catch(err => {
       $hope.notify("error", __("Failed to stop workflow because"), err.message);
     }).done();
+  }
+
+  after_stop(id) {
+    var view = this.view(id);
+    if (view.is_running()) {
+      if (view.tracing) {
+        $hope.confirm(__("Replay"),
+          __("Workflow successfully stoped! Do you want replay slowly?"),
+          "warning", (res) => {
+            if (!res) {
+              view.set_debugging();
+              $hope.trigger_action("graph/replay", {graph_id: view.id});
+            }
+            else {
+              view.set_editing();
+            }
+            $hope.app.stores.ide.update_toolbar();
+        }, {
+          confirmButtonText: __("No"),    // swap the meaning of buttons
+          cancelButtonText: __("Yes")
+        });
+      }
+      else {
+        view.set_editing();
+        this.emit("graph", {type: "graph", id: id, event: "stoped"});
+        $hope.app.stores.ide.update_toolbar();
+      }
+    }
+    else {
+      view.stop_auto_replay();
+      view.unselect_all();
+      view.set_editing();
+      $hope.app.stores.ide.update_toolbar();
+    }
   }
 
   replay(id) {
@@ -194,7 +233,6 @@ class GraphStore extends EventEmitter {
 
   stop_replay() {
     var view = this.active_view;
-
     if (!view) {
       return;
     }
@@ -329,6 +367,8 @@ class GraphStore extends EventEmitter {
       return;
     }
 
+    v.unlisten_graph_debug();
+
     if (v === this.active_view) {
       this.active_view = null;
       this.no_active_reason = "closing";
@@ -340,10 +380,12 @@ class GraphStore extends EventEmitter {
 
   remove(ids) {
     ids.map(id => {
-      if (this.views[id] === this.active_view) {
+      var view = this.view(id);
+      if (view === this.active_view) {
         this.active_view = null;
         this.no_active_reason = "closed";
       }
+      view.unlisten_graph_debug();
       delete this.views[id];
     });
     $hope.app.server.graph.remove$(ids).then(data => {
@@ -400,6 +442,9 @@ class GraphStore extends EventEmitter {
   }
 
   clear_cache() {
+    _.forEach(this.views, view => {
+      view.unlisten_graph_debug();
+    });
     this.views = {};
     this.active_view = null;
     this.no_active_reason = "";

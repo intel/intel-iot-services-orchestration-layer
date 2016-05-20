@@ -1,6 +1,7 @@
 {
   "description":"stop the tank",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/move/stop",
     "in": {
       "ports": [{
         "name": "trigger"

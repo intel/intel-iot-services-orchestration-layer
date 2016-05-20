@@ -26,7 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Modal, Button} from "react-bootstrap";
 
-export default class DlgOpenGraph extends ReactComponent {
+export default class DlgOpenUI extends ReactComponent {
 
   static propTypes = {
     app: React.PropTypes.object,
@@ -38,61 +38,17 @@ export default class DlgOpenGraph extends ReactComponent {
   constructor(props) {
     super(props);
 
-    var view = $hope.app.stores.graph.active_view;
+    var view = $hope.app.stores.ui.active_view;
     this.state = {
-      selected_id: view ? view.id : null,
-      working: []
+      selected_id: view ? view.id : null
     };
   }
 
-  get_app_status() {
-    var app = this.props.app;
-    if (!app || app.graphs.length === 0) {
-      this.setState({
-        working: []
-      });
-      return;
-    }
-    $hope.app.server.graph.status$(_.map(app.graphs, "id")).then((sts) => {
-      var working = _.map(_.filter(sts, ["status", "Working"]), "graph");
-      this.setState({
-        working: working
-      });
-    }).done();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    var view = $hope.app.stores.graph.active_view;
+  componentWillReceiveProps() {
+    var view = $hope.app.stores.ui.active_view;
     this.setState({
       selected_id: view ? view.id : null
     });
-    if (nextProps.show) {
-      this.get_app_status();
-    }
-  }
-
-  componentDidMount() {
-    this.get_app_status();
-
-    this.listener = $hope.listen_system("wfe/changed", ev => {
-      var app = this.props.app;
-      var working = this.state.working;
-      if (ev.stoped) {
-        _.forEach(ev.stoped, id => _.pull(working, id));
-      }
-      if (ev.started) {
-        _.forEach(ev.started, id => {
-          if (_.find(app.graphs, ["id", id]) && working.indexOf(id) < 0) {
-            working.push(id);
-          }
-        })
-      }
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.listener.dispose();
   }
 
   _on_click(id, e) {
@@ -117,12 +73,6 @@ export default class DlgOpenGraph extends ReactComponent {
   _on_del(id, e) {
     e.preventDefault();
     e.stopPropagation();
-
-    var running = this.state.working.indexOf(id) >= 0;
-    if (running) {
-      $hope.notify("error", __("Workflow is running, please stop it before deleting"));
-      return;
-    }
 
     if (_.isFunction(this.props.onClickDelete)) {
       this.props.onClickDelete(id, ()=> this.forceUpdate());
@@ -158,48 +108,44 @@ export default class DlgOpenGraph extends ReactComponent {
     }
   }
 
-  _on_control(id, e) {
+  _on_home(id, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    var running = this.state.working.indexOf(id) >= 0;
-    if (running) {
-      $hope.trigger_action("graph/stop", {
-        graphs: [id]
+    var app = this.props.app;
+    if (app && app.main_ui !== id) {
+      app.main_ui = id;
+      $hope.trigger_action("app/update/app", {
+        id: app.id,
+        props: {
+          main_ui: id
+        }
       });
-    }
-    else {
-      $hope.trigger_action("graph/start", {
-        graphs: [id],
-        tracing: false
-      });
+      this.forceUpdate();
     }
   }
 
   render_app(app) {
     return (
       <div key={app.id} style={{clear: "both"}}>
-        { _.map(app.graphs, g => {
-          var running = this.state.working.indexOf(g.id) >= 0;
-          return (
-            <div className={"text-center hope-open-dialog-item" + (this.state.selected_id === g.id ? " selected" : "")}
-                key={g.id}
-                onClick={this._on_click.bind(this, g.id)}
-                onDoubleClick={this._on_dbclick.bind(this, g.id)}>
-              <div className="fa fa-cubes hope-open-dialog-icon margin-top" />
-              <div className="margin-top">
-                {g.name}
+        { _.map(app.uis, ui => (
+            <div className={"text-center hope-open-dialog-item" + (this.state.selected_id === ui.id ? " selected" : "")}
+                key={ui.id}
+                onClick={this._on_click.bind(this, ui.id)}
+                onDoubleClick={this._on_dbclick.bind(this, ui.id)}>
+              <div className="fa fa-user hope-open-dialog-icon margin-top" />
+              <div className=" margin-top">
+                {ui.name || ui.id}
               </div>
+              <i className={"hope-open-dialog-ui-home fa fa-home" + (app.main_ui === ui.id ? " home-ui" : "")}
+                onClick={this._on_home.bind(this, ui.id)} />
               <i className="fa fa-trash hope-open-dialog-trash"
-                onClick={this._on_del.bind(this, g.id)} />
-              { running &&
-                <i className="fa fa-cog fa-spin hope-open-dialog-graph-status-icon" />
-              }
-              <i onClick={this._on_control.bind(this, g.id)}
-                className={"hope-open-dialog-graph-control fa fa-" + (running ? "power-off" : "play")} />
-            </div>);
-          })
-        }
+                onClick={this._on_del.bind(this, ui.id)} />
+            </div>)
+          )}
+        <div className="hv-center hope-open-dialog-item add-new" key="NeW" onClick={this._on_create}>
+          <i className="fa fa-2x fa-plus" />
+        </div>
       </div>
     );
   }
@@ -213,16 +159,15 @@ export default class DlgOpenGraph extends ReactComponent {
     }
 
     return (
-      <Modal {...this.props} animation={true} onKeyDown={this._on_keydown}>
+      <Modal {...this.props} backdrop="static" animation={true} onKeyDown={this._on_keydown}>
         <Modal.Header closeButton>
-          <Modal.Title>{__("Workflow")}</Modal.Title>
+          <Modal.Title>{__("User UI")}</Modal.Title>
         </Modal.Header>
         <div className="modal-body hope-open-dialog-list">
           {this.props.app && this.render_app(this.props.app)}
         </div>
         <div className="modal-footer">
           <Button bsStyle="default" onClick={this.props.onHide}>{__("Cancel")}</Button>
-          <Button bsStyle="warning" onClick={this._on_create}>{__("Create")}</Button>
           <Button bsStyle="primary" {...btn_props} onClick={this._on_open}>{__("Open")}</Button>
         </div>
       </Modal>

@@ -26,7 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Modal, Button} from "react-bootstrap";
 
-export default class DlgOpenUI extends ReactComponent {
+export default class DlgOpenGraph extends ReactComponent {
 
   static propTypes = {
     app: React.PropTypes.object,
@@ -38,17 +38,29 @@ export default class DlgOpenUI extends ReactComponent {
   constructor(props) {
     super(props);
 
-    var view = $hope.app.stores.ui.active_view;
+    var view = $hope.app.stores.graph.active_view;
     this.state = {
       selected_id: view ? view.id : null
     };
   }
 
   componentWillReceiveProps() {
-    var view = $hope.app.stores.ui.active_view;
+    var view = $hope.app.stores.graph.active_view;
     this.setState({
       selected_id: view ? view.id : null
     });
+  }
+
+  _on_wfe_event() {
+    this.forceUpdate();
+  }
+
+  componentDidMount() {
+    $hope.app.stores.app.on("wfe/changed", this._on_wfe_event);
+  }
+
+  componentWillUnmount() {
+    $hope.app.stores.app.removeListener("wfe/changed", this._on_wfe_event);
   }
 
   _on_click(id, e) {
@@ -73,6 +85,12 @@ export default class DlgOpenUI extends ReactComponent {
   _on_del(id, e) {
     e.preventDefault();
     e.stopPropagation();
+
+    var running = $hope.app.stores.app.is_workflow_running(id);
+    if (running) {
+      $hope.notify("error", __("Workflow is running, please stop it before deleting"));
+      return;
+    }
 
     if (_.isFunction(this.props.onClickDelete)) {
       this.props.onClickDelete(id, ()=> this.forceUpdate());
@@ -108,41 +126,51 @@ export default class DlgOpenUI extends ReactComponent {
     }
   }
 
-  _on_home(id, e) {
+  _on_control(id, e) {
     e.preventDefault();
     e.stopPropagation();
 
-    var app = this.props.app;
-    if (app && app.main_ui !== id) {
-      app.main_ui = id;
-      $hope.trigger_action("app/update/app", {
-        id: app.id,
-        props: {
-          main_ui: id
-        }
+    var running = $hope.app.stores.app.is_workflow_running(id);
+    if (running) {
+      $hope.trigger_action("graph/stop", {
+        graphs: [id]
       });
-      this.forceUpdate();
+    }
+    else {
+      $hope.trigger_action("graph/start", {
+        graphs: [id],
+        tracing: false
+      });
     }
   }
 
   render_app(app) {
     return (
       <div key={app.id} style={{clear: "both"}}>
-        { _.map(app.uis, ui => (
-            <div className={"text-center hope-open-dialog-item" + (this.state.selected_id === ui.id ? " selected" : "")}
-                key={ui.id}
-                onClick={this._on_click.bind(this, ui.id)}
-                onDoubleClick={this._on_dbclick.bind(this, ui.id)}>
-              <div className="fa fa-user hope-open-dialog-icon margin-top" />
-              <div className=" margin-top">
-                {ui.name || ui.id}
+        { _.map(app.graphs, g => {
+          var running = $hope.app.stores.app.is_workflow_running(g.id);
+          return (
+            <div className={"text-center hope-open-dialog-item" + (this.state.selected_id === g.id ? " selected" : "")}
+                key={g.id}
+                onClick={this._on_click.bind(this, g.id)}
+                onDoubleClick={this._on_dbclick.bind(this, g.id)}>
+              <div className="fa fa-cubes hope-open-dialog-icon margin-top" />
+              <div className="margin-top">
+                {g.name}
               </div>
-              <i className={"hope-open-dialog-ui-home fa fa-home" + (app.main_ui === ui.id ? " home-ui" : "")}
-                onClick={this._on_home.bind(this, ui.id)} />
               <i className="fa fa-trash hope-open-dialog-trash"
-                onClick={this._on_del.bind(this, ui.id)} />
-            </div>)
-          )}
+                onClick={this._on_del.bind(this, g.id)} />
+              { running &&
+                <i className="fa fa-cog fa-spin hope-open-dialog-graph-status-icon" />
+              }
+              <i onClick={this._on_control.bind(this, g.id)}
+                className={"hope-open-dialog-graph-control fa fa-" + (running ? "power-off" : "play")} />
+            </div>);
+          })
+        }
+        <div className="hv-center hope-open-dialog-item add-new" key="NeW" onClick={this._on_create}>
+          <i className="fa fa-2x fa-plus" />
+        </div>
       </div>
     );
   }
@@ -156,16 +184,15 @@ export default class DlgOpenUI extends ReactComponent {
     }
 
     return (
-      <Modal {...this.props} animation={true} onKeyDown={this._on_keydown}>
+      <Modal {...this.props} backdrop="static" animation={true} onKeyDown={this._on_keydown}>
         <Modal.Header closeButton>
-          <Modal.Title>{__("End User UI")}</Modal.Title>
+          <Modal.Title>{__("Workflow")}</Modal.Title>
         </Modal.Header>
         <div className="modal-body hope-open-dialog-list">
           {this.props.app && this.render_app(this.props.app)}
         </div>
         <div className="modal-footer">
           <Button bsStyle="default" onClick={this.props.onHide}>{__("Cancel")}</Button>
-          <Button bsStyle="warning" onClick={this._on_create}>{__("Create")}</Button>
           <Button bsStyle="primary" {...btn_props} onClick={this._on_open}>{__("Open")}</Button>
         </div>
       </Modal>

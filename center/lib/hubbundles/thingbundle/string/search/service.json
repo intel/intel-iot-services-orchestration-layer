@@ -2,7 +2,7 @@
   "name": "search",
   "description": "whether the str2 is sub string of str1, if yes, out = true, otherwise, out = false",
   "spec":{
-    "id": "string_search_builtin_spec",
+    "id": "__HOPE__/builtin/string/search",
     "in": {
       "ports": [
         {

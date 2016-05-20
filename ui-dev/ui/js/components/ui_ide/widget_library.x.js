@@ -25,9 +25,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row} from "react-bootstrap";
-
-import SearchBox from "../ide/search_box.x";
-import Tree from "../ide/tree.x";
+import SearchBox from "../common/search_box.x";
+import Tree from "../common/tree.x";
 import Spec from "../ide/panel_library/spec.x";
 import Bundle from "../ide/panel_library/bundle.x";
 
@@ -53,7 +52,7 @@ export default class WidgetLibrary extends ReactComponent {
       }
     }
 
-    function _add_node(spec, x, y) {
+    function _add_node(spec) {
       $hope.trigger_action("ui/add_widget", {
         ui_id: ui_view.id,
         widget: {
@@ -75,7 +74,7 @@ export default class WidgetLibrary extends ReactComponent {
               spec={s.obj} 
               draggable={true}
               scalable={false}
-              onDoubleClick={_add_node.bind({}, s.obj, 0, 0)}/> 
+              onDoubleClick={_add_node.bind({}, s.obj)}/> 
             </Tree.Node>);
         });
         

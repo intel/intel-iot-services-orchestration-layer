@@ -26,10 +26,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import {Link} from "react-router";
-import DragFromLib from "./drag_from_lib.x";
 import class_name from "classnames";
-import Dialog from "../dialog.x";
-import Overlay from "../../overlay.x";
+import DragFromLib from "./drag_from_lib.x";
+import Dialog from "../../common/dialog.x";
+import Overlay from "../../common/overlay.x";
 
 export default class Service extends ReactComponent {
   static propTypes = {

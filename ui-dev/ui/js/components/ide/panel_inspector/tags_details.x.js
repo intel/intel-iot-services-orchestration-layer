@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Dialog from "../dialog.x";
+import Dialog from "../../common/dialog.x";
 
 function draggable(ref, helper) {
   $(ref).draggable({
@@ -72,6 +72,11 @@ export default class TagsDetails extends ReactComponent {
     return div;
   }
 
+  _change_node() {
+    var view = $hope.app.stores.graph.active_view;
+    $hope.trigger_action("graph/change/node", {graph_id: view.id, id: this.props.id}, {});
+  }
+
   _drop_add(iotype, event, ui) {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
@@ -100,7 +105,7 @@ export default class TagsDetails extends ReactComponent {
       io.tags[0].ref = data.tag.id;
     }
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_drop_del(event, ui) {
@@ -130,7 +135,7 @@ export default class TagsDetails extends ReactComponent {
     }
     this._shake_trash();
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _shake_trash() {

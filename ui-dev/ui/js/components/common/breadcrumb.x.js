@@ -24,6 +24,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+import {Link} from "react-router";
+
 export default class Breadcrumb extends ReactComponent {
   static propTypes = {
     path: React.PropTypes.array.isRequired
@@ -32,6 +34,9 @@ export default class Breadcrumb extends ReactComponent {
   render() {
     return (
       <ul className="hope-breadcrumb">
+        <Link to="/">
+          <li key="hoMe"><i className="fa fa-home"/>{" " + __("Home")}</li>
+        </Link>
         {_.map(this.props.path, (p, i) => {
           if (_.isString(p)) {
             return <li key={i}>{p}</li>;

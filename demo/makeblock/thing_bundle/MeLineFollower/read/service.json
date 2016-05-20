@@ -1,6 +1,7 @@
 {
   "description":"detect whether on the black line",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/follower/detect",
     "in": {
       "ports": [{
         "name": "trigger"

@@ -96,7 +96,40 @@ export default class GraphView extends EventEmitter {
     this.replay_timer = null;
     this.mode = EDITING;
 
+    this.debug_listener = null;
+    this.debug_traces = [];
+
     this.modified = false;
+  }
+
+  unlisten_graph_debug() {
+    if (this.debug_listener) {
+      this.debug_listener.dispose();
+      this.debug_listener = null;
+    }
+    this.debug_traces = [];
+  }
+
+  listen_graph_debug() {
+    if (!this.debug_listener) {
+      this.debug_listener = $hope.listen_graph(this.id, "debug", data => {
+        var t = this.debug_traces.concat(data);
+        if (t.length > 200) {
+          t = t.slice(-100);
+        }
+        this.debug_traces = t;
+        this.emit("debug", {});
+      });
+    }
+  }
+
+  get_debug_traces() {
+    return this.debug_traces;
+  }
+
+  clear_debug_traces() {
+    this.debug_traces = [];
+    this.emit("debug", {});
   }
 
 
@@ -461,6 +494,12 @@ export default class GraphView extends EventEmitter {
       this.emit(type, {id: o.id, type: type, event: "changed"});
     }
     return o;
+  }
+
+  set_debug_for_node(id, is_debug) {
+    $hope.app.server.graph.set_debug_for_node$(this.id, id, is_debug).then(()=> {
+      this.emit("node", {id: id, type: "node", event: "changed"});
+    });
   }
 
 
@@ -1022,15 +1061,9 @@ export default class GraphView extends EventEmitter {
         this._create_edge(data.edge);
         break;
 
-      case "graph/remove/edge": {
-        let o = this.create("edge", data.id);
-        let undo_obj = {
-          do: () => this.remove(o),
-          undo: () => this.add("edge", o.id)
-        };
-        this.push_into_undo_stack(undo_obj);
-      }
-      break;
+      case "graph/remove/edge":
+        this._remove_items_action(null, [this.get("edge", data.id)]);
+        break;
 
       case "graph/change/edge":
         this.change("edge", data.id, data.edge);

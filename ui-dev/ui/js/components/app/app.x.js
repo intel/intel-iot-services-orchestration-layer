@@ -33,13 +33,22 @@ export default class App extends ReactComponent {
     app: React.PropTypes.object.isRequired
   };
 
-  state = {
-    working: []
-  };
-
   _on_delete(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    var appstore = $hope.app.stores.app;
+    var running;
+    _.forEach(this.props.app.graphs, g => {
+      if (appstore.is_workflow_running(g.id)) {
+        running = true;
+        return false;
+      }
+    });
+    if (running) {
+      $hope.notify("error", __("Workflow is running, please stop it before deleting"));
+      return;
+    }
 
     $hope.confirm(__("Delete from Server"),
       __("This would delete the app deployed on the server. Please make sure this is what you expect!"),
@@ -48,35 +57,6 @@ export default class App extends ReactComponent {
         id: this.props.app.id
       });
     });
-  }
-
-  componentDidMount() {
-    var app = this.props.app;
-    $hope.app.server.graph.status$(_.map(app.graphs, "id")).then((sts) => {
-      var working = _.map(_.filter(sts, ["status", "Working"]), "graph");
-      this.setState({
-        working: working
-      });
-    }).done();
-
-    this.listener = $hope.listen_system("wfe/changed", ev => {
-      var working = this.state.working;
-      if (ev.stoped) {
-        _.forEach(ev.stoped, id => _.pull(working, id));
-      }
-      if (ev.started) {
-        _.forEach(ev.started, id => {
-          if (_.find(app.graphs, ["id", id]) && working.indexOf(id) < 0) {
-            working.push(id);
-          }
-        })
-      }
-      this.forceUpdate();
-    });
-  }
-
-  componentWillUnmount() {
-    this.listener.dispose();
   }
 
   render() {

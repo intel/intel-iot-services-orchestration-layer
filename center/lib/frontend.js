@@ -75,16 +75,38 @@ function FrontEnd(center, web_app, handler_url) {
   this.token_user = {};
 }
 
+// will create one if not setup yet
+FrontEnd.prototype.get_socket = function(url_path) {
+  var socket = this.sub_sockets[url_path];
+  if (!socket) {
+    socket = this.sub_sockets[url_path] = this.socket.of(url_path);
+  }
+  return socket;
+};
+
+FrontEnd.prototype.setup_app_socket = function(app_id) {
+  var p = _socket_path_for_app(app_id);
+  return this.get_socket(p);
+};
+
+FrontEnd.prototype.setup_graph_socket = function(graph_id) {
+  var p = _socket_path_for_graph(graph_id);
+  return this.get_socket(p);
+};
+
+FrontEnd.prototype.remove_app_socket = function(app_id) {
+  delete this.sub_sockets[_socket_path_for_app(app_id)];
+};
+
+FrontEnd.prototype.remove_graph_socket = function(graph_id) {
+  delete this.sub_sockets[_socket_path_for_graph(graph_id)];
+};
 
 FrontEnd.prototype.emit = function(url_path, event, data) {
   if (!this.socket) {
     return;
   }
-  var socket = this.sub_sockets[url_path];
-  if (!socket) {
-    socket = this.sub_sockets[url_path] = this.socket.of(url_path);
-  }
-  socket.emit(event, data);
+  this.get_socket(url_path).emit(event, data);
 };
 
 FrontEnd.prototype.sys_emit = function(event, data) {
@@ -520,6 +542,7 @@ DevFrontEnd.prototype.api_app__create$ = function(data, req, res) {
   }
   return this.center.em.app__add$(data, this.center.appbundle_path, uid).then(function() {
     return self.api_app__get$([data.id]).then(function(apps) {
+      self.setup_app_socket(data.id);
       return apps[0];
     });
   });
@@ -544,6 +567,7 @@ DevFrontEnd.prototype.api_app__update$ = function(data) {
 //   app: app_id,
 // }
 DevFrontEnd.prototype.api_app__remove$ = function(data) {
+  this.remove_app_socket(data.app);
   return this.center.em.app__remove$(data.app);
 };
 
@@ -578,7 +602,7 @@ DevFrontEnd.prototype.api_ui__remove$ = function(ids) {
 DevFrontEnd.prototype.api_app__create_graph$ = function(data) {
   var graph = data.graph || {};
   graph.app = data.app;
-  return this.center.em.graph__add$(graph);
+  return this.center.workflow_create$(graph);
 };
 
 function return_thing(thing) {
@@ -751,12 +775,17 @@ DevFrontEnd.prototype.api_graph__trace = function(ids) {
 };
 
 
-DevFrontEnd.prototype.api_graph__debug_trace = function(ids) {
+DevFrontEnd.prototype.api_graph__debug_trace = function(ids, limit) {
   var center = this.center;
   return ids.map(function(id) {
+    var recs = center.workflow_get_debug_trace(id);
+    var max = Number(limit);
+    if (max > 0 && recs.length > max) {
+      recs = recs.slice(-max);
+    }
     return {
       id: id,
-      trace: center.workflow_get_debug_trace(id)
+      trace: recs
     };
   });
 };

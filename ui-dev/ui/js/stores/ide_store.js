@@ -52,6 +52,10 @@ class IDEStore extends EventEmitter {
     };
 
     this.nav_bar = {};
+    this.side_bar = {
+      current: "info",
+      width_save: 300
+    };
 
     this.left_toolbar = {};
     this.breadcrumb = {};
@@ -73,7 +77,8 @@ class IDEStore extends EventEmitter {
       "ide/hide/code":        this.hide_code.bind(this),
       "ide/move/panel":       this.move_panel.bind(this),
       "ide/show/palette":     this.show_palette.bind(this),
-      "ide/hide/palette":     this.hide_palette.bind(this)
+      "ide/hide/palette":     this.hide_palette.bind(this),
+      "ide/toggle/sidebar":   this.toggle_sidebar.bind(this)
     });
   }
 
@@ -115,7 +120,7 @@ class IDEStore extends EventEmitter {
       top: 0,
       left: 0,
       width: w,
-      height: 60     
+      height: 60
     });
 
     _.merge(this.left_toolbar, {
@@ -132,6 +137,13 @@ class IDEStore extends EventEmitter {
       height:   h - this.nav_bar.height
     });
 
+    _.merge(this.side_bar, {
+      top: this.nav_bar.height,
+      left: w - this.left_toolbar.width - this.panel.library.width,
+      width: this.side_bar.current ? this.side_bar.width_save || 300 : 0,
+      height: h - this.nav_bar.height
+    });
+
     _.merge(this.breadcrumb, {
       top:      this.nav_bar.height, 
       left:     this.left_toolbar.width + this.panel.library.width,
@@ -142,13 +154,11 @@ class IDEStore extends EventEmitter {
     _.merge(this.graph_svg, {
       top: this.nav_bar.height + this.breadcrumb.height,
       left: this.left_toolbar.width + this.panel.library.width,
-      width: w - this.left_toolbar.width - this.panel.library.width,
+      width: w - this.left_toolbar.width - this.panel.library.width - this.side_bar.width - 35/*sidebar-tabs*/,
       height: h - this.nav_bar.height - this.breadcrumb.height
     });
 
     _.merge(this.panel.navigator, {
-      top: h - 200,
-      left: w - 300,
       width: 300,
       height: 200
     });
@@ -177,6 +187,45 @@ class IDEStore extends EventEmitter {
     this.panel.library.visible = !this.panel.library.visible;
     this.layout(true);
     this.emit("ide", {type: "ide", event: "toggle/library"});
+  }
+
+  toggle_sidebar(data) {
+    if (this.side_bar.current !== data.button) {
+      if (this.side_bar.current === null) {
+        this.side_bar.width = this.side_bar.width_save;
+        this.graph_svg.width -= this.side_bar.width_save;
+      }
+      this.side_bar.current = data.button;
+    }
+    else {
+      this.side_bar.current = null;
+      this.side_bar.width_save = this.side_bar.width;
+      this.side_bar.width = 0;
+      this.graph_svg.width += this.side_bar.width_save;
+    }
+    if (this.side_bar.current) {
+      this.side_bar.previous = this.side_bar.current;
+    }
+    this.emit("ide", {type: "ide", event: "resize/sidebar"});
+  }
+
+  resize_sidebar(d) {
+    this.side_bar.width -= d;
+    if (this.side_bar.width < 0) {
+      this.side_bar.width = 0;
+    }
+    if (this.side_bar.width === 0 && this.side_bar.current !== null) {
+      this.side_bar.current = null;
+      this.side_bar.width = 0;
+      this.graph_svg.width += this.side_bar.width_save;
+    }
+    else {
+      this.side_bar.width_save = this.side_bar.width;
+    }
+
+    var w = window.innerWidth;
+    this.graph_svg.width = w - this.left_toolbar.width - this.panel.library.width - this.side_bar.width - 35/*sidebar-tabs*/;
+    this.emit("ide", {type: "ide", event: "resize/sidebar"});
   }
 
 

@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col, SplitButton, MenuItem} from "react-bootstrap";
 import App from "./app.x";
-import Dialog from "../ide/dialog.x";
-import SearchBox from "./search_box.x";
+import Dialog from "../common/dialog.x";
+import SearchBox from "../common/search_box.x";
 import Graph from "../../lib/graph";
 
 const LAST_MODIFIED = __("Last Modified");

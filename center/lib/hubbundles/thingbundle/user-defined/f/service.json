@@ -2,6 +2,7 @@
   "name":"f",
   "description":" out = f(x)",
   "spec": {
+    "id": "__HOPE__/builtin/user_defined/f",
     "in": {
       "ports": [{
         "name": "x"

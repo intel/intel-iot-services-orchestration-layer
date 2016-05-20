@@ -26,8 +26,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import class_name from "classnames";
 import {Popover} from "react-bootstrap";
-import Overlay from "../overlay.x";
-import LinterMessage from "../linter_msg.x";
+import Overlay from "../common/overlay.x";
+import LinterMessage from "../common/linter_msg.x";
 
 function get_widget_impl(widget) {
   var spec = $hope.app.stores.spec.get_spec(widget.spec);

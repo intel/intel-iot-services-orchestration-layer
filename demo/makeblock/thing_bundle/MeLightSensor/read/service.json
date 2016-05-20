@@ -1,6 +1,7 @@
 {
   "description":"read the light sensor value",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/light/detect",
     "in": {
       "ports": [{
         "name": "trigger"

@@ -25,7 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col} from "react-bootstrap";
-import {ExpandSign} from "../tree.x";
+import {ExpandSign} from "../../common/tree.x";
 import class_names from "classnames";
 
 export default class Bundle extends ReactComponent {

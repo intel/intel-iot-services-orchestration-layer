@@ -1,6 +1,7 @@
 {
   "description":"read x-y axis value of joystick",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/joystick/read",
     "in": {
       "ports": [{
         "name": "trigger"

@@ -1,5 +1,11 @@
 Change Logs
 ===========================
+## v1.1.2
+* on-the-fly debug added
+
+## v1.1.1
+* simplified the process to new workflow and ui 
+
 ## v1.1.0
 * Uploaded to github with Release Project and Development Project seperately for end users and contributors
 

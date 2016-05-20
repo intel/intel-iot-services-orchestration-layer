@@ -182,7 +182,7 @@ global.$hope = (function() {
         "item isn't an object or no key with name: ", key_name, o)) {
         return;
       }
-      _check(!r[k], "array_to_hash", "Duplicated id", o);
+      _check(!r[k], "array_to_hash", "Duplicated id", o, array);
       if (_.isFunction(verify_f)) {
         _check(verify_f(o), "array_to_hash", "Failed to verify for", o);
       }
@@ -505,15 +505,19 @@ global.$hope = (function() {
       $hope.log("socket", url_path, event, "with data", _.toArray(arguments));      
       cb.apply({}, arguments);
     };
+    this.on_error = (e)=> {
+      console.log(url_path, event, "[ERROR]", e);
+    };
     var socket = all_sockets[url_path];
     if (!socket) {
       socket = all_sockets[url_path] = {
         e: io(window.location.origin + url_path),
-        count: {}
+        refs: 0
       };
+      socket.e.on("error", this.on_error);
     }
     socket.e.on(event, this.cb);
-    socket.count[event] = socket.count[event] || 1;
+    socket.refs++;
   }
 
   SocketListener.prototype.dispose = function() {
@@ -522,11 +526,9 @@ global.$hope = (function() {
       return;
     }
     socket.e.removeListener(this.event, this.cb);
-    socket.count[this.event] = socket.count[this.event] - 1;
-    if (socket.count[this.event] === 0) {
-      delete socket.count[this.event];
-    }
-    if (_.size(socket.count) === 0) {
+    socket.refs--;
+    if (socket.refs === 0) {
+      socket.e.destroy();
       delete all_sockets[this.url_path];
     }
   };
@@ -539,6 +541,10 @@ global.$hope = (function() {
   ret.listen_app = function(app_id, event, cb) {
     return new SocketListener("/__HOPE__APP__" + app_id, event, cb);
   }; 
+
+  ret.listen_graph = function(graph_id, event, cb) {
+    return new SocketListener("/__HOPE__GRAPH__" + graph_id, event, cb);
+  };
 
   
   //////////////////////////////////////////////////////////////////
@@ -642,6 +648,7 @@ $Q.all([
 
   $hope.listen_system("wfe/changed", ev => {
     $hope.app.stores.graph.handle_changed_event(ev.started, ev.stoped);
+    $hope.app.stores.app.handle_changed_event(ev.started, ev.stoped);
   });
 });
 

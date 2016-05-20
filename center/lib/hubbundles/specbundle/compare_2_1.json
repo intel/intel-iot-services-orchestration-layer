@@ -1,5 +1,5 @@
 {
-    "id": "compare_2_1_builtin",
+    "id": "__HOPE__/builtin/compare_2_1",
     "name": "compare_2_1_builtin",
     "description": "compare two inports and send a boolean result",
     "out": {

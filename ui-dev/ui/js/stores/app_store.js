@@ -37,6 +37,7 @@ class AppStore extends EventEmitter {
     super();
 
     this.manager = require("../lib/app");
+    this.running_workflows = [];
     
     var self = this;
     function _register(action_names) {
@@ -102,10 +103,25 @@ class AppStore extends EventEmitter {
     } else {
       $hope.app.server.app.list$().then(data => {
         this.manager.update_all_apps(data);
-        d.resolve(this.get_all_apps());
+
+        var reqs = [];
+        _.forOwn(this.get_all_apps(), a => {
+          reqs = reqs.concat(_.map(a.graphs, "id"));
+        });
+
+        $hope.app.server.graph.status$(reqs).then((sts) => {
+          _.forEach(_.filter(sts, ["status", "Working"]), st => {
+            this.running_workflows.push(st.graph);
+          });
+          d.resolve(this.get_all_apps());
+        });
       }).catch(err => d.reject(err)).done();
     }
     return d.promise;
+  }
+
+  is_workflow_running(id) {
+    return this.running_workflows.indexOf(id) >= 0;
   }
 
   create_app(name, desc) {
@@ -141,33 +157,40 @@ class AppStore extends EventEmitter {
     });
   }
 
-  active_app_by(check) {
-    _.forOwn(this.get_all_apps(), a => {
-      if (check(a)) {
-        this.emit("app", {type: "app", app: a, event: "actived"});
-        return false;
-      }
-    });
-  }
-
   active_app(check) {
     if (!check) {
       this.emit("app", {type: "app", app: null, event: "actived"});
       return;
     }
-    if (_.isEmpty(this.get_all_apps())) {
-      $hope.app.server.app.list$().done(data => {
-        this.manager.update_all_apps(data);
-        this.active_app_by(check);
+    this.ensure_apps_loaded$().done(apps => {
+      _.forOwn(apps, a => {
+        if (check(a)) {
+          this.emit("app", {type: "app", app: a, event: "actived"});
+          return false;
+        }
       });
-      return;
-    }
-
-    this.active_app_by(check);
+    });
   }
 
   clear_cache() {
+    this.running_workflows = [];
     this.manager.clear_cache();
+  }
+
+  handle_changed_event(started, stoped) {
+    if (_.isArray(started)) {
+      _.forEach(started, id => {
+        if (this.running_workflows.indexOf(id) < 0) {
+          this.running_workflows.push(id);
+        }
+      });
+    }
+    if (_.isArray(stoped)) {
+      _.forEach(stoped, id => {
+        _.pull(this.running_workflows, id);
+      });
+    }
+    this.emit("wfe/changed", {});
   }
 
 

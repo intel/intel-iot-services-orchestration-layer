@@ -120,6 +120,7 @@ export default React.createClass({
       <Overlay show={true}
         rootClose={true}
         onHide={this.hide}
+        placement={this.props.placement || "right"}
         target={this.getOverlayTarget}>
         {
           React.cloneElement(_.isString(o) ? <Popover id={o}>{o}</Popover> : o, {

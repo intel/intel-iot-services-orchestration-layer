@@ -1,6 +1,7 @@
 {
   "description":"write true or false to gpio pin",
   "spec": {
+    "id": "__HOPE__/demo/lattepanda/general/diwrite",
     "in": {
       "ports": [{
         "name": "on",

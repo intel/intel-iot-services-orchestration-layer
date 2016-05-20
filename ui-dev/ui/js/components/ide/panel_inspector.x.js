@@ -24,22 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import Panel from "./panel.x";
 import GraphDetails from "./panel_inspector/graph_details.x";
 import NodeDetails from "./panel_inspector/node_details.x";
 import EdgeDetails from "./panel_inspector/edge_details.x";
 
 export default class PanelInspector extends ReactComponent {
 
-  _on_click_min(e) {
-    var inspector = $hope.app.stores.ide.panel.inspector;
-    inspector.visible = !inspector.visible;
-    this.forceUpdate();
-    e.stopPropagation();
-  }
-
   render() {
-    var inspector = $hope.app.stores.ide.panel.inspector;
     var view = $hope.app.stores.graph.active_view;
     if (!view) {
       return null;
@@ -51,28 +42,16 @@ export default class PanelInspector extends ReactComponent {
       return null;
     }
 
-    var minbtn = <i onClick={this._on_click_min}
-      className={"hope-panel-icon-min fa fa-" + (inspector.visible ? "minus-square-o" : "plus-square-o")} />;
-
-    var body;
+    var body, height = this.props.height;
     if (nodes.length === 1) {
-      body = <NodeDetails id={view.selected_nodes[nodes[0]].id} />;
+      body = <NodeDetails id={view.selected_nodes[nodes[0]].id} height={height} />;
     }
     else if (edges.length === 1) {
-      body = <EdgeDetails id={view.selected_edges[edges[0]].id} />;
+      body = <EdgeDetails id={view.selected_edges[edges[0]].id} height={height} />;
     }
     else {
-      body = <GraphDetails />;
+      body = <GraphDetails height={height} />;
     }
-    return (
-      <Panel icon="info" id="inspector" title={__("Inspector")}
-            left={inspector.left}
-            top={inspector.top}
-            width={inspector.width}
-            visible={inspector.visible}
-            buttons={minbtn} >
-        {body}
-      </Panel>
-    );
+    return body;
   }
 }

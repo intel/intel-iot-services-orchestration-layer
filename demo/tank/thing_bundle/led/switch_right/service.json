@@ -1,6 +1,7 @@
 {
   "description":"switch the right led",
   "spec": {
+    "id": "__HOPE__/demo/tank/led/switch_right",
     "in": {
       "ports": [{
         "name": "on",

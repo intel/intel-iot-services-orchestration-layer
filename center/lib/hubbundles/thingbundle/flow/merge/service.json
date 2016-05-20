@@ -2,6 +2,7 @@
   "name": "merge",
   "description": "Combine multiple message into one",
   "spec":{
+    "id": "__HOPE__/builtin/flow/merge",
     "icon": "code-fork",
     "in": {
       "ports": [],

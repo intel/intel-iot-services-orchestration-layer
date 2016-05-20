@@ -30,7 +30,8 @@ export default class GraphDetails extends ReactComponent {
     //var view = $hope.app.stores.graph.active_view;
 
     return (
-      <div>
+      <div style={{height: this.props.height + "px", overflowY: "auto", "color": "#f0ad4e", padding: "20px 4px"}}>
+        {__("Select any Node or Edge to view its information")}
       </div>
     );
   }

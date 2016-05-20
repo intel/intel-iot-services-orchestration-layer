@@ -24,12 +24,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Tabs, Tab} from "../tabs.x";
+import {Row, Col} from "react-bootstrap";
 import InputDetails from "./input_details.x";
 import ConfigDetails from "./config_details.x";
 import TagsDetails from "./tags_details.x";
 import BindingDetails from "./binding_details.x";
-import Dialog from "../dialog.x";
+import Overlay from "../../common/overlay.x";
+import Dialog from "../../common/dialog.x";
+import Frame from "../../common/frame.x";
 
 export default class NodeDetails extends ReactComponent {
 
@@ -37,23 +39,14 @@ export default class NodeDetails extends ReactComponent {
     id: React.PropTypes.string.isRequired
   };
 
-  constructor(props) {
-    super();
-
-    this.state = {
-      id: props.id
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      id: nextProps.id
-    });
+  _change_node(view) {
+    this.forceUpdate();
+    $hope.trigger_action("graph/change/node", {graph_id: view.id, id: this.props.id}, {});
   }
 
   _on_click_icon() {
     var view = $hope.app.stores.graph.active_view;
-    var node = view.get("node", this.state.id);
+    var node = view.get("node", this.props.id);
     var styles = node.$get_styles() || {};
 
     Dialog.show_iconpicker_dialog(__("Change the icon of node"), icon => {
@@ -66,24 +59,22 @@ export default class NodeDetails extends ReactComponent {
         delete styles.icon;
         node.$set_styles(styles);
       }
-      this.forceUpdate();
-      view.change("node", this.state.id, null);
+      this._change_node(view);
     },
     styles.icon || node.icon);
   }
 
   _on_xxx_change(field, e) {
     var view = $hope.app.stores.graph.active_view;
-    var node = view.get("node", this.state.id);
+    var node = view.get("node", this.props.id);
 
     node[field] = e.target.value;
-    this.forceUpdate();
-    view.change("node", this.state.id, null);
+    this._change_node(view);
   }
 
   render() {
     var view = $hope.app.stores.graph.active_view;
-    var node = view.get("node", this.state.id);
+    var node = view.get("node", this.props.id);
     var spec = node.$get_spec();
     var binding = node.$get_binding();
     var name = node.name;
@@ -114,20 +105,47 @@ export default class NodeDetails extends ReactComponent {
       trace_data = $hope.to_string(v);
     }
 
-    var show_config = !node.is_ui && _.isArray(spec.config) && spec.config.length > 0;
-    var current = 0;
-    var errors = node.$lint_result;
-    if (show_config && !_.isEmpty(errors) && _.findIndex(errors, ["type", "REQUIRED_CONFIG"]) >= 0) {
-      current = 1;  /* Tab Config */
+    var frames = [];
+    if (view.is_editing()) {
+      frames.push(
+        <Frame key="i" title={__("Input")} expanded={true}>
+          <InputDetails id={this.props.id} />
+        </Frame>);
+      
+      if (!node.is_ui && _.isArray(spec.config) && spec.config.length > 0) {
+        frames.push(
+          <Frame key="c" title={__("Config")} expanded={true}>
+            <ConfigDetails id={this.props.id} />
+          </Frame>);
+          
+          /*<Frame key="t" title={__("Tag")}>
+            <div className="node-details">
+              <div className="node-details-tag">
+                <TagsDetails id={this.props.id} />
+              </div>
+            </div>
+          </Frame>
+          <Frame key="b" title={__("Binding")}>
+            <div className="node-details">
+              <div className="node-details-binding">
+                <BindingDetails id={this.props.id} />
+              </div>
+            </div>
+          </Frame>*/
+      }
     }
 
     return (
-      <div>
-        <div className="hope-inspector-header" >
-          <div onClick={this._on_click_icon} className={"hope-inspector-icon" + $hope.color(styles.color, "fill")}>
-            { view.get_node_icon(node) }
-          </div>
-          <div className="hope-inspector-detail">
+      <div style={{height: this.props.height + "px", overflowY: "auto"}}>
+        <Row className="hope-inspector-header" >
+          <Col xs={2}>
+            <Overlay placement="left" overlay={__("Click to select an icon")}>
+              <div onClick={this._on_click_icon} className={"hope-inspector-icon" + $hope.color(styles.color, "fill")}>
+                { view.get_node_icon(node) }
+              </div>
+            </Overlay>
+          </Col>
+          <Col xs={10}>
             <input className="hope-inspector-detail-name"
                 value={name}
                 type="text"
@@ -138,36 +156,11 @@ export default class NodeDetails extends ReactComponent {
                 type="text"
                 readOnly={!view.is_editing()}
                 onChange={this._on_xxx_change.bind(this, "description")} />
-          </div>
-        </div>
-        {view.is_editing() &&
-        <Tabs key={this.state.id} current={current} >
-          <Tab title={__("Input")}>
-            <div className="node-details" >
-              <InputDetails id={this.state.id} />
-            </div>
-          </Tab>
-          {show_config &&
-            <Tab title={__("Config")}>
-              <ConfigDetails id={this.state.id} />
-            </Tab>
-          }
-          {/*<Tab title={__("Tag")}>
-            <div className="node-details">
-              <div className="node-details-tag">
-                <TagsDetails id={this.state.id} />
-              </div>
-            </div>
-          </Tab>
-          <Tab title={__("Binding")}>
-            <div className="node-details">
-              <div className="node-details-binding">
-                <BindingDetails id={this.state.id} />
-              </div>
-            </div>
-          </Tab>*/}
-        </Tabs>
-      }
+          </Col>
+        </Row>
+
+      {frames}
+
       {view.is_debugging() && trace_time &&
         <div>
           <div className="hope-inspector-time">{ trace_time }</div>

@@ -153,7 +153,7 @@ Node.prototype.emit_debug = function(data) {
   if (!this.is_debug) {
     return;
   }
-  this.workflow.emit_debug(data);
+  this.workflow.emit_debug(this, data);
 };
 
 

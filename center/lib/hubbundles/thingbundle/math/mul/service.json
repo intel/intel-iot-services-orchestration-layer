@@ -1,6 +1,6 @@
 {
   "name":"multiply",
   "description":"out = in1 * in2",
-  "spec":"math_n_1_builtin",
+  "spec":"__HOPE__/builtin/math_n_1",
   "doc": "builtin/math.html#mul"
 }

@@ -25,10 +25,10 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col, Popover, MenuItem} from "react-bootstrap";
-import {ExpandSign} from "../tree.x";
 import class_names from "classnames";
-import Dialog from "../dialog.x";
-import Overlay from "../../overlay.x";
+import {ExpandSign} from "../../common/tree.x";
+import Dialog from "../../common/dialog.x";
+import Overlay from "../../common/overlay.x";
 
 
 export default class Hub extends ReactComponent {

@@ -71,13 +71,18 @@ module.exports = function(config) {
       self.frontends.dev.graph_emit(data.workflow_id, "debug", data);
     }
   });
+  this.workflow_engine.event.on("workflow_load", function(data) {
+    _.forOwn(self.frontends, function(f) {
+      f.setup_graph_socket(data.id);
+    });
+  });
 };
 
 Center.create$ = function(config) {
   var center = new Center(config);
   return center.init$().then(function() {
-    return center;
-  });
+   return center;
+ });
 };
 
 Center.prototype.get_info = function() {
@@ -117,8 +122,26 @@ Center.prototype.init$ = function() {
     });
   }).then(function() {
     return self.mnode.enable_rpc$(); 
+  }).then(function() {
+    return self.em.app_store.list$().then(function(ids) {
+      _.forEach(ids, function(id) {
+        _.forOwn(self.frontends, function(f) {
+          f.setup_app_socket(id);
+        });
+      });
+    });
+  }).then(function() {
+    return self.em.graph_store.list$().then(function(ids) {
+      _.forEach(ids, function(id) {
+        _.forOwn(self.frontends, function(f) {
+          f.setup_graph_socket(id);
+        });
+      });
+    });
   });
 };
+
+
 
 
 Center.prototype.leave$ = function() {
@@ -351,8 +374,17 @@ Center.prototype.beat$ = function(hub_id) {
 // Workflow related. all lock the graph_id. 
 //              each operation is atomic
 // -----------------------------------------------
+Center.prototype.workflow_create$ = function(graph) {
+  _.forOwn(this.frontends, function(f) {
+    f.setup_graph_socket(graph.id);
+  });
+  return this.em.graph__add$(graph);
+};
 
 Center.prototype.workflow_update$ = function(graph) {
+  _.forOwn(this.frontends, function(f) {
+    f.setup_graph_socket(graph.id);
+  });
   return this.em.graph__update$(graph);
 };
 
@@ -386,6 +418,9 @@ Center.prototype.workflow_remove$ = function(id) {
     return Promise.reject("workflow " + id + " is still running and cannot remove!");
   }
   delete this.workflow_engine.workflows[id];
+  _.forOwn(this.frontends, function(f) {
+    f.remove_graph_socket(id);
+  });
   return this.em.graph__remove$(id);
 };
 

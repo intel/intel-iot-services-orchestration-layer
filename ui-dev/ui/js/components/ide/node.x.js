@@ -27,8 +27,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import class_names from "classnames";
 import color from "color";
 import {Popover} from "react-bootstrap";
-import Overlay from "../overlay.x";
-import LinterMessage from "../linter_msg.x";
+import Overlay from "../common/overlay.x";
+import LinterMessage from "../common/linter_msg.x";
 import In from "./in.x";
 import Out from "./out.x";
 import FONT_AWESOME from "../../lib/font-awesome.js";
@@ -57,6 +57,29 @@ export default class Node extends ReactComponent {
     this.setState({
       expanded: !this.state.expanded
     });
+  }
+
+  _on_debug(e) {
+    e.stopPropagation();
+
+    var view = this.props.view;
+    var id = this.props.id;
+    var node = view.get("node", id);
+    node.is_debug = !node.is_debug;
+    if (view.is_running()) {
+      view.set_debug_for_node(id, node.is_debug);
+      $hope.app.stores.ide.update_navigator();
+    }
+    else {
+      $hope.trigger_action("graph/change/node", {graph_id: view.id, id: id}, {});
+    }
+  }
+
+  _on_trash(e) {
+    e.stopPropagation();
+
+    var view = this.props.view;
+    $hope.trigger_action("graph/remove/node", {graph_id: view.id, id: this.props.id});
   }
 
   _on_click(e) {
@@ -347,6 +370,36 @@ export default class Node extends ReactComponent {
         </g>
         <In view={this.props.view} id={id} />
         <Out view={this.props.view} id={id} />
+
+        {this._is_selected() &&
+          <g>
+            {view.is_editing() &&
+              <text className="hope-graph-icon node-ctrl"
+                  onClick={this._on_trash}
+                  x={styles.x + 50}
+                  y={styles.y - 6}>
+                {FONT_AWESOME["trash"]}
+              </text>
+            }
+
+            <Overlay overlay={node.is_debug ? __("remove debug") : __("debug this node")}>
+              <text className="hope-graph-icon node-ctrl"
+                  onClick={this._on_debug}
+                  x={styles.x + 80}
+                  y={styles.y - 6}>
+                {FONT_AWESOME[node.is_debug ? "eye-slash" : "eye"]}
+              </text>
+            </Overlay>
+          </g>
+        }
+
+        {node.is_debug &&
+          <text className="no-events hope-graph-icon dbg"
+              x={styles.x + styles.width - 16}
+              y={styles.y + 20}>
+            {FONT_AWESOME["eye"]}
+          </text>
+        }
       </g>;
   
     return errors ?

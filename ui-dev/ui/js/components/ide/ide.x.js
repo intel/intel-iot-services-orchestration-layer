@@ -29,12 +29,20 @@ import LeftToolbar from "./left_toolbar.x";
 import PanelLibrary from "./panel_library.x";
 import PanelNavigator from "./panel_navigator.x";
 import PanelInspector from "./panel_inspector.x";
+import PanelDebugger from "./panel_debugger.x";
 import ColorPalette from "./color_palette.x";
-import Breadcrumb from "../breadcrumb.x";
+import Breadcrumb from "../common/breadcrumb.x";
 import Halogen from "halogen";
 
 import {Row, Col} from "react-bootstrap";
 import {Lifecycle} from "react-router";
+
+function toggle(what) {
+  $hope.trigger_action("ide/toggle/sidebar", {button: what});
+  if (what === "info") {
+    setTimeout(() => $hope.app.stores.ide.update_navigator(), 100);
+  }
+}
 
 export default React.createClass({
 
@@ -56,6 +64,12 @@ export default React.createClass({
     }
   },
 
+  getInitialState() {
+    return {
+      nav_height: 200
+    };
+  },
+
   _on_graph_event(e) {
     $hope.log("event", "_on_graph_event", e);
     $hope.log("forceUpdate", "IDE");
@@ -63,39 +77,11 @@ export default React.createClass({
     var view = $hope.app.stores.graph.active_view;
     switch(e.event) {
       case "started":
-        view.set_running();
         $hope.notify("success", __("Workflow successfully started!"));
         break;
 
       case "stoped":
-        if (view.is_running()) {
-          if (view.tracing) {
-            $hope.confirm(__("Replay"),
-              __("Workflow successfully stoped! Do you want replay slowly?"),
-              "warning", (res) => {
-                if (!res) {
-                  view.set_debugging();
-                  $hope.trigger_action("graph/replay", {graph_id: view.id});
-                }
-                else {
-                  view.set_editing();
-                }
-                this.forceUpdate();
-            }, {
-              confirmButtonText: __("No"),    // swap the meaning of buttons
-              cancelButtonText: __("Yes")
-            });
-          }
-          else {
-            view.set_editing();
-            this.forceUpdate();
-          }
-        }
-        else {
-          view.stop_auto_replay();
-          view.unselect_all();
-          view.set_editing();
-        }
+        $hope.notify("success", __("Workflow successfully stoped!"));
         break;
 
       case "trace/loaded":
@@ -140,10 +126,21 @@ export default React.createClass({
         break;
       case "update/inspector":
         $hope.log("forceUpdate", "IDE - inspector");
-        this.refs.inspector.forceUpdate();
+        if (this.refs.inspector) {
+          this.refs.inspector.forceUpdate();
+        }
+        if (this.refs.debug) {
+          this.refs.debug.forceUpdate();
+        }
         break;
       case "update/navigator":
-        this.refs.navigator.redraw();
+        if (this.refs.navigator) {
+          this.refs.navigator.redraw();
+        }
+        break;
+      case "resize/sidebar":
+        $(this.refs.vsplitter).draggable("option", { disabled: !$hope.app.stores.ide.side_bar.current});
+        this.forceUpdate();
         break;
       default:
         $hope.log("forceUpdate", "IDE");
@@ -166,7 +163,9 @@ export default React.createClass({
   _on_library_event(e) {
     $hope.log("event", "_on_library_event", e);
     $hope.log("forceUpdate", "IDE - library");
-    this.refs.library.forceUpdate();
+    if (this.refs.library) {
+      this.refs.library.forceUpdate();
+    }
   },
 
   _on_ui_event(e) {
@@ -175,7 +174,9 @@ export default React.createClass({
       case "loaded":
         if (e.type === "ui") {
           $hope.log("forceUpdate", "IDE - library");
-          this.refs.library.forceUpdate();
+          if (this.refs.library) {
+            this.refs.library.forceUpdate();
+          }
         }
         break;
     }
@@ -228,6 +229,10 @@ export default React.createClass({
   _on_resize() {
     $hope.app.stores.ide.layout();
     $hope.log("forceUpdate", "IDE");
+
+    $(this.refs.vsplitter).draggable("destroy");
+    this._bind_splitter_events();
+
     this.forceUpdate();
   },
 
@@ -257,6 +262,46 @@ export default React.createClass({
     }
   },
 
+  _bind_splitter_events() {
+    var start, w = window.innerWidth, h = window.innerHeight;
+    var vsp = $(this.refs.vsplitter);
+    vsp.draggable({
+      axis: "x",
+      scroll: false,
+      containment: [w/2, 0, w - 35/*sidebar-tabs*/, h],
+      start:function(event,ui) {
+        start = ui.position.left;
+      },
+      drag: function(event,ui) {
+        vsp.css("right", ui.position.left);
+      },
+      stop:function(event,ui) {
+        var d = (ui.position.left - start) | 0;
+        vsp.css("left", "");  /* keep me */
+        if (d >= 1 || d <= -1) {
+          $hope.app.stores.ide.resize_sidebar(d);
+        }
+      }
+    });
+  },
+
+  _on_expand_nav(expanded) {
+    this.setState({
+      nav_height: expanded ? 200 : 20
+    });
+  },
+
+  _on_toggle_lib() {
+    $hope.app.stores.ide.toggle_library();
+  },
+
+  _on_toggle_sidebar() {
+    var sidebar = $hope.app.stores.ide.side_bar;
+    $hope.trigger_action("ide/toggle/sidebar", {
+      button: sidebar.current ? sidebar.current : (sidebar.previous || "info")
+    });
+  },
+
   componentDidMount() {
     document.body.className = $hope.app.stores.ide.theme;
 
@@ -271,6 +316,8 @@ export default React.createClass({
     document.addEventListener("keyup", this._on_key_up);
 
     window.addEventListener("resize", this._on_resize);
+
+    this._bind_splitter_events();
   },
 
   componentWillUnmount() {
@@ -285,6 +332,8 @@ export default React.createClass({
     document.removeEventListener("keyup", this._on_key_up);
 
     window.removeEventListener("resize", this._on_resize);
+
+    $(this.refs.vsplitter).draggable("destroy");
   },
 
 
@@ -337,6 +386,9 @@ export default React.createClass({
       }
     }
 
+    var is_info = ide_store.side_bar.current === "info";
+    var is_dbg = ide_store.side_bar.current === "dbg";
+
     $hope.log("render", "IDE");
     return (
       <Row>
@@ -350,9 +402,9 @@ export default React.createClass({
           width: ide_store.panel.library.width,
           height: ide_store.panel.library.height
         }}>
-          <PanelLibrary ref="library" />
+          {ide_store.panel.library.visible && <PanelLibrary ref="library" />}
         </Col>
-        <Col xs={10} style={{
+        <Col xs={8} style={{
           width: ide_store.graph_svg.width
         }}>
           <Row style={{
@@ -367,9 +419,51 @@ export default React.createClass({
             {graph}
           </Row>
         </Col>
-        <PanelNavigator ref="navigator" />
-        <PanelInspector ref="inspector" />
-        <ColorPalette />   
+        <Col xs={1} className="hope-sidebar" style={{
+          width: ide_store.side_bar.width,
+          height: ide_store.side_bar.height
+        }}>
+          {is_info && [
+            <PanelInspector key="i" ref="inspector" height={ide_store.side_bar.height - this.state.nav_height} />,
+            <PanelNavigator key="n" ref="navigator" onExpand={this._on_expand_nav} />
+          ]}
+          {is_dbg && <PanelDebugger ref="debug" view={view} />}
+        </Col>
+        <Col xs={1} className="hope-sidebar-tabs" style={{
+          height: ide_store.side_bar.height
+        }}>
+          <div className={"hope-sidebar-button" + (is_info ? " active" : "")}
+              onClick={toggle.bind(this, "info")}>{__("General")}</div>
+          <div className={"hope-sidebar-button" + (is_dbg ? " active" : "")}
+              onClick={toggle.bind(this, "dbg")}>{__("Debug")}</div>
+        </Col>
+
+        <div ref="vsplitter"
+          className={"splitter vertical" + (ide_store.side_bar.current ? " w-resize" : "")}
+          style={{
+          top: ide_store.side_bar.top,
+          right: ide_store.side_bar.width + 35/*sidebar-tabs*/
+        }}/>
+
+        <div className="toggle-bar left"
+          onClick={this._on_toggle_lib}
+          style={{
+          top: ide_store.graph_svg.top + ide_store.graph_svg.height/2 - 20,
+          left: ide_store.graph_svg.left
+        }}>
+          <i className="fa fa-ellipsis-v" />
+        </div>
+
+        <div className="toggle-bar right"
+          onClick={this._on_toggle_sidebar}
+          style={{
+          top: ide_store.graph_svg.top + ide_store.graph_svg.height/2 - 20,
+          right: ide_store.side_bar.width + 2 + 35/*sidebar-tabs*/
+        }}>
+          <i className="fa fa-ellipsis-v" />
+        </div>
+
+        <ColorPalette />
       </Row>
     );
   }

@@ -98,7 +98,7 @@ var Dialog = React.createClass({
 
 Dialog.show_create_dialog = function(title, ok_cb, ok_str, name_def, desc_def) {
   ReactDOM.render(
-    <Dialog title={title}
+    <Dialog title={title} modal={{backdrop: "static"}}
       okStr={ok_str || __("Create")}
       onOK={() => {
         ok_cb({
@@ -127,7 +127,7 @@ Dialog.show_create_dialog = function(title, ok_cb, ok_str, name_def, desc_def) {
 
 Dialog.show_edit_dialog = function(title, ok_cb, txt, placeholder, ok_str) {
   ReactDOM.render(
-    <Dialog title={title}
+    <Dialog title={title} modal={{backdrop: "static"}}
       okStr={ok_str || __("Save")}
       onOK={() => {
         ok_cb($("#dlg_edit_InPuT").val());
@@ -211,7 +211,7 @@ Dialog.show_html_dialog = function(url) {
 
 Dialog.show_chpass_dialog = function(user, ok_cb) {
   ReactDOM.render(
-    <Dialog title={__("Change Password")}
+    <Dialog title={__("Change Password")} modal={{backdrop: "static"}}
       onOK={() => {
         var old = $("#dlg_chpass_old").val();
         var np = $("#dlg_chpass_new").val();
@@ -237,7 +237,7 @@ Dialog.show_chpass_dialog = function(user, ok_cb) {
 
 Dialog.show_new_user_dialog = function(cb) {
   ReactDOM.render(
-    <Dialog title={__("Add New User")}
+    <Dialog title={__("Add New User")} modal={{backdrop: "static"}}
       onOK={() => {
         var name = $("#au_name").val();
         var role = $("#au_role").val();

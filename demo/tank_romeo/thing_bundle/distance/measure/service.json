@@ -1,6 +1,7 @@
 {
   "description":"measure distance",
   "spec": {
+    "id": "__HOPE__/demo/tank_romeo/distance/measure",
     "in": {
       "ports": [{
         "name": "trigger"

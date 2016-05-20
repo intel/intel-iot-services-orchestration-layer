@@ -25,11 +25,11 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {History, Link} from "react-router";
-import auth from "../lib/auth";
-import Graph from "../lib/graph";
+import auth from "../../lib/auth";
+import Graph from "../../lib/graph";
 import DlgCreate from "./dlg_create.x";
-import DlgOpenGraph from "./ide/dlg_open_graph.x";
-import DlgOpenUI from "./ui_ide/dlg_open_ui.x";
+import DlgOpenGraph from "./dlg_open_graph.x";
+import DlgOpenUI from "./dlg_open_ui.x";
 
 function is_wf_ide() {
   return _.startsWith(location.hash, "#/ide/");
@@ -265,6 +265,16 @@ export default React.createClass({
         <div style={{
           position: "absolute",
           top: 16,
+          right: $hope.ui_auth_required ? 250 : 190
+        }}>
+          <Link to="/">
+            {__("Home")}
+          </Link>
+        </div>
+
+        <div style={{
+          position: "absolute",
+          top: 16,
           right: $hope.ui_auth_required ? 180 : 120
         }}>
           <a href={location.origin + "/app-dev"} target="_blank">
@@ -288,18 +298,18 @@ export default React.createClass({
           <div style={{
             position: "absolute",
             top: 16,
-            left: store.left_toolbar.width + store.panel.library.width
+            left: store.left_toolbar.width + 250
             }}>
             <button type="button" className="btn" onClick={this.show_dlg.bind(this, "create_dlg", true)}>
-              <i className="fa fa-file"/> New
+              <i className="fa fa-file"/>{" " + __("New")}
             </button>
             <button type="button" className={"btn" + (is_wf_ide() ? " active" : "")}
                 onClick={this._on_workflow}>
-              <i className="fa fa-cubes"/> Workflow
+              <i className="fa fa-cubes"/>{" " + __("Workflow")}
             </button>
             <button type="button" className={"btn" + (is_ui_ide() ? " active" : "")}
                 onClick={this._on_ui}>
-              <i className="fa fa-user"/> User UI
+              <i className="fa fa-user"/>{" " + __("User UI")}
             </button>
           </div>
         }

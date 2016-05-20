@@ -25,8 +25,8 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Tooltip} from "react-bootstrap";
-import Dialog from "../dialog.x";
-import Overlay from "../../overlay.x";
+import Dialog from "../../common/dialog.x";
+import Overlay from "../../common/overlay.x";
 import NodeHelpTopic from "./node_help_topic.x";
 import FONT_AWESOME from "../../../lib/font-awesome.js";
 
@@ -55,6 +55,11 @@ export default class InputDetails extends ReactComponent {
       state[p.name] = ("default" in p) ? String(p.default) : "";
     });
     return state;
+  }
+
+  _change_node() {
+    var view = $hope.app.stores.graph.active_view;
+    $hope.trigger_action("graph/change/node", {graph_id: view.id, id: this.props.id}, {});
   }
 
   _on_click_group() {
@@ -90,7 +95,7 @@ export default class InputDetails extends ReactComponent {
       node.in.groups = [grp];
     }
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_click_circle(name) {
@@ -111,7 +116,7 @@ export default class InputDetails extends ReactComponent {
       delete port.default;
     }
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_click_line(name) {
@@ -131,7 +136,7 @@ export default class InputDetails extends ReactComponent {
       port.no_trigger = true;
     }
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_add_new() {
@@ -155,7 +160,7 @@ export default class InputDetails extends ReactComponent {
       [port.name]: ""
     });
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_remove_port(name) {
@@ -188,7 +193,7 @@ export default class InputDetails extends ReactComponent {
 
     node.$remove_port("in", name);
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_color_selected(name, i) {
@@ -206,7 +211,7 @@ export default class InputDetails extends ReactComponent {
     node.$set_styles(styles);
 
     this.forceUpdate();
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_click_color_palette(name, e) {
@@ -232,7 +237,7 @@ export default class InputDetails extends ReactComponent {
             [newname]: this.state[name]
           });
           this.forceUpdate();
-          view.change("node", this.props.id, null);
+          this._change_node();
         },
         name);
     }
@@ -263,7 +268,7 @@ export default class InputDetails extends ReactComponent {
       port.default = e.target.value;
       break;
     }
-    view.change("node", this.props.id, null);
+    this._change_node();
   }
 
   _on_show_help() {
@@ -307,7 +312,7 @@ export default class InputDetails extends ReactComponent {
       "z"
     ].join(" ");
 
-    var tooltip_change_color = <Tooltip id="color" bsSize="small">Change color</Tooltip>;
+    var tooltip_change_color = <Tooltip id="color" bsSize="small">{__("Change the color")}</Tooltip>;
 
     function render_groups() {
       var num = ports.length;
@@ -355,7 +360,7 @@ export default class InputDetails extends ReactComponent {
           <circle onClick={self._on_click_circle.bind(self, p.name)}
               className={"hope-graph-passive-circle" + $hope.color(color, "fill", "hover")}
               cx={25} cy={y} r={6} />
-          <Overlay placement="left" overlay={tooltip_change_color}>
+          <Overlay placement="bottom" overlay={tooltip_change_color}>
             <circle ref={"color_" + p.name}
                 className={"hope-graph-passive-circle" + $hope.color(color, "fill", "hover")}
                 onClick={self._on_click_color_palette.bind(self, p.name)}
@@ -399,21 +404,24 @@ export default class InputDetails extends ReactComponent {
     });
 
     return (
-      <div>
+      <div className="node-details">
         <div style={{
             position: "relative",
             height: h + "px",
-            width: w + "px" }}>
+            width: "100%" }}>
           <svg width={w} height={h}>
             <path d={node_path} />
             { render_groups() }
             { ports.map(render_port) }
             { add_new_btn }
-            <text onClick={self._on_show_help}
-              className={"hope-graph-icon-btn"}
-              x={w - 20} y={h - 16}>{FONT_AWESOME["question-circle"]}</text>
           </svg>
           { defval_inputs }
+          <div className={"fa fa-question-circle hope-graph-icon-btn"}
+            onClick={self._on_show_help}
+            style={{
+              position: "absolute",
+              bottom: "8px",
+              right: "8px" }} />
         </div>
         { help_section }
       </div>

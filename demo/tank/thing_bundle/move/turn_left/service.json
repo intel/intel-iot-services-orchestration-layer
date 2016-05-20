@@ -1,6 +1,7 @@
 {
   "description":"turn left or not",
   "spec": {
+    "id": "__HOPE__/demo/tank/move/turn_left",
     "in": {
       "ports": [{
         "name": "on",

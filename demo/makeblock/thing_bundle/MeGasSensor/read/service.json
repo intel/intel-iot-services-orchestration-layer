@@ -1,6 +1,7 @@
 {
   "description":"read the gas sensor value",
   "spec": {
+    "id": "__HOPE__/demo/makeblock/gas/detect",
     "in": {
       "ports": [{
         "name": "trigger"

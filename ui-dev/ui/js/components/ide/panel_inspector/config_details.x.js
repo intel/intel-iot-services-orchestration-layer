@@ -25,7 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import {Row, Col} from "react-bootstrap";
-import Dialog from "../dialog.x";
+import Dialog from "../../common/dialog.x";
 
 export default class ConfigDetails extends ReactComponent {
 
@@ -305,7 +305,7 @@ export default class ConfigDetails extends ReactComponent {
     return (
       <Row key={cfg.name} className="hope-panel-details-row text-center border-bottom">
         <Col xs={5}>
-          <div>{cfg.display || cfg.name}</div>
+          <div className="cfg-name">{cfg.display || cfg.name}</div>
         </Col>
         <Col xs={6}>
           { content }

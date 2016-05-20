@@ -39,7 +39,9 @@ export default class DlgCreate extends ReactComponent {
     super(props);
   
     this.state = {
-      type: null
+      type: props.default_type || null,
+      name: "",
+      desc: ""
     };
   }
 
@@ -64,22 +66,34 @@ export default class DlgCreate extends ReactComponent {
 
     if (this.state.type && _.isFunction(this.props.onClickCreate)) {
       this.props.onClickCreate({
-        name: this.refs.name.getValue(),
-        description: this.refs.desc.getValue()
+        name: this.state.name,
+        description: this.state
       }, this.state.type);
     }
     this.props.onHide();
   }
 
+  _on_keydown(e) {
+    if(e.keyCode === 13 && this.state.name) { // ENTER KEY
+      this._on_submit(e);
+    }
+  }
+
+  on_change(name, e) {
+    this.setState({
+      [name]: e.target.value
+    });
+  }
+
   render() {
     var t = this.state.type;
     return (
-      <Modal {...this.props} animation={true}>
+      <Modal {...this.props} backdrop="static" animation={true} onKeyDown={this._on_keydown}>
         <Modal.Header closeButton>
-          <Modal.Title>{__("New ") + (t !== null ? __(t) : "")}</Modal.Title>
+          <Modal.Title>{__("New") + " " + (t !== null ? __(t) : "")}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div><strong>{__("Type")}</strong></div>
+          <div><strong>{__("Select what to create")}</strong></div>
           <div className="btn-group margin-tb" role="group">
             <button type="button"
                 className={"btn btn-" + (t === WF ? "primary" : "default")}
@@ -92,18 +106,24 @@ export default class DlgCreate extends ReactComponent {
               <i className="fa fa-user"/>{" " + __(UI)}
             </button>
           </div>
-          <Input type="text" ref="name"
+          {t !== null && <div>
+            <Input type="text"
                  label={__("Name")}
+                 value={this.state.name}
+                 onChange={this.on_change.bind(this, "name")}
                  placeholder={__("Enter Name")}/>
-          <Input type="text" ref="desc"
+            <Input type="text"
                  label={__("Description")}
+                 value={this.state.desc}
+                 onChange={this.on_change.bind(this, "desc")}
                  placeholder={__("Enter Description")}/>
+          </div>}
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="default"
             onClick={this.props.onHide}>{__("Cancel")}</Button>
           <Button bsStyle="primary"
-            disabled={t === null}
+            disabled={!t || !this.state.name}
             onClick={this._on_submit}>{__("OK")}</Button>
         </Modal.Footer>
       </Modal>

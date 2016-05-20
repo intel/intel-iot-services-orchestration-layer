@@ -2,7 +2,7 @@
   "name": "gate",
   "description": "If the gate is true, out = in, otherwise, nothing will output",
   "spec":{
-    "id": "gate_spec",
+    "id": "__HOPE__/builtin/flow/gate",
     "name": "gate_spec",
     "in": {
       "ports": [
