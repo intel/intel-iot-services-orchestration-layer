@@ -30,8 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var B = require("hope-base");
 var _ = require("lodash");
-var fs = require("fs");
 
+var reldir = B.fs.dir_exists(__dirname + "/../../ui-widgets") ? "/../.." : "/../../..";
+var absdir = B.path.resolve(__dirname + reldir);
 
 exports.process = function(file_path) {
   return new Config(file_path);
@@ -185,7 +186,7 @@ Config.prototype.gen_center_specific = function() {
       $type: "WebApp",
       $params: {
         port: _.get(this.json, "web_for_developer.port", 8080),
-        static: ["../../ui-dev/public", "../../doc/html"],
+        static: [absdir + "/ui-dev/public", absdir + "/doc/html", absdir + "/ui-widgets"],
         web_socket: true
       }
     },
@@ -194,7 +195,7 @@ Config.prototype.gen_center_specific = function() {
       $type: "WebApp",
       $params: {
         port: _.get(this.json, "web_for_end_users.port", 3000),
-        static: "../../ui-user/public",
+        static: [absdir + "/ui-user/public", absdir + "/ui-widgets"],
         web_socket: true
       }
     },

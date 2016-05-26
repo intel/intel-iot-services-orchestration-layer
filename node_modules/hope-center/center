@@ -53,8 +53,6 @@ function _resolve_path(access_str) {
     }
   }
 } 
-_resolve_path("assemble.dev_web_app.$params.static");
-_resolve_path("assemble.user_web_app.$params.static");
 _resolve_path("assemble.user_json_path");
 
 // Fix the id of device and mnode

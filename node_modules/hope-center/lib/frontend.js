@@ -512,10 +512,15 @@ DevFrontEnd.prototype.init$ = function() {
   var self = this;
   // we should add the ui widgets into specs
   // TODO currently we hard code the path 
-  // var ui_spec_bundle = require("hope-ui-widgets").spec_bundle;
-  var ui_spec_bundle = require("../../ui-widgets/specs");
-  var ui_spec_bundle2 = _.cloneDeep(ui_spec_bundle);
-  return this.center.em.specbundle__add_with_specs$(ui_spec_bundle2).then(function() {
+  try {
+    var ub = require("../../ui-widgets/specs");
+  } catch(e) {
+    ub = require("../../../ui-widgets/specs");
+  }
+  return Promise.all([
+    this.center.em.specbundle__add_with_specs$(_.cloneDeep(ub.builtin)),
+    this.center.em.specbundle__add_with_specs$(_.cloneDeep(ub.addons))
+    ]).then(function() {
     return FrontEnd.prototype.init$.call(self);
   }).then(function() {
     self.center.em.event.on("changed", function(changed_list) {
