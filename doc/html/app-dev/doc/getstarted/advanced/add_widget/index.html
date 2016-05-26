@@ -1,0 +1,55 @@
+<h1 id="introduction">Introduction</h1><p>There are 3 ways to add a new UI widget into Intel(R) IoT SOL:</p><ul><li>Add a <strong>builtin</strong> widget</li><li>Install a <strong>plugin</strong> widget via the NPM</li><li>Add a <strong>addons</strong> widget</li></ul><h2 id="add-a-builtin-widget">Add a builtin widget</h2><p><strong>For Development</strong></p><p>In this way, we should create our new widget under the <em>ui-widgets/widgets-jsx</em>, and then rebuild <strong>ui-widgets</strong>, <strong>ui-dev</strong> and <strong>ui-user</strong>.</p><p>For details, please visit <a href="#getstarted/advanced/basics/4-UI_Widget">UI Widget</a>.</p><h2 id="install-a-plugin-widget-via-the-npm">Install a plugin widget via the NPM</h2><p><strong>For Development</strong></p><p>This is the easy way to reuse existing UI widgets that published on <a href="http://www.npmjs.com">NPM</a>.</p><p>Also, we need to rebuild <strong>ui-widgets</strong>, <strong>ui-dev</strong> and <strong>ui-user</strong> after installation.</p><p>For example, if we want to use <em>hope-widget-digital-clock</em> in our app, we just need to install it under <strong>ui-widgets</strong>:</p><div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash">  <span class="kw">npm</span> install --save hope-widget-digital-clock
+  
+  <span class="co"># rebuild widgets</span>
+  <span class="kw">gulp</span> build
+
+  <span class="co"># rebuild ui-dev</span>
+  <span class="kw">cd</span> ../ui-dev
+  <span class="kw">gulp</span> build
+
+  <span class="co"># rebuild ui-user</span>
+  <span class="kw">cd</span> ../ui-user
+  <span class="kw">gulp</span> build</code></pre></div><h2 id="add-a-addons-widget">Add a addons widget</h2><p><strong>For Release</strong></p><p>This is a fast way to add UI widget into IoT SOL, and <code>need not</code> to rebuild <strong>ui-widgets</strong>, <strong>ui-dev</strong> or <strong>ui-user</strong>.</p><p>For example, to add <em>demo</em> addons widget, we need to create a new directory <em>demo</em> under <em>ui-widgets/addons</em>, and then add two files under the new directory:</p><ul><li><strong>widget.json</strong></li><li><strong>demo.jsx</strong></li></ul><h3 id="widget.json">widget.json</h3><p>This file includes the spec of this widget.</p><div class="sourceCode"><pre class="sourceCode json"><code class="sourceCode json"><span class="fu">{</span>
+  <span class="dt">&quot;id&quot;</span><span class="fu">:</span>           <span class="st">&quot;hope/ui/demo&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;catalog&quot;</span><span class="fu">:</span>      <span class="st">&quot;Output&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;name&quot;</span><span class="fu">:</span>         <span class="st">&quot;Demo&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;description&quot;</span><span class="fu">:</span>  <span class="st">&quot;Demo Component&quot;</span><span class="fu">,</span>
+  <span class="dt">&quot;icon&quot;</span><span class="fu">:</span>         <span class="st">&quot;cog&quot;</span><span class="fu">,</span>
+
+  <span class="dt">&quot;use_ract&quot;</span><span class="fu">:</span>     <span class="kw">true</span><span class="fu">,</span>
+  <span class="dt">&quot;data_cache_size&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span>
+
+  <span class="dt">&quot;config&quot;</span><span class="fu">:</span> <span class="ot">[]</span><span class="fu">,</span>
+
+  <span class="dt">&quot;in&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;ports&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="fu">{</span>
+      <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;input&quot;</span><span class="fu">,</span>
+      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;string&quot;</span>
+    <span class="fu">}</span><span class="ot">]</span>
+  <span class="fu">},</span>
+  <span class="dt">&quot;out&quot;</span><span class="fu">:</span> <span class="fu">{</span>
+    <span class="dt">&quot;ports&quot;</span><span class="fu">:</span> <span class="ot">[]</span>
+  <span class="fu">}</span>
+<span class="fu">}</span></code></pre></div><h3 id="demo.jsx">demo.jsx</h3><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">class</span> DemoComponent <span class="kw">extends</span> Widget <span class="op">{</span>
+  <span class="at">componentWillUpdate</span>() <span class="op">{</span>
+    <span class="kw">var</span> data <span class="op">=</span> <span class="kw">this</span>.<span class="at">get_data</span>()<span class="op">;</span>
+    <span class="cf">if</span> (<span class="va">_</span>.<span class="at">isArray</span>(data) <span class="op">&amp;&amp;</span> <span class="va">data</span>.<span class="at">length</span> <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">{</span>
+      <span class="kw">var</span> msg <span class="op">=</span> <span class="at">String</span>(data[<span class="dv">0</span>].<span class="at">input</span>)<span class="op">;</span>
+      <span class="cf">if</span> (msg <span class="op">===</span> <span class="kw">this</span>.<span class="at">$msg</span>) <span class="op">{</span>
+        <span class="cf">return</span><span class="op">;</span>
+      <span class="op">}</span>
+      <span class="kw">this</span>.<span class="at">$msg</span> <span class="op">=</span> msg<span class="op">;</span>
+      <span class="kw">this</span>.<span class="at">forceUpdate</span>()<span class="op">;</span>
+    <span class="op">}</span>
+  <span class="op">}</span>
+
+  <span class="at">render</span>() <span class="op">{</span>
+    <span class="cf">return</span> <span class="kw">super</span>.<span class="at">render</span>(
+      <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;match-parent text-center&quot;</span><span class="op">&gt;</span>
+        <span class="op">{</span><span class="kw">this</span>.<span class="at">$msg</span> <span class="op">||</span> <span class="st">&quot;This is a Demo.&quot;</span><span class="op">}</span>
+      <span class="op">&lt;</span><span class="ss">/div&gt;</span>
+<span class="ss">    </span><span class="sc">)</span><span class="ss">;</span>
+<span class="ss">  }</span>
+<span class="ss">}</span>
+
+<span class="ss">$hope.register_widget</span><span class="sc">(</span><span class="ss">&quot;hope/ui/demo&quot;, DemoComponent</span><span class="sc">)</span><span class="ss">;</span></code></pre></div><h3 id="tips">Tips</h3><p>In this way, addons that written in JSX need be transformed by <a href="http://babeljs.io">babel</a>, so the page loading performance maybe lower than another ways above.</p>

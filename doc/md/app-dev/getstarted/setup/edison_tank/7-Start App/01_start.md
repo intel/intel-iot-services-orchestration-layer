@@ -2,4 +2,4 @@
 
 User can ask robot to move by press the four arrows
 
-![](./doc/pic/tank/start_app.gif)
+![](./doc/pic/tank/start_app.gif){.viewer}

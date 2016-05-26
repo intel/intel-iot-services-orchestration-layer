@@ -33,7 +33,7 @@ function get_spec_config(id) {
   if (spec) {
     var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
     _.forOwn(items, item => {
-      if (item.name) {
+      if (item.name && ("default" in item)) {
         config[item.name] = item.default;
       }
     });

@@ -4,4 +4,4 @@ Use ui-widget **switch** to control the blue led in lattepanda.
  - Visit `<your lattepanda ip>:8080` in browser
  - Create new App
 
-![](./doc/pic/create_app.gif)
+![](./doc/pic/create_app.gif){.viewer}

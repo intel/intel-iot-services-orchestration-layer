@@ -32,10 +32,8 @@ import PanelInspector from "./panel_inspector.x";
 import PanelDebugger from "./panel_debugger.x";
 import ColorPalette from "./color_palette.x";
 import Breadcrumb from "../common/breadcrumb.x";
-import Halogen from "halogen";
-
+import DotLoader from "halogen/DotLoader";
 import {Row, Col} from "react-bootstrap";
-import {Lifecycle} from "react-router";
 
 function toggle(what) {
   $hope.trigger_action("ide/toggle/sidebar", {button: what});
@@ -50,7 +48,9 @@ export default React.createClass({
     id: React.PropTypes.number
   },
 
-  mixins: [ Lifecycle ],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   routerWillLeave(nextLocation) {
     var view = $hope.app.stores.graph.active_view;
@@ -318,6 +318,8 @@ export default React.createClass({
     window.addEventListener("resize", this._on_resize);
 
     this._bind_splitter_events();
+
+    this.context.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
   },
 
   componentWillUnmount() {
@@ -354,7 +356,7 @@ export default React.createClass({
       var reason = $hope.app.stores.graph.no_active_reason;
       var reason_content;
       if (reason === "loading") {
-        reason_content = <div><Halogen.DotLoader/><br/>{__("Loading") + " ..."}</div>;
+        reason_content = <div><DotLoader/><br/>{__("Loading") + " ..."}</div>;
       } else if (app && app.graphs.length === 0) {
         reason_content = <div>{__("No workflow found")}</div>;
       } else {
@@ -369,7 +371,7 @@ export default React.createClass({
         }}>
         <div style={{
           position: "absolute",
-          left: (ide_store.graph_svg.width) / 2 - ide_store.panel.library.width,
+          left: (ide_store.graph_svg.width) / 2,
           top: (ide_store.graph_svg.height) / 2 - 5,
           color: "#aaa"
         }}> {reason_content}

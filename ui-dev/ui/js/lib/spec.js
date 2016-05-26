@@ -55,7 +55,7 @@ class Spec {
 
   $get_impl() {
     if (this.is_ui) {
-      let _widget_impls = require("hope-ui-widgets").widgets;
+      let _widget_impls = require("hope-ui-widgets");
       let impl = _widget_impls[this.id];
       $hope.check(impl, 
         "Widget", "No widget implements UI spec:", this);

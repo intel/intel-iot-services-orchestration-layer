@@ -1,0 +1,22 @@
+{
+  "id":           "hope/ui/demo",
+  "catalog":      "Output",
+  "name":         "Demo",
+  "description":  "Demo Component",
+  "icon":         "cog",
+
+  "use_ract":     true,
+  "data_cache_size": 1,
+
+  "config": [],
+
+  "in": {
+    "ports": [{
+      "name": "input",
+      "type": "string"
+    }]
+  },
+  "out": {
+    "ports": []
+  }
+}

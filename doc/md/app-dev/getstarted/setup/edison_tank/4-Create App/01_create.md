@@ -8,4 +8,4 @@ Control the Robot move via the webpage
  - Visit `<your edison ip>:8080` in browser
  - Create new App
 
-![](./doc/pic/create_app.gif)
+![](./doc/pic/create_app.gif){.viewer}

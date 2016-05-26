@@ -24,11 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Link, History} from "react-router";
+import {Link} from "react-router";
 import auth from "../lib/auth";
 
 export default React.createClass({
-  mixins: [ History ],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   getInitialState() {
     return {
@@ -56,7 +58,7 @@ export default React.createClass({
     auth.logout(()=> {
       $hope.app.stores.ui.clear_cache();
       $hope.app.stores.app.clear_cache();
-      this.history.replaceState(null, "/login");
+      this.context.router.replace("/login");
     });
   },
 

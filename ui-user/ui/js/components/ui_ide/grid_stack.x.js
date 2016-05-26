@@ -24,9 +24,12 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-
 import class_name from "classnames";
 
+$hope.register_widget = function(id, ctor) {
+  let _widget_impls = require("hope-ui-widgets");
+  _widget_impls[id] = ctor;
+};
 
 function get_widget_impl(widget) {
   var spec = $hope.app.stores.spec.get_spec(widget.spec);

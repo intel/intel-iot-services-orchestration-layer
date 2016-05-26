@@ -58,7 +58,9 @@ export default class WidgetLibrary extends ReactComponent {
         widget: {
           spec: spec.id,
           x: 0,
-          y: 0
+          y: 0,
+          width: 1,
+          height: 1
         }
       });
     }
@@ -86,12 +88,14 @@ export default class WidgetLibrary extends ReactComponent {
           {specs}
           </Tree.Node>);
       });
-      bundles.push(<Tree.Node key={b_id} 
-        onToggle={_update_expand_state.bind({}, b_id, undefined)}
-        defaultExpanded={b.styles.expanded}> 
-        <Bundle bundle={b.obj}/>
-        {catalogs}
-      </Tree.Node>);
+      if (!_.isEmpty(b.children)) {
+        bundles.push(<Tree.Node key={b_id} 
+          onToggle={_update_expand_state.bind({}, b_id, undefined)}
+          defaultExpanded={b.styles.expanded}> 
+          <Bundle bundle={b.obj}/>
+          {catalogs}
+        </Tree.Node>);
+      }
     });
 
     return (

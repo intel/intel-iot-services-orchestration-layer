@@ -25,7 +25,6 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 var {Modal, Input, Button} = require("react-bootstrap");
-var ColorPicker = require("react-colorpickr");
 
 var dlg_mount_node = null;
 $(function() {
@@ -158,25 +157,6 @@ Dialog.show_iconpicker_dialog = function(title, ok_cb, icon) {
   $('div[role="iconpicker"]').iconpicker().on('change', e => newicon = e.icon);
 };
 
-
-//////////////////////////////////////////////////////////////////
-// Color picker dialog
-//////////////////////////////////////////////////////////////////
-
-Dialog.show_colorpicker_dialog = function(title, ok_cb, color) {
-  var newcr = color;
-  ReactDOM.render(
-    <Dialog title={title} modal={{
-        dialogClassName: "hope-color-picker-modal"
-      }}
-      onOK={() => {
-        ok_cb(newcr);
-      }} >
-      <div>
-        <ColorPicker value={color} onChange={cr => newcr = "#" + cr.hex} />
-      </div>
-    </Dialog>, dlg_mount_node);
-};
 
 //////////////////////////////////////////////////////////////////
 // Show SVG animation dialog

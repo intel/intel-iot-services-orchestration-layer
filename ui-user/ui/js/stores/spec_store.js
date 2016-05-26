@@ -48,7 +48,7 @@ class SpecStore extends EventEmitter {
 
   init$() {
     // ensure UI widgets are loaded
-    return this.load_bundles$(["hope/ui"]);
+    return this.load_bundles$(["hope/ui", "hope/ui/addons"]);
   }
 
   get_spec(id) {

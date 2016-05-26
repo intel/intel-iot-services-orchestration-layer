@@ -37,7 +37,7 @@ var fs = require("fs");
 
 
 var all_deps = {};
-var bundledDependencies = ["doc", "ui-dev", "ui-user", "ui-widgets"];
+var bundledDependencies = [];
 
 
 args.forEach(function(proj) {

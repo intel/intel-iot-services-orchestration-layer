@@ -29,6 +29,11 @@ import {Popover} from "react-bootstrap";
 import Overlay from "../common/overlay.x";
 import LinterMessage from "../common/linter_msg.x";
 
+$hope.register_widget = function(id, ctor) {
+  let _widget_impls = require("hope-ui-widgets");
+  _widget_impls[id] = ctor;
+};
+
 function get_widget_impl(widget) {
   var spec = $hope.app.stores.spec.get_spec(widget.spec);
   if (spec && spec.is_ui) {

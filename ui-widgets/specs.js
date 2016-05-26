@@ -644,7 +644,7 @@ var specs = [{
     name: "color",
     display: "Default Color",
     type: "color",
-    default: "#EEE"
+    default: "#EEEEEE"
   }, {
     name: "pressed",
     display: "Pressed Color",
@@ -703,16 +703,8 @@ var specs = [{
   out: {
     ports: []
   }
-}];
+}].concat(require("./plugins-specs.json"));
 
-if (process.browser) {
-  require("./plugins").forEach(function(m) {
-    specs = specs.concat(m.specs);
-  });
-}
-else {
-  specs = specs.concat(require("./plugins-specs.json"));
-}
 
 // ensure it contains required information
 specs.forEach(function(s) {
@@ -720,11 +712,55 @@ specs.forEach(function(s) {
   s.is_ui = true;
 });
 
-// export it as a bundle
-module.exports = {
+exports.builtin = {
   id: "hope/ui",
   is_ui: true,
-  name: "Builtin UI",
+  name: "** Builtin **",
   description: "Builtin UI Widgets",
   specs: specs
+};
+
+
+
+function endsWith(ss, sfx) {
+  return ss.substr(-sfx.length) === sfx;
+};
+
+var path = require("path");
+var fs = require("fs");
+var addons = path.join(__dirname, "./addons");
+var specs2 = [];
+
+if (fs.existsSync(addons)) {
+  fs.readdirSync(addons).forEach(function(entry) {
+    var p = path.join(addons, entry);
+    var specjson = path.join(p, "widget.json");
+    var stat = fs.statSync(p);
+    if (stat.isDirectory() && fs.existsSync(specjson)) {
+      var spec = JSON.parse(fs.readFileSync(specjson, "utf-8"));
+      var srcs = [];
+
+      fs.readdirSync(p).forEach(function(src) {
+        if ((endsWith(src, ".js") || endsWith(src, ".jsx") || endsWith(src, ".css")) && fs.statSync(path.join(p, src)).isFile()) {
+          srcs.push(entry + "/" + src);
+        }
+      });
+
+      if (srcs.length > 0) {
+        spec.scripts = srcs;
+      }
+      
+      spec.type = "spec";
+      spec.is_ui = true;
+      specs2.push(spec);
+    }
+  });
+}
+
+exports.addons = {
+  id: "hope/ui/addons",
+  is_ui: true,
+  name: "Addons",
+  description: "UI Widget addons",
+  specs: specs2
 };

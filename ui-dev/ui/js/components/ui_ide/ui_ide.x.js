@@ -30,13 +30,13 @@ import PanelInspector from "./panel_inspector.x";
 import UIBoard from "./ui_board.x";
 import Breadcrumb from "../common/breadcrumb.x";
 import {Row, Col} from "react-bootstrap";
-import {Lifecycle} from "react-router";
-
-import Halogen from "halogen";
+import DotLoader from "halogen/DotLoader";
 
 export default React.createClass({
 
-  mixins: [ Lifecycle ],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   routerWillLeave(nextLocation) {
     var view = $hope.app.stores.ui.active_view;
@@ -185,6 +185,8 @@ export default React.createClass({
 
     window.addEventListener("resize", this._on_resize);
     document.addEventListener("keyup", this._on_key_up);
+
+    this.context.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
   },
 
 
@@ -213,7 +215,7 @@ export default React.createClass({
       var reason = ui_store.no_active_reason;
       var reason_content;
       if (reason === "loading") {
-        reason_content = <div><Halogen.DotLoader/><br/>{__("Loading") + " ..."}</div>;
+        reason_content = <div><DotLoader/><br/>{__("Loading") + " ..."}</div>;
       } else if (app && app.uis.length === 0) {
         reason_content = <div>{__("No UI found")}</div>;
       } else {

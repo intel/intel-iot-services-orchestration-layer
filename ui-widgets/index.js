@@ -55,5 +55,4 @@ require("./plugins").forEach(function(m) {
   }
 });
 
-exports.widgets = widgets;
-exports.spec_bundle = require("./specs");
+module.exports = widgets;

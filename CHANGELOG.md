@@ -1,5 +1,8 @@
 Change Logs
 ===========================
+## v1.1.3
+# allow to create UI widget in release project
+
 ## v1.1.2
 * on-the-fly debug added
 

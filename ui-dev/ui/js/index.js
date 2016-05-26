@@ -630,26 +630,25 @@ $hope.app.server.get_config$().then(cfg => {
   $hope.ui_user_port = cfg.ui_user_port;
   $hope.ui_auth_required = cfg.ui_auth_required;
 
-  // Render with initial state
-  ReactDOM.render(require("./components/route.x"), document.getElementById("react-world"));
-});
+  // Initial Data loading
+  $Q.all([
+    $hope.app.stores.spec.init$(),
+    $hope.app.stores.hub.init$()
+  ]).then(function() {
+    $hope.listen_system("entity/changed", changed => {
+      $hope.app.stores.spec.handle_change_event$(changed.list).then( () => {
+        $hope.app.stores.hub.handle_change_event$(changed.list);
+      }).done();
+    });
+    $hope.listen_system("wfe/changed", ev => {
+      $hope.app.stores.graph.handle_changed_event(ev.started, ev.stoped);
+      $hope.app.stores.app.handle_changed_event(ev.started, ev.stoped);
+    });
 
+    let addons = require("./lib/addons");
+    addons.init$().then(()=> {
+      ReactDOM.render(require("./components/route.x"), document.getElementById("react-world"));
+    });
 
-// Initial Data loading
-$Q.all([
-  $hope.app.stores.spec.init$(),
-  $hope.app.stores.hub.init$()
-]).then(function() {
-  $hope.listen_system("entity/changed", changed => {
-    $hope.app.stores.spec.handle_change_event$(changed.list).then( () => {
-      $hope.app.stores.hub.handle_change_event$(changed.list);
-    }).done();
   });
-
-  $hope.listen_system("wfe/changed", ev => {
-    $hope.app.stores.graph.handle_changed_event(ev.started, ev.stoped);
-    $hope.app.stores.app.handle_changed_event(ev.started, ev.stoped);
-  });
 });
-
-

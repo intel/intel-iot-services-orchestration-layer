@@ -24,12 +24,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {History} from "react-router";
 import auth from "../../lib/auth";
 import Dialog from "../common/dialog.x";
 
 export default React.createClass({
-  mixins: [ History ],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   getInitialState() {
     return {
@@ -60,7 +61,7 @@ export default React.createClass({
     this.setState({
       collapsed: true
     }, ()=> {
-      this.history.replaceState(null, "/users");
+      this.context.router.replace("/users");
     });
   },
 
@@ -88,7 +89,7 @@ export default React.createClass({
         $hope.app.stores.graph.clear_cache();
         $hope.app.stores.ui.clear_cache();
         $hope.app.stores.app.clear_cache();
-        this.history.replaceState(null, "/login");
+        this.context.router.replace("/login");
       });
     });
   },

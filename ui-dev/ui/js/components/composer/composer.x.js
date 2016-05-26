@@ -24,7 +24,6 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {History, Lifecycle} from "react-router";
 import {Row, Col} from "react-bootstrap";
 import Node from "./node.x";
 import Editor from "./editor.x";
@@ -32,7 +31,9 @@ import Dialog from "../common/dialog.x";
 
 export default React.createClass({
 
-  mixins: [ History, Lifecycle ],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   routerWillLeave() {
     var modified = false;
@@ -254,7 +255,7 @@ export default React.createClass({
   },
 
   _on_back() {
-    this.history.goBack();
+    this.context.router.goBack();
   },
 
   _on_save() {
@@ -330,6 +331,8 @@ export default React.createClass({
     $hope.app.stores.composer.on("composer", this._on_composer_event);
     $hope.app.stores.spec.on("spec", this._on_spec_event);
     $hope.app.stores.hub.on("hub", this._on_hub_event);
+
+    this.context.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
 
     $hope.trigger_action("composer/list/files", {
       service_id: this.service_id

@@ -142,23 +142,19 @@ export default class WidgetDetails extends ReactComponent {
   }
 
   _on_change_color(cfg, e) {
-    e.stopPropagation();
-    Dialog.show_colorpicker_dialog(__("Change the color"), color => {
-      var w = this.props.widget;
-      var view = $hope.app.stores.ui.active_view;
+    var w = this.props.widget;
+    var view = $hope.app.stores.ui.active_view;
 
-      w.config[cfg.name] = color;
+    w.config[cfg.name] = e.target.value;
 
-      $hope.trigger_action("ui/change_widgets", {
-        ui_id: view.id,
-        widgets: [w]
-      });
+    $hope.trigger_action("ui/change_widgets", {
+      ui_id: view.id,
+      widgets: [w]
+    });
 
-      this.setState({
-        [cfg.name]: color
-      });
-    },
-    this.state[cfg.name] || "");
+    this.setState({
+      [cfg.name]: e.target.value
+    });
   }
 
   _on_show_extra(e) {
@@ -309,9 +305,10 @@ export default class WidgetDetails extends ReactComponent {
     }
     else if (cfg.type === "color") {
       content =
-        <div className="text-center" onClick={this._on_change_color.bind(this, cfg)}>
-          <i className={"hope-hover-icon-btn fa fa-circle"} style={{color: v}} />
-        </div>;
+        <input type="color"
+              className="hope-tbl-row-val"
+              value={v || "#FFFFFF"}
+              onChange={this._on_change_color.bind(this, cfg)} />;
     }
     else if (cfg.type === "boolean") {
       content =
@@ -361,7 +358,7 @@ export default class WidgetDetails extends ReactComponent {
         extras =
           <div className="hope-widget-details-extra"
             onClick={this._on_show_extra}>
-            <i className="fa fa-chevron-circle-down">{" " + __("More")}</i>
+            <i className="fa fa-chevron-circle-down" />{" " + __("More")}
           </div>;
       }
     }

@@ -2,4 +2,4 @@
 
 Add new thing in the hub
 
-![](./doc/pic/example/add_service/create_my_thing.gif)
+![](./doc/pic/example/add_service/create_my_thing.gif){.viewer}

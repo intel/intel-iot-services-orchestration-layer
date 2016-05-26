@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {History, Link} from "react-router";
+import {Link} from "react-router";
 import auth from "../../lib/auth";
 import Graph from "../../lib/graph";
 import DlgCreate from "./dlg_create.x";
@@ -40,7 +40,9 @@ function is_ui_ide() {
 
 export default React.createClass({
 
-  mixins: [History],
+  contextTypes: {
+    router: React.PropTypes.object.isRequired
+  },
 
   getInitialState() {
     return {
@@ -88,7 +90,7 @@ export default React.createClass({
         }).$serialize();
       $hope.app.server.app.create_graph$(app.id, gdata).then(()=> {
         app.graphs.push(gdata);
-        this.history.push(`/ide/${gdata.id}`);
+        this.context.router.push(`/ide/${gdata.id}`);
       });
     }
     else if (type === "User UI") {
@@ -102,7 +104,7 @@ export default React.createClass({
         };
       $hope.app.server.app.create_ui$(app.id, udata).then(()=> {
         app.uis.push(udata);
-        this.history.push(`/ui_ide/${udata.id}`);
+        this.context.router.push(`/ui_ide/${udata.id}`);
       });
     }
   },
@@ -115,7 +117,7 @@ export default React.createClass({
         return;
       }
       if (app.graphs.length === 1) {
-        this.history.replace(`/ide/${app.graphs[0].id}`);
+        this.context.router.replace(`/ide/${app.graphs[0].id}`);
         return;
       }
     }
@@ -130,7 +132,7 @@ export default React.createClass({
         return;
       }
       if (app.uis.length === 1) {
-        this.history.replace(`/ui_ide/${app.uis[0].id}`);
+        this.context.router.replace(`/ui_ide/${app.uis[0].id}`);
         return;
       }
     }
@@ -159,10 +161,10 @@ export default React.createClass({
 
         if (view && view.id === id && is_wf_ide()) {
           if (app.graphs.length > 0) {
-            this.history.replace(`/ide/${app.graphs[0].id}`);
+            this.context.router.replace(`/ide/${app.graphs[0].id}`);
           }
           else {
-            this.history.replace(`/ide/${app.id}`);
+            this.context.router.replace(`/ide/${app.id}`);
           }
         }
         cb();
@@ -199,10 +201,10 @@ export default React.createClass({
 
       if (view && view.id === id && is_ui_ide()) {
         if (app.uis.length > 0) {
-          this.history.replace(`/ui_ide/${app.uis[0].id}`);
+          this.context.router.replace(`/ui_ide/${app.uis[0].id}`);
         }
         else {
-          this.history.replace(`/ui_ide/${app.id}`);
+          this.context.router.replace(`/ui_ide/${app.id}`);
         }
       }
       cb();
@@ -214,7 +216,7 @@ export default React.createClass({
     if (view && view.id === id && is_wf_ide()) {
       return;
     }
-    this.history.push(`/ide/${id}`);
+    this.context.router.push(`/ide/${id}`);
   },
 
   _on_open_ui(id) {
@@ -222,7 +224,7 @@ export default React.createClass({
     if (view && view.id === id && is_ui_ide()) {
       return;
     }
-    this.history.push(`/ui_ide/${id}`);
+    this.context.router.push(`/ui_ide/${id}`);
   },
 
   _on_create_graph() {

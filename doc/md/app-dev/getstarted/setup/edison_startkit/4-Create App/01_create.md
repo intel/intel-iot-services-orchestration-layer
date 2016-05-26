@@ -8,4 +8,4 @@ The sample on security area : It detect whether people moves in every 1s. If som
  - Visit `<your edison ip>:8080` in browser
  - Create new App
 
-![](./doc/pic/create_app.gif)
+![](./doc/pic/create_app.gif){.viewer}

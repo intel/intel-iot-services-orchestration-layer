@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Router, Route, IndexRoute} from "react-router";
+import {Router, Route, IndexRoute, useRouterHistory} from "react-router";
 import {createHashHistory, useBeforeUnload} from "history";
 
 import HOPE from "./hope.x";
@@ -34,7 +34,7 @@ import NotFound from "./not_found.x";
 import Login from "./login.x";
 import auth from "../lib/auth";
 
-let history = useBeforeUnload(createHashHistory)({
+let history = useRouterHistory(useBeforeUnload(createHashHistory))({
   queryKey: false
 });
 

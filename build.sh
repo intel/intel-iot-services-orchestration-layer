@@ -55,8 +55,9 @@ rm -rf node_modules/*
 npm install
 gulp build
 cd -
-mkdir -p ./dist/node_modules/ui-widgets
-cp ./ui-widgets/{specs.js,plugins-specs.json} ./dist/node_modules/ui-widgets
+mkdir -p ./dist/ui-widgets/addons
+cp ./ui-widgets/{specs.js,plugins-specs.json} ./dist/ui-widgets
+cp ./ui-widgets/node_modules/babel-core/browser.min.js ./dist/ui-widgets/babel-browser.js
 
 echo ">>> ui dev"
 cd ./ui-dev
@@ -67,8 +68,8 @@ bower --allow-root install
 rm -rf ./public
 NODE_ENV=production gulp build
 cd -
-mkdir -p ./dist/node_modules/ui-dev
-cp -r ./ui-dev/public ./dist/node_modules/ui-dev/.
+mkdir -p ./dist/ui-dev
+cp -r ./ui-dev/public ./dist/ui-dev/.
 
 
 echo ">>> ui user"
@@ -80,8 +81,8 @@ bower --allow-root install
 rm -rf ./public
 NODE_ENV=production gulp build
 cd -
-mkdir -p ./dist/node_modules/ui-user
-cp -r ./ui-user/public ./dist/node_modules/ui-user/.
+mkdir -p ./dist/ui-user
+cp -r ./ui-user/public ./dist/ui-user/.
 
 
 echo ">>> demo"
@@ -100,12 +101,12 @@ else
   rm -f ./dist/start_doc.sh
 fi
 
-mkdir ./dist/node_modules/doc
-cp -r ./doc/html ./dist/node_modules/doc/.
+mkdir ./dist/doc
+cp -r ./doc/html ./dist/doc/.
 
 
 # app developer
-cp -r ./doc/framework/public/{css,fonts,images,img,js,index.html} ./dist/node_modules/doc/html/app-dev/.
+cp -r ./doc/framework/public/{css,fonts,images,img,js,index.html} ./dist/doc/html/app-dev/.
 
 
 echo ">>> scripts"

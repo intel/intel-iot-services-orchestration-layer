@@ -124,19 +124,15 @@ export default class ConfigDetails extends ReactComponent {
   }
 
   _on_change_color(cfg, e) {
-    e.stopPropagation();
-    Dialog.show_colorpicker_dialog(__("Change the color"), color => {
-      var view = $hope.app.stores.graph.active_view;
-      var node = view.get("node", this.props.id);
+    var view = $hope.app.stores.graph.active_view;
+    var node = view.get("node", this.props.id);
 
-      node.config[cfg.name] = color;
+    node.config[cfg.name] = e.target.value;
 
-      this.set_modified();
-      this.setState({
-        [cfg.name]: color
-      });
-    },
-    this.state[cfg.name] || "");
+    this.set_modified();
+    this.setState({
+      [cfg.name]: e.target.value
+    });
   }
 
   _on_show_extra(e) {
@@ -274,9 +270,10 @@ export default class ConfigDetails extends ReactComponent {
     }
     else if (cfg.type === "color") {
       content =
-        <div className="text-center" onClick={this._on_change_color.bind(this, cfg)}>
-          <i className={"hope-hover-icon-btn fa fa-circle"} style={{color: v}} />
-        </div>;
+        <input type="color"
+              className="hope-tbl-row-val"
+              value={v || "#FFFFFF"}
+              onChange={this._on_change_color.bind(this, cfg)} />;
     }
     else if (cfg.type === "boolean") {
       content =
@@ -327,7 +324,7 @@ export default class ConfigDetails extends ReactComponent {
         extras =
           <div className="hope-widget-details-extra"
             onClick={this._on_show_extra}>
-            <i className="fa fa-chevron-circle-down">{" " + __("More")}</i>
+            <i className="fa fa-chevron-circle-down" />{" " + __("More")}
           </div>;
       }
     }
