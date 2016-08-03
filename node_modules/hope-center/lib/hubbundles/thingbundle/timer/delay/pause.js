@@ -39,3 +39,4 @@ for(i = 0; i < shared.t_list.length; i++) {
     shared.t_list.splice(i, 1);
   }
 }
+done();
