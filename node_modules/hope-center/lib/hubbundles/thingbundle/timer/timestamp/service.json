@@ -1,0 +1,28 @@
+{
+  "name": "timestamp",
+  "description": "get unix timestamp from date",
+  "spec":{
+    "id": "__HOPE__/builtin/timer/timestamp",
+    "name": "timestamp_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "date",
+          "type": "any"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "any"
+        }
+      ]
+    }
+  },
+  "ui": {
+
+  },
+  "doc":"builtin/timer.html#timestamp"
+}

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -34,19 +34,19 @@ var OutPort = require("./out_port");
 var BatchTag = require("./tag_batch");
 
 
-// spec may define the in or out which contains a field ports 
+// spec may define the in or out which contains a field ports
 // but node may customize this in its in or out
 // this helper talkes in/out of both json and returns an array of port json
 // that could be used to create InPort or OutPort
 function _parse_ports_spec(spec_ports_json, ports_json) {
-  spec_ports_json = spec_ports_json || {};
-  ports_json = ports_json || {};
+  spec_ports_json = _.cloneDeep(spec_ports_json) || {};
+  ports_json = _.cloneDeep(ports_json) || {};
   // added ports
   var ports = (spec_ports_json.ports || []).concat(ports_json.added_ports || []);
   // amended
-  var ports_idx = _.keyBy(ports, "name");  
+  var ports_idx = _.keyBy(ports, "name");
   _.forEach(ports_json.amended_ports || [], function(p) {
-    B.check(ports_idx[p.name], "workflow/node", 
+    B.check(ports_idx[p.name], "workflow/node",
       "Failed to amend port: name doesn't exist", p, spec_ports_json);
     _.assign(ports_idx[p.name], p);
   });
@@ -92,6 +92,7 @@ function Node(workflow, json) {
   var self = this;
 
   var spec = workflow.specs[json.spec];
+  this.spec = spec;
   B.check(_.isObject(spec), "workflow/node", "Missing spec for node", json,
     "of workflow", workflow.id, workflow.specs);
 
@@ -109,16 +110,16 @@ function Node(workflow, json) {
   if (json.in && json.in.groups) {
     this.in.is_grouped = true;
   }
-  
-  // TODO: we assume tags are applied to entire IN or OUT rather than 
+
+  // TODO: we assume tags are applied to entire IN or OUT rather than
   // individual port. We may need to either change the schema of input JSON
   // or add some validation logic here to ensure this assumption always work
   if (json.in && json.in.tags) {
     _parse_tags(this.in, this.workflow.tags, json.in.tags);
-  }  
+  }
   if (json.out && json.out.tags) {
     _parse_tags(this.out, this.workflow.tags, json.out.tags);
-  }  
+  }
 }
 
 Node.prototype.make_lock = function(key) {
@@ -186,7 +187,7 @@ function _get_msg_tags(msg) {
  *       it would fail (i.e. return null) if any of inport is blank
  *     secondly, if there is tag defined for in, it doesn't simply grab the data
  *       from each port. Instead, it tries to grab the data from each port that
- *       satisfies the tag semantics. For example, if in is attached with a 
+ *       satisfies the tag semantics. For example, if in is attached with a
  *       batch tag, then it would tries to prepare a IN object that each msg
  *       from each port has a matched batch tag (same tag id and same batch id)
  * @param {Object} triggered_port The port that result in this prepare action
@@ -205,7 +206,7 @@ Node.prototype.prepare = function(triggered_port) {
 
   // no in ports
   if (_.size(this.in.ports) === 0) {
-    return data;
+    return false;
   }
 
   // check whether each port has data
@@ -215,7 +216,7 @@ Node.prototype.prepare = function(triggered_port) {
       has_empty_port = true;
       return false; // exit forOwn early
     }
-  }); 
+  });
 
   function _simply_grab() {
     _.forOwn(self.in.ports, function(port, name) {
@@ -243,14 +244,14 @@ Node.prototype.prepare = function(triggered_port) {
   // tagged, need search to get a matched pair
   // TODO this is a simple implementation for now, may need an optimized
   // algorithm in the future
-  // currently, we simply do a DFS search of all possible combinataion of 
+  // currently, we simply do a DFS search of all possible combinataion of
   // messages, to see whether they match the tag requirements or not
   // Basically,
   //    a) pickup a msg from queue of first port
   //    b) try to add a msg from queue of 2nd port and ensure it matches all tags
   //    c) try to add a msg from queue of 3rd ...
   // if failes on any queue, then roll back. It fails if all fails
-  // To accelerate this, each stage of DFS is 
+  // To accelerate this, each stage of DFS is
   // (idx of queue of 1st port, idx of queue of 2nd port, ..., a tag context)
   // Tag context saves the current restriction of the tags, e.g. available batch_ids
   // based on existing messages, this avoids some duplicated calculations
@@ -343,11 +344,11 @@ Node.prototype.prepare = function(triggered_port) {
     }
     return new_ctx;
   }
-  
+
   var res = _dfs({port_idx: 0, msg_idx: 0}, _visit, {});
   if (!res) {
     return null;
-  } 
+  }
   _.forEach(res, function(p) {
     data[keys[p.port_idx]] = _at(p);
   });
@@ -373,10 +374,10 @@ Node.prototype.kernel$ = function(unconsumed_IN) {
   _.forOwn(unconsumed_IN, function(msg, name) {
     var port = self.in.ports[name];
     if (!port) {
-      return Promise.reject("Node/kernel$ failed to get in port with name " +
-        name + " for message " + B.to_string(msg));
+      return Promise.reject(new Error("Node/kernel$ failed to get in port with name " +
+        name + " for message " + B.to_string(msg)));
     }
-    // some ports may have no meesasge if ungrouped 
+    // some ports may have no meesasge if ungrouped
     if (msg) {
       port.consume_message(msg.id);
       IN[name] = msg.payload;
@@ -398,14 +399,14 @@ Node.prototype.kernel$ = function(unconsumed_IN) {
     meta.IN = IN;   // Ensure it is sent back from service
   }
   return this.get_impl().kernel$(this, {
-    IN: IN, 
+    IN: IN,
     meta: meta
   });
 };
 
 /**
  * This tries to prepare, and if succeed, it executes the kernel
- * @param  {Object} triggered_port 
+ * @param  {Object} triggered_port
  * @return {Promise} Only reject if encounters any error. It resolves
  *    even if the prepare failed and kernel not executed
  */
@@ -472,7 +473,7 @@ Node.prototype.send = function(payload, meta) {
 
 //----------------------------------------------------------------
 // External Dependencies
-// 
+//
 // NOTE: for status, if it is in incorrect status, we  simply resolove
 // This allows workflow to reinvoke an operation multiple times without error
 //----------------------------------------------------------------

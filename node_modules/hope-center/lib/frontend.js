@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,7 +28,7 @@ var _ = require("lodash");
 var B = require("hope-base");
 var log = B.log.for_category("frontend");
 var UIThing = require("./ui_thing");
-
+var PackageSearch = require("./package_search");
 var HOPE_TOKEN = "HOPE_token";
 
 function _brief(o) {
@@ -58,20 +58,19 @@ function get_cookie(req, key) {
         eidx = cs.length;
       }
       return decodeURIComponent(cs.substring(sidx, eidx));
-    } 
+    }
   }
   return "";
 }
 
 function FrontEnd(center, web_app, handler_url) {
-  B.check(web_app.$web_socket, "frontend", 
+  B.check(web_app.$web_socket, "frontend",
     "The web app for the frontend should have web socket enabled");
   this.center = center;
   this.web_app = web_app;
   this.socket = web_app.$web_socket;
   this.sub_sockets = {};
   this.api_handler = B.net.create_api_handler(web_app, handler_url);
-
   this.token_user = {};
 }
 
@@ -199,7 +198,7 @@ FrontEnd.prototype._fill_field$ = function(log_action, obj, field_to_fill, em_me
     obj[field_to_fill] = is_brief ? datums.map(function(o) {
       return _brief(o);
     }) : datums;
-    return obj;    
+    return obj;
   });
 };
 
@@ -247,6 +246,20 @@ FrontEnd.prototype.api_sys__get_config = function(req, res) {
   }
   ret.ui_auth_required = !!this.center.config.auth;
   return ret;
+};
+
+FrontEnd.prototype.api_sys__errors = function() {
+  return this.center.errors;
+};
+
+global.nodered_assets = {
+  nodes: [],
+  ns: {},
+  locales: {}
+};
+
+FrontEnd.prototype.api_sys__get_nodered_assets = function() {
+  return global.nodered_assets;
 };
 
 FrontEnd.prototype.get_uid_from_cookie = function(req, res) {
@@ -476,14 +489,11 @@ FrontEnd.prototype.api_hub__get$ = function(ids) {
         log.error("hub_get", "hub not found:", ids[idx]);
         return Promise.resolve(hub);
       }
-
       return self._fill_field$("hub_get", hub, "things", "thing__get$").then(function() {
-
         // we shouldn't return these UI things
         _.remove(hub.things, function(thing) {
           return thing.thing_type === "ui";
         });
-
         return Promise.all(hub.things.map(function(thing) {
           return self._fill_field$("hub_get", thing, "services", "service__get$");
         }));
@@ -491,7 +501,6 @@ FrontEnd.prototype.api_hub__get$ = function(ids) {
       }).then(function() {
         return hub;
       });
-
     }));
   });
 };
@@ -503,6 +512,7 @@ FrontEnd.prototype.api_hub__get$ = function(ids) {
 
 var DevFrontEnd =
 exports.DevFrontEnd = function(center, web_app) {
+  this.package_search = new PackageSearch();
   FrontEnd.call(this, center, web_app, "/apis/dev");
 };
 
@@ -511,7 +521,7 @@ B.type.inherit(DevFrontEnd, FrontEnd);
 DevFrontEnd.prototype.init$ = function() {
   var self = this;
   // we should add the ui widgets into specs
-  // TODO currently we hard code the path 
+  // TODO currently we hard code the path
   try {
     var ub = require("../../ui-widgets/specs");
   } catch(e) {
@@ -526,6 +536,7 @@ DevFrontEnd.prototype.init$ = function() {
     self.center.em.event.on("changed", function(changed_list) {
       self.sys_emit("entity/changed", changed_list);
     });
+    self.package_search.init$(self.center.get_user_proxy()['http_proxy']);
   });
 };
 
@@ -610,6 +621,13 @@ DevFrontEnd.prototype.api_app__create_graph$ = function(data) {
   return this.center.workflow_create$(graph);
 };
 
+
+DevFrontEnd.prototype.api_app__create_nr_graph$ = function(data) {
+  var graph = data.graph || {};
+  graph.app = data.app;
+  return this.center.workflow_create_nr$(graph);
+};
+
 function return_thing(thing) {
   return {
     id: thing.id,
@@ -652,6 +670,20 @@ DevFrontEnd.prototype.api_hub__create_thing$ = function(data) {
   });
 };
 
+/*
+  param:
+    {
+      hub: hubid,
+      name: install thing name
+    }
+ */
+
+DevFrontEnd.prototype.api_hub__install_thing$ = function(data) {
+  B.check(_.isString(data.hub), "devfrontend/hub/install_thing", "Should be a string for thing", data.hub);
+  B.check(_.isString(data.name), "devfrontend/hub/install_thing", "Should be a string for install thing name", data.name);
+  return this.center.install_hope_thing$(data.hub, data.name, data.version);
+};
+
 DevFrontEnd.prototype.api_thing__create_service$ = function(data) {
   B.check(_.isString(data.thing), "frontend/thing/create_service", "Should be a string for thing", data.thing);
   B.check(_.isObject(data.service), "frontend/thing/create_service", "Should be a json for service", data.service);
@@ -663,6 +695,20 @@ DevFrontEnd.prototype.api_thing__create_service$ = function(data) {
   .then(function() {
     return return_service(service);
   });
+};
+
+/*
+ param:
+   {
+    thing: thingid,
+    name: install thing name
+   }
+ */
+
+DevFrontEnd.prototype.api_thing__install_service$ = function(data) {
+  B.check(_.isString(data.thing), "devfrontend/thing/install_service", "Should be a string for thing", data.thing);
+  B.check(_.isString(data.name), "devfrontend/thing/install_service", "Should be a string for install service name", data.name);
+  return this.center.install_hope_service$(data.thing, data.name, data.version);
 };
 
 DevFrontEnd.prototype.api_thing__update$ = function(thing) {
@@ -717,7 +763,29 @@ DevFrontEnd.prototype.api_service__remove_file$ = function(data) {
   return this.center.remove_service_file$(data.service_id, data.file_path);
 };
 
+//date {
+//      service_id:
+//      package_json:
+//      }
+DevFrontEnd.prototype.api_service__publish$ = function(data) {
+  return this.center.publish_hope_service$(data.service_id, data.package_json);
+};
 
+//date {
+//      service_id:
+//      package_name:
+//      }
+DevFrontEnd.prototype.api_service__install_package$ = function(data) {
+  return this.center.install_service_package$(data.service_id, data.package_name, data.version);
+};
+
+//date {
+//      service_id:
+//      package_name:
+//      }
+DevFrontEnd.prototype.api_service__uninstall_package$ = function(data) {
+  return this.center.uninstall_service_package$(data.service_id, data.package_name);
+};
 
 // graph
 DevFrontEnd.prototype.api_graph__update$ = function(graph) {
@@ -805,7 +873,45 @@ DevFrontEnd.prototype.api_graph__set_debug_for_node$ = function(data) {
   return this.center.workflow_set_debug_for_node$(data.graph_id, data.node_id, data.is_debug);
 };
 
+/**
+ * package search api
+ * @param {key} search key
+ * @param {pagenumber} search result pagenumber
+ * @returns {array} search result
+ * {
+ *  data:
+ *    [{
+ *      "name":"name",
+ *      "author":"author",
+ *      "description":"description"
+ *    }],
+ *  count:'result number'
+ * }
+ *
+ */
 
+DevFrontEnd.prototype.api_package__search = function(key, pagenumber) {
+  return this.package_search.search(key, pagenumber, this.center.get_user_proxy()['https_proxy']);
+};
+DevFrontEnd.prototype.api_package__version = function(key) {
+  return this.package_search.get_version(key, this.center.get_user_proxy()['https_proxy']);
+};
+
+DevFrontEnd.prototype.api_user_proxy__get = function(type, hub_id) {
+  return this.center.get_user_proxy(type, hub_id);
+};
+
+DevFrontEnd.prototype.api_user_proxy__set = function(value) {
+  return this.center.set_user_proxy(value);
+};
+
+DevFrontEnd.prototype.api_npm_account__get = function() {
+  return this.center.get_npm_account();
+};
+
+DevFrontEnd.prototype.api_npm_account__set = function(value) {
+  return this.center.set_npm_account(value);
+};
 
 //----------------------------------------------------------------
 // User Frontend

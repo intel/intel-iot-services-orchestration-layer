@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var B = require("hope-base");
 var P = require("hope-hub-center-shared").protocol;
 var log = B.log.for_category("hub");
+var exec = require("child_process").exec;
 var _ = require("lodash");
 
 var Hub =
@@ -36,7 +37,7 @@ module.exports = function(config) {
   this.name = config.name || this.id;
   this.description = config.description || this.name;
   this.mnode = B.check(config.mnode, "hub", "Should have a mnode there");
-  this.em = B.check(config.entity_manager, 
+  this.em = B.check(config.entity_manager,
     "hub", "Should have a entity_manager to create");
   this.config = config;
   // could be builtin (the built_in_hub of center) or others ...
@@ -45,6 +46,25 @@ module.exports = function(config) {
   config.heartbeat = config.heartbeat || {};
   this.heartbeat_interval = config.heartbeat.interval || 60000;
   this.sm = config.session_manager;
+  this.user_proxy = this.load_user_proxy();
+
+  if (this.type === "builtin") {
+    return;
+  }
+
+  var self = this;
+  B.set_exception_hook(function(e, category, msg) {
+    var stack = B.get_raw_stack(e);
+    var err = {
+      time: new Date(),
+      subsystem: self.name,
+      category: category,
+      type: B.err.CHECK_FAIL,
+      message: msg,
+      stack: stack.slice(1)
+    };
+    self.mnode.publish$(P.ANNOUNCE_ERROR, err).done();
+  });
 };
 
 // Full details of the hub
@@ -139,12 +159,20 @@ Hub.prototype._init_em$ = function() {
       var thingbundle_path = B.path.abs(self.config.thingbundle_path, self.config_path);
       tasks.push(self.em.thing__load_from_bundle$(thingbundle_path, spec_bundle, self.id));
     }
-    
+
     if (self.config.specbundle_path) {
       var specbundle_path = B.path.abs(self.config.specbundle_path, self.config_path);
       tasks.push(self.em.spec__load_from_localbundle$(specbundle_path));
     }
 
+    if (self.config.noderedbundle_path) {
+      var spec_nodered_bundle = {
+        id: "SpecNodeRedBundle" + self.id,
+        name: "default_nodered_bundle"
+      };
+      var noderedbundle_path = B.path.abs(self.config.noderedbundle_path, self.config_path);
+      tasks.push(self.em.service__load_nodered_from_bundle$(noderedbundle_path, spec_nodered_bundle, self.id));
+    }
 
     if (self.config.grove_config) {
       B.check(self.config.grove_config.grovebundle_path, "hub", "should have grove bundle");
@@ -267,6 +295,55 @@ Hub.prototype._subscribe_topics$ = function() {
   return Promise.all(tasks);
 };
 
+/**
+ * user proxy related including
+ * get_user_proxy => {http_proxy:"",https_proxy:""}
+ * load_user_proxy =>{http_proxy:"",https_proxy:""}
+ * set_user_proxy
+ *
+ */
+Hub.prototype.get_user_proxy = function() {
+  return this.user_proxy;
+};
+
+Hub.prototype.load_user_proxy = function() {
+  if(this.type === "builtin") return;
+  var json_path = B.path.abs("./user_proxy.json", this.config_path);
+  var user_proxy = {};
+  if(B.fs.file_exists(json_path)) {
+    var json_content = B.fs.read_json(json_path);
+    user_proxy = json_content?json_content:{};
+  } else {
+    B.fs.write_json(json_path, {});
+    user_proxy = {};
+  }
+  return user_proxy;
+};
+
+
+Hub.prototype.npm_set_proxy = function(type, value) {
+  return new Promise(function(resolve, reject) {
+    exec("npm config set "+type+" "+value +" -g", function(err) {
+      if(err) return reject(err);
+      resolve();
+    });
+  });
+};
+
+Hub.prototype.set_user_proxy = function(value) {
+  this.user_proxy = value;
+  var json_path = B.path.abs("./user_proxy.json", this.config_path);
+  B.fs.write_json(json_path, value);
+  var tasks = [];
+  if(value.http_proxy) {
+    tasks.push(this.npm_set_proxy("proxy", value.http_proxy));
+  }
+  if(value.https_proxy) {
+    tasks.push(this.npm_set_proxy("https-proxy", value.https_proxy));
+  }
+  return Promise.all(tasks);
+};
+
 Hub.prototype.define_rpc$ = function() {
   var self = this;
   var mnode = this.mnode;
@@ -281,6 +358,12 @@ Hub.prototype.define_rpc$ = function() {
       .then(function(data) {
         return self._prepare_emchanged_data(data);
       });
+    });
+    mnode.define_rpc("install_hope_thing", function(name, version, hub_id) {
+      return self.em.thing__install_hope_thing$(name, version, B.path.abs(self.config.thingbundle_path, self.config_path), hub_id)
+        .then(function(data) {
+          return self._prepare_emchanged_data(data);
+        });
     });
     mnode.define_rpc("update_hope_thing", function(thing) {
       return self.em.thing__update_hope_thing$(thing)
@@ -300,6 +383,12 @@ Hub.prototype.define_rpc$ = function() {
         return self._prepare_emchanged_data(data);
       });
     });
+    mnode.define_rpc("install_hope_service", function(name, version, thing_id) {
+      return self.em.thing__install_hope_service$(name, version, thing_id, spec_bundle)
+        .then(function(data) {
+          return self._prepare_emchanged_data(data);
+        })
+    });
     mnode.define_rpc("update_hope_service", function(service) {
       return self.em.service__update_hope_service$(service, spec_bundle)
       .then(function(data) {
@@ -310,10 +399,13 @@ Hub.prototype.define_rpc$ = function() {
       return self.em.service__remove_hope_service$(service_id)
       .then(function(data) {
         return self._prepare_emchanged_data(data);
-      });  
+      });
     });
     mnode.define_rpc("list_service_files", function(service_id) {
       return self.em.service__list_files$(service_id);
+    });
+    mnode.define_rpc("publish_hope_service", function(service_id, package_json, settings) {
+      return self.em.service__publish$(service_id, package_json, settings);
     });
     mnode.define_rpc("read_service_file", function(service_id, file_path) {
       return self.em.service__read_file$(service_id, file_path);
@@ -324,11 +416,23 @@ Hub.prototype.define_rpc$ = function() {
     mnode.define_rpc("remove_service_file", function(service_id, file_path) {
       return self.em.service__remove_file$(service_id, file_path);
     });
+    mnode.define_rpc("install_service_package", function(service_id, package_name, version) {
+      return self.em.service__install_package$(service_id, package_name, version);
+    });
+    mnode.define_rpc("uninstall_service_package", function(service_id, package_name) {
+      return self.em.service__uninstall_package$(service_id, package_name);
+    });
     mnode.define_rpc("clear_session", function(session_id) {
       return self.sm.clear_session$(session_id);
     });
     mnode.define_rpc("reload_service", function(service_id) {
       return self.sm.reload_service$(service_id);
+    });
+    mnode.define_rpc("set_user_proxy", function(value) {
+      return self.set_user_proxy(value);
+    });
+    mnode.define_rpc("get_user_proxy", function() {
+      return self.get_user_proxy();
     });
   });
 };
@@ -336,17 +440,23 @@ Hub.prototype.define_rpc$ = function() {
 Hub.prototype.undefine_rpc$ = function() {
   var mnode = this.mnode;
   mnode.undefine_rpc("add_hope_thing");
+  mnode.undefine_rpc("install_hope_thing");
   mnode.undefine_rpc("update_hope_thing");
   mnode.undefine_rpc("remove_hope_thing");
   mnode.undefine_rpc("add_hope_service");
+  mnode.undefine_rpc("install_hope_service");
   mnode.undefine_rpc("update_hope_service");
   mnode.undefine_rpc("remove_hope_service");
   mnode.undefine_rpc("list_service_files");
+  mnode.undefine_rpc("publish_hope_service");
+  mnode.undefine_rpc("install_service_package");
+  mnode.undefine_rpc("uninstall_service_package");
   mnode.undefine_rpc("read_service_file");
   mnode.undefine_rpc("write_service_file");
   mnode.undefine_rpc("remove_service_file");
   mnode.undefine_rpc("clear_session");
   mnode.undefine_rpc("reload_service");
+  mnode.undefine_rpc("set_proxy");
   return mnode.disable_rpc$();
 };
 

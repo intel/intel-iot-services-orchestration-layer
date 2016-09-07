@@ -1,0 +1,46 @@
+{
+  "name":"tcp_request",
+  "description":"send tcp request",
+  "spec":{
+    "id":"__HOPE__/builtin/network/tcp_request",
+    "name":"tcp_request_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        },
+        {
+          "name":"data",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"ip",
+        "type":"string",
+        "required":true,
+        "default":"127.0.0.1"
+      },
+      {
+        "name":"port",
+        "type":"number",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#tcp_request"
+}

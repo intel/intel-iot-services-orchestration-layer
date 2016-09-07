@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ var fs = require("fs");
 
 /**
  * NOTE: All the path infos are in the store. They are generated during loading jsons.
- * The path info in json file is useless. 
+ * The path info in json file is useless.
  */
 
 /**
@@ -48,17 +48,17 @@ var fs = require("fs");
  * 2, in _load_app
  *    2.1: read app.json, create app object based on the json
  *    2.2: load each graph.json, create graph object and push the graph_id into app.graphs.
- *    2.3: set ap_obj and graph_obj into store. 
+ *    2.3: set ap_obj and graph_obj into store.
  * @param  {String} bundle_path the bundle full path
  * @param  {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise}            
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.load_apps$ = function(uid, bundle_path, em, changed_list) {
   log("load_apps", bundle_path);
   if (!check_warn(B.fs.dir_exists(bundle_path),
    "entity/app", "dir doesnt exsits", bundle_path)) {
-    return Promise.reject(bundle_path + "not found");
+    return Promise.reject(new Error(bundle_path + "not found"));
   }
   var tasks = [];
   fs.readdirSync(bundle_path).forEach(function(relative_path) {
@@ -95,6 +95,10 @@ function _load_app$(uid, app_path, em, changed_list) {
       }
       log("load_graph", p);
       var graph_json = B.fs.read_json(p);
+      if(_.isUndefined(graph_json)) {
+        log.warn("invalid json format:", p);
+        return;
+      }
       var graph = _create_graph(graph_json, p, app.id);
       app.graphs.push(graph.id); //add graph_id to app
       tasks.push(em.graph_store.set$(graph.id, graph, changed_list));
@@ -102,15 +106,21 @@ function _load_app$(uid, app_path, em, changed_list) {
     fs.readdirSync(uis_path).forEach(function(relative_path) {
       var p = B.path.join(uis_path, relative_path);
       log("load_ui", p);
-      check(B.path.ext(p) === ".json", "entity/app", "file is not json", p);
+      if(!B.path.ext(p) === ".json") {
+        return;
+      }
       var ui_json = B.fs.read_json(p);
+      if(_.isUndefined(ui_json)) {
+        log.warn("invalid json format:", p);
+        return;
+      }
       var ui = _create_ui(ui_json, p, app.id);
       app.uis.push(ui.id); //add ui_id to app
       tasks.push(em.ui_store.set$(ui.id, ui, changed_list));
     });
     tasks.push(em.app_store.set$(app.id, app, changed_list));
     return Promise.all(tasks);
-  });  
+  });
 }
 
 /*
@@ -127,7 +137,7 @@ var app = {
   };
 */
 function _create_app(json, app_path) {
-  check(_.isString(json.id) && _.isString(json.name), "entity/app", 
+  check(_.isString(json.id) && _.isString(json.name), "entity/app",
     "app json must have id and name", json);
   var app = {};
   _.merge(app, json);
@@ -141,7 +151,7 @@ function _create_app(json, app_path) {
 }
 
 function _create_graph(json, graph_path, app_id) {
-  check(_.isString(json.id) && _.isString(json.name), "entity/app", 
+  check(_.isString(json.id) && _.isString(json.name), "entity/app",
     "graph json must have id and name", json);
   json.path = graph_path;
   json.app = app_id;
@@ -149,7 +159,7 @@ function _create_graph(json, graph_path, app_id) {
 }
 
 function _create_ui(json, ui_path, app_id) {
-  check(_.isString(json.id) && _.isString(json.name), "entity/app", 
+  check(_.isString(json.id) && _.isString(json.name), "entity/app",
     "ui json must have id and name", json);
   json.path = ui_path;
   json.app = app_id;
@@ -165,8 +175,8 @@ function _create_ui(json, ui_path, app_id) {
  * 5, set the graph in graphstore.
  * @param {Object} graph      the graph object from frontend
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.add_graph$ = function(graph, em, changed_list) {
   log("add graph", graph);
@@ -184,7 +194,7 @@ exports.add_graph$ = function(graph, em, changed_list) {
         app.graphs.push(graph.id);
         app.graphs = _.uniq(app.graphs);
         app_path = app.path;
-        return em.app_store.set$(app.id, app, changed_list);        
+        return em.app_store.set$(app.id, app, changed_list);
       });
   })
   .then(function() {
@@ -196,6 +206,9 @@ exports.add_graph$ = function(graph, em, changed_list) {
     return em.graph_store.set$(graph_obj.id, graph_obj, changed_list);
   });
 };
+
+
+
 
 function prepare_update_graph(graph) {
   delete graph.app;
@@ -222,8 +235,8 @@ function prepare_update_app(app) {
  * 3, graphstore.set new graph.
  * @param {Object} graph      the graph object from frontend
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.update_graph$ = function(graph, em, changed_list) {
   prepare_update_graph(graph);
@@ -243,7 +256,7 @@ exports.update_graph$ = function(graph, em, changed_list) {
         check(!_.isUndefined(oldgraph), "entity/graph", "the graph not exsit before", graph.id);
         B.fs.update_json(oldgraph.path, graph);
         var graph_obj = _.assign(oldgraph, graph);
-        return em.graph_store.set$(graph_obj.id, graph_obj, changed_list);        
+        return em.graph_store.set$(graph_obj.id, graph_obj, changed_list);
       });
   });
 };
@@ -254,10 +267,10 @@ exports.update_graph$ = function(graph, em, changed_list) {
  * 2, get the corresponding app_obj from appstore, and makesure it is not builtin
  * 3, remove the graph_id from app.graphs, and re-store the app
  * 4, remove the graph json file, and delete the graph from graphstore.
- * @param  {id} graphid    
+ * @param  {id} graphid
  * @param  {object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise}            
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.remove_graph$ = function(graphid, em, changed_list) {
   log("remove graph", graphid);
@@ -275,7 +288,7 @@ exports.remove_graph$ = function(graphid, em, changed_list) {
       _.remove(app.graphs, function(id) {
         return id === graphid;
       });
-      return em.app_store.set$(app_id, app, changed_list);      
+      return em.app_store.set$(app_id, app, changed_list);
     });
   })
   .then(function() {
@@ -294,8 +307,8 @@ exports.remove_graph$ = function(graphid, em, changed_list) {
  * 5, set the ui in uistore.
  * @param {Object} ui      the ui object from frontend
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.add_ui$ = function(ui, em, changed_list) {
   log("add ui", ui);
@@ -313,7 +326,7 @@ exports.add_ui$ = function(ui, em, changed_list) {
         app.uis.push(ui.id);
         app.uis = _.uniq(app.uis);
         app_path = app.path;
-        return em.app_store.set$(app.id, app, changed_list);        
+        return em.app_store.set$(app.id, app, changed_list);
       });
   })
   .then(function() {
@@ -334,8 +347,8 @@ exports.add_ui$ = function(ui, em, changed_list) {
  * 3, uistore.set new ui.
  * @param {Object} ui      the ui object from frontend
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.update_ui$ = function(ui, em, changed_list) {
   prepare_update_ui(ui);
@@ -355,7 +368,7 @@ exports.update_ui$ = function(ui, em, changed_list) {
         check(!_.isUndefined(oldui), "entity/ui", "the ui not exsit before", ui.id);
         B.fs.update_json(oldui.path, ui);
         var ui_obj = _.assign(oldui, ui);
-        return em.ui_store.set$(ui_obj.id, ui_obj, changed_list);        
+        return em.ui_store.set$(ui_obj.id, ui_obj, changed_list);
       });
   });
 };
@@ -366,10 +379,10 @@ exports.update_ui$ = function(ui, em, changed_list) {
  * 2, get the corresponding app_obj from appstore, and makesure it is not builtin
  * 3, remove the ui_id from app.uis, and re-store the app
  * 4, remove the ui json file, and delete the ui from uistore.
- * @param  {id} uiid    
+ * @param  {id} uiid
  * @param  {object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise}            
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.remove_ui$ = function(uiid, em, changed_list) {
   log("remove ui", uiid);
@@ -387,7 +400,7 @@ exports.remove_ui$ = function(uiid, em, changed_list) {
       _.remove(app.uis, function(id) {
         return id === uiid;
       });
-      return em.app_store.set$(app_id, app, changed_list);      
+      return em.app_store.set$(app_id, app, changed_list);
     });
   })
   .then(function() {
@@ -404,11 +417,11 @@ exports.remove_ui$ = function(uiid, em, changed_list) {
  * 3, create "graphs" and "ui" as sub-folders under app dir
  * 4, write app.json.
  * 5, appstore.set$.
- * @param {Object} appjson    app plainobject from frontend 
+ * @param {Object} appjson    app plainobject from frontend
  * @param {String} bundlepath the path of app bundle
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.add_app$ = function(uid, appjson, bundlepath, em, changed_list) {
   log("add app", appjson);
@@ -437,10 +450,10 @@ exports.add_app$ = function(uid, appjson, bundlepath, em, changed_list) {
  * 1, get the old app from appstore, make sure it is exsiting and not bultin
  * 2, get the path from old_app, then re-write the app.json.
  * 3, appstore.set$.
- * @param {Object} appjson    app plainobject from frontend 
+ * @param {Object} appjson    app plainobject from frontend
  * @param {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise} 
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.update_app$ = function(appjson, em, changed_list) {
   prepare_update_app(appjson);
@@ -468,10 +481,10 @@ exports.update_app$ = function(appjson, em, changed_list) {
  * 3, graphstore.batch_delete all its graphs
  * 4, uistore.batch_delete all its uis
  * 5, appstore.delete
- * @param  {id} app_id     
+ * @param  {id} app_id
  * @param  {Object} em
- * @param {Array} changed_list  record of changed items  
- * @return {Promise}            
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.remove_app$ = function(app_id, em, changed_list) {
   log("remove app", app_id);

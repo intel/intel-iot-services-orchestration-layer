@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @module entity/spec
  */
 
+var path = require("path");
 var B = require("hope-base");
 var _ = require("lodash");
 var log = B.log.for_category("entity/spec");
@@ -42,24 +43,21 @@ exports.create_local_bundle = _create_local_bundle;
  * Add a fully described specbundle into stores
  * Fully described means that the specs of the bundle are real objects
  * instead of ids
- * @param {Object} specbundle_  
- * @param {Object} em           
- * @param {Array} changed_list 
+ * @param {Object} specbundle_
+ * @param {Object} em
+ * @param {Array} changed_list
  */
 exports.add_specbundle_with_specs$ = function(specbundle_, em, changed_list) {
   var specbundle = _.cloneDeep(specbundle_);
   log("add_specbundle_with_specs", specbundle);
   B.check(specbundle.id, "entity/specbundle", "Bundle should have id", specbundle);
-  return Promise.resolve()
-  .then(function() {
-    return em.specbundle_store.has$(specbundle.id);
-  })
+  return em.specbundle_store.has$(specbundle.id)
   .then(function(ret) {
     check(!ret, "entity/specbundle", "specbundle already exsit", specbundle.id);
     var specs = specbundle.specs, to_set = [];
     specbundle.specs = [];
     specs.forEach(function(spec) {
-      B.check(_.isObject(spec) && _.isString(spec.id), "entity/specbundle", 
+      B.check(_.isObject(spec) && _.isString(spec.id), "entity/specbundle",
         "spec should be an Object with a id of String", spec, "in specbundle", specbundle);
       specbundle.specs.push(spec.id);
       spec.specbundle = specbundle.id;
@@ -109,18 +107,20 @@ exports.load_from_localbundle$ = function(bundle_path, em, changed_list) {
  * 2, remove the spec id from bundle.specs
  * 3, re-store the bundle
  * 4, delete the spec in store.
- * @param  {String} specid 
+ * @param  {String} specid
  * @param  {Object} em
  * @param {Array} changed_list record of changed items
- * @return {Promise} 
+ * @return {Promise}
  */
 exports.remove_spec_in_store$ = function(specid, em, changed_list) {
+  //
+  // TODO: temporarily disable to delete spec
+  //
+  return Promise.resolve();
+
   log("remove spec", specid);
   var bundle_id;
-  return Promise.resolve()
-  .then(function() {
-    return em.spec_store.get$(specid);
-  })
+  return em.spec_store.get$(specid)
   .then(function(spec) {
     bundle_id = spec.specbundle;
     return em.specbundle_store.get_with_lock$(bundle_id,
@@ -138,7 +138,7 @@ exports.remove_spec_in_store$ = function(specid, em, changed_list) {
 
 
 function _create_local_bundle(json, bundle_path) {
-  check(_.isString(json.id) && _.isString(json.name), "entity/spec", 
+  check(_.isString(json.id) && _.isString(json.name), "entity/spec",
   "spec bundle json must have id and name", json);
   json.specs = [];
   json.path = bundle_path;
@@ -151,6 +151,13 @@ function _create_local_spec(json, spec_path, bundle_path, bundle_id, name) {
   // json.id = json.id || _spec_default_id(bundle_id, _spec_default_name(spec_path, bundle_path));
   json.path = spec_path;
   json.specbundle = bundle_id;
+
+  if (json.config_ui) {
+    var html_path = path.join(path.dirname(spec_path), json.config_ui);
+    if (B.fs.file_exists(html_path)) {
+      json.$config_ui = B.fs.read_file(html_path, "utf8").replace(/\{\{__THIS__SPEC__ID__\}\}/g, json.id);
+    }
+  }
   return json;
 }
 

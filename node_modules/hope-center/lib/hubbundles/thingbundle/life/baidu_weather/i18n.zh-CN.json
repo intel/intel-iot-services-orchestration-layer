@@ -1,0 +1,5 @@
+{
+  "baidu_weather":"百度天气预报",
+  "provide weather base on baidu weather api":"基于百度天气api的天气预报",
+  "builtin/life.html#baidu_weather":"builtin/life.zh-CN.html#百度天气服务"
+}

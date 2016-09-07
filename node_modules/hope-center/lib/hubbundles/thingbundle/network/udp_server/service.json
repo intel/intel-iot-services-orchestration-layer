@@ -1,0 +1,42 @@
+{
+  "name":"udp_server",
+  "description":"create a udp server",
+  "spec":{
+    "id":"__HOPE__/builtin/network/udp_server",
+    "name":"udp_server_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"ip",
+        "type":"string",
+        "required":true,
+        "default":"0.0.0.0"
+      },
+      {
+        "name":"port",
+        "type":"number",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#udp_server"
+}

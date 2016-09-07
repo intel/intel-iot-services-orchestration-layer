@@ -1,0 +1,45 @@
+{
+  "name": "receiveweibo",
+  "description": "receive weibo. You can get all weibo of your friends or just the newest weibo from last receive",
+  "spec":{
+    "id": "__HOPE__/builtin/cloud_service/weibo/receiveweibo",
+    "name": "receiveweibo_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "switch",
+          "type": "boolean",
+          "default": "true"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "data",
+          "type": "string"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "access_token",
+        "type": "string",
+        "required": true
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": true,
+        "default": "all"
+      },
+      {
+        "name": "proxy",
+        "type": "string"
+      }
+    ]
+  },
+  "ui": {
+  },
+  "doc":"builtin/weibo.html#receiveweibo"
+}

@@ -1,0 +1,53 @@
+<h1 id="edit-services-specification">Edit Service's Specification</h1><p>Edit the service's specification, including the inports/outports' config names and types, and their default values.</p><div class="figure"><img src="./doc/pic/example/add_service/edit_http_request_spec.gif" class="viewer" /></div><p>The service's specification in this example</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+  <span class="st">&quot;in&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;ports&quot;</span><span class="op">:</span> [
+      <span class="op">{</span>
+        <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;switch&quot;</span><span class="op">,</span>
+        <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;boolean&quot;</span><span class="op">,</span>
+        <span class="st">&quot;default&quot;</span><span class="op">:</span> <span class="kw">true</span>
+      <span class="op">}</span>
+    ]
+  <span class="op">},</span>
+  <span class="st">&quot;out&quot;</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&quot;ports&quot;</span><span class="op">:</span> [
+      <span class="op">{</span>
+        <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;out&quot;</span><span class="op">,</span>
+        <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span>
+      <span class="op">}</span>
+    ]
+  <span class="op">},</span>
+  <span class="st">&quot;config&quot;</span><span class="op">:</span> [
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;url&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span><span class="op">,</span>
+      <span class="st">&quot;required&quot;</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="op">},</span>
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;method&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span><span class="op">,</span>
+      <span class="st">&quot;default&quot;</span><span class="op">:</span> <span class="st">&quot;get&quot;</span>
+    <span class="op">},</span>
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;headers&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span><span class="op">,</span>
+      <span class="st">&quot;default&quot;</span><span class="op">:</span> <span class="st">&quot;{}&quot;</span><span class="op">,</span>
+      <span class="st">&quot;use_editor&quot;</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="op">},</span>
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;body&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span><span class="op">,</span>
+      <span class="st">&quot;default&quot;</span><span class="op">:</span> <span class="st">&quot;{}&quot;</span><span class="op">,</span>
+      <span class="st">&quot;use_editor&quot;</span><span class="op">:</span> <span class="kw">true</span>
+    <span class="op">},</span>
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;proxy&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;string&quot;</span>
+    <span class="op">},</span>
+    <span class="op">{</span>
+      <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;timeout&quot;</span><span class="op">,</span>
+      <span class="st">&quot;type&quot;</span><span class="op">:</span> <span class="st">&quot;number&quot;</span><span class="op">,</span>
+      <span class="st">&quot;default&quot;</span><span class="op">:</span> <span class="dv">50000</span>
+    <span class="op">}</span>
+  ]<span class="op">,</span>
+  <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;http_request&quot;</span>
+<span class="op">}</span></code></pre></div>

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,6 +32,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var B = require("hope-base");
 var _ = require("lodash");
+var exec = require("child_process").exec;
+var ncp = require("ncp").ncp;
 var log = B.log.for_category("entity/thing");
 var check = B.check;
 var fs = require("fs");
@@ -50,11 +52,11 @@ function prepare_update_thing(thing) {
  * make sure the thing not exist befor.
  * the dir name is thingbundle_path/new_things_by_user/thing.name
  * it will alse change the item "things" in hub_object
- * @param {Object} thing            
- * @param {String} thingbundle_path 
- * @param {Object} em               
- * @param {Array} changed_list 
- * @return {Promise}     
+ * @param {Object} thing
+ * @param {String} thingbundle_path
+ * @param {Object} em
+ * @param {Array} changed_list
+ * @return {Promise}
  */
 exports.add_hope_thing$ = function(thing, thingbundle_path, em, changed_list) {
   log("add hope_thing", thing, thingbundle_path);
@@ -85,11 +87,44 @@ exports.add_hope_thing$ = function(thing, thingbundle_path, em, changed_list) {
 };
 
 /**
+ * install hope_thing into both store and harddisk.
+ * make sure the thing not exist befor.
+ * it will alse change the item "things" in hub_object
+ * @param {String} name
+ * @param {String} thingbundle_path
+ * @return {Promise}
+ */
+exports.install_hope_thing$ = function(name, version, thingbundle_path, hub_id, em, changed_list) {
+  log("install hope thing", name, thingbundle_path);
+  return em.hub_store.get$(hub_id)
+    .then(function(hub) {
+      check(hub.type !== "builtin", "entity/thing", "builtin hub cannot add thing");
+      return hub;
+    })
+    .then(function(hub) {
+      var base_path = B.path.join(thingbundle_path, name);
+      if(!B.fs.dir_exists(base_path)) {
+        fs.mkdirSync(base_path);
+        fs.mkdirSync(base_path+"/node_modules");
+        return new Promise(function(resolve, reject) {
+          exec("npm install " + name + (version ? "@" + version : ""), {cwd:base_path}, function(err, stdout, stderr) {
+            if(err) return reject(err);
+            return resolve({});
+          });
+        });
+      } else {
+        check(false, "entity/thing", "thing already exsit", name);
+      }
+    });
+};
+
+
+/**
  * update the exsiting hope_thing in both store and hardisk
- * @param {Object} thing   json object of thing         
- * @param {Object} em               
+ * @param {Object} thing   json object of thing
+ * @param {Object} em
  * @param {Array} changed_list
- * @return {Promise}   
+ * @return {Promise}
  */
 exports.update_hope_thing$ = function(thing, em, changed_list) {
   prepare_update_thing(thing);
@@ -111,10 +146,10 @@ exports.update_hope_thing$ = function(thing, em, changed_list) {
 /**
  * remove the hope_thing. including thing, service in both store/harddisk
  * and services' own specs in store.
- * @param  {String} thing_id     
- * @param  {Object} em           
- * @param  {Array} changed_list 
- * @return {Promise}              
+ * @param  {String} thing_id
+ * @param  {Object} em
+ * @param  {Array} changed_list
+ * @return {Promise}
  */
 exports.remove_hope_thing$ = function(thing_id, em, changed_list) {
   log("remove hope_thing", thing_id);
@@ -142,7 +177,7 @@ exports.remove_hope_thing$ = function(thing_id, em, changed_list) {
  *                                name:
  *                              }, the specbundle to store the service's own spec.
  *                              if it not exist, create new one
- * @param {Object} em           
+ * @param {Object} em
  * @param {Array} changed_list
  * @return {Promise}
  */
@@ -197,13 +232,133 @@ exports.add_hope_service$ = function(service, specbundle, em, changed_list) {
       }
       service.own_spec = true;
       tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
-      tasks.push(em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list));      
+      tasks.push(em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list));
     }
     service = _create_static_service(service, service_path, service.thing);
     tasks.push(em.service_store.set$(service.id, service, changed_list));
     return Promise.all(tasks);
   });
 };
+
+/**
+ * install hope_service into both store and harddisk.
+ * make sure the service not exist befor.
+ * it will alse change the item "things" in hub_object
+ * @param {String} name
+ * @param {String} thing_id
+ * @param {Object} specbundle
+ *  {
+ *     id:
+ *     name:
+ *  },
+ *  the specbundle to store the service's own spec.if it not exist, create new one
+ * @return {Promise}
+ * resolve:
+ *    {
+ *       list: orgnaized list
+ *       time: {
+ *           last:
+ *           now:
+ *       }
+ *    }
+ */
+exports.install_hope_service$ = function(name, version, thing_id, specbundle, em, changed_list) {
+  log("install hope service", name, thing_id);
+  var thing_path;
+  var thing_object;
+  var specbundle_obj;
+  var service_path;
+  var service_json;
+  var service_json_path;
+  return em.thing_store.get_with_lock$(thing_id, function (thing) {
+    thing_object = thing;
+    check(!_.isUndefined(thing), "entity/service", "the thing not exist before", thing_id);
+    check(!thing.is_builtin, "entity/service", "builtin thing cannot add service", thing_id);
+    check(thing.type === "hope_thing", "entity/service", "the thing is not hope_thing",thing_id);
+    thing_path = thing.path;
+    service_path = B.path.join(thing_path, name);
+  })
+  .then(function () {
+    if (!B.fs.dir_exists(service_path)) {
+      fs.mkdirSync(service_path);
+      fs.mkdirSync(service_path+"/node_modules");
+      return new Promise(function(resolve, reject) {
+        exec("npm install " + name + (version ? "@" + version : ""), {cwd:service_path}, function(err) {
+          if(err) return reject(err);
+          ncp(service_path + "/node_modules/" + name, service_path, function(err) {
+            if(err) return reject(err);
+            resolve({});
+          });
+        });
+      });
+    } else {
+      check(false, "entity/service", "service already exsit", name);
+    }
+  })
+  .then(function() {
+    return em.specbundle_store.get$(specbundle.id);
+  })
+  .then(function(obj) {
+    if (_.isUndefined(obj)) {
+      specbundle_obj = Spec.create_local_bundle(specbundle, "");
+    } else {
+      specbundle_obj = obj;
+    }
+    service_json_path = B.path.join(service_path, "service.json");
+    if(B.fs.file_exists(service_json_path)){
+      try {
+        service_json = B.fs.read_json(service_json_path);
+        delete service_json.id;
+        B.fs.write_json(service_json_path, service_json);
+      } catch(e) {
+        check(false, "entity/service", "read_json", e, service_path);
+      }
+    } else {
+      check(false, "entity/service", "service does not has service.json", name);
+    }
+  })
+  .then(function() {
+    if(_.isObject(service_json.spec)) {
+      check(service_json.spec.id, "entity/service", "service spec must have an id");
+      return em.spec_store.get$(service_json.spec.id);
+    }
+  })
+  .then(function(exist_spec) {
+    var tasks = [];
+    var service_i18n = B.fs.load_i18n_files(service_path);
+    if (_.isObject(service_json.spec)) {
+      var spec = Spec.create_local_spec(service_json.spec, service_json_path,
+        specbundle.path, specbundle.id, service_path);
+      if (specbundle_obj.specs.indexOf(spec.id) < 0) {
+        specbundle_obj.specs.push(spec.id);
+        service_json.own_spec = true;
+        tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
+      } else {
+        var spec_clone = _.cloneDeep(service_json.spec);
+        delete exist_spec['path'];
+        delete spec_clone['path'];
+        if(!_.isEqual(spec_clone, exist_spec)) {
+          check(false, "entity/service", "service spec must have an unique id", spec.id)
+        }
+      }
+      service_json.spec = spec.id;
+      tasks.push(em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list));
+    }
+    var service = _create_static_service(service_json, service_path, thing_id, service_i18n);
+    if(thing_object.services.indexOf(service.id) < 0){
+      thing_object.services.push(service.id);
+    } else {
+      check(true, "entity/service", "service already exists", name);
+    }
+    tasks.push(em.service_store.set$(service.id, service, changed_list));
+    tasks.push(em.thing_store.set$(thing_id, thing_object, changed_list));
+    return Promise.all(tasks);
+  }).catch(function(err) {
+      B.fs.rm(service_path);
+      throw err;
+  });
+};
+
 
 function prepare_update_service(service) {
   delete service.path;
@@ -214,17 +369,17 @@ function prepare_update_service(service) {
 }
 /**
  * update the exsiting hope_service.
- * It will change the service in both store and harddisk, 
+ * It will change the service in both store and harddisk,
  * and may change the spec/specbundle in store if the service.spec is object
  *   1, if the old_service's spec is own_spec, remove it
  *   2, create new spec and add
- * @param  {Object} service      
+ * @param  {Object} service
  * @param  {Object} specbundle   {
  *                                id:
  *                                name:
  *                                }, the specbundle to store the services's own spec.
  *                                if it not exist, create new one
- * @param {Object} em           
+ * @param {Object} em
  * @param {Array} changed_list
  * @return {Promise}
  */
@@ -251,7 +406,7 @@ exports.update_hope_service$ = function(service, specbundle, em, changed_list) {
     }
   })
   .then(function() {
-     return em.specbundle_store.get$(specbundle.id); 
+     return em.specbundle_store.get$(specbundle.id);
   })
   .then(function(obj) {
     if (_.isUndefined(obj)) {
@@ -284,13 +439,14 @@ exports.update_hope_service$ = function(service, specbundle, em, changed_list) {
 /**
  * remove hope service, including the own_spec, service(store/harddisk),
  * and chang the thing.services
- * @param  {String} service_id   
- * @param  {Object} em           
- * @param  {Array} changed_list 
- * @return {Promise}              
+ * @param  {String} service_id
+ * @param  {Object} em
+ * @param  {Array} changed_list
+ * @return {Promise}
  */
 exports.remove_hope_service$ = function(service_id, em, changed_list) {
   log("remove hope service", service_id);
+  var tasks = [];
   var service;
   return em.service_store.get$(service_id)
   .then(function(obj) {
@@ -304,14 +460,14 @@ exports.remove_hope_service$ = function(service_id, em, changed_list) {
       _.remove(thing.services, function(id) {
         return id === service.id;
       });
-      return em.thing_store.set$(thing.id, thing);
+      tasks.push(em.thing_store.set$(thing.id, thing, changed_list));
     });
   })
   .then(function() {
-    var tasks = [];
-    if (service.own_spec) {
-      tasks.push(Spec.remove_spec_in_store$(service.spec, em, changed_list));
-    }
+    // var tasks = [];
+    // if (service.own_spec) {
+    //   tasks.push(Spec.remove_spec_in_store$(service.spec, em, changed_list));
+    // }
     B.fs.rm(service.path);
     tasks.push(em.service_store.delete$(service.id, changed_list));
     return Promise.all(tasks);
@@ -325,8 +481,8 @@ exports.remove_hope_service$ = function(service_id, em, changed_list) {
  * instead of ids. However, the spec of the services should be id instead of
  * objects
  * @param {Object} thing
- * @param {Object} em           
- * @param {Array} changed_list 
+ * @param {Object} em
+ * @param {Array} changed_list
  */
 exports.add_thing_with_services$ = function(thing, em, changed_list) {
   log("add thing with services", thing);
@@ -340,7 +496,7 @@ exports.add_thing_with_services$ = function(thing, em, changed_list) {
     var services = thing.services, to_set = [];
     thing.services = [];
     services.forEach(function(service) {
-      B.check(_.isObject(service) && _.isString(service.id), "entity/thing", 
+      B.check(_.isObject(service) && _.isString(service.id), "entity/thing",
         "service should be an Object with a id of String", service, "in thing", thing);
       B.check(!_.isObject(service.spec), "entity/thing",
         "The spec in the service should already been converted to a id", service,
@@ -384,11 +540,11 @@ exports.add_thing_with_services$ = function(thing, em, changed_list) {
  *                              and path and specs will be set automaticlly.
  * @param  {String} hubid       the hub own the things
  * @param  {object} em
- * @param {Array} changed_list  record of changed items     
- * @return {Promise}   
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.load_static_things$ = function(bundle_path, specbundle, hubid, em, changed_list)
-{ 
+{
   log("load static things", bundle_path, "with specbundle", specbundle);
   var specbundle_obj;
   return Promise.resolve()
@@ -397,7 +553,7 @@ exports.load_static_things$ = function(bundle_path, specbundle, hubid, em, chang
       function(ret) {
         return Promise.resolve()
         .then(function() {
-          if (_.isUndefined(ret)) {  
+          if (_.isUndefined(ret)) {
             specbundle_obj = Spec.create_local_bundle(specbundle, bundle_path);
             log("create new specbundle", specbundle_obj);
           }
@@ -410,7 +566,7 @@ exports.load_static_things$ = function(bundle_path, specbundle, hubid, em, chang
             var thing_path = B.path.dir(p);
             tasks.push(_load_static_thing$(thing_path, specbundle_obj, hubid, em, changed_list));
           });
-          return Promise.all(tasks);          
+          return Promise.all(tasks);
         })
         .then(function() {
           return em.specbundle_store.set$(specbundle_obj.id, specbundle_obj, changed_list);
@@ -463,11 +619,23 @@ function _load_static_thing$(thing_path, specbundle, hubid, em, changed_list) {
         }
         var spec = Spec.create_local_spec(service_json.spec, service_json_path,
           specbundle.path, specbundle.id, B.path.dir_base(service_json_path));
+        if(specbundle.specs.indexOf(spec.id) < 0) {
+          specbundle.specs.push(spec.id);
+          service_json.own_spec = true;
+          tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
+        } else {
+          var spec_clone = _.cloneDeep(service_json.spec);
+          Promise.resolve().then(function() {
+            return em.spec_store.get$(spec.id);
+          }).then(function(exist_spec) {
+            delete exist_spec['path'];
+            delete spec_clone['path'];
+            if(!_.isEqual(spec_clone, exist_spec)) {
+              log.error("center: service spec must have an unique id with path ",p);
+            }
+          });
+        }
         service_json.spec = spec.id;
-        specbundle.specs.push(spec.id);
-        service_json.own_spec = true;
-        tasks.push(em.spec_store.set$(spec.id, spec, changed_list));
-
       }
       var service = _create_static_service(service_json, p, thing.id, service_i18n);
       thing.services.push(service.id);
@@ -512,7 +680,7 @@ function _create_static_thing(json, thing_path, hubid, i18n) {
  * a, the default id is thing_id + path.
  * b, path and thing are set based on the env.
  * c, service is conenct.
- * @param  {Object} json         
+ * @param  {Object} json
  * @param  {Steing} service_path service dir
  * @param  {String} thing_id     the thing which own the service
  * @return {Object}              the service object
@@ -537,11 +705,11 @@ function _create_static_service(json, service_path, thing_id, i18n) {
  * set thing connect status.
  * 1, the thing itself is set
  * 2, the services belong to the thing are set
- * @param  {String}  thingid    
+ * @param  {String}  thingid
  * @param  {Boolean} is_connect the status
  * @param  {Object}  em
- * @param {Array} changed_list  record of changed items          
- * @return {Promise}             
+ * @param {Array} changed_list  record of changed items
+ * @return {Promise}
  */
 exports.set_connect$ = function(thingid, is_connect, em, changed_list) {
   log("set_connect", thingid, is_connect);
@@ -564,7 +732,7 @@ exports.set_connect$ = function(thingid, is_connect, em, changed_list) {
           service.is_connect = is_connect;
           args.push([service_id_array[index], service]);
         });
-        return em.service_store.batch_set$(args, changed_list);        
+        return em.service_store.batch_set$(args, changed_list);
       });
   });
 };
@@ -574,9 +742,9 @@ exports.set_connect$ = function(thingid, is_connect, em, changed_list) {
  * 1, batch delete the services belong to the thing, and their own_specs, (including store and bundle.specs)
  * 2, delete the thing in thing_store.
  * 3, delete the thing from hub.things.
- * @param  {String} thingid 
- * @param  {Object} em  
- * @param {Array} changed_list  record of changed items     
+ * @param  {String} thingid
+ * @param  {Object} em
+ * @param {Array} changed_list  record of changed items
  * @return {Promise}
  */
 exports.remove_thing_in_store$ = function(thingid, em, changed_list) {
@@ -654,8 +822,8 @@ function remove_thing_from_hub$(hub_id, thing_id, hub_store, changed_list) {
 // --------------------------------------
 /**
  * list service's files
- * @param  {String} service_id 
- * @param  {Object} em         
+ * @param  {String} service_id
+ * @param  {Object} em
  * @return {Promise}            resolve: {
  *                                         expected: string array. the expected files, init.js, start.js ...
  *                                         exsiting: string array. all exsiting files in the service folder,
@@ -673,7 +841,8 @@ exports.list_service_files$ = function(service_id, em) {
     "kernel.js",
     "pause.js",
     "stop.js",
-    "destroy.js"]; 
+    "destroy.js",
+    "package.json"];
   return em.service_store.get$(service_id)
   .then(function(service) {
     check(!_.isUndefined(service), "entity/service",
@@ -681,10 +850,14 @@ exports.list_service_files$ = function(service_id, em) {
     var glob = require("glob");
     var basepath = service.path;
     var baselen = basepath.length + 1;
-    var file_array = glob.sync(B.path.join(basepath, "**/*"), {ignore: B.path.join(basepath, "service.json")});
+    var file_array = glob.sync(B.path.join(basepath, "*"));
     var exsiting_files = [];
     file_array.forEach(function(file) {
-      exsiting_files.push(file.slice(baselen));
+      var entry = file.slice(baselen);
+      if (entry === "service.json" || entry === "node_modules") {
+        return;
+      }
+      exsiting_files.push(entry);
     });
     return {
       expected: expected_files,
@@ -695,9 +868,9 @@ exports.list_service_files$ = function(service_id, em) {
 
 /**
  * read the content of the target service file
- * @param  {String} service_id 
+ * @param  {String} service_id
  * @param  {String} file_path  the relative path to serive folder
- * @param  {Object} em       
+ * @param  {Object} em
  * @return {Promise}            resolve: the content of the target file
  */
 exports.read_service_file$ = function(service_id, file_path, em) {
@@ -708,20 +881,19 @@ exports.read_service_file$ = function(service_id, file_path, em) {
       "service not exist in read_service_file", service_id);
     var fullpath = B.path.resolve(service.path, file_path);
     check(_.startsWith(fullpath, service.path), "entity/service", "Invalid path in read_service_file", fullpath);
-    check(B.fs.file_exists(fullpath), "entity/service", "the path not exsit!", fullpath);
     return {
-      content: B.fs.read_file(fullpath, {encoding: "utf8"})
+      content: B.fs.file_exists(fullpath) ? B.fs.read_file(fullpath, {encoding: "utf8"}) : ""
     };
   });
 };
 
 /**
  * write the service file.
- * @param  {String} service_id 
+ * @param  {String} service_id
  * @param  {String} file_path  the relative path to serive folder
- * @param  {String} content    
- * @param  {Object} em         
- * @return {Promise}           
+ * @param  {String} content
+ * @param  {Object} em
+ * @return {Promise}
  */
 exports.write_service_file$ = function(service_id, file_path, content, em) {
   log("write_service_file", service_id, file_path);
@@ -732,15 +904,15 @@ exports.write_service_file$ = function(service_id, file_path, content, em) {
     var fullpath = B.path.resolve(service.path, file_path);
     check(_.startsWith(fullpath, service.path), "entity/service", "Invalid path in write_service_file", fullpath);
     return B.fs.write_file(fullpath, content);
-  }); 
+  });
 };
 
 /**
  * remove the service file
- * @param  {String} service_id 
+ * @param  {String} service_id
  * @param  {String} file_path  the relative path to serive folder
- * @param  {Object} em  
- * @return {Promise}           
+ * @param  {Object} em
+ * @return {Promise}
  */
 exports.remove_service_file$ = function(service_id, file_path, em) {
   log("remove_service_file", service_id, file_path);
@@ -754,9 +926,118 @@ exports.remove_service_file$ = function(service_id, file_path, em) {
   });
 };
 
+function filter() {
+  if (this.type === "Directory" && this.basename === "node_modules") {
+    return false;
+  }
+  return true;
+}
 
+/**
+ * publish the service as npm package
+ * @param  {String} service_id
+ * @param  {String} package_json
+ * @param  {Object} em
+ * @return {Promise}
+ */
+exports.publish_hope_service$ = function(service_id, package_json, settings, em) {
+  log("publish_hope_service", service_id, package_json, settings);
+  return em.service_store.get$(service_id)
+  .then(function(service) {
+    check(!_.isUndefined(service), "entity/service",
+      "service not exist in publish_hope_service", service_id);
+    var fullpath = B.path.resolve(service.path, "package.json");
+    B.fs.write_json(fullpath, package_json);
+
+    var tgz = require('tgz.js');
+    var stream = tgz().createReadStream(service.path, filter);
+    var auth = {
+      token: "eea79b1d-24bc-480e-859c-0713ebbc5f34"
+    };
+    var RegClient = require('npm-registry-client');
+    var RegConfig = {};
+    if (_.isObject(settings)) {
+      if (settings.http) {
+        RegConfig.proxy = RegConfig.proxy || {};
+        RegConfig.proxy.http = settings.http;
+      }
+      if (settings.https) {
+        RegConfig.proxy = RegConfig.proxy || {};
+        RegConfig.proxy.https = settings.https;
+      }
+      if (settings.auth) {
+        auth = settings.auth;
+      }
+    }
+
+    var client = new RegClient(RegConfig);
+    var uri = "https://registry.npmjs.org/npm";
+    var params = {
+      name: package_json.name,
+      version: package_json.version,
+      access: "public",
+      timeout: 1000,
+      auth: auth,
+      metadata: package_json,
+      body: stream
+    };
+
+    return new Promise(function(resolve, reject) {
+      client.publish(uri, params, function(er) {
+        resolve(er ? er : ["OK"]);
+      });
+    });
+  });
+};
+
+
+exports.install_service_package$ = function(service_id, package_name, version, em) {
+  log("install_service_package", service_id, package_name);
+  return em.service_store.get$(service_id)
+  .then(function(service) {
+    check(!_.isUndefined(service), "entity/service",
+      "service not exist in install_service_package", service_id);
+
+    var package_json_path = B.path.join(service.path, "package.json");
+    if (!B.fs.file_exists(package_json_path)) {
+      B.fs.write_json(package_json_path, {
+        "name": service.name,
+        "version": "1.0.0",
+        "description": "iotsol service - " + service.name,
+        "keywords": [
+          "iotsol"
+        ],
+        "author": "",
+        "license": "MIT"
+      });
+    }
+
+    return new Promise(function(resolve, reject) {
+      exec("npm install --save " + package_name + (version ? "@" + version : ""), {cwd:service.path}, function(err) {
+        if(err) return reject(err);
+        resolve({});
+      });
+    });
+  });
+};
+
+exports.uninstall_service_package$ = function(service_id, package_name, em) {
+  log("uninstall_service_package", service_id, package_name);
+  return em.service_store.get$(service_id)
+  .then(function(service) {
+    check(!_.isUndefined(service), "entity/service",
+      "service not exist in uninstall_service_package", service_id);
+
+    return new Promise(function(resolve, reject) {
+      exec("npm uninstall --save " + package_name, {cwd:service.path}, function(err) {
+        if(err) return reject(err);
+        resolve({});
+      });
+    });
+  });
+};
 
 exports.is_service_path = function(service_path) {
-  return B.fs.dir_exists(service_path) && 
+  return B.fs.dir_exists(service_path) &&
   B.fs.file_exists(B.path.join(service_path, "service.json"));
 };

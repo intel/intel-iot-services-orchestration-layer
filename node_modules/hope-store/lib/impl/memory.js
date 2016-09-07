@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -82,7 +82,7 @@ StoreMemory.prototype.set$ = function(key, value) {
     });
     return Promise.resolve(value);
   }
-  return Promise.reject(Store.INVALID_KEY);
+  return Promise.reject(new Error(Store.INVALID_KEY));
 };
 
 
@@ -100,7 +100,7 @@ StoreMemory.prototype.get$ = function(key) {
     return Promise.resolve(_.cloneDeep(this.db[key]));
   }
   else {
-    return Promise.reject(Store.INVALID_KEY);
+    return Promise.reject(new Error(Store.INVALID_KEY));
   }
 };
 
@@ -126,7 +126,7 @@ StoreMemory.prototype.has$ = function(key) {
     return Promise.resolve(ret);
   }
   else {
-    return Promise.reject(Store.INVALID_KEY);
+    return Promise.reject(new Error(Store.INVALID_KEY));
   }
   
 };
@@ -148,7 +148,7 @@ StoreMemory.prototype.delete$ = function(key) {
       });      
       return Promise.resolve(key);
   }
-  return Promise.reject(Store.INVALID_KEY);
+  return Promise.reject(new Error(Store.INVALID_KEY));
  
 };
 

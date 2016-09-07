@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -74,7 +74,7 @@ StoreMongo.prototype.set$ = function(key, value) {
       return result.value.v;
     });
   }
-  return Promise.reject(Store.INVALID_KEY);
+  return Promise.reject(new Error(Store.INVALID_KEY));
 };
 
 
@@ -93,7 +93,7 @@ StoreMongo.prototype.get$ = function(key) {
     });
   }
   else {
-    return Promise.reject(Store.INVALID_KEY);
+    return Promise.reject(new Error(Store.INVALID_KEY));
   }
 };
 
@@ -106,7 +106,7 @@ StoreMongo.prototype.has$ = function(key) {
     });
   }
   else {
-    return Promise.reject(Store.INVALID_KEY);
+    return Promise.reject(new Error(Store.INVALID_KEY));
   } 
 };
 
@@ -118,7 +118,7 @@ StoreMongo.prototype.delete$ = function(key) {
       return key;
     });
   }
-  return Promise.reject(Store.INVALID_KEY);
+  return Promise.reject(new Error(Store.INVALID_KEY));
 };
 
 StoreMongo.prototype.batch_set$ = function(pair_array) {

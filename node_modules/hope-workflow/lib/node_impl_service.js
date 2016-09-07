@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -66,7 +66,7 @@ NodeImplService.prototype._invoke$ = function(hub_id, session_id, action_name, a
       invoked_at: new Date()
     };
     self.em.hub__get$(hub_id).then(function(hub) {
-      return send_invoke_cmd$(self.mnode, hub.mnode, session_id, invocation_id, 
+      return send_invoke_cmd$(self.mnode, hub.mnode, session_id, invocation_id,
         action_name, action_params);
     }).catch(function(err) {
       delete self.invocation_promises[invocation_id];
@@ -78,7 +78,7 @@ NodeImplService.prototype._invoke$ = function(hub_id, session_id, action_name, a
 
 NodeImplService.prototype.init$ = function() {
   var self = this;
-  
+
   // messages from session invocation / send are in format of
   // {
   //   session_id:
@@ -95,7 +95,7 @@ NodeImplService.prototype.init$ = function() {
       return;
     }
     if (msg.is_error) {
-      promise.reject(msg);
+      promise.reject(_.isError(msg) ? msg : new Error(msg));
     } else {
       promise.resolve(msg);
     }

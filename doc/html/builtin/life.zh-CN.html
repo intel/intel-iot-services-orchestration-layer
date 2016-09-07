@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#生活服务">生活服务</a><ul>
+<li><a href="#百度天气服务">　百度天气服务</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">　配置</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#例子">例子</a></li>
+<li><a href="#输出格式">输出格式</a></li>
+</ul></li>
+<li><a href="#rss服务">rss服务</a><ul>
+<li><a href="#描述-1">描述</a></li>
+<li><a href="#配置-1">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出-1">输出</a></li>
+<li><a href="#例子-1">例子</a></li>
+<li><a href="#输出格式-1">输出格式</a></li>
+</ul></li>
+<li><a href="#阿里大于短信服务">阿里大于短信服务</a><ul>
+<li><a href="#描述-2">描述</a></li>
+<li><a href="#配置-2">配置</a></li>
+<li><a href="#输入-1">输入</a></li>
+<li><a href="#输出-2">输出</a></li>
+<li><a href="#例子-2">例子</a></li>
+<li><a href="#输出格式-2">输出格式</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="生活服务">生活服务</h1>
+<h2 id="百度天气服务">　百度天气服务</h2>
+<h3 id="描述">描述</h3>
+<p>百度天气服务通过使用百度天气ＡＰＩ获取天气预报。</p>
+<p>我们的百度天气服务只支持百度天气API支持的城市查询天气。</p>
+<h3 id="配置">　配置</h3>
+<p>‘city’：　字符串，　要查询天气的某个城市名（精确值），　并不是所有的城市都支持。</p>
+<p>‘key’：　字符串，　百度天气API的权限key。</p>
+<h3 id="输出">输出</h3>
+<p>‘out’：　对象，　查询到的天气数据，　格式为对象。</p>
+<h3 id="例子">例子</h3>
+<p>下面这个简单的例子，展示的是，如果明天下雨，则开灯。</p>
+<div class="figure">
+<img src="./pic/baidu_weather.png" />
+
+</div>
+<p>第一个函数的代码是：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="cf">return</span> x[<span class="st">&#39;results&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather_data&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;date&#39;</span>] <span class="op">+</span> x[<span class="st">&#39;results&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather_data&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather&#39;</span>]</code></pre></div>
+<p>第二个函数的代码是：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"> <span class="cf">if</span>(<span class="va">x</span>.<span class="at">indexOf</span>(<span class="st">&quot;雨&quot;</span>) <span class="op">===</span> <span class="op">-</span><span class="dv">1</span>) <span class="op">{</span>
+     <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span>
+ <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>
+     <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span>
+ <span class="op">}</span></code></pre></div>
+<h3 id="输出格式">输出格式</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+    <span class="st">&quot;error&quot;</span><span class="op">:</span> <span class="st">&quot;0&quot;</span><span class="op">,</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="st">&quot;success&quot;</span><span class="op">,</span>
+    <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;2013-07-17&quot;</span><span class="op">,</span>
+    <span class="st">&quot;results&quot;</span><span class="op">:</span> [<span class="op">{</span>
+        <span class="st">&quot;currentCity&quot;</span><span class="op">:</span> <span class="st">&quot;北京市&quot;</span><span class="op">,</span>
+        <span class="st">&quot;pm25&quot;</span><span class="op">:</span> <span class="st">&quot;166&quot;</span><span class="op">,</span>
+        <span class="st">&quot;index&quot;</span><span class="op">:</span> [<span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;穿衣&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;舒适&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;穿衣指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;洗车&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;不宜&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;洗车指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;感冒&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;较易发&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;感冒指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;相对今天出现了较大幅度降温，较易发生感冒，体质较弱的朋友请注意适当防护。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;运动&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;较不宜&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;运动指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;有降水，推荐您在室内进行健身休闲运动；若坚持户外运动，须注意携带雨具并注意避雨防滑。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;弱&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。&quot;</span>
+        <span class="op">}</span>]<span class="op">,</span>
+        <span class="st">&quot;weather_data&quot;</span><span class="op">:</span> [<span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;周三(今天, 实时：24℃)&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;23℃~ 15℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;明天（周四）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/leizhenyu.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/zhongyu.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;雷阵雨转中雨&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;29～22℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;后天（周五）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/yin.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;阴转多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;31～23℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;大后天（周六）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;31～24℃&quot;</span>
+        <span class="op">}</span>]
+    <span class="op">}</span>]
+<span class="op">}</span></code></pre></div>
+<p>想要了解更多关于百度API的信息，　可以访问<a href="http://lbsyun.baidu.com/index.php?title=car/api/weather">baidu weather api</a></p>
+<h2 id="rss服务">rss服务</h2>
+<h3 id="描述-1">描述</h3>
+<p>通过rss服务可以订阅rss消息，　就像一个简单的rss阅读器。 支持ATOM和RSS。</p>
+<h3 id="配置-1">配置</h3>
+<p>‘url’：　字符串，　rss源url。 ‘proxy’：　字符串，　可选参数，　可以配置代理。</p>
+<h3 id="输入">输入</h3>
+<p>‘switch’：　布尔型，　判断是否启动rss服务，　如果值为‘true’，则会发送订阅消息请求，并格式化返回数据。</p>
+<h3 id="输出-1">输出</h3>
+<p>‘out’：　对象，　来自配置参数‘url’网站的Rss内容，　注意：　返回的格式化数据是对象类型，所以不能简单的用‘Text’widget来显示它，而应该用用户自定义的‘f’去显示。</p>
+<h3 id="例子-1">例子</h3>
+<p>下面是一个关于订阅<a href="https://www.zhihu.com">知乎</a>上rss信息的例子。RSS　url　是：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">http<span class="op">:</span><span class="co">//www.zhihu.com/rss</span></code></pre></div>
+<div class="figure">
+<img src="./pic/rss.png" />
+
+</div>
+<p>函数代码是：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"> <span class="cf">return</span> <span class="va">JSON</span>.<span class="at">stringify</span>(x)<span class="op">;</span></code></pre></div>
+<h3 id="输出格式-1">输出格式</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">[
+    <span class="op">{</span> 
+        <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;NBA明星们的专属logo有哪些？&quot;</span><span class="op">,</span>
+        <span class="st">&quot;content&quot;</span><span class="op">:</span> <span class="st">&quot;作为一个Sneaker，很多球星logo都是烂熟于心。&lt;br&gt;有些logo的设计令人叹为观止，在icon设计上的水平，完全不啻于球鞋的工业设计水准...&quot;</span><span class="op">,</span>
+        <span class="st">&quot;published&quot;</span><span class="op">:</span> <span class="st">&quot;2016-08-04T10:30:00.000Z&quot;</span><span class="op">,</span>
+        <span class="st">&quot;link&quot;</span><span class="op">:</span> <span class="st">&#39;http://www.zhihu.com/question/49195604/answer/114767321?utm_campaign=rss&amp;utm_medium=rss&amp;utm_source=rss&amp;utm_content=title&#39;</span> 
+    <span class="op">}</span>
+
+    ...
+]</code></pre></div>
+<h2 id="阿里大于短信服务">阿里大于短信服务</h2>
+<h3 id="描述-2">描述</h3>
+<p>通过阿里大于短信服务可以发送信息。 可以访问<a href="https://api.alidayu.com/doc2/apiDetail?spm=a3142.7791109.1999204071.19.vgOpNe&amp;apiId=25450">阿里大于</a>去了解怎样使用阿里大于和获得配置。</p>
+<h3 id="配置-2">配置</h3>
+<p>‘app_key’：　字符串，与阿里大于的公共参数一样。</p>
+<p>’sms_free_sign_name‘：　字符串，　与阿里大于的请求参数一样。</p>
+<p>’sms_template_code‘：字符串，　与阿里大于的请求参数一样。</p>
+<p>’secret‘：字符串，用于产生签名的app密钥。</p>
+<p>‘proxy’：字符串，可选参数，可以手动配置代码。</p>
+<h3 id="输入-1">输入</h3>
+<p><code>to_number</code>：字符串，　阿里大于短信服务发送信息的目的地。</p>
+<p><code>sms_param</code>：对象或者字符串，　如果它是字符串，本服务便会将它转化为对象，　使用时必须确保sms_param满足在阿里大于上的配置。</p>
+<h3 id="输出-2">输出</h3>
+<p>‘out’：对象，　发送状态，　更多的细节，可以查看‘output Format’。</p>
+<h3 id="例子-2">例子</h3>
+<div class="figure">
+<img src="./pic/alidayu.png" />
+
+</div>
+<h3 id="输出格式-2">输出格式</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">//成功</span>
+<span class="op">{</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+    <span class="st">&quot;detail&quot;</span><span class="op">:</span> <span class="op">{</span>
+        <span class="st">&quot;alibaba_aliqin_fc_sms_num_send_response&quot;</span><span class="op">:{</span>
+            <span class="st">&quot;result&quot;</span><span class="op">:{</span>
+                <span class="st">&quot;err_code&quot;</span><span class="op">:</span><span class="st">&quot;0&quot;</span><span class="op">,</span>
+                <span class="st">&quot;model&quot;</span><span class="op">:</span><span class="st">&quot;134523^4351232&quot;</span><span class="op">,</span>
+                <span class="st">&quot;success&quot;</span><span class="op">:</span><span class="kw">false</span><span class="op">,</span>
+                <span class="st">&quot;msg&quot;</span><span class="op">:</span><span class="st">&quot;成功&quot;</span>
+            <span class="op">}</span>
+        <span class="op">}</span>
+    <span class="op">}</span>
+<span class="op">}</span>
+
+<span class="co">//失败</span>
+<span class="op">{</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+    <span class="st">&quot;detail&quot;</span><span class="op">;</span> <span class="st">&quot;fail reason&quot;</span>
+<span class="op">}</span></code></pre></div>
+</body>
+</html>

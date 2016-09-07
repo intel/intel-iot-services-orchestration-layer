@@ -45,7 +45,8 @@
         "type": "string",
         "required": true
       }
-    ]
+    ],
+    "config_ui": "sendmail.html"
   },
   "ui": {
   },

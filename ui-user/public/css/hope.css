@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -180,7 +180,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-dark .hope-panel-lib-drag {
   text-align: center;
   border: 1px solid #aaa;
-  -webkit-border-radius: 6px;
   border-radius: 6px;
 }
 .hope-theme-dark .hope-panel-lib-code-edit-icon {
@@ -191,7 +190,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .hope-theme-dark .hope-dropdown {
   min-width: 200px;
-  -webkit-border-radius: 16px;
   border-radius: 16px;
   margin: 12px 0 0 0;
 }
@@ -248,7 +246,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   background: #222;
   border: 0;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
 }
 .hope-theme-dark .border-bottom {
@@ -452,7 +449,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-dark .hope-color-palette {
   background-color: #111;
   border: 1px solid #363636;
-  -webkit-border-radius: 6px;
   border-radius: 6px;
 }
 .hope-theme-dark .hope-ftabs-wrapper {
@@ -507,7 +503,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float: left;
   font-size: 16px;
   margin: 10px;
-  -webkit-border-radius: 5px;
   border-radius: 5px;
   border: 2px solid #000;
   background-color: #0bb8da;
@@ -533,7 +528,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 220px;
   margin: 20px 20px 20px 0;
   border: 2px solid #e8e8e8;
-  -webkit-border-radius: 8px;
   border-radius: 8px;
   background-color: #0bb8da;
   color: #fff;
@@ -607,7 +601,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-dark .hope-button {
   display: inline-block;
   border: 2px solid #00baff;
-  -webkit-border-radius: 8px;
   border-radius: 8px;
   width: 120px;
   color: #00baff;
@@ -1478,7 +1471,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-light .hope-panel-lib-drag {
   text-align: center;
   border: 1px solid #aaa;
-  -webkit-border-radius: 6px;
   border-radius: 6px;
 }
 .hope-theme-light .hope-panel-lib-code-edit-icon {
@@ -1489,7 +1481,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .hope-theme-light .hope-dropdown {
   min-width: 200px;
-  -webkit-border-radius: 16px;
   border-radius: 16px;
   margin: 12px 0 0 0;
 }
@@ -1546,7 +1537,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   background: #222;
   border: 0;
-  -webkit-border-radius: 3px;
   border-radius: 3px;
 }
 .hope-theme-light .border-bottom {
@@ -1750,7 +1740,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-light .hope-color-palette {
   background-color: #111;
   border: 1px solid #363636;
-  -webkit-border-radius: 6px;
   border-radius: 6px;
 }
 .hope-theme-light .hope-ftabs-wrapper {
@@ -1805,7 +1794,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   float: left;
   font-size: 16px;
   margin: 10px;
-  -webkit-border-radius: 5px;
   border-radius: 5px;
   border: 2px solid #000;
   background-color: #0bb8da;
@@ -1831,7 +1819,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 220px;
   margin: 20px 20px 20px 0;
   border: 2px solid #e8e8e8;
-  -webkit-border-radius: 8px;
   border-radius: 8px;
   background-color: #0bb8da;
   color: #fff;
@@ -1905,7 +1892,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .hope-theme-light .hope-button {
   display: inline-block;
   border: 2px solid #00baff;
-  -webkit-border-radius: 8px;
   border-radius: 8px;
   width: 120px;
   color: #00baff;

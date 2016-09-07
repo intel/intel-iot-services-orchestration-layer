@@ -1,0 +1,118 @@
+{
+  "_args": [
+    [
+      {
+        "name": "node-red-node-twitter",
+        "raw": "node-red-node-twitter@0.1.*",
+        "rawSpec": "0.1.*",
+        "scope": null,
+        "spec": ">=0.1.0 <0.2.0",
+        "type": "range"
+      },
+      "C:\\Users\\kanghuay\\git\\node-red"
+    ]
+  ],
+  "_from": "node-red-node-twitter@>=0.1.0 <0.2.0",
+  "_id": "node-red-node-twitter@0.1.6",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/node-red-node-twitter",
+  "_nodeVersion": "4.3.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/node-red-node-twitter-0.1.6.tgz_1456924979651_0.3360676516313106"
+  },
+  "_npmUser": {
+    "email": "ceejay@vnet.ibm.com",
+    "name": "dceejay"
+  },
+  "_npmVersion": "2.14.12",
+  "_phantomChildren": {
+    "aws-sign2": "0.6.0",
+    "caseless": "0.11.0",
+    "combined-stream": "1.0.5",
+    "core-util-is": "1.0.2",
+    "extend": "3.0.0",
+    "forever-agent": "0.6.1",
+    "form-data": "1.0.0-rc4",
+    "har-validator": "2.0.6",
+    "hawk": "3.1.3",
+    "inherits": "2.0.1",
+    "is-typedarray": "1.0.0",
+    "isstream": "0.1.2",
+    "json-stringify-safe": "5.0.1",
+    "jsprim": "1.3.0",
+    "mime-types": "2.1.11",
+    "node-uuid": "1.4.7",
+    "oauth-sign": "0.8.2",
+    "process-nextick-args": "1.0.7",
+    "sshpk": "1.8.3",
+    "string_decoder": "0.10.31",
+    "stringstream": "0.0.5",
+    "tough-cookie": "2.2.2",
+    "tunnel-agent": "0.4.3",
+    "util-deprecate": "1.0.2"
+  },
+  "_requested": {
+    "name": "node-red-node-twitter",
+    "raw": "node-red-node-twitter@0.1.*",
+    "rawSpec": "0.1.*",
+    "scope": null,
+    "spec": ">=0.1.0 <0.2.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/node-red-node-twitter/-/node-red-node-twitter-0.1.6.tgz",
+  "_shasum": "ee1c65767db0325f316987bf155543864995e618",
+  "_shrinkwrap": null,
+  "_spec": "node-red-node-twitter@0.1.*",
+  "_where": "C:\\Users\\kanghuay\\git\\node-red",
+  "author": {
+    "email": "ceejay@vnet.ibm.com",
+    "name": "Dave Conway-Jones",
+    "url": "http://nodered.org"
+  },
+  "dependencies": {
+    "oauth": "0.9.14",
+    "request": "2.67.0",
+    "twitter-ng": "0.6.2"
+  },
+  "description": "A Node-RED node to talk to Twitter",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "ee1c65767db0325f316987bf155543864995e618",
+    "tarball": "https://registry.npmjs.org/node-red-node-twitter/-/node-red-node-twitter-0.1.6.tgz"
+  },
+  "keywords": [
+    "node-red",
+    "twitter"
+  ],
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "email": "ceejay@vnet.ibm.com",
+      "name": "dceejay"
+    },
+    {
+      "email": "nick.oleary@gmail.com",
+      "name": "knolleary"
+    }
+  ],
+  "name": "node-red-node-twitter",
+  "node-red": {
+    "nodes": {
+      "twitter": "27-twitter.js"
+    }
+  },
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-red/node-red-nodes/tree/master/social/twitter"
+  },
+  "scripts": {},
+  "version": "0.1.6"
+}

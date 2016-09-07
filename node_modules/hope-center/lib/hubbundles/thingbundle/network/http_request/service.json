@@ -1,0 +1,62 @@
+{
+  "name":"http_request",
+  "description":"send http request",
+  "spec":{
+    "id":"__HOPE__/builtin/network/http_request",
+    "name":"http_request_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"url",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"method",
+        "type":"string",
+        "default":"get"
+      },
+      {
+        "name":"headers",
+        "type":"string",
+        "default":"{}",
+        "use_editor": true
+      },
+      {
+        "name":"body",
+        "type":"string",
+        "default":"{}",
+        "use_editor": true
+      },
+      {
+        "name":"proxy",
+        "type":"string"
+      },
+      {
+        "name":"timeout",
+        "type":"number",
+        "default":50000
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#http_request"
+}

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -91,11 +91,26 @@ var to_string = require("./lib/to_string");
 exports.to_string = to_string.to_string;
 exports.to_short_string = to_string.to_short_string;
 
+exports.err = require("./lib/err");
 
 var check = require("./lib/check");
 exports.check = check.check;
 exports.check_warn = check.check_warn;
 exports.assert = check.assert;
+exports.set_exception_hook = check.set_exception_hook;
+
+exports.get_raw_stack = function(e) {
+  var lines = e.stack.toString().split("\n");
+  var stk = [];
+  for (var i = lines.length - 1; i >= 0; i--) {
+    var s = lines[i];
+    if (s.substr(0, 7) !== "    at ") {
+      break;
+    }
+    stk.unshift(s.substr(7));
+  }
+  return stk;
+};
 
 
 var uuid = require("uuid");

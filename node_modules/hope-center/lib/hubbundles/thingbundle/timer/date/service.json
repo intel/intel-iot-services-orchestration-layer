@@ -1,0 +1,28 @@
+{
+  "name": "date",
+  "description": "get current date object",
+  "spec":{
+    "id": "__HOPE__/builtin/timer/date",
+    "name": "date_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "switch",
+          "type": "boolean"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "ui": {
+
+  },
+  "doc":"builtin/timer.html#date"
+}

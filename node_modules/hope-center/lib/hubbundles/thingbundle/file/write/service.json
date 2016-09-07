@@ -1,0 +1,41 @@
+{
+  "name":"file_write",
+  "description":"write file",
+  "spec":{
+    "id":"__HOPE__/builtin/file/file_write",
+    "name":"file_write_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"input",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"boolean"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"path",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"mod",
+        "type":"string",
+        "default":"append",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/file.html#file_write"
+}

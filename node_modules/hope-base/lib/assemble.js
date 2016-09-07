@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -127,7 +127,7 @@ function topological_sort(o) {
   var L = [],   // result
       S = [],   // nodes with no incoming edges
       N = {},   // all nodes, and it records to (this as target) and from (this as source)
-      count;    // number of edges
+      count = 0;// number of edges
   // setup the n first
   _.forOwn(o, function(v, k) {
     if (k[0] === "$") {

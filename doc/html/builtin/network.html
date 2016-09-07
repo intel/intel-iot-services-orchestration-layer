@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#network">network</a><ul>
+<li><a href="#http_request">http_request</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#output-format">Output Format</a></li>
+</ul></li>
+<li><a href="#tcp_request">tcp_request</a><ul>
+<li><a href="#description-1">Description</a></li>
+<li><a href="#config-1">Config</a></li>
+<li><a href="#inport-1">Inport</a></li>
+<li><a href="#outport-1">Outport</a></li>
+<li><a href="#example-1">Example</a></li>
+</ul></li>
+<li><a href="#tcp_server">tcp_server</a><ul>
+<li><a href="#description-2">Description</a></li>
+<li><a href="#config-2">Config</a></li>
+<li><a href="#inport-2">Inport</a></li>
+<li><a href="#example-2">Example</a></li>
+</ul></li>
+<li><a href="#udp_request">udp_request</a><ul>
+<li><a href="#description-3">Description</a></li>
+<li><a href="#config-3">Config</a></li>
+<li><a href="#inport-3">Inport</a></li>
+<li><a href="#outport-2">Outport</a></li>
+<li><a href="#example-3">Example</a></li>
+</ul></li>
+<li><a href="#udp_server">udp_server</a><ul>
+<li><a href="#description-4">Description</a></li>
+<li><a href="#config-4">Config</a></li>
+<li><a href="#inport-4">Inport</a></li>
+<li><a href="#example-4">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="network">network</h1>
+<h2 id="http_request">http_request</h2>
+<h3 id="description">Description</h3>
+<p>This servide provides ability for send http request.</p>
+<p>It is implemented by <a href="https://www.npmjs.com/package/request">Request</a>.</p>
+<h3 id="config">Config</h3>
+<p><code>url</code>: String. Http request url. If the url does not start with <em>http://</em>, it will be added with <em>http://</em>.</p>
+<p><code>method</code>: String. Request method. Now only <code>get</code>,<code>post</code>,<code>put</code>,delete<code>,</code>patch` are supported.</p>
+<p><code>headers</code>: Object. Request headers. Default is <em>{}</em>.</p>
+<p><code>body</code>: Object. Request body. Default is <em>{}</em>.</p>
+<p><code>proxy</code>: String. Optional. You can set the proxy manually.</p>
+<p><code>timeout</code>: Number. Request timeout. Default is <em>50000</em>(50s).</p>
+<h3 id="inport">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of http request. If it's true, this service will send request and format response data.</p>
+<h3 id="outport">Outport</h3>
+<p><code>out</code>: String. The http reuquest result including <code>statusCode</code>,<code>headers</code>,<code>body</code></p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/http_request.png" />
+
+</div>
+<p>In this example, we send request to http://www.baidu.com and write the response body to file.</p>
+<p></br></p>
+<h3 id="output-format">Output Format</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+    <span class="st">&quot;statusCode&quot;</span><span class="op">:</span> <span class="dv">200</span><span class="op">,</span>
+    <span class="st">&quot;headers&quot;</span><span class="op">:</span> <span class="st">&quot;response.headers&quot;</span><span class="op">,</span>
+    <span class="st">&quot;body&quot;</span><span class="op">:</span> <span class="st">&quot;response.body&quot;</span>
+<span class="op">}</span></code></pre></div>
+<h2 id="tcp_request">tcp_request</h2>
+<h3 id="description-1">Description</h3>
+<p>This servide provides ability for send tcp request.</p>
+<h3 id="config-1">Config</h3>
+<p><code>ip</code>: String. Server ip.</p>
+<p><code>port</code>: Number. Server port.</p>
+<h3 id="inport-1">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of tcp request. If it's true, this service will send request and format response data.</p>
+<p><code>data</code>: String. The message send to server.</p>
+<h3 id="outport-1">Outport</h3>
+<p><code>out</code>: String. Data response from server.</p>
+<h3 id="example-1">Example</h3>
+<div class="figure">
+<img src="./pic/tcp_request.png" />
+
+</div>
+<p>In this example, every 3 second, we send request to 127.0.0.1:9999 and show response data with <code>Text</code> widget.</p>
+<p></br></p>
+<h2 id="tcp_server">tcp_server</h2>
+<h3 id="description-2">Description</h3>
+<p>This servide provides ability for create a simple tcp server.</p>
+<h3 id="config-2">Config</h3>
+<p><code>ip</code>: String. Listening ip. Default is <em>0.0.0.0</em></p>
+<p><code>port</code>: Number. Listening port.</p>
+<p><code>f(data)</code>: Function. Deal with the data from cilent.</p>
+<h3 id="inport-2">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of tcp server. If it's true, this server will be alive otherwise the server will be closed.</p>
+<h3 id="example-2">Example</h3>
+<div class="figure">
+<img src="./pic/tcp_server.png" />
+
+</div>
+<p>In this example, we create a tcp server listening on 0.0.0.0:9999. When cilent send data, we simply append &quot;hello&quot; to it.</p>
+<p>function code</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="cf">return</span> <span class="va">data</span>.<span class="at">toString</span>() <span class="op">+</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></code></pre></div>
+<p></br></p>
+<h2 id="udp_request">udp_request</h2>
+<h3 id="description-3">Description</h3>
+<p>This servide provides ability for send udp request.</p>
+<h3 id="config-3">Config</h3>
+<p><code>ip</code>: String. Server ip.</p>
+<p><code>port</code>: Number. Server port.</p>
+<h3 id="inport-3">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of udp request. If it's true, this service will send request and format response data.</p>
+<p><code>data</code>: String. The message send to server.</p>
+<h3 id="outport-2">Outport</h3>
+<p><code>out</code>: String. Data response from server.</p>
+<h3 id="example-3">Example</h3>
+<p>See tcp request example.</p>
+<p></br></p>
+<h2 id="udp_server">udp_server</h2>
+<h3 id="description-4">Description</h3>
+<p>This servide provides ability for create a simple udp server.</p>
+<h3 id="config-4">Config</h3>
+<p><code>ip</code>: String. Listening ip. Default is <em>0.0.0.0</em></p>
+<p><code>port</code>: Number. Listening port.</p>
+<p><code>f(data)</code>: Function. Deal with the data from cilent.</p>
+<h3 id="inport-4">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of udp server. If it's true, this server will be alive otherwise the server will be closed.</p>
+<h3 id="example-4">Example</h3>
+<p>See tcp server example.</p>
+</body>
+</html>

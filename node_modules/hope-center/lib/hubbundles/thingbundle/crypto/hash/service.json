@@ -1,0 +1,36 @@
+{
+  "name":"hash",
+  "description":"hash function",
+  "spec":{
+    "id":"__HOPE__/builtin/crypto/hash",
+    "name":"hash_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"input",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"method",
+        "type":"string",
+        "default":"md5",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/crypto.html#hash"
+}

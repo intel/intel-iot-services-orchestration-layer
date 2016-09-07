@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -80,7 +80,7 @@ SessionStore.prototype.set$ = function(key, value, list) {
     return this._set$(key, value, list);
   }
   else {
-    return Promise.reject(CommonStore.CHECK_FAIL);
+    return Promise.reject(new Error(CommonStore.CHECK_FAIL));
   }
 };
 

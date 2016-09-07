@@ -1,0 +1,96 @@
+{
+  "_args": [
+    [
+      {
+        "name": "node-red-node-email",
+        "raw": "node-red-node-email@0.1.*",
+        "rawSpec": "0.1.*",
+        "scope": null,
+        "spec": ">=0.1.0 <0.2.0",
+        "type": "range"
+      },
+      "C:\\Users\\kanghuay\\git\\node-red"
+    ]
+  ],
+  "_from": "node-red-node-email@>=0.1.0 <0.2.0",
+  "_id": "node-red-node-email@0.1.10",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/node-red-node-email",
+  "_nodeVersion": "4.4.6",
+  "_npmOperationalInternal": {
+    "host": "packages-16-east.internal.npmjs.com",
+    "tmp": "tmp/node-red-node-email-0.1.10.tgz_1467025371824_0.9608515312429518"
+  },
+  "_npmUser": {
+    "email": "ceejay@vnet.ibm.com",
+    "name": "dceejay"
+  },
+  "_npmVersion": "2.15.5",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "node-red-node-email",
+    "raw": "node-red-node-email@0.1.*",
+    "rawSpec": "0.1.*",
+    "scope": null,
+    "spec": ">=0.1.0 <0.2.0",
+    "type": "range"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/node-red-node-email/-/node-red-node-email-0.1.10.tgz",
+  "_shasum": "f207c78a65979888b5a4d26ee25d8ea88b402646",
+  "_shrinkwrap": null,
+  "_spec": "node-red-node-email@0.1.*",
+  "_where": "C:\\Users\\kanghuay\\git\\node-red",
+  "author": {
+    "email": "ceejay@vnet.ibm.com",
+    "name": "Dave Conway-Jones",
+    "url": "http://nodered.org"
+  },
+  "dependencies": {
+    "imap": "^0.8.17",
+    "mailparser": "^0.6.0",
+    "nodemailer": "^1.11.0",
+    "poplib": "^0.1.7"
+  },
+  "description": "Node-RED nodes to send and receive simple emails",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "f207c78a65979888b5a4d26ee25d8ea88b402646",
+    "tarball": "https://registry.npmjs.org/node-red-node-email/-/node-red-node-email-0.1.10.tgz"
+  },
+  "keywords": [
+    "node-red",
+    "email",
+    "gmail",
+    "imap"
+  ],
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "email": "ceejay@vnet.ibm.com",
+      "name": "dceejay"
+    },
+    {
+      "email": "nick.oleary@gmail.com",
+      "name": "knolleary"
+    }
+  ],
+  "name": "node-red-node-email",
+  "node-red": {
+    "nodes": {
+      "email": "61-email.js"
+    }
+  },
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-red/node-red-nodes/tree/master/social/email"
+  },
+  "scripts": {},
+  "version": "0.1.10"
+}

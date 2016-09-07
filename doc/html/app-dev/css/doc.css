@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -68,9 +68,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 40px 0 20px 0;
 }
 .doc-theme-dark .doc-menu {
-  white-space: nowrap;
   vertical-align: baseline;
-  -webkit-border-radius: 0.25em;
   border-radius: 0.25em;
 }
 .doc-theme-dark .doc-menu.doc-book.active {
@@ -244,9 +242,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 40px 0 20px 0;
 }
 .doc-theme-blue .doc-menu {
-  white-space: nowrap;
   vertical-align: baseline;
-  -webkit-border-radius: 0.25em;
   border-radius: 0.25em;
 }
 .doc-theme-blue .doc-menu.doc-book.active {

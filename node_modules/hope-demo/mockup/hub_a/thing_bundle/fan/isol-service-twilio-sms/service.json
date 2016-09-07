@@ -1,0 +1,53 @@
+{
+  "name":"twilio_sms",
+  "description":"provide sms service based on twilio",
+  "spec":{
+    "id":"__HOPE__/builtin/notifications/twilio_sms",
+    "name":"twilio_sms_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"to_number",
+          "type":"string"
+        },
+        {
+          "name":"body",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"account_sid",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"auth_token",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"from_number",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"proxy",
+        "type":"string"
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/notifications.html#twilio_sms"
+}

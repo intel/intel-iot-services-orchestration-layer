@@ -1,0 +1,46 @@
+{
+  "name":"udp_request",
+  "description":"send udp request",
+  "spec":{
+    "id":"__HOPE__/builtin/network/udp_request",
+    "name":"udp_request_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        },
+        {
+          "name":"data",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"ip",
+        "type":"string",
+        "required":true,
+        "default":"127.0.0.1"
+      },
+      {
+        "name":"port",
+        "type":"number",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#udp_request"
+}

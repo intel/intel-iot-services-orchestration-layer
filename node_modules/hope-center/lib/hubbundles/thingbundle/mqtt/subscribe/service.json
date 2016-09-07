@@ -1,0 +1,33 @@
+{
+  "name":"mqtt_subscrible",
+  "description":"listen on the message from the broker",
+  "spec": {
+    "id": "__HOPE__/builtin/mqtt/subscribe",
+    "in": {
+      "ports": [
+        {
+        "name": "on",
+        "type": "boolean"
+        }
+      ]
+    },
+    "out": {
+      "ports": [{
+        "name": "message",
+        "type": "string"
+      }]
+    },
+    "config": [
+      {
+        "name": "server",
+        "required": true
+      }, {
+        "name": "topic",
+        "type": "string",
+        "required": true
+      }
+    ]
+  },
+  "ui":{},
+  "doc":"builtin/mqtt_service.html#mqtt_subscrible"
+}

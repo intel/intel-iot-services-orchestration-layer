@@ -1,0 +1,71 @@
+{
+  "_args": [
+    [
+      "isol-service-twilio-sms",
+      "C:\\Users\\jieliang\\code\\ssg_iotwebruntime-js-iot\\demo\\mockup\\hub_a\\thing_bundle\\fan\\isol-service-twilio-sms"
+    ]
+  ],
+  "_from": "isol-service-twilio-sms@latest",
+  "_id": "isol-service-twilio-sms@1.0.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/isol-service-twilio-sms",
+  "_nodeVersion": "6.3.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/isol-service-twilio-sms-1.0.0.tgz_1470641059761_0.3372769756242633"
+  },
+  "_npmUser": {
+    "email": "jerry.liangj@qq.com",
+    "name": "liangj"
+  },
+  "_npmVersion": "3.10.6",
+  "_phantomChildren": {},
+  "_requested": {
+    "name": "isol-service-twilio-sms",
+    "raw": "isol-service-twilio-sms",
+    "rawSpec": "",
+    "scope": null,
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://registry.npmjs.org/isol-service-twilio-sms/-/isol-service-twilio-sms-1.0.0.tgz",
+  "_shasum": "ef0a247eb4dc97c3d538b4bc3add6567a873dfbc",
+  "_shrinkwrap": null,
+  "_spec": "isol-service-twilio-sms",
+  "_where": "C:\\Users\\jieliang\\code\\ssg_iotwebruntime-js-iot\\demo\\mockup\\hub_a\\thing_bundle\\fan\\isol-service-twilio-sms",
+  "author": {
+    "name": "liangj"
+  },
+  "dependencies": {
+    "request": "^2.72.0"
+  },
+  "description": "service of isol for send sms by twilio platform. ",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "ef0a247eb4dc97c3d538b4bc3add6567a873dfbc",
+    "tarball": "https://registry.npmjs.org/isol-service-twilio-sms/-/isol-service-twilio-sms-1.0.0.tgz"
+  },
+  "keywords": [
+    "isol"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "email": "jerry.liangj@qq.com",
+      "name": "liangj"
+    }
+  ],
+  "name": "isol-service-twilio-sms",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}

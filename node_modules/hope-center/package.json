@@ -11,7 +11,7 @@
   "name": "hope-center",
   "homepage": "",
   "description": "Orchestration Center of IoT Services Orchestration Layer",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": ""
@@ -30,14 +30,36 @@
   },
   "scripts": {},
   "dependencies": {
+    "body-parser": "1.15.0",
+    "cheerio": "0.19.0",
     "commander": "^2.8.1",
+    "cookie-parser": "~1.4.1",
+    "cors": "2.7.1",
+    "cron": "1.1.0",
     "eventemitter3": "^1.1.1",
+    "follow-redirects": "0.0.7",
+    "fs-extra": "0.26.7",
+    "fs.notify": "0.0.4",
+    "is-utf8": "0.2.1",
     "lodash": "^4.6.1",
+    "media-typer": "0.3.0",
+    "mqtt": "1.7.4",
+    "mustache": "2.2.1",
+    "node-weibo-twitter": "^0.0.2",
     "nodemailer": "^2.0.0",
-    "node-weibo-twitter":"^0.0.2"
+    "on-headers": "1.0.1",
+    "raw-body": "2.1.6",
+    "request": "^2.72.0",
+    "sax": "^1.2.1",
+    "semver": "^5.3.0",
+    "sentiment": "1.0.6",
+    "serialport": "2.0.*",
+    "ws": "0.8.1",
+    "xml2js": "0.4.16"
   },
   "devDependencies": {
     "chai": "^3.0.0",
-    "chai-as-promised": "^5.1.0"
+    "chai-as-promised": "^5.1.0",
+    "semver": "^5.3.0"
   }
 }

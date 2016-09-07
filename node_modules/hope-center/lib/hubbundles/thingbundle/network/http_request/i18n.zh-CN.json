@@ -1,0 +1,5 @@
+{
+  "http_request":"http请求",
+  "send http request":"发送http请求,并指定方法",
+  "builtin/network.html#http_request":"builtin/network.zh-CN.html#http请求"
+}

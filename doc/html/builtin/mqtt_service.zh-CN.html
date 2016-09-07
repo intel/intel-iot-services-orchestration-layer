@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#mqtt-服务">mqtt 服务</a><ul>
+<li><a href="#mqtt发布消息服务">mqtt发布消息服务</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#例子">例子</a></li>
+</ul></li>
+<li><a href="#mqtt订阅服务">mqtt订阅服务</a><ul>
+<li><a href="#描述-1">描述</a></li>
+<li><a href="#配置-1">配置</a></li>
+<li><a href="#输入-1">输入</a></li>
+<li><a href="#输出-1">　输出</a></li>
+<li><a href="#例子-1">　例子</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="mqtt-服务">mqtt 服务</h1>
+<h2 id="mqtt发布消息服务">mqtt发布消息服务</h2>
+<h3 id="描述">描述</h3>
+<p>提供向mqtt服务器发布特定主题消息的服务</p>
+<p>必须配置服务器url，由‘ip’和’port‘组成，可以以’mqtt://‘开头，也可以不加这个字符串，因为此服务会自动给url加上此字符串。</p>
+<h3 id="配置">配置</h3>
+<p>’server‘：字符串，mqtt服务器url。</p>
+<p>’topic‘：字符串，发布的主题。</p>
+<h3 id="输入">输入</h3>
+<p>’message‘：字符串，将被发布的消息。</p>
+<h3 id="输出">输出</h3>
+<p>’status‘：布尔型，值为true则表示消息发布成功，否则发布失败。</p>
+<h3 id="例子">例子</h3>
+<div class="figure">
+<img src="./pic/mqtt_publish.png" />
+
+</div>
+<p>在这个例子中，每隔2秒钟，此服务就会在0到100之间随机产生一个数字，然后发布到mqtt服务器上。最后会在’text‘widget中显示这个结果。</p>
+<h2 id="mqtt订阅服务">mqtt订阅服务</h2>
+<h3 id="描述-1">描述</h3>
+<p>提供从mqtt服务器上订阅特定主题的消息。</p>
+<p>必须配置服务器url，包含’ip‘和’port‘，可以以’mqtt://‘开头，也可以不加这个字符串，因为此服务会自动给url加上这个字符串。</p>
+<h3 id="配置-1">配置</h3>
+<p>’server‘：字符串， mqtt服务器url。</p>
+<p>’topic‘：字符串，订阅主题。</p>
+<h3 id="输入-1">输入</h3>
+<p>’on’：布尔型， 如果值为true，则向mqtt服务器发送请求。</p>
+<h3 id="输出-1">　输出</h3>
+<p>‘message’：字符串，从mqtt服务器收到的订阅消息。</p>
+<h3 id="例子-1">　例子</h3>
+<div class="figure">
+<img src="./pic/mqtt_subscribe.png" />
+
+</div>
+<p>在这个例子中，每隔１秒钟，此服务度会向ｍｑｔｔ服务器发送订阅请求，然后特定主题的消息，最后在‘Text’widget中显示。</p>
+</body>
+</html>

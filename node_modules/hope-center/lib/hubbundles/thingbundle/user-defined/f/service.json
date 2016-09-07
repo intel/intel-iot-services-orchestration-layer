@@ -15,7 +15,8 @@
     },
     "config": [{
         "name": "f(x)",
-        "type": "string"
+        "type": "string",
+        "use_editor": true
       }]
   },
   "doc":"builtin/user_defined.html#f"

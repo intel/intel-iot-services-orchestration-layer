@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export no_proxy=127.0.0.1,localhost,${no_proxy}
+export NO_PROXY=${no_proxy}
 
 if [ "x$1" == "x" ]; then
 

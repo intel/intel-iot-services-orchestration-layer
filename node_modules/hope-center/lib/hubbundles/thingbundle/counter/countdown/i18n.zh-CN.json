@@ -1,5 +1,5 @@
 {
   "countdown":"倒数",
-  "builtin/counter.html#count":"builtin/counter.zh-CN.html#倒数",
+  "builtin/counter.html#countdown":"builtin/counter.zh-CN.html#倒数",
   "when triggered, countdown the orig value. when reset is true, reset the countdowner accoring to the orig value. when it countdown to zero, hit = true":"每当触发时，计数减1.如果reset为true，清空原有数据重新计数。计数为0时，hit输出true"
 }

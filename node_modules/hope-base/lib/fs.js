@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -38,8 +38,8 @@ var check = require("./check").check;
 var glob = require("glob");
 /**
  * Whether a path exists
- * @param  {String} p 
- * @return {Boolean}   
+ * @param  {String} p
+ * @return {Boolean}
  */
 exports.path_exists = function(p) {
   return fs.existsSync(p);
@@ -47,8 +47,8 @@ exports.path_exists = function(p) {
 
 /**
  * Whether a file at given path exists
- * @param  {String} p 
- * @return {Boolean}   
+ * @param  {String} p
+ * @return {Boolean}
  */
 exports.file_exists = function(p) {
   return fs.existsSync(p) && fs.statSync(p).isFile();
@@ -56,8 +56,8 @@ exports.file_exists = function(p) {
 
 /**
  * Whether a dir at given path exists
- * @param  {String} p 
- * @return {Boolean}   
+ * @param  {String} p
+ * @return {Boolean}
  */
 exports.dir_exists = function(p) {
   return fs.existsSync(p) && fs.statSync(p).isDirectory();
@@ -66,7 +66,7 @@ exports.dir_exists = function(p) {
 
 /**
  * mkdirp
- * @param  {String} dir 
+ * @param  {String} dir
  */
 exports.mkdirp = function(dir) {
   if (!exports.dir_exists(dir)) {
@@ -79,7 +79,7 @@ exports.mkdirp = function(dir) {
 
 /**
  * Ensure the dir for the path (intend to be a file) are created
- * @param  {String} p 
+ * @param  {String} p
  */
 exports.mkdirp_for_file = function(p) {
   exports.mkdirp(path.dir(p));
@@ -129,7 +129,7 @@ FSItemList.prototype.filter = function(f) {
  *   - files(ext): leave files in the list, may filter with ext
  *   - dirs()    : leave directories in the list
  *   - filter(cb): filter the list with cb(name, path, base, ext, is_file)
- * @param  {String} p 
+ * @param  {String} p
  * @return {Object} The chainable object
  */
 exports.ls = function(p) {
@@ -155,10 +155,16 @@ exports.ls = function(p) {
 /**
  * read json file
  * @param  {String} filename full path of the json file
- * @return {Object}          plain_object
+ * @return {Object}          plain_object or undefiend
  */
 exports.read_json = function(filename) {
-  return fse.readJsonSync(filename);
+  var ret;
+  try {
+    ret = fse.readJsonSync(filename);
+  } catch(e) {
+    return undefined;
+  }
+  return ret;
 };
 
 
@@ -176,9 +182,9 @@ exports.read_json_with_comments = function(filename) {
 
 
 /**
- * write plain_object to a json file 
+ * write plain_object to a json file
  * @param  {String} filename full path of the json file
- * @param  {Object} plain_obj 
+ * @param  {Object} plain_obj
  */
 exports.write_json = function(filename, plain_obj) {
   return fse.outputJsonSync(filename, plain_obj);
@@ -220,6 +226,18 @@ exports.rm = function(dir) {
  */
 exports.find_files = function(dir, filename) {
   return fsf.from(dir).findFiles(filename);
+};
+
+/**
+ * find files in dir (not recursive search)
+ * @param  {string} dir      path of the dir
+ * @param  {string} filename the filename or some pattern
+ *                           "abc.js", "*.js", "/<regexp>.js"
+ *                           note that the regexp should be enclosed by <>
+ * @return {Array}          array of file paths
+ */
+exports.find_files_no_recur = function(dir, filename) {
+  return fsf.in(dir).findFiles(filename);
 };
 
 /**

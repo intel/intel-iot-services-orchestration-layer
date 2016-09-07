@@ -1,0 +1,34 @@
+{
+  "name": "json",
+  "description": "turn string to json or turn json to string",
+  "spec":{
+    "id": "__HOPE__/builtin/string/json",
+    "in": {
+      "ports": [
+        {
+          "name": "input",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"method",
+        "type":"string",
+        "default":"parse",
+        "required":true
+      }
+    ]
+  },
+  "ui": {
+  },
+  "doc": "builtin/string.html#json"
+}

@@ -11,7 +11,7 @@
   "name": "hope-store",
   "homepage": "",
   "description": "Store libraries of IoT Services Orchestration Layer",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": ""

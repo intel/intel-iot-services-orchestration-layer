@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -78,7 +78,7 @@ ServiceCache.prototype.delete = function(key) {
 /**
  * get the service_cache_obj from the cache
  * if not in the cache, sync from base store
- * @param  {number||string} key 
+ * @param  {number||string} key
  * @return {Promise}     resolve: service_cache_obj
  */
 ServiceCache.prototype.get$ = function(key) {
@@ -93,7 +93,7 @@ ServiceCache.prototype.get$ = function(key) {
  * 1, get the original object
  * 2, create service_cache_obj
  * 3, save into the cache.
- * @param  {number||string} key 
+ * @param  {number||string} key
  * @return {Promise}       resolve: service_cache_obj
  */
 ServiceCache.prototype.sync_from_base$ = function(key) {
@@ -102,7 +102,7 @@ ServiceCache.prototype.sync_from_base$ = function(key) {
   .then(function(service) {
     check(!_.isUndefined(service), "service-cache",
      "cannot find key in servicestore when sync_from_base", key, this.base_store);
-    var service_cache_obj = self.create_servcie_cache_obj(service);
+    var service_cache_obj = self.create_service_cache_obj(service);
     self.set(service_cache_obj.id, service_cache_obj);
     return service_cache_obj;
   });
@@ -113,7 +113,7 @@ ServiceCache.prototype.sync_from_base$ = function(key) {
  * 1, destroy if inited
  * 2, sync
  * 3, init if inited before
- * @param  {number||string} key 
+ * @param  {number||string} key
  * @return {Promise}       resolve: service_cache_obj
  */
 ServiceCache.prototype.reload_service_with_init_destroy$ = function(key) {
@@ -152,7 +152,7 @@ ServiceCache.prototype.reload_service_with_init_destroy$ = function(key) {
 
 /**
  * run service's init code.
- * @param  {Object} service_cache_obj 
+ * @param  {Object} service_cache_obj
  * @return {Promise}                   resolve: done value
  *                                     reject: fail value or exception
  */
@@ -195,7 +195,7 @@ ServiceCache.prototype.init_service$ = function(service_cache_obj) {
 
 /**
  * run service's destroy code.
- * @param  {Object} service_cache_obj 
+ * @param  {Object} service_cache_obj
  * @return {Promise}                   resolve: done value
  *                                     reject: fail value or exception
  */
@@ -240,7 +240,7 @@ ServiceCache.prototype.destroy_service$ = function(service_cache_obj) {
  * @param  {Object} service_obj original service object in store
  * @return {Object}             service_cache_obj
  */
-ServiceCache.prototype.create_servcie_cache_obj = function(service_obj) {
+ServiceCache.prototype.create_service_cache_obj = function(service_obj) {
   var service_cache_obj = {};
   service_cache_obj = _.cloneDeep(service_obj);// set the items in service_obj
   service_cache_obj.shared = {};//2, set the service shared object
@@ -257,10 +257,17 @@ ServiceCache.prototype.create_servcie_cache_obj = function(service_obj) {
   };
   service_cache_obj = _.assign(service_cache_obj, scripts);//4 set the xxxx_s
   service_cache_obj.is_inited = false;//5 not init yet
+  //6 prepare the require
+  if(service_obj.type === "nodered_service") {
+    service_cache_obj.require_in_sandbox = sb.prepare_require(B.path.dir(service_obj.path));
+  } else {
+    service_cache_obj.require_in_sandbox = sb.prepare_require(service_obj.path);
+  }
   return service_cache_obj;
 };
 
-//TODO: support different type of service
+
+
 function prepare_script(service_cache_obj, action) {
   var context;
   var func_string;
@@ -289,14 +296,14 @@ function prepare_script(service_cache_obj, action) {
         func_string = "(function(IN, CONFIG){\n" + context + "\n})";
       }
       else if (action === "service_init" || action === "service_destroy") {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
+        func_string = "(function(CONFIG){\n" + context + "\n})";
       }
       else {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
+        func_string = "(function(CONFIG){\n" + context + "\n})";
       }
 
       //3 new vm.Script
-      func_script = new vm.Script(func_string, 
+      func_script = new vm.Script(func_string,
         {filename: service_cache_obj.path + "__" + action});
       return func_script;
     case "grove_auto_service":
@@ -317,17 +324,56 @@ function prepare_script(service_cache_obj, action) {
         func_string = "(function(IN, CONFIG){\n" + context + "\n})";
       }
       else if (action === "service_init" || action === "service_destroy") {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
+        func_string = "(function(CONFIG){\n" + context + "\n})";
       }
       else {
-        func_string = "(function(CONFIG){\n" + context + "\n})"; 
+        func_string = "(function(CONFIG){\n" + context + "\n})";
       }
 
       //3 new vm.Script
-      func_script = new vm.Script(func_string, 
+      func_script = new vm.Script(func_string,
         {filename: service_cache_obj.path + "__" + action});
       return func_script;
-  default:
-    check(false, "sm", "not support the service type:", service_cache_obj.type);
+    case "nodered_service":
+      if (action === "after_resume") {
+        context = "if (CONFIG._nr.category !== 'config') {\n" +
+                  " var f = require('" + service_cache_obj.path.replace(/\\/g, "\\\\") + "');\n" +
+                  " __nodered.sendOUT = sendOUT;\n" +
+                  " __nodered.sendERR = sendERR;\n" +
+                  " __nodered.id = CONFIG._nr.id;\n" +
+                  " f(__nodered.RED);\n" +
+                  " __nodered.node = new __nodered['Type_' + CONFIG._nr.type](CONFIG);\n" +
+                  " hub_shared.__nodered_nodes[CONFIG._nr.id] = __nodered.node;\n" +
+                  "};";
+        func_string = "(function(CONFIG){\n" + context + "\n})";
+      } else if (action === "resume") {
+        context = "if (CONFIG._nr.category === 'config') {\n" +
+                  " var f = require('" + service_cache_obj.path.replace(/\\/g, "\\\\") + "');\n" +
+                  " __nodered.sendOUT = function(){};\n" +
+                  " __nodered.sendERR = function(){};\n" +
+                  " __nodered.id = CONFIG._nr.id;\n" +
+                  " f(__nodered.RED);\n" +
+                  " __nodered.node = new __nodered['Type_' + CONFIG._nr.type](CONFIG);\n" +
+                  " hub_shared.__nodered_nodes[CONFIG._nr.id] = __nodered.node;\n" +
+                  "};\n" +
+                  "done();";
+        func_string = "(function(CONFIG){\n" + context + "\n})";
+      } else if (action === "kernel") {
+        func_string = "(function(IN, CONFIG){\n" +
+                          "__nodered.sendOUT = sendOUT;\n" +
+                          "__nodered.sendERR = sendERR;\n" +
+                          "__nodered.node.receive(IN.in1);\n" +
+                      "})";
+      } else if (action === "pause") {
+        func_string = "(function(CONFIG){ Promise.resolve(__nodered.node.close()).then(function(){__nodered.node.afterclose();done();});})";
+      } else {
+        func_string = "(function(CONFIG){ done() })";
+      }
+      func_script = new vm.Script(func_string,
+        {filename: service_cache_obj.path + "__" + action});
+      return func_script;
+    default:
+      check(false, "sm", "not support the service type:", service_cache_obj.type);
   }
 }
+

@@ -22,7 +22,7 @@ The master(default) branch of this project is called as a Release Project.
 
 This branch simply host the releases of this solution which is immediately ready-to-go after you have it downloaded.
 
-However, if you decide to help contribute to this project, you need to switch to its [dev branch] (https://github.com/01org/intel-iot-services-orchestration-layer/tree/dev). If you cloned from github, you may switch by simply `git checkout dev`. We call this dev branch as Development Project.
+However, if you decide to help contribute to this project, you need to switch to its [dev branch] (https://github.com/01org/intel-iot-services-orchestration-layer-dev/tree/dev). If you cloned from github, you may switch by simply `git checkout dev`. We call this dev branch as Development Project.
 
 The reason is that the solution is quite complicated. Thus for each release, it needs some building process (e.g. package the modules, build the UI files etc.) from the Development Project. This brings trouble for end users who simply want to use this project instead of contributing to that.
 

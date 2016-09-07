@@ -7,6 +7,43 @@
   <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
   <title>IoT Services Orchestration Layer</title>
   <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
   <link rel="stylesheet" href="styles/style.css" type="text/css" />
 </head>
 <body>
@@ -23,6 +60,13 @@
 <li><a href="#输入">输入</a></li>
 <li><a href="#输出">输出</a></li>
 <li><a href="#样例">样例</a></li>
+</ul></li>
+<li><a href="#接收微博">接收微博</a><ul>
+<li><a href="#配置-1">配置</a></li>
+<li><a href="#输入-1">输入</a></li>
+<li><a href="#输出-1">输出</a></li>
+<li><a href="#例子">例子</a></li>
+<li><a href="#输出格式">输出格式</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -45,5 +89,73 @@
 
 </div>
 <p>发送了内容为hello的微博。微博的账号和发送设备都是通过token决定的。</p>
+<h2 id="接收微博">接收微博</h2>
+<h4 id="描述-1">描述</h4>
+<p>从新浪微博接收信息。</p>
+<p>被<a href="https://www.npmjs.com/package/request">Request</a>实现。</p>
+<p>有两种接收信息的方式，一种是‘all’方式：每次都会接收所有的信息；另一种是‘new’方式：只接收距上一次接收信息到现在更新的消息。</p>
+<h3 id="配置-1">配置</h3>
+<p>‘token’：字符串，进入微博账户的权限‘token’。</p>
+<p>‘type’：字符串，接收信息的方式，必须是‘all’或者‘new’中的一种。</p>
+<p>‘proxy’：字符串，可选参数，可以手动设置代理。</p>
+<h3 id="输入-1">输入</h3>
+<p>‘switch’：布尔型，判断是否接收微博，如果值为true，就会发送请求并格式化响应数据。</p>
+<h3 id="输出-1">输出</h3>
+<p>‘data’：对象，从微博接收的消息。注意：数据格式是对象，所以不能用‘Text’widget来显示，而需要用用户自定义的‘f’去显示。</p>
+<h3 id="例子">例子</h3>
+<div class="figure">
+<img src="./pic/receiveweibo.png" />
+
+</div>
+<h3 id="输出格式">输出格式</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">[
+    <span class="op">{</span>
+        <span class="st">&quot;created_at&quot;</span><span class="op">:</span> <span class="st">&quot;Tue May 31 17:46:55 +0800 2011&quot;</span><span class="op">,</span>
+        <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="dv">11488058246</span><span class="op">,</span>
+        <span class="st">&quot;text&quot;</span><span class="op">:</span> <span class="st">&quot;求关注。&quot;</span>，
+        <span class="st">&quot;source&quot;</span><span class="op">:</span> <span class="st">&quot;&lt;a href=&quot;</span><span class="dt">http</span><span class="op">:</span><span class="co">//weibo.com&quot; rel=&quot;nofollow&quot;&gt;新浪微博&lt;/a&gt;&quot;,</span>
+        <span class="st">&quot;favorited&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+        <span class="st">&quot;truncated&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_status_id&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_user_id&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_screen_name&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;geo&quot;</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span>
+        <span class="st">&quot;mid&quot;</span><span class="op">:</span> <span class="st">&quot;5612814510546515491&quot;</span><span class="op">,</span>
+        <span class="st">&quot;reposts_count&quot;</span><span class="op">:</span> <span class="dv">8</span><span class="op">,</span>
+        <span class="st">&quot;comments_count&quot;</span><span class="op">:</span> <span class="dv">9</span><span class="op">,</span>
+        <span class="st">&quot;annotations&quot;</span><span class="op">:</span> []<span class="op">,</span>
+        <span class="st">&quot;user&quot;</span><span class="op">:</span> <span class="op">{</span>
+            <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="dv">1404376560</span><span class="op">,</span>
+            <span class="st">&quot;screen_name&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;province&quot;</span><span class="op">:</span> <span class="st">&quot;11&quot;</span><span class="op">,</span>
+            <span class="st">&quot;city&quot;</span><span class="op">:</span> <span class="st">&quot;5&quot;</span><span class="op">,</span>
+            <span class="st">&quot;location&quot;</span><span class="op">:</span> <span class="st">&quot;北京 朝阳区&quot;</span><span class="op">,</span>
+            <span class="st">&quot;description&quot;</span><span class="op">:</span> <span class="st">&quot;人生五十年，乃如梦如幻；有生斯有死，壮士复何憾。&quot;</span><span class="op">,</span>
+            <span class="st">&quot;url&quot;</span><span class="op">:</span> <span class="st">&quot;http://blog.sina.com.cn/zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;profile_image_url&quot;</span><span class="op">:</span> <span class="st">&quot;http://tp1.sinaimg.cn/1404376560/50/0/1&quot;</span><span class="op">,</span>
+            <span class="st">&quot;domain&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;gender&quot;</span><span class="op">:</span> <span class="st">&quot;m&quot;</span><span class="op">,</span>
+            <span class="st">&quot;followers_count&quot;</span><span class="op">:</span> <span class="dv">1204</span><span class="op">,</span>
+            <span class="st">&quot;friends_count&quot;</span><span class="op">:</span> <span class="dv">447</span><span class="op">,</span>
+            <span class="st">&quot;statuses_count&quot;</span><span class="op">:</span> <span class="dv">2908</span><span class="op">,</span>
+            <span class="st">&quot;favourites_count&quot;</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span>
+            <span class="st">&quot;created_at&quot;</span><span class="op">:</span> <span class="st">&quot;Fri Aug 28 00:00:00 +0800 2009&quot;</span><span class="op">,</span>
+            <span class="st">&quot;following&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;allow_all_act_msg&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;remark&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+            <span class="st">&quot;geo_enabled&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+            <span class="st">&quot;verified&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;allow_all_comment&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+            <span class="st">&quot;avatar_large&quot;</span><span class="op">:</span> <span class="st">&quot;http://tp1.sinaimg.cn/1404376560/180/0/1&quot;</span><span class="op">,</span>
+            <span class="st">&quot;verified_reason&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+            <span class="st">&quot;follow_me&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;online_status&quot;</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span>
+            <span class="st">&quot;bi_followers_count&quot;</span><span class="op">:</span> <span class="dv">215</span>
+        <span class="op">}</span>
+    <span class="op">},</span>
+    ...
+]</code></pre></div>
+<p>想了解更多关于数据格式的信息，可以访问<a href="http://open.weibo.com/wiki/2/statuses/friends_timeline">weibo</a></p>
 </body>
 </html>
