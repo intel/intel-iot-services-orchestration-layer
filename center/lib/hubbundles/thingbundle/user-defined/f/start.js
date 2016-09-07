@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var vm = require("vm");
 
 var content = "(function(x){\n" + CONFIG["f(x)"] + "\n})";
-console.log(CONFIG,"f(x):", content);
 
 shared.f = vm.runInThisContext(content);
 done();

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -32,5 +32,7 @@ $hope.register_action({         // params of Action
   "hub/update/thing": null,     // {thing: ...}
   "hub/create/service": null,   // {thing_id: ..., name: ..., description: ...}
   "hub/remove/service": null,   // {ids: [...]}
-  "hub/update/service": null    // {service: ...}
+  "hub/update/service": null,   // {service: ...}
+  "hub/install/thing": null,    // {hub_id:.., name:..., version: ...}
+  "hub/install/service": null   // {thing_id:...,name:..., version: ...}
 });

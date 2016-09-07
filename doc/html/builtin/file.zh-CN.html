@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#文件服务">文件服务</a><ul>
+<li><a href="#读文件">读文件</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#输出-1">输出</a></li>
+<li><a href="#例子">例子</a></li>
+</ul></li>
+<li><a href="#写文件">写文件</a><ul>
+<li><a href="#描述-1">描述</a></li>
+<li><a href="#配置-1">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出-2">输出</a></li>
+<li><a href="#例子-1">例子</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="文件服务">文件服务</h1>
+<h2 id="读文件">读文件</h2>
+<h3 id="描述">描述</h3>
+<p>通过读文件服务能够读取文件内容， 如果读取的文件不存在，则什么都不输出。</p>
+<p>本服务仅仅支持绝对路径读取文件。</p>
+<h3 id="配置">配置</h3>
+<p>‘path’： 字符串类型， 想要读取的文件路径。</p>
+<h3 id="输出">输出</h3>
+<p>‘switch’： 布尔型， 判断是否读取文件， 如果它的值为真， 则就会去读取‘path’对应的路径的文件内容。</p>
+<h3 id="输出-1">输出</h3>
+<p>‘out’： 字符串类型， 文件内容</p>
+<h3 id="例子">例子</h3>
+<div class="figure">
+<img src="./pic/file_read.png" />
+
+</div>
+<h2 id="写文件">写文件</h2>
+<h3 id="描述-1">描述</h3>
+<p>通过写文件服务可以向文件中写内容， 既可以覆盖原有的内容，也可以在文件末尾添加内容； 如果要写进内容的文件不存在的， 则它会先创建一个文件，然后将内容写进去。</p>
+<p>本功能仅仅支持绝对路径写文件。</p>
+<h3 id="配置-1">配置</h3>
+<p>‘path’： 字符串类型， 被写内容的文件路径， 这个路径是必须真实存在的。</p>
+<p>‘mod’： 字符串， 添加类型， 如果它的只是‘append’， 那内容就会被添加到文件中已有内容的末尾， 否则就会覆盖原有内容。</p>
+<h3 id="输入">输入</h3>
+<p>‘input’： 字符串， 要被写进文件的内容。</p>
+<h3 id="输出-2">输出</h3>
+<p>‘out’： 布尔型， 如果成功将内容写进了文件，则输出‘true’， 否则输出‘false’。</p>
+<h3 id="例子-1">例子</h3>
+<div class="figure">
+<img src="./pic/file_write.png" />
+
+</div>
+</body>
+</html>

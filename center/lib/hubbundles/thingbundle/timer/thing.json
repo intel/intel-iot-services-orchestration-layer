@@ -1,5 +1,5 @@
 {
   "name": "timer",
-  "description": "timer control, such as delay and interval",
+  "description": "timer control, such as delay and interval and include date service such as date_format and timestamp",
   "is_builtin": true
 }

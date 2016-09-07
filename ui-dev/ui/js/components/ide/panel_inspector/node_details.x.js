@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Row, Col} from "react-bootstrap";
+import {Row, Col, Button} from "react-bootstrap";
 import InputDetails from "./input_details.x";
 import ConfigDetails from "./config_details.x";
 import TagsDetails from "./tags_details.x";
@@ -72,6 +72,23 @@ export default class NodeDetails extends ReactComponent {
     this._change_node(view);
   }
 
+  _on_open_cfg_dlg() {
+    var view = $hope.app.stores.graph.active_view;
+    var node = view.get("node", this.props.id);
+    var spec = node.$get_spec();
+
+    if (spec.nr) {
+      var nr_dlg = require("../nodered_dlg.x");
+      nr_dlg.show_config_dlg(node);
+    }
+
+    if (spec.$config_ui) {
+      var nc_dlg = require("../nodecfg_dlg.x");
+      nc_dlg.show(node);
+    }
+
+  }
+
   render() {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
@@ -111,13 +128,13 @@ export default class NodeDetails extends ReactComponent {
         <Frame key="i" title={__("Input")} expanded={true}>
           <InputDetails id={this.props.id} />
         </Frame>);
-      
-      if (!node.is_ui && _.isArray(spec.config) && spec.config.length > 0) {
+
+      if (!node.is_ui && !spec.nr && !spec.$config_ui && _.isArray(spec.config) && spec.config.length > 0) {
         frames.push(
           <Frame key="c" title={__("Config")} expanded={true}>
             <ConfigDetails id={this.props.id} />
           </Frame>);
-          
+
           /*<Frame key="t" title={__("Tag")}>
             <div className="node-details">
               <div className="node-details-tag">
@@ -132,6 +149,21 @@ export default class NodeDetails extends ReactComponent {
               </div>
             </div>
           </Frame>*/
+      }
+
+      if (spec.nr || spec.$config_ui) {
+        frames.push(<Frame key="c" title={__("Config")} expanded={true}>
+            <div style={{height: 50, color: "#eee", padding: "12px"}}>
+              {__("Double click the node to open configuration dialog, or")}
+            </div>
+            <div className="text-center">
+              <Button bsStyle="primary"
+                onClick={this._on_open_cfg_dlg}>{__("Click Here")}</Button>
+            </div>
+          </Frame>);
+        if (spec.nr) {
+          desc = "Node-RED Service";
+        }
       }
     }
 
@@ -154,7 +186,7 @@ export default class NodeDetails extends ReactComponent {
             <textarea className="hope-inspector-detail-desc"
                 value={desc}
                 type="text"
-                readOnly={!view.is_editing()}
+                readOnly={!view.is_editing() || !!spec.nr}
                 onChange={this._on_xxx_change.bind(this, "description")} />
           </Col>
         </Row>

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -25,9 +25,12 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 $hope.register_action({         // params of Action
-  "composer/list/files": null,  // {service: ...}
-  "composer/save/spec":  null,  // {service: ..., spec: ...}
-  "composer/read/file":  null,  // {service: ..., file_path: []}
-  "composer/write/file": null,  // {service: ..., file_path: ..., content: ...}
-  "composer/remove/file": null  // {service: ..., file_path: ...}
+  "composer/list/files": null,  // {service_id: ...}
+  "composer/save/spec":  null,  // {service_id: ..., spec: ...}
+  "composer/read/file":  null,  // {service_id: ..., file_path: []}
+  "composer/read/package_json":  null,  // {service_id: ...}
+  "composer/write/file": null,  // {service_id: ..., file_path: ..., content: ...}
+  "composer/remove/file": null, // {service_id: ..., file_path: ...}
+  "composer/install/package": null,  // {service_id: ..., package_name: ..., version: ...}
+  "composer/uninstall/package": null  // {service_id: ..., package_name: ...}
 });

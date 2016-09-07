@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -85,16 +85,9 @@ export default class LeftToolbar extends ReactComponent {
 
     if (view.modified) {
       if (view.has_linter_error()) {
-        $hope.confirm(__("Save and Run"),
-          __("This workflow looks like contain error(s), are you sure to deploy and start it?"),
-          "warning", res => {
-          if (!res) {
-            $hope.trigger_action("graph/save_and_start", {});
-          }
-        }, {
-          cancelButtonText: __("YES"),
-          confirmButtonText: __("Cancel and back to edit")
-        });
+        $hope.alert(__("Save and Run"),
+          __("This workflow looks like contain error(s), unable to deploy and start it?"),
+          "error");
       }
       else {
         $hope.confirm(__("Save and Run"), 
@@ -106,19 +99,9 @@ export default class LeftToolbar extends ReactComponent {
     }
     else {
       if (view.has_linter_error()) {
-        $hope.confirm(__("Run"),
-          __("This workflow looks like contain error(s), are you sure to start it?"),
-          "warning", res => {
-          if (!res) {
-            $hope.trigger_action("graph/start", {
-              graphs: [view.id],
-              tracing: trace
-            });
-          }
-        }, {
-          cancelButtonText: __("YES"),
-          confirmButtonText: __("Cancel and back to edit")
-        });
+        $hope.alert(__("Run"),
+          __("This workflow looks like contain error(s), unable to start it?"),
+          "error");
       }
       else {
         $hope.trigger_action("graph/start", {

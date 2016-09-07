@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -103,6 +103,7 @@ export default class DlgOpenUI extends ReactComponent {
   }
 
   _on_keydown(e) {
+    e.stopPropagation();
     if(e.keyCode === 13) { // ENTER KEY
       this._on_open(e);
     }
@@ -123,6 +124,85 @@ export default class DlgOpenUI extends ReactComponent {
       });
       this.forceUpdate();
     }
+  }
+
+  _on_import() {
+    if (!window.File || !window.FileReader) {
+      $hope.notify("error", __("Unable to import UI in this browser"));
+      return;
+    }
+
+    var input = $("<input type='file' accept='.json' multiple />").appendTo(this.refs.bh);
+    var app = this.props.app;
+    input.on("change", event => {
+      let loadq = _.map(event.target.files, file => {
+        let reader = new FileReader();
+        var d = $Q.defer();
+        reader.addEventListener("error", event => {
+          console.log(event);
+          d.reject(__("Reading operation encounter an error") + ": " + file.name);
+        });
+        reader.addEventListener("load", event => {
+          let json = JSON.parse(event.target.result);
+          if (!json.id || !json.name || !_.isArray(json.widgets)) {
+            d.reject(__("Invalid UI") + ": " + file.name);
+            return;
+          }
+          if (_.find(app.uis, ["id", json.id])) {
+            d.reject(__("This UI already exists") + ": " + file.name);
+            return;
+          }
+          if (_.find(app.uis, ["name", json.name])) {
+            d.reject(__("The name of this UI already exists") + ": " + file.name);
+            return;
+          }
+          d.resolve(json);
+        });
+        reader.readAsText(file);
+        return d.promise;
+      });
+      $Q.all(loadq).then(jsons => {
+        var createq = _.map(jsons, json => {
+          return $hope.app.server.app.create_ui$(app.id, json).then(()=> {
+            app.uis.push(json);
+          });
+        });
+        $Q.all(createq).then(()=> {
+          this.forceUpdate();
+          $hope.notify("success", __("UI successfully imported!"));
+        });
+      }).catch(e => {
+        $hope.notify("error", e);
+      });
+    });
+    input.trigger("click");
+  }
+
+  _on_export() {
+    if (!window.Blob) {
+      $hope.notify("error", __("Unable to export UI in this browser"));
+      return;
+    }
+
+    $hope.app.stores.ui.ensure_ui_loaded$(this.state.selected_id).then(view => {
+      var data = view.get_ui().$serialize();
+      delete data.app;
+
+      var filename = view.get_app().name + "-" + (view.get_ui().name || "") + ".json";
+      var blob = new Blob([JSON.stringify(data, null, "\t")], {"type": "application/octet-stream"});
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+      }
+      else {
+        var a = this.refs.a;
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      }
+    }).catch(err => {
+      $hope.notify("error", __("Failed to export the UI because"),
+        $hope.error_to_string(err));
+    }).done();
   }
 
   render_app(app) {
@@ -163,13 +243,22 @@ export default class DlgOpenUI extends ReactComponent {
         <Modal.Header closeButton>
           <Modal.Title>{__("User UI")}</Modal.Title>
         </Modal.Header>
-        <div className="modal-body hope-open-dialog-list">
+        <Modal.Body className="hope-open-dialog-list">
           {this.props.app && this.render_app(this.props.app)}
-        </div>
-        <div className="modal-footer">
+        </Modal.Body>
+        <Modal.Footer>
+          {this.props.app &&
+            <Button bsStyle="info" style={{float: "left"}} onClick={this._on_import}>{__("Import")}</Button>
+          }
+          {this.state.selected_id &&
+            <Button bsStyle="success" style={{float: "left"}} onClick={this._on_export}>{__("Export")}</Button>
+          }
           <Button bsStyle="default" onClick={this.props.onHide}>{__("Cancel")}</Button>
           <Button bsStyle="primary" {...btn_props} onClick={this._on_open}>{__("Open")}</Button>
-        </div>
+          <div ref="bh" style={{display: "none"}}>
+            <a ref="a" target="_self" />
+          </div>
+        </Modal.Footer>
       </Modal>
     );
   }

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@ import contains from 'dom-helpers/query/contains';
 
 var _mountNode = document.createElement("div");
 var _prev;
-var _tleave;
+var _tleave, _tenter;
 
 function isOneOf(one, of) {
   return Array.isArray(of) ? of.indexOf(one) >= 0 : one === of;
@@ -46,6 +46,10 @@ function handleMouseOut(handler, e) {
 }
 
 function cancelTimer() {
+  if (_tenter) {
+    clearTimeout(_tenter);
+    _tenter = null;
+  }
   if (_tleave) {
     clearTimeout(_tleave);
     _tleave = null;
@@ -54,6 +58,7 @@ function cancelTimer() {
 
 export default React.createClass({
   __show() {
+    _tenter = null;
     if (!this._overlay) {
       return;
     }
@@ -76,11 +81,11 @@ export default React.createClass({
     if (_prev) {
       setTimeout(()=> {
         this.__hide();
-        setTimeout(this.__show, 0);
+        _tenter = setTimeout(this.__show, 500);
       }, 0);
     }
     else {
-      setTimeout(this.__show, 0);
+      _tenter = setTimeout(this.__show, 500);
     }
   },
 
@@ -105,6 +110,7 @@ export default React.createClass({
   },
 
   onMouseOut() {
+    cancelTimer();
     _tleave = setTimeout(()=> {
       _tleave = null;
       this.hide();

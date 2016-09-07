@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -43,19 +43,51 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // 
 //////////////////////////////////////////////////////////////////
 
+import i18next from "i18next-client";
 import g_spec_manager from "./spec";
 
 
 // for each new hub we found, we would assign it a color_id
 var _cur_color_id = 1;
 
+class Entity {
+  __(msg) {
+    var resource = this.i18n;
+    var lang = i18next.options.lng;
+
+    if (!_.isObject(resource) || !_.isObject(resource[lang])) {
+      return msg;
+    }
+
+    return resource[lang][msg] || msg;
+  }
+
+  $get(field) {
+    return this[field];
+  }
+
+  $name() {
+    return this.__(this.$get("name"));
+  }
+
+  $description() {
+    return this.__(this.$get("description"));
+  }
+
+  $doc() {
+    return this.__(this.$get("doc"));
+  }
+}
+
 
 // IMPORTANT: reference to spec should use ID instead of cached object
 // And we should use the methods to access the details
 // because the spec maybe hasn't resolved (this allows service
 // to shown even if the spec isn't loaded yet)
-class Service {
+class Service extends Entity {
   constructor(thing, json) {
+    super();
+
     _.merge(this, json);
     this.$thing = thing;
     this.$type = "service";
@@ -72,27 +104,16 @@ class Service {
     return this[field] || spec[field];
   }
 
-  $name() {
-    return __(this.$get("name"), this.i18n);
-  }
-
-  $description() {
-    return __(this.$get("description"), this.i18n);
-  }
-
-  $doc() {
-    return __(this.doc, this.i18n);
-  }
-
   $icon() {
     return this.$get("icon");
   }
-
 }
 
 
-class Thing {
+class Thing extends Entity {
   constructor(hub, json) {
+    super();
+
     _.merge(this, json);
     this.$hub = hub;
     this.$type = "thing";
@@ -105,21 +126,21 @@ class Thing {
     });
   }
 
-  $name() {
-    return __(this.name, this.i18n);
-  }
-
-  $description() {
-    return __(this.description, this.i18n);
-  }
-
-  $doc() {
-    return __(this.doc, this.i18n);
+  get_services_using_specs(ids) {
+    var services = [];
+    _.forOwn(this.services, svc => {
+      if (~ids.indexOf(svc.spec)) {
+        services.push(svc);
+      }
+    });
+    return services;
   }
 }
 
-class Hub {
+class Hub extends Entity {
   constructor(json, force_to_add_ui_thing) {
+    super();
+
     this.$type = "hub";
     _.merge(this, json);
     this.$color_id = _cur_color_id ++;
@@ -135,18 +156,6 @@ class Hub {
     });
     this.styles = this.styles || {};
     this.styles.things = this.styles.things || {};
-  }
-
-  $name() {
-    return __(this.name, this.i18n);
-  }
-
-  $description() {
-    return __(this.description, this.i18n);
-  }
-
-  $doc() {
-    return __(this.doc, this.i18n);
   }
 
   get_all_things_using_spec(id) {
@@ -173,6 +182,36 @@ class Hub {
     return services;
   }
 
+  get_services_using_specs(ids) {
+    var services = [];
+    _.forOwn(this.things, thing => {
+      _.forOwn(thing.services, svc => {
+        if (~ids.indexOf(svc.spec)) {
+          services.push(svc);
+        }
+      });
+    });
+    return services;
+  }
+
+  uses_all_specs_once(thing, ids) {
+    var counts = {}, res = true;
+    _.forEach(ids, id => {
+      counts[id] = 0;
+    });
+    _.forOwn(thing.services, svc => {
+      if (~ids.indexOf(svc.spec)) {
+        counts[svc.spec] += 1;
+      }
+    });
+    _.forEach(counts, cnt => {
+      if (cnt !== 1) {
+        res = false;
+        return false;
+      }
+    });
+    return res;
+  }
 }
 
 

@@ -22,15 +22,20 @@
     "name": "Logical Operator",
     "files": ["logic_compare.md", "logic_operation.md"],
     "children": [{
-      "id": "eq", "name": "operator =="
+      "id": "eq",
+      "name": "operator =="
     }, {
-      "id": "gt", "name": "operator >"
+      "id": "gt",
+      "name": "operator >"
     }, {
-      "id": "gte", "name": "operator >="
+      "id": "gte",
+      "name": "operator >="
     }, {
-      "id": "lt", "name": "operator <"
+      "id": "lt",
+      "name": "operator <"
     }, {
-      "id": "lte", "name": "operator <="
+      "id": "lte",
+      "name": "operator <="
     }, "and", "not", "or"]
   }, {
     "name": "Math",
@@ -52,7 +57,29 @@
     "name": "Web Camera",
     "files": "webcamera.md",
     "scan": true
+  }, {
+    "name": "Crypto",
+    "files": "crypto.md",
+    "scan": true
+  }, {
+    "name": "File",
+    "files": "file.md",
+    "scan": true
+  }, {
+    "name": "Life",
+    "files": "life.md",
+    "scan": true
+  }, {
+    "name": "Flow",
+    "files": "flow.md",
+    "scan": true
+  }, {
+    "name": "Network",
+    "files": "network.md",
+    "scan": true
+  }, {
+    "name": "Mqtt service",
+    "files": "mqtt_service.md",
+    "scan": true
   }]
 }
-
-

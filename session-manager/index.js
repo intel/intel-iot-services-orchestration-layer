@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -36,7 +36,7 @@ var log = B.log.for_category("sm");
 
 
 // ---------------------------------------------------------------------
-// Session related. create (will init the service if needed) 
+// Session related. create (will init the service if needed)
 // -> invoke_start -> ... -> invoke_stop -> delete
 // ---------------------------------------------------------------------
 
@@ -47,11 +47,11 @@ var log = B.log.for_category("sm");
  * 2, init service if not inited before
  * 3, save the session to session cache
  * It return the Promise(session object)
- * @param  {object} sm  
- * @param  {String||Number} session_id         the session's id. if null, 
+ * @param  {object} sm
+ * @param  {String||Number} session_id         the session's id. if null,
  *                                     then generate an unique id for the session obj
- * @param  {String||Number} service_id 
- * @param {String}  mnode_id  session should send msg to the dst mnode. 
+ * @param  {String||Number} service_id
+ * @param {String}  mnode_id  session should send msg to the dst mnode.
  * @param {Object}  config  session's config info
  * @return {Promise}                   resolve: session object
  *                                              {
@@ -59,7 +59,7 @@ var log = B.log.for_category("sm");
  *                                                service: service_id
  *                                                status: idle, paused, sending
  *                                                shared: session-shared
- *                                                is_status_stable: whether the status is changing now 
+ *                                                is_status_stable: whether the status is changing now
  *                                              }
  */
 exports.create_session$ = function(sm, session_id, service_id, mnode_id, config) {
@@ -68,7 +68,7 @@ exports.create_session$ = function(sm, session_id, service_id, mnode_id, config)
 
 /**
  * get the session obj
- * @param  {object} sm 
+ * @param  {object} sm
  * @param  {String||number} id session id
  * @return {Promise}    resolve: session obj in session-cache
  */
@@ -80,9 +80,9 @@ exports.get_session$ = function(sm, session_id) {
  * delete the session obj
  * 0, if the session doesnt exsit or its status is not stable idle.
  * 1, delete from session-cache
- * @param  {object} sm 
+ * @param  {object} sm
  * @param  {String||number} id session id
- * @return {Promise}    
+ * @return {Promise}
  */
 exports.delete_session$ = function(sm, session_id) {
   return sm.delete_session$(session_id);
@@ -113,9 +113,9 @@ exports.invoke_session$ = function(sm, session_id, action, others) {
  * if the session is idle, delete_session
  * if the session is paused, stop and delete
  * if the session is sending, pause and stop and delete
- * @param  {Object} sm        
- * @param  {String} session_id 
- * @return {Promise}            
+ * @param  {Object} sm
+ * @param  {String} session_id
+ * @return {Promise}
  */
 exports.clear_session$ = function(sm, session_id) {
   return sm.clear_session$(session_id);
@@ -124,9 +124,9 @@ exports.clear_session$ = function(sm, session_id) {
 /**
  * clear all sessions, whose mnode is mnode_id.
  * session's mnode means the mnode of the session's creator
- * @param  {Object} sm        
- * @param  {String} mnode_id  
- * @return {Promise}            
+ * @param  {Object} sm
+ * @param  {String} mnode_id
+ * @return {Promise}
  */
 exports.clear_sessions_with_mnode$ = function(sm, mnode_id) {
   return sm.clear_sessions_with_mnode$(mnode_id);
@@ -134,23 +134,25 @@ exports.clear_sessions_with_mnode$ = function(sm, mnode_id) {
 
 /**
  * clear all sessions
- * @param  {Object} sm        
- * @return {Promise}            
+ * @param  {Object} sm
+ * @return {Promise}
  */
 exports.clear_all_sessions$ = function(sm) {
   return sm.clear_all_sessions$();
 };
 // -----------------------------------------------------------------
-// Service related. 
+// Service related.
 // -----------------------------------------------------------------
 /**
  * install the service.
- * O, make sure the servcie is not installed before (aka, not in the servcie cache). 
+ * O, make sure the service
+ is not installed before (aka, not in the service
+ cache).
  *    Otherwise, reject the promise
  * 1, fetch the service and create a service_cache_obj, save in cache
  * 2, call service_init
- * @param  {object} sm  
- * @param  {id} service_id 
+ * @param  {object} sm
+ * @param  {id} service_id
  * @return {Promise}            resolve: init done value
  */
 exports.install_service$ = function(sm, service_id) {
@@ -163,8 +165,8 @@ exports.install_service$ = function(sm, service_id) {
  * 1, get the service_cache_obj
  * 2, call destroy func
  * 3, delete the obj in cache
- * @param  {object} sm  
- * @param  {id} service_id 
+ * @param  {object} sm
+ * @param  {id} service_id
  * @return {Promise}          resolve: destroy done value
  */
 exports.uninstall_service$ = function(sm, service_id) {
@@ -178,22 +180,22 @@ exports.uninstall_service$ = function(sm, service_id) {
  * 1, get the service_cache_obj
  * 2, call destroy func
  * 3, delete the obj in cache
- * @param  {object} sm  
- * @param  {id} service_id 
+ * @param  {object} sm
+ * @param  {id} service_id
  * @return {Promise}          resolve: destroy done value
  */
 exports.clear_all_services$ = function(sm) {
   return sm.clear_all_services$();
 };
 // -----------------------------------------------------------------
-// Message related. 
+// Message related.
 // -----------------------------------------------------------------
 
 /**
  * send invoke_cmd to remote session
  * @param  {Object} mnode        src mnode
  * @param  {id} dst_mnode_id     dst mnode id
- * @param  {id} session_id   
+ * @param  {id} session_id
  * @param {id} invocation_id respresents this invocation
  * @param  {string} action       action name
  * @param  {Object} others       other parameters

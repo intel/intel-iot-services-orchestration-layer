@@ -1,0 +1,50 @@
+<h1 id="edit-service">Edit Service</h1><p>Edit the service's <code>start.js</code> and <code>kernel.js</code></p><div class="figure"><img src="./doc/pic/example/add_service/edit_http_request_service.gif" class="viewer" /></div><p><code>start.js</code></p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">var</span> request <span class="op">=</span> <span class="at">require</span>(<span class="st">&quot;request&quot;</span>)<span class="op">;</span>
+<span class="kw">var</span> querystring <span class="op">=</span> <span class="at">require</span>(<span class="st">&#39;querystring&#39;</span>)<span class="op">;</span>
+<span class="va">service_shared</span>.<span class="at">http_request</span> <span class="op">=</span> <span class="kw">function</span>(url<span class="op">,</span> method<span class="op">,</span> headers<span class="op">,</span> body<span class="op">,</span> timeout<span class="op">,</span> proxy) <span class="op">{</span>
+    <span class="cf">return</span> <span class="kw">new</span> <span class="at">Promise</span>(<span class="kw">function</span>(resolve<span class="op">,</span> reject) <span class="op">{</span>
+        <span class="co">//change url if invalid</span>
+        <span class="cf">if</span> (<span class="op">!</span>((<span class="va">url</span>.<span class="at">indexOf</span>(<span class="st">&quot;http://&quot;</span>) <span class="op">===</span> <span class="dv">0</span>) <span class="op">||</span> (<span class="va">url</span>.<span class="at">indexOf</span>(<span class="st">&quot;https://&quot;</span>) <span class="op">===</span> <span class="dv">0</span>))) <span class="op">{</span>
+            url <span class="op">=</span> <span class="st">&quot;http://&quot;</span> <span class="op">+</span> url<span class="op">;</span>
+        <span class="op">}</span>
+        method <span class="op">=</span> <span class="va">method</span>.<span class="at">toLowerCase</span>()<span class="op">;</span>
+        headers <span class="op">=</span> (<span class="kw">typeof</span> headers <span class="op">==</span> <span class="st">&#39;string&#39;</span>) <span class="op">?</span> <span class="va">JSON</span>.<span class="at">parse</span>(headers) : headers<span class="op">;</span>
+        body <span class="op">=</span> (<span class="kw">typeof</span> body <span class="op">==</span> <span class="st">&#39;string&#39;</span>) <span class="op">?</span> <span class="va">JSON</span>.<span class="at">parse</span>(body) : body<span class="op">;</span>
+        <span class="cf">if</span> ([<span class="st">&#39;get&#39;</span><span class="op">,</span> <span class="st">&#39;post&#39;</span><span class="op">,</span> <span class="st">&#39;put&#39;</span><span class="op">,</span> <span class="st">&#39;delete&#39;</span><span class="op">,</span> <span class="st">&#39;patch&#39;</span>].<span class="at">indexOf</span>(method) <span class="op">===</span> <span class="op">-</span><span class="dv">1</span>) <span class="op">{</span>
+            <span class="va">console</span>.<span class="at">log</span>(<span class="st">&quot;method &quot;</span><span class="op">,</span> method<span class="op">,</span> <span class="st">&quot; is not supported.&quot;</span>)<span class="op">;</span>
+            <span class="at">reject</span>(<span class="st">&quot;method &quot;</span> <span class="op">+</span> method <span class="op">+</span> <span class="st">&quot; is not supported.&quot;</span>)<span class="op">;</span>
+        <span class="op">}</span>
+        <span class="kw">var</span> option <span class="op">=</span> <span class="op">{</span>
+            <span class="dt">uri</span><span class="op">:</span> url<span class="op">,</span>
+            <span class="dt">method</span><span class="op">:</span> method<span class="op">,</span>
+            <span class="dt">headers</span><span class="op">:</span> headers<span class="op">,</span>
+            <span class="dt">timeout</span><span class="op">:</span> <span class="at">parseInt</span>(timeout)
+        <span class="op">};</span>
+        <span class="cf">if</span> (proxy) <span class="op">{</span>
+            option[<span class="st">&#39;proxy&#39;</span>] <span class="op">=</span> proxy<span class="op">;</span>
+        <span class="op">}</span>
+        <span class="cf">if</span> (method <span class="op">===</span> <span class="st">&quot;post&quot;</span>) <span class="op">{</span>
+            option[<span class="st">&#39;body&#39;</span>] <span class="op">=</span> <span class="va">querystring</span>.<span class="at">stringify</span>(body)<span class="op">;</span>
+        <span class="op">}</span>
+        <span class="at">request</span>(option<span class="op">,</span> <span class="kw">function</span>(err<span class="op">,</span> response) <span class="op">{</span>
+            <span class="cf">if</span> (err) <span class="op">{</span>
+                <span class="cf">return</span> <span class="at">reject</span>(err)<span class="op">;</span>
+            <span class="op">}</span>
+            <span class="at">resolve</span>(<span class="op">{</span>
+                <span class="dt">statusCode</span><span class="op">:</span> <span class="va">response</span>.<span class="at">statusCode</span><span class="op">,</span>
+                <span class="dt">headers</span><span class="op">:</span> <span class="va">response</span>.<span class="at">headers</span><span class="op">,</span>
+                <span class="dt">body</span><span class="op">:</span> <span class="va">response</span>.<span class="at">body</span>
+            <span class="op">}</span>)<span class="op">;</span>
+        <span class="op">}</span>)<span class="op">;</span>
+    <span class="op">}</span>)<span class="op">;</span>
+<span class="op">};</span>
+
+<span class="at">done</span>()<span class="op">;</span></code></pre></div><p><code>kernel.js</code></p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="cf">if</span> (<span class="va">IN</span>.<span class="at">switch</span>) <span class="op">{</span>
+    <span class="va">service_shared</span>.<span class="at">http_request</span>(<span class="va">CONFIG</span>.<span class="at">url</span><span class="op">,</span> <span class="va">CONFIG</span>.<span class="at">method</span><span class="op">,</span> <span class="va">CONFIG</span>.<span class="at">headers</span><span class="op">,</span> <span class="va">CONFIG</span>.<span class="at">body</span><span class="op">,</span> <span class="va">CONFIG</span>.<span class="at">timeout</span><span class="op">,</span> <span class="va">CONFIG</span>.<span class="at">proxy</span>)
+        .<span class="at">then</span>(<span class="kw">function</span>(response) <span class="op">{</span>
+            <span class="at">sendOUT</span>(<span class="op">{</span>
+                <span class="st">&quot;out&quot;</span><span class="op">:</span> response
+            <span class="op">}</span>)<span class="op">;</span>
+        <span class="op">},</span> <span class="kw">function</span>(err) <span class="op">{</span>
+            <span class="at">sendERR</span>(err)<span class="op">;</span>
+        <span class="op">}</span>)<span class="op">;</span>
+<span class="op">}</span></code></pre></div>

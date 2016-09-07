@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -444,7 +444,7 @@ class LibraryStore extends EventEmitter {
     this.widget_spec_view.search(data.search);
     this.emit("library", {event: "searched"});
   }
-
+  
 
 }
 

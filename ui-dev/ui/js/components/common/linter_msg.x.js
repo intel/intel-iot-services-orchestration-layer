@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -37,6 +37,26 @@ export default class LinterMessage extends ReactComponent {
     switch(m.type) {
       case "REQUIRED_CONFIG":
         t = <span>{__("Config required") + ": "}<strong>{m.name}</strong></span>;
+        break;
+
+      case "SPEC_NOT_FOUND":
+        t = <span>{__("Lost Spec") + ": "}<strong>{m.id}</strong></span>;
+        break;
+
+      case "WIDGET_NOT_FOUND":
+        t = <span>{__("Lost Widget") + ": "}<strong>{m.id}</strong></span>;
+        break;
+
+      case "HUB_NOT_FOUND":
+        t = <span>{__("Lost Hub") + ": "}<strong>{m.id}</strong></span>;
+        break;
+
+      case "THING_NOT_FOUND":
+        t = <span>{__("Lost Thing") + ": "}<strong>{m.id}</strong></span>;
+        break;
+
+      case "SERVICE_NOT_FOUND":
+        t = <span>{__("Lost Service") + ": "}<strong>{m.id}</strong></span>;
         break;
 
       default:

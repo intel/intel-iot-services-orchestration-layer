@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -40,6 +40,8 @@ var Updater = require("./lib/update");
 var Hub = require("./lib/hub");
 var User = require("./lib/user");
 var GroveThing = require("./lib/grove_thing");
+var NodeRedThing = require("./lib/nodered_thing");
+var NodeRedApp = require("./lib/nodered_app");
 var log = B.log;
 
 exports.create_entity_manager = function(obj) {
@@ -84,7 +86,7 @@ function EntityManager(obj) {
 }
 
 /**
- * All prototype method xxx__list, xxx__get, xxx__list_yyy, 
+ * All prototype method xxx__list, xxx__get, xxx__list_yyy,
  * will get the Promise whose resolved value is object or object-array
  */
 
@@ -108,7 +110,7 @@ function _update_get_timestamp(em) {
 
 /**
  * em changed. it will update the timestamp and emit the change-list
- * @param  {Object} em   
+ * @param  {Object} em
  * @param  {Array} list change-list
  * @return {Array} {
  *                   list: organized_list
@@ -133,7 +135,7 @@ function em_changed(em, list) {
 /**
  * report full em info.
  * it will sendout the em.timestamp and fulllist
- * @param  {Object} em              
+ * @param  {Object} em
  * @param  {Array} list            full info list
  * @param  {String} target_mnode_id the dst mnode id
  */
@@ -159,7 +161,7 @@ function em_full_info(em, list, target_mnode_id) {
  * @return {Object}     lock
  */
 EntityManager.prototype.make_lock = function(key) {
-  return B.lock.make("__HOPE__/EM/" + this.id + "/" + 
+  return B.lock.make("__HOPE__/EM/" + this.id + "/" +
     (_.isUndefined(key) ? "" : key));
 };
 
@@ -168,7 +170,7 @@ EntityManager.prototype.make_lock = function(key) {
 // --------------------------------------------------------
 /**
  * set the priority of updater.
- * @param {Array} priorities 
+ * @param {Array} priorities
  */
 EntityManager.prototype.set_update_priorities = function(priorities) {
   return this.updater.set_priorities(priorities);
@@ -183,7 +185,7 @@ EntityManager.prototype.get_update_priorities = function() {
 };
 
 /**
- * update the em according the item in list. 
+ * update the em according the item in list.
  * update in list's order.
  * it triggers the em_changed
  * @param  {Array} list each item is an obj
@@ -193,7 +195,7 @@ EntityManager.prototype.get_update_priorities = function() {
  *                        id: id or id array
  *                        obj: obj or obj array. it is only needed in set cmd.
  *                      }
- * @return {Promise} 
+ * @return {Promise}
  */
 EntityManager.prototype.update$ = function(list) {
   var changed_list = [];
@@ -211,7 +213,7 @@ EntityManager.prototype.update$ = function(list) {
  * get full info list in the em.
  * it reiggers the em_fullinfo
  * @param  {String} target_mnode_id the dst of the fullinfo message
- * @return {Promise}                 
+ * @return {Promise}
  */
 EntityManager.prototype.get_full_info$ = function(target_mnode_id) {
   var self = this;
@@ -231,7 +233,7 @@ EntityManager.prototype.get_full_info$ = function(target_mnode_id) {
 
 /**
  * Example: raw_add_children$("thing", "thing_1", "service", "services", [{...}, {...}])
- * It would add a bunch of services to service store, and 
+ * It would add a bunch of services to service store, and
  * add ids to services field of "thing_1" of thing_store
  * @param {String} parent_store_name   e.g. thing, hub, ...
  * @param {String} parent_id           id of the entity in parent store
@@ -323,14 +325,14 @@ EntityManager.prototype.raw_remove_children$ = function(parent_store_name, paren
  * add a new hub into the store.
  * make sure the hubid nt exist before.
  * it triggers the em_changed.
- * @param  {Object} hub_obj 
+ * @param  {Object} hub_obj
  * @return {Promise}  resolve: {
  *                               list: orgnaized list
  *                               time: {
  *                                      last:
  *                                      now:
  *                                     }
- *                             }      
+ *                             }
  */
 EntityManager.prototype.hub__add$ = function(hub_obj) {
   var changed_list = [];
@@ -349,14 +351,14 @@ EntityManager.prototype.hub__add$ = function(hub_obj) {
  * remove the hub and all entities related to the hub.
  * if the hub is not exist, just delete any way.
  * it triggers the em_changed.
- * @param  {String} hubid        
+ * @param  {String} hubid
  * @return {Promise}   resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }            
+ *                                 }
  */
 EntityManager.prototype.hub__remove$ = function(hub_id) {
   var changed_list = [];
@@ -405,15 +407,15 @@ EntityManager.prototype.hub__list_things$ = function(hub_id) {
  * make sure the thing not exist befor.
  * the dir name is thingbundle_path/new_things_by_user/thing.name
  * it will alse change the item "things" in hub_object
- * @param {Object} thing_obj            
- * @param {String} thingbundle_path 
+ * @param {Object} thing_obj
+ * @param {String} thingbundle_path
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }       
+ *                                 }
  */
 EntityManager.prototype.thing__add_hope_thing$ = function(thing_obj, thingbundle_path) {
   var changed_list = [];
@@ -428,15 +430,50 @@ EntityManager.prototype.thing__add_hope_thing$ = function(thing_obj, thingbundle
 };
 
 /**
+ * install hope_thing into both store and harddisk.
+ * make sure the thing not exist befor.
+ * it will alse change the item "things" in hub_object
+ * @param {String} name
+ * @param {String} thingbundle_path
+ * @return {Promise}
+ * resolve:
+ *    {
+ *       list: orgnaized list
+ *       time: {
+ *           last:
+ *           now:
+ *       }
+ *    }
+ */
+
+EntityManager.prototype.thing__install_hope_thing$ = function(name, version, thingbundle_path, hub_id) {
+  var changed_list = [];
+  var self = this;
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return Thing.install_hope_thing$(name, version, thingbundle_path, hub_id, self, changed_list)
+      .then(function() {
+        var spec_bundle = {
+          id: "SpecBundle" + hub_id,
+          name: "default_bundle"
+        };
+        self.thing__load_from_bundle$(thingbundle_path + "/" + name, spec_bundle, hub_id, self, changed_list);
+      }).then(function() {
+        return em_changed(self, changed_list);
+      });
+  },10000, false);
+};
+
+/**
  * update the exsiting hope_thing in both store and hardisk
- * @param {Object} thing_obj   json object of thing         
+ * @param {Object} thing_obj   json object of thing
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }    
+ *                                 }
  */
 EntityManager.prototype.thing__update_hope_thing$ = function(thing_obj) {
   var changed_list = [];
@@ -453,14 +490,14 @@ EntityManager.prototype.thing__update_hope_thing$ = function(thing_obj) {
 /**
  * remove the hope_thing. including thing, service in both store/harddisk
  * and services' own specs in store.
- * @param  {String} thing_id     
+ * @param  {String} thing_id
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }                
+ *                                 }
  */
 EntityManager.prototype.thing__remove_hope_thing$ = function(thing_id) {
   var changed_list = [];
@@ -489,7 +526,7 @@ EntityManager.prototype.thing__remove_hope_thing$ = function(thing_id) {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }  
+ *                                 }
  */
 EntityManager.prototype.service__add_hope_service$ = function(service_obj, specbundle) {
   var changed_list = [];
@@ -503,14 +540,47 @@ EntityManager.prototype.service__add_hope_service$ = function(service_obj, specb
   }, 10000, false);
 };
 
+/**
+ * install hope_service into both store and harddisk.
+ * make sure the service not exist befor.
+ * it will alse change the item "things" in hub_object
+ * @param {String} name
+ * @param {String} thing_id
+ * @param {Object} specbundle
+ *  {
+ *     id:
+ *     name:
+ *  },
+ *  the specbundle to store the service's own spec.if it not exist, create new one
+ * @return {Promise}
+ * resolve:
+ *    {
+ *       list: orgnaized list
+ *       time: {
+ *           last:
+ *           now:
+ *       }
+ *    }
+ */
+EntityManager.prototype.thing__install_hope_service$ = function(name, version, thing_id, spec_bundle) {
+  var changed_list = [];
+  var self = this;
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return Thing.install_hope_service$(name, version, thing_id, spec_bundle, self, changed_list)
+      .then(function() {
+        return em_changed(self, changed_list);
+      });
+  },10000, false);
+};
 
 /**
  * update the exsiting hope_service.
- * It will change the service in both store and harddisk, 
+ * It will change the service in both store and harddisk,
  * and may change the spec/specbundle in store if the service.spec is object
  *   1, if the old_service's spec is own_spec, remove it
  *   2, create new spec and add
- * @param  {Object} service_obj      
+ * @param  {Object} service_obj
  * @param  {Object} specbundle   {
  *                                id:
  *                                name:
@@ -522,7 +592,7 @@ EntityManager.prototype.service__add_hope_service$ = function(service_obj, specb
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }  
+ *                                 }
  */
 EntityManager.prototype.service__update_hope_service$ = function(service_obj, specbundle) {
   var changed_list = [];
@@ -540,14 +610,14 @@ EntityManager.prototype.service__update_hope_service$ = function(service_obj, sp
 /**
  * remove hope service, including the own_spec, service(store/harddisk),
  * and chang the thing.services
- * @param  {String} service_id   
+ * @param  {String} service_id
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }               
+ *                                 }
  */
 EntityManager.prototype.service__remove_hope_service$ = function(service_id) {
   var changed_list = [];
@@ -571,7 +641,7 @@ EntityManager.prototype.thing__add_with_services$ = function(thing_obj) {
       return em_changed(self, changed_list);
     });
   }, 10000, false);
-}; 
+};
 
 
 /**
@@ -620,7 +690,7 @@ EntityManager.prototype.thing__load_from_bundle$ = function(bundle_path, specbun
 EntityManager.prototype.thing__load_grove_thing_via_login$ = function(grove_config, hub_id) {
   var self = this;
   return GroveThing.load_grove_thing_via_login$(grove_config, hub_id, self);
-}
+};
 
 EntityManager.prototype.thing__add_grove_thing$ = function(thing_id, thing_name, grove_config, hub_id) {
   var changed_list = [];
@@ -639,15 +709,15 @@ EntityManager.prototype.thing__add_grove_thing$ = function(thing_id, thing_name,
  * 1, the thing itself is set
  * 2, the services belong to the thing are set
  * it triggers the em_changed.
- * @param  {String}  thing_id    
- * @param  {Boolean} connect_status     
+ * @param  {String}  thing_id
+ * @param  {Boolean} connect_status
  * @return {Promise} resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }         
+ *                                 }
  */
 EntityManager.prototype.thing__set_connect$ = function(thing_id, connect_status) {
   var changed_list = [];
@@ -667,7 +737,7 @@ EntityManager.prototype.thing__set_connect$ = function(thing_id, connect_status)
  * 2, delete the thing in thing_store.
  * 3, delete the thing from hub.things.
  * it triggers the em_changed.
- * @param  {String} thingid   
+ * @param  {String} thingid
  * @return {Promise} resolve: {
  *                             list: orgnaized list
  *                             time: {
@@ -719,6 +789,19 @@ EntityManager.prototype.thing__get_hub$ = function(thing_id) {
 };
 
 
+EntityManager.prototype.service__load_nodered_from_bundle$ = function(bundle_path, specbundle, hub_id) {
+  var changed_list = [];
+  var self = this;
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return NodeRedThing.load_nodered_service$(bundle_path, specbundle, hub_id, self, changed_list)
+    .then(function() {
+      return em_changed(self, changed_list);
+    });
+  }, 10000, false);
+};
+
+
 EntityManager.prototype.service__get$ = function(service_ids) {
   if (!_.isArray(service_ids)) {
     return this.service_store.get$(service_ids);
@@ -759,9 +842,10 @@ EntityManager.prototype.service__get_hub$ = function(service_id) {
   });
 };
 
+
 /**
  * list service's files
- * @param  {String} service_id        
+ * @param  {String} service_id
  * @return {Promise}            resolve: {
  *                                         expected: string array. the expected files, init.js, start.js ...
  *                                         exsiting: string array. all exsiting files in the service folder,
@@ -775,8 +859,8 @@ EntityManager.prototype.service__list_files$ = function(service_id) {
 
 /**
  * read the content of the target service file
- * @param  {String} service_id 
- * @param  {String} file_path  the relative path to serive folder      
+ * @param  {String} service_id
+ * @param  {String} file_path  the relative path to serive folder
  * @return {Promise}            resolve: the content of the target file
  */
 EntityManager.prototype.service__read_file$ = function(service_id, file_path) {
@@ -785,10 +869,10 @@ EntityManager.prototype.service__read_file$ = function(service_id, file_path) {
 
 /**
  * write the service file.
- * @param  {String} service_id 
+ * @param  {String} service_id
  * @param  {String} file_path  the relative path to serive folder
- * @param  {String} content           
- * @return {Promise}           
+ * @param  {String} content
+ * @return {Promise}
  */
 EntityManager.prototype.service__write_file$ = function(service_id, file_path, content) {
   var self = this;
@@ -799,14 +883,53 @@ EntityManager.prototype.service__write_file$ = function(service_id, file_path, c
 
 /**
  * remove the service file
- * @param  {String} service_id 
+ * @param  {String} service_id
  * @param  {String} file_path  the relative path to serive folder
- * @return {Promise}           
+ * @return {Promise}
  */
 EntityManager.prototype.service__remove_file$ = function(service_id, file_path) {
    var self = this;
   return this.make_lock().lock_as_promise$(function() {
     return Thing.remove_service_file$(service_id, file_path, self);
+  });
+};
+
+/**
+ * publish the service as npm package
+ * @param  {String} service_id
+ * @param  {String} package_json
+ * @return {Promise}
+ */
+EntityManager.prototype.service__publish$ = function(service_id, package_json, settings) {
+  var self = this;
+  return this.make_lock().lock_as_promise$(function() {
+    return Thing.publish_hope_service$(service_id, package_json, settings, self);
+  });
+};
+
+/**
+ * install npm package under the service directory
+ * @param  {String} service_id
+ * @param  {String} package_name
+ * @return {Promise}
+ */
+EntityManager.prototype.service__install_package$ = function(service_id, package_name, version) {
+  var self = this;
+  return this.make_lock().lock_as_promise$(function() {
+    return Thing.install_service_package$(service_id, package_name, version, self);
+  });
+};
+
+/**
+ * uninstall npm package under the service directory
+ * @param  {String} service_id
+ * @param  {String} package_name
+ * @return {Promise}
+ */
+EntityManager.prototype.service__uninstall_package$ = function(service_id, package_name) {
+  var self = this;
+  return this.make_lock().lock_as_promise$(function() {
+    return Thing.uninstall_service_package$(service_id, package_name, self);
   });
 };
 
@@ -842,7 +965,7 @@ EntityManager.prototype.spec__load_from_localbundle$ = function(specbundle_path)
  * 2, remove the spec id from bundle.specs
  * 3, re-store the bundle
  * 4, delete the spec in store.
- * @param  {String} spec_id 
+ * @param  {String} spec_id
  * @return {Promise} resolve: {
  *                             list: orgnaized list
  *                             time: {
@@ -931,7 +1054,7 @@ EntityManager.prototype.specbundle__list_specs$ = function(specbundle_id) {
  * 2, in _load_app
  *    2.1: read app.json, create app object based on the json
  *    2.2: load each graph.json, create graph object and push the graph_id into app.graphs.
- *    2.3: set ap_obj, graph_obj, ui_obj into store. 
+ *    2.3: set ap_obj, graph_obj, ui_obj into store.
  * @param  {String} appbundle_path the bundle full path
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
@@ -939,7 +1062,7 @@ EntityManager.prototype.specbundle__list_specs$ = function(specbundle_id) {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }           
+ *                                 }
  */
 EntityManager.prototype.app__load_from_bundle$ = function(appbundle_path, uid) {
   var changed_list = [];
@@ -960,7 +1083,7 @@ EntityManager.prototype.app__load_from_bundle$ = function(appbundle_path, uid) {
  * 3, create "graphs" and "ui" as sub-folders under app dir
  * 4, write app.json.
  * 5, appstore.set$.
- * @param {Object} app_obj    app plainobject from frontend 
+ * @param {Object} app_obj    app plainobject from frontend
  * @param {String} appbundle_path the path of app bundle
  * @return {Promise} resolve: {
  *                             list: orgnaized list
@@ -988,7 +1111,7 @@ EntityManager.prototype.app__add$ = function(app_obj, appbundle_path, uid) {
  * 1, get the old app from appstore, make sure it is exsiting and not bultin
  * 2, get the path from old_app, then re-write the app.json.
  * 3, appstore.set$.
- * @param {Object} app_obj    app plainobject from frontend 
+ * @param {Object} app_obj    app plainobject from frontend
  * @return {Promise}  resolve: {
  *                             list: orgnaized list
  *                             time: {
@@ -1026,14 +1149,14 @@ EntityManager.prototype.app__get$ = function(app_ids) {
  * 3, graphstore.batch_delete all its graphs
  * 4, uistore.batch_delete all its uis
  * 5, appstore.delete
- * @param  {id} app_id     
+ * @param  {id} app_id
  * @return {Promise}   resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }         
+ *                                 }
  */
 EntityManager.prototype.app__remove$ = function(app_id) {
   var changed_list = [];
@@ -1121,6 +1244,38 @@ EntityManager.prototype.graph__add$ = function(graph_obj) {
 };
 
 /**
+ * @param  {Object} graph_obj {
+ *                              nr_flow:[]
+ *                              app: app_id
+ *                            }
+ * @return {[type]}
+ */
+EntityManager.prototype.graph__add_nodered$ = function(graph_obj, builtinhub_id) {
+  var changed_list = [];
+  var self = this;
+  var l = this.make_lock();
+  return l.lock_as_promise$(function() {
+    return NodeRedApp.add_nodered_graph$(graph_obj, builtinhub_id, self, changed_list)
+    .then(function() {
+      return em_changed(self, changed_list);
+    });
+  }, 10000, false);
+};
+
+
+/**
+ * remove the unused nodered config node in the graph
+ * Note that this function will change the parameter "graph"
+ * @param  {Object} graph the graph json
+ * @param  {Array} specs array of specs in the graph
+ * @return {Object}       the graph which removed the unused nodered config node
+ */
+EntityManager.prototype.graph__remove_unused_nr_config_node = function(graph, specs)
+{
+  return NodeRedApp.remove_unused_nr_config_node(graph, specs);
+};
+
+/**
  * Update the exsiting graph, including graphstore and graph_json.
  * 1, get the app_obj from app_store.
  *    make sure it is not builtin, and the graph belongs to the app
@@ -1161,14 +1316,14 @@ EntityManager.prototype.graph__get$ = function(graph_ids) {
  * 2, get the corresponding app_obj from appstore, and makesure it is not builtin
  * 3, remove the graph_id from app.graphs, and re-store the app
  * 4, remove the graph json file, and delete the graph from graphstore.
- * @param  {id} graph_id   
+ * @param  {id} graph_id
  * @return {Promise}    resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }        
+ *                                 }
  */
 EntityManager.prototype.graph__remove$ = function(graph_id) {
   var changed_list = [];
@@ -1267,14 +1422,14 @@ EntityManager.prototype.ui__get$ = function(ui_ids) {
  * 2, get the corresponding app_obj from appstore, and makesure it is not builtin
  * 3, remove the ui_id from app.uis, and re-store the app
  * 4, remove the ui json file, and delete the ui from uistore.
- * @param  {id} ui_id    
+ * @param  {id} ui_id
  * @return {Promise}    resolve: {
  *                             list: orgnaized list
  *                             time: {
  *                                   last:
  *                                   now:
  *                                   }
- *                                 }        
+ *                                 }
  */
 EntityManager.prototype.ui__remove$ = function(ui_id) {
   var changed_list = [];
@@ -1309,8 +1464,8 @@ EntityManager.prototype.ui__get_app$ = function(ui_id) {
 
 /**
  * add a user to the user store
- * @param  {Object} user_obj 
- * @return {Promise}     resolved: user_obj  
+ * @param  {Object} user_obj
+ * @return {Promise}     resolved: user_obj
  */
 EntityManager.prototype.user__add$ = function(user_obj) {
   var self = this;
@@ -1321,7 +1476,7 @@ EntityManager.prototype.user__add$ = function(user_obj) {
 };
 
 /**
- * update the user. 
+ * update the user.
  * @param  {Object} user_obj some updated prop of user, must contain 'id'
  * @return {Promise}     resolved: the updated user
  */
@@ -1334,7 +1489,7 @@ EntityManager.prototype.user__update$ = function(user_obj) {
 
 /**
  * get the user obj
- * @param  {string or array} ids 
+ * @param  {string or array} ids
  * @return {Promise}          resolve: the user obj for obj array
  */
 EntityManager.prototype.user__get$ = function(ids) {

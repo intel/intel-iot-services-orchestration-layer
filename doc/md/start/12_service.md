@@ -22,7 +22,7 @@ For example, the thing directory is *led/*, and its tree graph is as follows.
 
 - *dim* and *switch* are services.
 - *a* is **NOT** service because it is not the first-level directory of *led*. 
-- *b* is **NOT** service because is does not have service.json
+- *b* is **NOT** service because it does not have service.json
 
 `service.json` describes some properties of the service. Except for `service.json`, service directory should have the following JavaScript files.
 

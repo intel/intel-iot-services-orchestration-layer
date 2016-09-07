@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,7 @@ import class_name from "classnames";
 import DragFromLib from "./drag_from_lib.x";
 import Dialog from "../../common/dialog.x";
 import Overlay from "../../common/overlay.x";
+import Publish from "../publish_dlg.x";
 
 export default class Service extends ReactComponent {
   static propTypes = {
@@ -77,7 +78,7 @@ export default class Service extends ReactComponent {
         cursorAt: {top: 0, left: 0},
         helper: this._create_drag_object.bind(this)     // this isn't auto bound
       });
-    } 
+    }
   }
 
   _on_click_edit() {
@@ -96,6 +97,10 @@ export default class Service extends ReactComponent {
         ids: [service.id]
       });
     });
+  }
+
+  _on_publish() {
+    Publish.publish_service(this.props.service);
   }
 
   _on_save_service(data) {
@@ -136,27 +141,31 @@ export default class Service extends ReactComponent {
     var popover =
       <Popover id="PO-svc-menu">
         <MenuItem onSelect={this._on_click_edit}>{__("Edit")}</MenuItem>
+        <MenuItem onSelect={this._on_publish}>{__("Publish")}</MenuItem>
         <MenuItem onSelect={this._on_delete}>{__("Delete")}</MenuItem>
       </Popover>;
 
-    var tooltip_title =
-      <div className="hope-service-tooltip">
-        <span>{name}</span>
-        {service.doc &&
-          <span onClick={this._on_help}
-            className="fa fa-book hope-service-tooltip-icon" />
-        }
-      </div>;
-
-    var tooltip =
-      <Popover id="PO-svc-desc" title={tooltip_title}>
+    var desc = service.$description();
+    if (desc) {
+      var tooltip_title =
         <div className="hope-service-tooltip">
-          {service.$description()}
-        </div>
-      </Popover>;
+          <span>{name}</span>
+          {service.doc &&
+            <span onClick={this._on_help}
+              className="fa fa-book hope-service-tooltip-icon" />
+          }
+        </div>;
+
+      var tooltip =
+        <Popover id="PO-svc-desc" title={tooltip_title}>
+          <div className="hope-service-tooltip">
+            {desc}
+          </div>
+        </Popover>;
+    }
 
     return (
-      <Row className={class_name("hope-panel-lib-view-third-level", 
+      <Row className={class_name("hope-panel-lib-view-third-level",
             "graph-accept", {"error": this.props.error })}
           onClick={this._on_click}
           onDoubleClick={this._on_double_click}>
@@ -164,11 +173,16 @@ export default class Service extends ReactComponent {
         <Col className="text-center" xs={1}>
           <i className={"fa fa-" + (icon ? icon : "cog")}/>
         </Col>
-        <Overlay overlay={tooltip}>
+        {tooltip ?
+          <Overlay overlay={tooltip}>
+            <Col className="wrap-break" xs={7}>
+              {name}
+            </Col>
+          </Overlay> :
           <Col className="wrap-break" xs={7}>
             {name}
           </Col>
-        </Overlay>
+        }
         {!is_builtin && service.type === "hope_service" &&
           <Col className="text-center" xs={1}>
             <Link to={`/composer/${encodeURIComponent(service.id)}`}>

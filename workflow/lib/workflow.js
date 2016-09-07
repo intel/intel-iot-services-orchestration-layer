@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -25,7 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 //////////////////////////////////////////////////////////////////
-// Todo: May converge with ui-dev/graph.js as a lot of basic parsing 
+// Todo: May converge with ui-dev/graph.js as a lot of basic parsing
 // are similar
 //////////////////////////////////////////////////////////////////
 
@@ -47,7 +47,7 @@ var Trace = require("./trace");
 //----------------------------------------------------------------
 
 /**
- * The workflow 
+ * The workflow
  * @param {Object} engine The workflow engine
  * @param {Object} graph_json  Graph json which contains actual graph, bindings etc.
  * @param {Object} specs  An index to query specs used
@@ -64,7 +64,7 @@ function Workflow(engine, graph_json, specs) {
 
   /**
    * Available status are:
-   *   unloaded, loaded, installing, installed, enabling, enabled, 
+   *   unloaded, loaded, installing, installed, enabling, enabled,
    *   disabling, disabled, uninstalling
    * @type {String}
    */
@@ -88,7 +88,7 @@ function Workflow(engine, graph_json, specs) {
   this.trace = new Trace.ExecutionTrace(this);
   this.debug_trace = new Trace.DebugTrace(this);
   this.debug_trace.start();
-  
+
 
   this.bindings = graph_json.bindings || {};
   this.tags = {};
@@ -105,7 +105,7 @@ Workflow.prototype.make_lock = function(key) {
 // i.e. from outport to inport, and then inport queue them and node
 // consume them to form IN object
 // It is different vs. the "messages" exchanged between mnodes, e.g.
-// send by the node implementation to the actual service session on 
+// send by the node implementation to the actual service session on
 // a hub to invoke a particular service
 Workflow.prototype.create_message = function(payload, meta) {
   return {
@@ -122,8 +122,8 @@ Workflow.prototype.create_message = function(payload, meta) {
  * Load the json file into memory
  */
 Workflow.prototype.load = function() {
-  B.check(this.status === "unloaded", 
-    "Loading a workflow that already loaded and has status", this.status);  
+  B.check(this.status === "unloaded",
+    "Loading a workflow that already loaded and has status", this.status);
 
   var self = this;
 
@@ -175,7 +175,7 @@ Workflow.prototype._raw_install$ = function() {
  */
 Workflow.prototype.install$ = function() {
   if (!this.is_in_status("loaded")) {
-    return Promise.reject("Workflow to install is in incorrect status " + this.status);
+    return Promise.reject(new Error("Workflow to install is in incorrect status " + this.status));
   }
   var self = this;
   this.status = "installing";
@@ -191,7 +191,7 @@ Workflow.prototype.install$ = function() {
         // TODO actually uninstall is failed ...
         // So this isn't correct status of loaded
         // if we don't set to loaded, it would be installing
-        self.status = "loaded"; 
+        self.status = "loaded";
         throw e;
       });
     });
@@ -211,7 +211,7 @@ Workflow.prototype._raw_uninstall$ = function() {
 
 Workflow.prototype.uninstall$ = function() {
   if (!this.is_in_status(["installed", "disabled"])) {
-    return Promise.reject("Workflow to uninstall is in incorrect status " + this.status);
+    return Promise.reject(new Error("Workflow to uninstall is in incorrect status " + this.status));
   }
   var self = this;
   var status = this.status;
@@ -228,14 +228,14 @@ Workflow.prototype.uninstall$ = function() {
 
 /**
  * Enable is done in two stages. First, it enables each node so they
- * are ready to accept inputs. Then, it kickoff each node so they start 
+ * are ready to accept inputs. Then, it kickoff each node so they start
  * It tries to rollback (by disabling) if it encounters any error
  * to send out messages
- * @return {Promise} 
+ * @return {Promise}
  */
 Workflow.prototype.enable$ = function() {
   if (!this.is_in_status(["installed", "disabled"])) {
-    return Promise.reject("Workflow to enable is in incorrect status " + this.status);
+    return Promise.reject(new Error("Workflow to enable is in incorrect status " + this.status));
   }
   var self = this;
   var status = this.status;
@@ -274,7 +274,7 @@ Workflow.prototype._raw_disable$ = function() {
 
 Workflow.prototype.disable$ = function() {
   if (!this.is_in_status("enabled")) {
-    return Promise.reject("Workflow to disable is in incorrect status " + this.status);
+    return Promise.reject(new Error("Workflow to disable is in incorrect status " + this.status));
   }
   var self = this;
   this.status = "disabling";
@@ -293,14 +293,14 @@ Workflow.prototype.disable$ = function() {
 
 
 /**
- * Trigger actually invokes the kernel_if_prepare_succeed4(), which tries 
+ * Trigger actually invokes the kernel_if_prepare_succeed4(), which tries
  * to form an IN and then kernel
- * @return {Promise} 
+ * @return {Promise}
  */
 Workflow.prototype.trigger_head_nodes$ = function() {
   if (!this.is_in_status("enabled")) {
-    return Promise.reject("Workflow to trigger head is in status " + this.status +
-      " rather than enabled");
+    return Promise.reject(new Error("Workflow to trigger head is in status " + this.status +
+      " rather than enabled"));
   }
   var self = this;
   return this.make_lock().lock_as_promise$(function() {
@@ -333,7 +333,7 @@ Workflow.prototype.emit_debug = function(node, data) {
   });
 };
 
-// TODO: WE enforce the update of the json as well. THis isn't an elegant way 
+// TODO: WE enforce the update of the json as well. THis isn't an elegant way
 // but works well so far
 Workflow.prototype.set_debug_for_node = function(node_id, is_debug) {
   var n = this.nodes[node_id];
@@ -351,12 +351,12 @@ Workflow.prototype.set_debug_for_node = function(node_id, is_debug) {
 /**
  * Start do three things: install, enable, and then trigger the heads (
  * nodes that has no edges to its inports)
- * @return {Promise} 
+ * @return {Promise}
  */
 Workflow.prototype.start$ = function(is_tracing) {
   if (this.status !== "loaded") {
-    return Promise.reject("Workflow to start is in status " + this.status +
-      " rather than loaded");
+    return Promise.reject(new Error("Workflow to start is in status " + this.status +
+      " rather than loaded"));
   }
   var self = this;
   return this.install$().then(function() {
@@ -376,9 +376,9 @@ Workflow.prototype.start$ = function(is_tracing) {
   }).catch(function(e) {
     if (is_tracing) {
       self.disable_tracing();
-      self.status = "loaded";
-      throw e;
-    } 
+    }
+    self.status = "loaded";
+    throw e;
   });
 };
 
@@ -401,12 +401,12 @@ Workflow.prototype.is_started = function() {
 
 /**
  * Stop disables it and then uninstall
- * @return {Promise} 
+ * @return {Promise}
  */
 Workflow.prototype.stop$ = function() {
   if (!this.is_in_status("enabled")) {
-    return Promise.reject("Workflow to stop is in status " + this.status +
-      " rather than enabled");
+    return Promise.reject(new Error("Workflow to stop is in status " + this.status +
+      " rather than enabled"));
   }
   this.disable_tracing();
   var self = this;

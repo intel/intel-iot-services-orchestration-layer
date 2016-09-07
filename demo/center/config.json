@@ -9,23 +9,23 @@
   "name": "Center",
 
   // Optional - ID of this instance, and need to be globally unique
-  // id: "an_unique_id_here",   
+  // id: "an_unique_id_here",
 
 
   // Defines how it can talk with other instances in the system
   // instances talk with each other through a message broker
-  // typical message brokers could be mqtt etc., or a HTTP broker 
+  // typical message brokers could be mqtt etc., or a HTTP broker
   // implemented by this project. Please check documentation for details
-  
+
   "broker": {
-    "type": "http",       // would use HTTP broker 
+    "type": "http",       // would use HTTP broker
     "broker_url": "http://127.0.0.1:16666",     // URL of that broker
     "my_port": 19999      // assign a TCP/IP port for this instance to talk with broker
                           // if there is multiple instances in same machine
                           // they cann't share the same TCP/IP port
   },
-  
-  /* 
+
+  /*
   // Example of using mqtt broker
   "broker": {
     "type": "mqtt",
@@ -70,7 +70,7 @@
   //            i.e. the UI created by developers
   //            by default it is opened at port 3000
   "web_for_end_users": {
-    "port": 3000 
+    "port": 3000
   },
 
 
@@ -80,6 +80,7 @@
 
   // Optional - Where to store the user profiles, it's ./user.json by default
   "user_json_path": "./user.json",
+
   // Optional - Whether a user need login before use the system
   "authenticate": false,
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,6 +30,9 @@ import Graph from "../../lib/graph";
 import DlgCreate from "./dlg_create.x";
 import DlgOpenGraph from "./dlg_open_graph.x";
 import DlgOpenUI from "./dlg_open_ui.x";
+import Dialog from "../common/dialog.x";
+import Settings from "../user/settings.x";
+
 
 function is_wf_ide() {
   return _.startsWith(location.hash, "#/ide/");
@@ -112,10 +115,6 @@ export default React.createClass({
   _on_workflow() {
     var app = this.state.app;
     if (!is_wf_ide()) {
-      if (app.graphs.length <= 0) {
-        $hope.notify("warning", __("No workflow found"));
-        return;
-      }
       if (app.graphs.length === 1) {
         this.context.router.replace(`/ide/${app.graphs[0].id}`);
         return;
@@ -127,10 +126,6 @@ export default React.createClass({
   _on_ui() {
     var app = this.state.app;
     if (!is_ui_ide()) {
-      if (app.uis.length <= 0) {
-        $hope.notify("warning", __("No UI found"));
-        return;
-      }
       if (app.uis.length === 1) {
         this.context.router.replace(`/ui_ide/${app.uis[0].id}`);
         return;
@@ -240,7 +235,7 @@ export default React.createClass({
       default_type: "User UI"
     });
   },
-
+  
   componentDidMount() {
     $hope.app.stores.app.on("app", this._on_app_event);
     auth.on("auth", this._on_auth_event);
@@ -263,38 +258,25 @@ export default React.createClass({
             margin: "8px 0 0 60px"
           }}/>
         </Link>
-
-        <div style={{
-          position: "absolute",
-          top: 16,
-          right: $hope.ui_auth_required ? 250 : 190
-        }}>
-          <Link to="/">
-            {__("Home")}
-          </Link>
-        </div>
-
-        <div style={{
-          position: "absolute",
-          top: 16,
-          right: $hope.ui_auth_required ? 180 : 120
-        }}>
-          <a href={location.origin + "/app-dev"} target="_blank">
-            {__("Help")}
-          </a>
-        </div>
-
-        <div style={{
-          position: "absolute",
-          top: 16,
-          right: $hope.ui_auth_required ? 100 : 40
-        }}>
+        <Settings></Settings>
+        <div className="hope-nav-bar-navigation">
           {$hope.ui_user_port &&
             <a href={location.protocol + "//" + location.hostname + ":" + $hope.ui_user_port} target="_blank">
-              {__("EndUser")}
+              <i className="fa fa-desktop fa"></i>&nbsp; {__("EndUser")}
             </a>
           }
         </div>
+        <div className="hope-nav-bar-navigation">
+          <a href={location.origin + "/app-dev"} target="_blank">
+            <i className="fa fa-question-circle fa-lg"></i>&nbsp; {__("Help")}
+          </a>
+        </div>
+        <div className="hope-nav-bar-navigation">
+          <Link to="/">
+            <i className="fa fa-home fa-lg"></i>&nbsp; {__("Home")}
+          </Link>
+        </div>
+
 
         {app &&
           <div style={{

@@ -1,0 +1,102 @@
+<!--
+  Copyright 2013, 2015 IBM Corp.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="debug">
+    <div class="form-row">
+        <label for="node-input-typed-complete"><i class="fa fa-list"></i> <span data-i18n="debug.output"></span></label>
+        <input id="node-input-typed-complete" type="text" style="width: 70%">
+        <input id="node-input-complete" type="hidden">
+    </div>
+    <div class="form-row">
+        <label for="node-input-console"><i class="fa fa-random"></i> <span data-i18n="debug.to"></span></label>
+        <select type="text" id="node-input-console" style="display: inline-block; width: 250px; vertical-align: top;">
+            <option value="false" data-i18n="debug.debtab"></option>
+            <option value="true" data-i18n="debug.tabcon"></option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> <span data-i18n="common.label.name"></span></label>
+        <input type="text" id="node-input-name" data-i18n="[placeholder]common.label.name">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="debug">
+    <p>The Debug node can be connected to the output of any node. It can be used to display the output of any message
+    property in the debug tab of the sidebar. The default is to display <code>msg.payload</code>.</p>
+    <p>Each message will also display the timestamp, <code>msg.topic</code> and the type of property chosen to output.</p>
+    <p>The sidebar can be accessed under the options drop-down in the top right corner.</p>
+    <p>The button to the right of the node will toggle its output on and off so you can de-clutter the debug window.</p>
+    <p>If the payload is an object or buffer it will be stringified first for display and indicate that by saying "(Object)" or "(Buffer)".</p>
+    <p>Selecting any particular message will highlight (in red) the debug node that reported it. This is useful if you wire up multiple debug nodes.</p>
+    <p>Optionally can show the complete <code>msg</code> object, and send messages to the console log.</p>
+    <p>In addition any calls to node.warn or node.error will appear here.</p>
+</script>
+
+<script type="text/javascript">
+
+    RED.nodes.registerType('debug',{
+        category: 'output',
+        defaults: {
+            name: {value:""},
+            active: {value:true},
+            console: {value:"false"},
+            complete: {value:"false", required:true}
+        },
+        label: function() {
+            if (this.complete === true || this.complete === "true") {
+                return this.name||"msg";
+            } else {
+                return this.name || "msg." + ((!this.complete || this.complete === "false") ? "payload" : this.complete);
+            }
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        color:"#87a980",
+        inputs:1,
+        outputs:0,
+        icon: "debug.png",
+        oneditprepare: function() {
+            $("#node-input-typed-complete").typedInput({types:['msg', {value:"full",label:RED._("node-red:debug.msgobj"),hasValue:false}]});
+            if (this.complete === "true" || this.complete === true) {
+                // show complete message object
+                $("#node-input-typed-complete").typedInput('type','full');
+            } else {
+                var property = (!this.complete||(this.complete === "false")) ? "payload" : this.complete+"";
+                $("#node-input-typed-complete").typedInput('type','msg');
+                $("#node-input-typed-complete").typedInput('value',property);
+            }
+            $("#node-input-typed-complete").on('change',function() {
+                if ($("#node-input-typed-complete").typedInput('type') === 'msg'
+                    &&
+                    $("#node-input-typed-complete").typedInput('value') === ''
+                ) {
+                    $("#node-input-typed-complete").typedInput('value','payload');
+                }
+            });
+        },
+        oneditsave: function() {
+            var type = $("#node-input-typed-complete").typedInput('type');
+            if (type === 'full') {
+                $("#node-input-complete").val("true");
+            } else {
+                $("#node-input-complete").val($("#node-input-typed-complete").typedInput('value'));
+            }
+        }
+
+    });
+</script>
+

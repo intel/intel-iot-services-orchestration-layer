@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ export default class DlgCreate extends ReactComponent {
 
   constructor(props) {
     super(props);
-  
+
     this.state = {
       type: props.default_type || null,
       name: "",
@@ -74,6 +74,7 @@ export default class DlgCreate extends ReactComponent {
   }
 
   _on_keydown(e) {
+    e.stopPropagation();
     if(e.keyCode === 13 && this.state.name) { // ENTER KEY
       this._on_submit(e);
     }

@@ -1,0 +1,36 @@
+{
+  "name":"file_read",
+  "description":"read file",
+  "spec":{
+    "id":"__HOPE__/builtin/file/file_read",
+    "name":"file_read_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"path",
+        "type":"string",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/file.html#file_read"
+}

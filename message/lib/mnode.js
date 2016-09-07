@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -517,7 +517,7 @@ MNode.prototype._close_rpc_session = function(session_id, result, error) {
       clearTimeout(session.timer);
     }
     if (error) {
-      session.reject(error);
+      session.reject(_.isError(error) ? error : new Error(error));
     } else {
       session.resolve(result);
     }

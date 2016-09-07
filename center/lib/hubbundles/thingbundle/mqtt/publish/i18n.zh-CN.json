@@ -1,0 +1,5 @@
+{
+  "mqtt_publish":"mqtt发布",
+  "pushlish a message to the mqtt broker":"向mqtt broker发布消息",
+  "builtin/mqtt_service.html#mqtt_publish":"builtin/mqtt_service.zh-CN.html#mqtt发布消息服务"
+}

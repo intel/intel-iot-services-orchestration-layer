@@ -1,0 +1,5 @@
+{
+  "twilio_sms":"twilio短信服务",
+  "provide sms service based on twilio":"基于twilio的短信发送服务",
+  "builtin/notifications.html#twilio_sms":"builtin/notifications.zh-CN.html#twilio短信服务"
+}

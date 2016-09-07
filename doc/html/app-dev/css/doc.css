@@ -42,7 +42,6 @@
   margin: 40px 0 20px 0;
 }
 .doc-theme-dark .doc-menu {
-  white-space: nowrap;
   vertical-align: baseline;
   -webkit-border-radius: 0.25em;
   border-radius: 0.25em;
@@ -218,7 +217,6 @@
   margin: 40px 0 20px 0;
 }
 .doc-theme-blue .doc-menu {
-  white-space: nowrap;
   vertical-align: baseline;
   -webkit-border-radius: 0.25em;
   border-radius: 0.25em;

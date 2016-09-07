@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -31,6 +31,7 @@ $hope.register_action({         // params of Action
   "ide/hide/code":    null,   // {}
   "ide/move/panel":   null,   // {panel: ..., left: ..., top: ...}
   "ide/show/palette": null,   // {x: ..., y: ..., onSelect: a_func}
-  "ide/hide/palette": null,   // {},
-  "ide/toggle/sidebar": null  // {button: ...}
+  "ide/hide/palette": null,   // {}
+  "ide/toggle/sidebar": null, // {button: ...}
+  "ide/show/rebind":  null
 });

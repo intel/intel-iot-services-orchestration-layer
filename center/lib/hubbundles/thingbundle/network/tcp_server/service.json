@@ -1,0 +1,41 @@
+{
+  "name":"tcp_server",
+  "description":"create a tcp server",
+  "spec":{
+    "id":"__HOPE__/builtin/network/tcp_server",
+    "name":"tcp_server_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{},
+    "config":[
+      {
+        "name":"ip",
+        "type":"string",
+        "required":true,
+        "default":"0.0.0.0"
+      },
+      {
+        "name":"port",
+        "type":"number",
+        "required":true
+      },
+      {
+        "name": "f(data)",
+        "type": "string",
+        "default":"return data;",
+        "use_editor": true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#tcp_server"
+}

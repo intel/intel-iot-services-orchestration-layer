@@ -2,7 +2,7 @@
 
 The **Widget** is the basic element that consists the UI of end users, its code base is shared by both *ui-dev* and *ui-user* projects.
 
-Every UI divides up the screen as a grid with N rows and 12 columns, the width of each column is about 8.333% width of the browser, and
+Every UI divides the screen as a grid with N rows and 12 columns, the width of each column is about 8.333% width of the browser, and
 the height of row is fixed to 60px (configurable). The number of rows (N) is dependent on the height of the browser.
 
 Each initial instance of widgets occupies 1x1 size on the grid, developers can resize it by drag and drop.

@@ -1,0 +1,5 @@
+{
+  "name": "life",
+  "description":"provide common life service",
+  "is_builtin":true
+}

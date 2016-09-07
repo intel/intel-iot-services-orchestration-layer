@@ -36,7 +36,7 @@ Node.js provides [http module](https://nodejs.org/api/http.html) to support REST
 
 You can also use the famous 3rd party npm module [request](https://github.com/request/request).
 
-If there is a simalar weather service with RESTful API. When it receives the GET request in address `base_url/date`, e.g. `http://www.my_weather_service.com/20160330`, it will response the weather information on that day.
+If there is a similar weather service with RESTful API. When it receives the GET request in address `base_url/date`, e.g. `http://www.my_weather_service.com/20160330`, it will response the weather information on that day.
 * The service has 1 CONFIG item: url. the base url
 * One inport: date. string, e.g. "20160330"
 * One outport: info. string, the detailed weather report.

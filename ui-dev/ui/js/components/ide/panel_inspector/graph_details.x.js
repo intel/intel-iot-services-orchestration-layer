@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -24,14 +24,40 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+import {Button} from "react-bootstrap";
+import Frame from "../../common/frame.x";
+
 export default class GraphDetails extends ReactComponent {
 
+  _on_rebind() {
+    $hope.trigger_action("ide/show/rebind", {}, {});
+  }
+
   render() {
-    //var view = $hope.app.stores.graph.active_view;
+    var view = $hope.app.stores.graph.active_view;
 
     return (
-      <div style={{height: this.props.height + "px", overflowY: "auto", "color": "#f0ad4e", padding: "20px 4px"}}>
-        {__("Select any Node or Edge to view its information")}
+      <div style={{
+          height: this.props.height + "px",
+          overflowY: "auto",
+          padding: "4px 4px"}}>
+        <Frame title={__("Workflow")} expanded={true}>
+          <div style={{height: 100, color: "#f0ad4e", padding: "12px"}}>
+            {__("Select any Node or Edge to view its information")}
+          </div>
+        </Frame>
+
+        {view && view.need_rebinding() &&
+          <Frame title={__("Binding")} expanded={true}>
+            <div style={{color: "#f00", padding: "12px"}}>
+              {__("For this workflow, we have some services that unable to resolve.")}
+            </div>
+            <div className="text-center">
+              <Button bsStyle="primary"
+                onClick={this._on_rebind}>{__("Rebinding")}</Button>
+            </div>
+          </Frame>
+        }
       </div>
     );
   }

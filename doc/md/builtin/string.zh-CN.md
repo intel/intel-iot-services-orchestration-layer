@@ -41,3 +41,21 @@
 `str1`是helloworld， `str2`是low，则out为true。因为“low”包含在“helloworld”中
 
 `str1`是helloworld， `str2`是abc，则out为false。因为“abc”不包含在“helloworld”中
+
+## json
+
+### 描述
+
+提供将字符串转换为json格式。
+
+### 配置
+
+‘method’：字符串，如果‘method’值为‘parse’，将会输出json格式，否则输出原字符串。
+
+### 输入
+
+‘Inout’：字符串，将被解析的字符串。
+
+### 输出
+
+‘out’：对象，解析结果。

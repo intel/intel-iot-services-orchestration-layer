@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -63,7 +63,7 @@ export default class SwitchWidget extends Widget {
       <div className="onoffswitch">
         <input onChange={this._on_change_state}
             type="checkbox"
-            checked={this.$val}
+            checked={!!this.$val}
             className="onoffswitch-checkbox"
             id={w.id + "-onoff"} />
         <label className="onoffswitch-label" htmlFor={w.id + "-onoff"}>

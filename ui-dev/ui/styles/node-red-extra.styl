@@ -1,0 +1,505 @@
+/******************************************************************************
+Copyright (c) 2016, Intel Corporation
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of Intel Corporation nor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*****************************************************************************/
+/**
+ * Copyright 2015 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+.red-ui-typedInput-container {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 34px;
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+  vertical-align: middle;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative; }
+  .red-ui-typedInput-container .red-ui-typedInput-input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    outline: red; }
+  .red-ui-typedInput-container input {
+    width: 100%;
+    padding: 0 0 0 1px !important;
+    margin: 0;
+    height: 32px;
+    border: none !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    box-shadow: none;
+    vertical-align: middle; }
+  .red-ui-typedInput-container.red-ui-typedInput-focus:not(.input-error) {
+    border-color: rgba(85, 150, 230, 0.8) !important; }
+  .red-ui-typedInput-container a {
+    box-sizing: border-box;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    padding: 0 1px 0 5px;
+    display: inline-block;
+    background: #efefef;
+    height: 32px;
+    line-height: 32px;
+    vertical-align: middle;
+    color: #555; }
+    .red-ui-typedInput-container a i {
+      position: relative;
+      top: -3px;
+      margin-right: 4px;
+      margin-top: 1px;
+      vertical-align: middle; }
+    .red-ui-typedInput-container a.disabled {
+      cursor: default; }
+      .red-ui-typedInput-container a.disabled i {
+        color: #bbb; }
+    .red-ui-typedInput-container a span {
+      display: inline-block;
+      height: 100%;
+      padding: 0 1px 0 5px; }
+    .red-ui-typedInput-container a:not(.disabled):hover {
+      text-decoration: none;
+      background: #ddd; }
+      .red-ui-typedInput-container a:not(.disabled):hover span {
+        background: #ddd; }
+    .red-ui-typedInput-container a:focus {
+      text-decoration: none; }
+    .red-ui-typedInput-container a:not(.disabled):active {
+      background: #e3e3e3;
+      text-decoration: none; }
+  .red-ui-typedInput-container a.red-ui-typedInput-option-trigger {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    padding: 0 5px 0 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0; }
+    .red-ui-typedInput-container a.red-ui-typedInput-option-trigger i {
+      position: absolute;
+      right: 4px;
+      top: 7px; }
+    .red-ui-typedInput-container a.red-ui-typedInput-option-trigger span {
+      background: #fff;
+      position: absolute;
+      left: 0;
+      right: 23px;
+      padding: 0 5px 0 5px; }
+
+.red-ui-typedInput-options {
+  border: 1px solid #dddddd;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  border: 1px solid #bbbbbb;
+  background: #fff;
+  z-index: 2000; }
+  .red-ui-typedInput-options a {
+    padding: 6px 18px 6px 6px;
+    display: block;
+    border-bottom: 1px solid #dddddd;
+    color: #333; }
+    .red-ui-typedInput-options a:hover {
+      text-decoration: none;
+      background: #ddd; }
+    .red-ui-typedInput-options a:focus {
+      text-decoration: none; }
+    .red-ui-typedInput-options a:active {
+      background: #e3e3e3;
+      text-decoration: none; }
+
+.red-ui-editableList-container {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+  margin: 0;
+  vertical-align: middle;
+  box-sizing: border-box; }
+  .red-ui-editableList-container .red-ui-editableList-list {
+    list-style-type: none;
+    margin: 0; }
+  .red-ui-editableList-container .red-ui-editabelList-item-placeholder {
+    border: 2px dashed #dddddd !important; }
+  .red-ui-editableList-container li {
+    box-sizing: border-box;
+    position: relative;
+    background: #fff;
+    margin: 0;
+    padding: 8px 0px;
+    border-bottom: 1px solid #dddddd;
+    min-height: 20px; }
+    .red-ui-editableList-container li .red-ui-editableList-item-handle {
+      position: absolute;
+      top: 50%;
+      left: 2px;
+      margin-top: -7px;
+      color: #eee;
+      cursor: move; }
+    .red-ui-editableList-container li .red-ui-editableList-item-remove {
+      position: absolute;
+      top: 50%;
+      right: 0px;
+      margin-top: -9px; }
+    .red-ui-editableList-container li.ui-sortable-helper {
+      border-top: 1px solid #dddddd; }
+    .red-ui-editableList-container li.red-ui-editableList-item-sortable .red-ui-editableList-item-content {
+      margin-left: 22px; }
+    .red-ui-editableList-container li.red-ui-editableList-item-removable .red-ui-editableList-item-content {
+      margin-right: 28px; }
+    .red-ui-editableList-container li.red-ui-editableList-item-deleting {
+      background: #fee; }
+
+#editor-stack {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  bottom: 0px;
+  right: 323px;
+  width: 0;
+  z-index: 5; }
+
+.editor-tray {
+  position: absolute;
+  margin: 0;
+  top: 0;
+  width: auto;
+  right: -1000px;
+  bottom: 0;
+  background: #fff;
+  border-left: 1px solid #dddddd;
+  border-bottom: 1px solid #bbbbbb;
+  box-sizing: content-box; }
+
+.editor-tray.open {
+  right: 0; }
+
+.editor-tray-body-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: auto; }
+
+.editor-tray-body {
+  margin: 20px; }
+
+.editor-tray-header {
+  user-select: none;
+  position: relative;
+  box-sizing: border-box;
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+  background: #f3f3f3; }
+  .editor-tray-header:after {
+    content: "";
+    display: table;
+    clear: both; }
+
+.editor-tray-footer {
+  border-top: 1px solid #bbbbbb;
+  background: #f3f3f3;
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 25px;
+  line-height: 23px;
+  padding: 0 10px;
+  height: 35px; }
+
+.editor-tray-toolbar {
+  text-align: right;
+  padding: 6px; }
+  .editor-tray-toolbar button {
+    user-select: none;
+    box-sizing: border-box;
+    display: inline-block;
+    color: #999;
+    background: #fff;
+    border: 1px solid #ccc;
+    text-align: center;
+    margin: 0;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 6px 14px;
+    margin-right: 8px;
+    color: #999;
+    background: #fff; }
+    .editor-tray-toolbar button.disabled {
+      cursor: default;
+      color: #ccc; }
+    .editor-tray-toolbar button:not(.disabled):hover {
+      text-decoration: none;
+      color: #666;
+      background: #ddd; }
+    .editor-tray-toolbar button:not(.disabled):focus {
+      color: #999;
+      text-decoration: none; }
+    .editor-tray-toolbar button:not(.disabled):active {
+      color: #666;
+      background: #efefef;
+      text-decoration: none; }
+    .editor-tray-toolbar button.selected:not(.disabled) {
+      color: #AAA;
+      background: #efefef;
+      cursor: default; }
+    .button-group .editor-tray-toolbar button:not(:first-child) {
+      border-left: none; }
+    .editor-tray-toolbar button:focus {
+      outline: 1px solid rgba(85, 150, 230, 0.2); }
+    .editor-tray-toolbar button.primary {
+      border-color: #AD1625;
+      color: #eee;
+      background: #AD1625; }
+      .editor-tray-toolbar button.primary.disabled, .editor-tray-toolbar button.primary.ui-state-disabled {
+        background: none;
+        color: #999;
+        border-color: #ccc; }
+      .editor-tray-toolbar button.primary:not(.disabled):not(.ui-button-disabled):hover {
+        border-color: #6E0A1E;
+        background: #6E0A1E;
+        color: #eee !important; }
+    .editor-tray-toolbar button.disabled {
+      background: none; }
+    .editor-tray-toolbar button.disabled:focus {
+      outline: none; }
+    .editor-tray-toolbar button.leftButton {
+      float: left;
+      margin-top: 1px; }
+    .editor-tray-toolbar button:not(.leftButton):not(:last-child) {
+      margin-right: 16px; }
+    .editor-tray-toolbar button.ui-state-disabled {
+      opacity: 1; }
+
+.editor-tray-titlebar {
+  border-bottom: 1px solid #dddddd;
+  padding: 8px; }
+
+.editor-tray-breadcrumbs {
+  list-style-type: none;
+  margin: 0;
+  padding: 0; }
+  .editor-tray-breadcrumbs li {
+    display: inline-block;
+    padding: 0;
+    margin: 0; }
+    .editor-tray-breadcrumbs li:not(:last-child) {
+      color: #999;
+      font-weight: normal; }
+      .editor-tray-breadcrumbs li:not(:last-child):after {
+        display: inline-block;
+        content: '>';
+        margin: 0 5px; }
+
+.editor-tray-resize-handle {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 7px;
+  left: -9px;
+  background: #f3f3f3 url(images/grip.png) no-repeat 50% 50%;
+  cursor: col-resize;
+  border-left: 1px solid #bbbbbb;
+  box-shadow: -1px 0 6px rgba(0, 0, 0, 0.1); }
+
+.editor-tray-resize-button {
+  user-select: none;
+  box-sizing: border-box;
+  display: inline-block;
+  color: #999;
+  background: #fff;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin: 0;
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+  height: 37px;
+  line-height: 35px;
+  border: none;
+  border-bottom: 1px solid #dddddd;
+  margin: 0;
+  background: #f3f3f3;
+  color: #999; }
+  .editor-tray-resize-button.disabled {
+    cursor: default;
+    color: #ccc; }
+  .editor-tray-resize-button:not(.disabled):hover {
+    text-decoration: none;
+    color: #666;
+    background: #ddd; }
+  .editor-tray-resize-button:not(.disabled):focus {
+    color: #999;
+    text-decoration: none; }
+  .editor-tray-resize-button:not(.disabled):active {
+    color: #666;
+    background: #efefef;
+    text-decoration: none; }
+  .editor-tray-resize-button.selected:not(.disabled) {
+    color: #AAA;
+    background: #efefef;
+    cursor: default; }
+  .button-group .editor-tray-resize-button:not(:first-child) {
+    border-left: none; }
+  .editor-tray-resize-button:focus {
+    outline: 1px solid rgba(85, 150, 230, 0.2); }
+
+#editor-shade, #header-shade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(220, 220, 220, 0.5);
+  z-index: 2; }
+
+.dialog-form, #dialog-form, #dialog-config-form {
+  margin: 0;
+  height: 100%; }
+
+.input-error {
+  border-color: #d6615f !important; }
+
+.form-row {
+  clear: both;
+  color: #444;
+  margin-bottom: 12px; }
+
+.form-row label {
+  display: inline-block;
+  width: 100px; }
+
+.form-row input {
+  width: 70%; }
+
+.form-tips {
+  background: #ffe;
+  padding: 8px;
+  border-radius: 2px;
+  border: 1px solid #dddddd;
+  max-width: 450px; }
+
+.form-tips code {
+  border: none;
+  padding: auto; }
+
+.form-tips a {
+  text-decoration: underline; }
+
+.node-text-editor {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  overflow: hidden;
+  font-size: 14px !important;
+  font-family: monospace !important; }
+
+.editor-button {
+  user-select: none;
+  box-sizing: border-box;
+  display: inline-block;
+  color: #999;
+  background: #fff;
+  border: 1px solid #ccc;
+  text-align: center;
+  margin: 0;
+  text-decoration: none;
+  cursor: pointer;
+  height: 34px;
+  line-height: 32px;
+  font-size: 13px;
+  border-radius: 4px;
+  padding: 0 10px; }
+  .editor-button.disabled {
+    cursor: default;
+    color: #ccc; }
+  .editor-button:not(.disabled):hover {
+    text-decoration: none;
+    color: #666;
+    background: #ddd; }
+  .editor-button:not(.disabled):focus {
+    color: #999;
+    text-decoration: none; }
+  .editor-button:not(.disabled):active {
+    color: #666;
+    background: #efefef;
+    text-decoration: none; }
+  .editor-button.selected:not(.disabled) {
+    color: #AAA;
+    background: #efefef;
+    cursor: default; }
+  .button-group .editor-button:not(:first-child) {
+    border-left: none; }
+  .editor-button:focus {
+    outline: 1px solid rgba(85, 150, 230, 0.2); }
+
+.editor-button-small {
+  height: 20px;
+  line-height: 18px;
+  font-size: 10px;
+  border-radius: 2px;
+  padding: 0 5px; }
+
+#node-config-dialog-scope-container {
+  cursor: auto;
+  float: right;
+  font-size: 12px !important;
+  line-height: 35px; }
+
+#node-config-dialog-scope-warning {
+  display: inline-block;
+  margin-right: 5px;
+  color: #AD1625;
+  vertical-align: middle; }
+
+#node-config-dialog-scope {
+  margin: 1px 0 0 0;
+  padding: 0;
+  height: 22px;
+  width: 150px; }
+
+#node-config-dialog-user-count {
+  vertical-align: middle;
+  display: inline-block;
+  margin-right: 20px;
+  float: left;
+  font-size: 12px;
+  line-height: 35px; }

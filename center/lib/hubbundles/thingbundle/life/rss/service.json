@@ -1,0 +1,40 @@
+{
+  "name":"rss",
+  "description":"simple rss reader",
+  "spec":{
+    "id":"__HOPE__/builtin/file/rss",
+    "name":"rss_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"url",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"proxy",
+        "type":"string"
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/life.html#rss"
+}

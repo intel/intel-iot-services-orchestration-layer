@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -89,9 +89,11 @@ export default class WidgetDetails extends ReactComponent {
         break;
       case "number":
         val = parseFloat(e.target.value);
+        val = isNaN(val) ? 0 : val;
         break;
       case "int":
         val = parseInt(e.target.value);
+        val = isNaN(val) ? 0 : val;
         break;
       default:
         val = e.target.value;
@@ -315,7 +317,7 @@ export default class WidgetDetails extends ReactComponent {
         <div className="onoffswitch">
           <input onChange={this._on_change_xxx.bind(this, cfg)}
               type="checkbox"
-              checked={v}
+              checked={!!v}
               className="onoffswitch-checkbox"
               id={cfg.name + "-onoff-" + view.id} />
           <label className="onoffswitch-label" htmlFor={cfg.name + "-onoff-" + view.id}>

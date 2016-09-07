@@ -1,6 +1,6 @@
 # Configuration for Center and Hub 
 
-As mentioned in [Center/Hub/Broker](#getstarted/advanced/basics/2-Center_Hub_Broker), when start a **Center** or a **Hub**, a configuration file is needed (usually `./config.json` by default) to specify the behaviors of **Center** or **Hub**, e.g. which **Broker** it would use, whether it would print out log messages etc.
+As mentioned in [Center/Hub/Broker](#getstarted/advanced/basics/2-Center_Hub_Broker), when start a **Center** or a **Hub**, a configuration file is needed (usually `./config.json` by default) to specify the behaviors of **Center** or **Hub**, e.g. which **Broker** would use it print out log messages etc.
 
 The best way to learn the configuration is to read the `config.json` in demos. It is well commented for every items.
 

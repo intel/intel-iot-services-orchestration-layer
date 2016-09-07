@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -54,6 +54,21 @@ export default class PanelDebugger extends ReactComponent {
     };
   }
 
+  _on_save() {
+    var filename = "trace-list.json";
+    var data = this.props.view.get_debug_traces();
+    var blob = new Blob([JSON.stringify(data, null, "\t")], {"type": "application/octet-stream"});
+    if (navigator.msSaveBlob) {
+      navigator.msSaveBlob(blob, filename);
+    }
+    else {
+      var a = this.refs.a;
+      a.href = window.URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }
+  }
+
   _on_clear() {
     var view = this.props.view;
     view.clear_debug_traces();
@@ -89,7 +104,7 @@ export default class PanelDebugger extends ReactComponent {
 
   _on_debug_event() {
     var view = this.props.view;
-    if (this.state.active && view.get_debug_traces().indexOf(this.state.active) < 0) {
+    if (this.state.active && view && view.get_debug_traces().indexOf(this.state.active) < 0) {
       this.inactive(view);
     }
     this.forceUpdate();
@@ -196,6 +211,12 @@ export default class PanelDebugger extends ReactComponent {
     return (
       <div className="match-parent">
         <div className="hope-debugger-toolbar">
+          {window.Blob && this.props.view &&
+            <Tbb icon={"save"}
+              placement="bottom"
+              tips={__("Click to save the output")}
+              onClick={this._on_save} />
+          }
           <Tbb icon={"ban"}
               placement="bottom"
               tips={__("Click to clear the output")}
@@ -208,6 +229,8 @@ export default class PanelDebugger extends ReactComponent {
               onClick={this._on_filter} />
         </div>
 
+        <a ref="a" target="_self" style={{display: "none"}}/>
+
         {this.state.show_filter &&
           <div className="hope-filter-panel">
             <div>
@@ -215,7 +238,7 @@ export default class PanelDebugger extends ReactComponent {
                   value={this.state.filter}
                   onChange={this._on_change} />
               <input type="checkbox"
-                  value={this.state.is_regex}
+                  checked={this.state.is_regex}
                   onChange={this._on_rx} />{" " + __("Regex")}
             </div>
             <span className={"hope-filter-tag" + (this.state.tag ? "" : " active")}

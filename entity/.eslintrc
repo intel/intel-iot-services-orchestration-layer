@@ -2,7 +2,8 @@
   "env": {
     "browser": false,
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "es6": true
   },
   "rules": {
     "strict": [2, "never"],
@@ -17,7 +18,6 @@
     "consistent-return": [0],
     "no-use-before-define": [0],
     "space-before-blocks": [1, "always"],
-    "space-after-keywords": [1, "always"],
     "comma-spacing": [1, {"before": false, "after": true}],
     "no-unused-vars": [1],
     "no-mixed-spaces-and-tabs": [1],

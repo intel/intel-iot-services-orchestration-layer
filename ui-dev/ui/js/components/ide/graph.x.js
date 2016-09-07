@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -326,9 +326,9 @@ export default class Graph extends ReactComponent {
   }
 
   componentDidMount() {
-    this.props.view.on("node", this._on_node_change); 
-    this.props.view.on("edge", this._on_edge_change); 
-    this.props.view.on("graph", this._on_graph_change); 
+    this.props.view.on("node", this._on_node_change);
+    this.props.view.on("edge", this._on_edge_change);
+    this.props.view.on("graph", this._on_graph_change);
 
     var dom_node = ReactDOM.findDOMNode(this);
 
@@ -356,9 +356,9 @@ export default class Graph extends ReactComponent {
   }
 
   componentWillUnmount() {
-    this.props.view.removeListener("node", this._on_node_change); 
-    this.props.view.removeListener("edge", this._on_edge_change); 
-    this.props.view.removeListener("graph", this._on_graph_change); 
+    this.props.view.removeListener("node", this._on_node_change);
+    this.props.view.removeListener("edge", this._on_edge_change);
+    this.props.view.removeListener("graph", this._on_graph_change);
 
 
     var dom_node = ReactDOM.findDOMNode(this);
@@ -381,11 +381,17 @@ export default class Graph extends ReactComponent {
   render() {
     $hope.log("render", "Graph");
     var view = this.props.view;
-    var edges = [];
+    var edges = [], nodes = [];
 
-    view.graph.edges.forEach(e => {
+    _.forEach(view.graph.edges, e => {
       if (e.source && e.target) {
         edges.push(<Edge key={e.id} ref={e.id} view={view} id={e.id}/>);
+      }
+    });
+
+    _.forEach(view.graph.nodes, n => {
+      if (n.$is_visible()) {
+        nodes.push(<Node key={n.id} ref={n.id} view={view} id={n.id} />);
       }
     });
 
@@ -393,25 +399,22 @@ export default class Graph extends ReactComponent {
     return (
       <div style={{  /* Provide relative for SVG absolute */
           position: "relative"}}>
-        <canvas width={this.props.width} 
+        <canvas width={this.props.width}
                 height={this.props.height}
                 className="hope-graph-background"
                 ref="background-canvas" />
         <svg className={view.has_selections() ? "hope-graph-darken" : "hope-graph" }
-             width={this.props.width} 
-             height={this.props.height} 
+             width={this.props.width}
+             height={this.props.height}
              onClick={this._on_click}>
-          <g ref="master-svg-group" 
+          <g ref="master-svg-group"
              transform={view.get_transform_string()}>
 
             {edges}
 
             <EdgePreview ref="edge-preview" />
 
-            {view.graph.nodes.map(n =>
-              <Node key={n.id} ref={n.id} view={view} id={n.id} />
-            )}
-
+            {nodes}
           </g>
         </svg>
       </div>

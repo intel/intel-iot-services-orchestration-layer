@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import {ExpandSign} from "../../common/tree.x";
 import Dialog from "../../common/dialog.x";
+import {Search_Dialog} from "../../common/search_dialog.x"
 import Overlay from "../../common/overlay.x";
 
 
@@ -81,6 +82,28 @@ export default class Thing extends ReactComponent {
     Dialog.show_create_dialog(__("Create Service"), this._on_create_service);
   }
 
+  _on_click_import() {
+    this.refs.overlay.hide();
+    Search_Dialog.show(__("Search"), this._on_import_service);
+  }
+
+  _on_import_service(name, version) {
+    $hope.notify("info", __("Start Installing. You may need wait for a moment. You can close this modal now"));
+    var thing = this.props.thing;
+    if(!name) {
+      return $hope.notify("error", __("Invalid service name"));
+    }
+    if(_.find(thing.services, ["name", name])) {
+      return $hope.notify("error", __("This name already exists in the thing"));
+    }
+
+    $hope.trigger_action("hub/install/service", {
+      thing_id: thing.id,
+      name: name,
+      version: version
+    });
+  }
+
   _on_create_service(data) {
     var thing = this.props.thing;
     var name = data && data.name && data.name.trim();
@@ -107,6 +130,7 @@ export default class Thing extends ReactComponent {
         <MenuItem onSelect={this._on_click_edit}>{__("Edit")}</MenuItem>
         <MenuItem onSelect={this._on_delete}>{__("Delete")}</MenuItem>
         <MenuItem onSelect={this._on_click_add}>{__("Add Service")}</MenuItem>
+        <MenuItem onSelect={this._on_click_import}>{__("Install Service")}</MenuItem>
       </Popover>;
 
     var tooltip =

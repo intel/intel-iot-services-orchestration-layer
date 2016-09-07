@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ import {Row, Col, Popover, MenuItem} from "react-bootstrap";
 import class_names from "classnames";
 import {ExpandSign} from "../../common/tree.x";
 import Dialog from "../../common/dialog.x";
+import {Search_Dialog} from "../../common/search_dialog.x"
 import Overlay from "../../common/overlay.x";
 
 
@@ -56,6 +57,29 @@ export default class Hub extends ReactComponent {
   _on_click_add_thing() {
     this.refs.overlay.hide();
     Dialog.show_create_dialog(__("Create Thing"), this._on_create_thing);
+  }
+
+  _on_click_import_thing() {
+    // $hope.notify("error", __("test notify"));
+    this.refs.overlay.hide();
+    Search_Dialog.show(__("Search"), this._on_import_thing);
+  }
+
+
+  _on_import_thing(name, version) {
+    var hub = this.props.hub;
+    $hope.notify("info", __("Start Installing. You may need wait for a moment. You can close this modal"));
+    if(!name) {
+      return $hope.notify("error", __("Invalid thing name"));
+    }
+    if (_.find(hub.things, ["name", name])) {
+      return $hope.notify("error", __("This name already exists in the hub"));
+    }
+    $hope.trigger_action("hub/install/thing", {
+      hub_id: hub.id,
+      name: name,
+      version: version
+    });
   }
 
   _on_create_thing(data) {
@@ -87,8 +111,8 @@ export default class Hub extends ReactComponent {
         <Col xs={9}>{hub.name}</Col>
         <Col xs={1} className="text-center">
           <i ref="color"
-            className={class_names("fa fa-circle", 
-            $hope.color(hub.$color_id, "color", "hover"))} 
+            className={class_names("fa fa-circle",
+            $hope.color(hub.$color_id, "color", "hover"))}
             onClick={this._on_click_color_palette} />
         </Col>
         <Col xs={1} className="text-center"

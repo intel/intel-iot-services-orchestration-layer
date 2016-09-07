@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -155,7 +155,7 @@ export default class EdgeDetails extends ReactComponent {
             <Col xs={1}>
               <input type="checkbox"
                 className="hope-inspector-detail-checkbox"
-                checked={edge.no_store}
+                checked={!!edge.no_store}
                 onChange={this._on_change_nostore} />
             </Col>
             <Col xs={2}>

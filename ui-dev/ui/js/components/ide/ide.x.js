@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -24,16 +24,18 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
+import {Row, Col} from "react-bootstrap";
+import DotLoader from "halogen/DotLoader";
 import Graph from "./graph.x";
 import LeftToolbar from "./left_toolbar.x";
 import PanelLibrary from "./panel_library.x";
 import PanelNavigator from "./panel_navigator.x";
 import PanelInspector from "./panel_inspector.x";
 import PanelDebugger from "./panel_debugger.x";
+import PanelError from "./panel_error.x";
 import ColorPalette from "./color_palette.x";
 import Breadcrumb from "../common/breadcrumb.x";
-import DotLoader from "halogen/DotLoader";
-import {Row, Col} from "react-bootstrap";
+import DlgRebind from "./rebind/main_dlg.x";
 
 function toggle(what) {
   $hope.trigger_action("ide/toggle/sidebar", {button: what});
@@ -66,7 +68,8 @@ export default React.createClass({
 
   getInitialState() {
     return {
-      nav_height: 200
+      nav_height: 200,
+      show_rebinding_dlg: false
     };
   },
 
@@ -102,6 +105,12 @@ export default React.createClass({
             return _.find(a.graphs, ["id", view.id]);
           });
         }
+        if (view && e.event === "set_active" && !view.prompted && view.need_rebinding()) {
+          view.prompted = true;
+          this.setState({
+            show_rebinding_dlg: true
+          });
+        }
         break;
 
       case "status/changed":
@@ -132,6 +141,9 @@ export default React.createClass({
         if (this.refs.debug) {
           this.refs.debug.forceUpdate();
         }
+        if (this.refs.err) {
+          this.refs.err.forceUpdate();
+        }
         break;
       case "update/navigator":
         if (this.refs.navigator) {
@@ -142,21 +154,38 @@ export default React.createClass({
         $(this.refs.vsplitter).draggable("option", { disabled: !$hope.app.stores.ide.side_bar.current});
         this.forceUpdate();
         break;
+      case "show/rebind":
+        this.setState({
+          show_rebinding_dlg: true
+        });
+        break;
       default:
         $hope.log("forceUpdate", "IDE");
         this.forceUpdate();
     }
   },
 
+  _update_lint() {
+    _.forOwn($hope.app.stores.graph.views, v => {
+      _.forEach(v.graph.nodes, n => {
+        if (typeof n.$lint === "function") {
+          n.$lint_result = n.$lint();
+        }
+      });
+    });
+  },
+
   _on_spec_event(e) {
     $hope.log("event", "_on_spec_event", e);
     $hope.log("forceUpdate", "IDE");
+    this._update_lint();
     this.forceUpdate();
   },
 
   _on_hub_event(e) {
     $hope.log("event", "_on_hub_event", e);
     $hope.log("forceUpdate", "IDE");
+    this._update_lint();
     this.forceUpdate();
   },
 
@@ -184,7 +213,7 @@ export default React.createClass({
 
   _on_key_down(e) {
     var view = $hope.app.stores.graph.active_view;
-    if (!view || !view.is_editing()) {
+    if (e.target !== document.body || !view || !view.is_editing()) {
       return;
     }
     switch(e.keyCode) {
@@ -208,15 +237,6 @@ export default React.createClass({
           $hope.trigger_action("graph/paste", {graph_id: view.id});
         }
         break;
-    }
-  },
-
-  _on_key_up(e) {
-    var view = $hope.app.stores.graph.active_view;
-    if(!view || !view.is_editing()) {
-      return;
-    }
-    switch(e.keyCode) {
       case 46:      // delete
         if (view.has_selections()) {
           $hope.trigger_action("graph/remove/selected", {graph_id: view.id});
@@ -224,7 +244,6 @@ export default React.createClass({
         break;
     }
   },
-
 
   _on_resize() {
     $hope.app.stores.ide.layout();
@@ -240,8 +259,8 @@ export default React.createClass({
     // we might need to switch the IDE to the graph required
     var id = this.props.params.id;
     var graph_store = $hope.app.stores.graph;
-    return id && (!graph_store.active_view || 
-      graph_store.active_view.id !== id); 
+    return id && (!graph_store.active_view ||
+      graph_store.active_view.id !== id);
   },
 
   componentWillMount() {
@@ -302,10 +321,16 @@ export default React.createClass({
     });
   },
 
+  _on_hide_rebinding_dlg() {
+    this.setState({
+      show_rebinding_dlg: false
+    });
+  },
+
   componentDidMount() {
     document.body.className = $hope.app.stores.ide.theme;
 
-    $hope.app.stores.graph.on("graph", this._on_graph_event); 
+    $hope.app.stores.graph.on("graph", this._on_graph_event);
     $hope.app.stores.ide.on("ide", this._on_ide_event);
     $hope.app.stores.spec.on("spec", this._on_spec_event);
     $hope.app.stores.hub.on("hub", this._on_hub_event);
@@ -313,7 +338,6 @@ export default React.createClass({
     $hope.app.stores.ui.on("ui", this._on_ui_event);
 
     document.addEventListener("keydown", this._on_key_down);
-    document.addEventListener("keyup", this._on_key_up);
 
     window.addEventListener("resize", this._on_resize);
 
@@ -323,7 +347,7 @@ export default React.createClass({
   },
 
   componentWillUnmount() {
-    $hope.app.stores.graph.removeListener("graph", this._on_graph_event);      
+    $hope.app.stores.graph.removeListener("graph", this._on_graph_event);
     $hope.app.stores.ide.removeListener("ide", this._on_ide_event);
     $hope.app.stores.spec.removeListener("spec", this._on_spec_event);
     $hope.app.stores.hub.removeListener("hub", this._on_hub_event);
@@ -331,7 +355,6 @@ export default React.createClass({
     $hope.app.stores.ui.removeListener("ui", this._on_ui_event);
 
     document.removeEventListener("keydown", this._on_key_down);
-    document.removeEventListener("keyup", this._on_key_up);
 
     window.removeEventListener("resize", this._on_resize);
 
@@ -348,11 +371,11 @@ export default React.createClass({
 
     // we only show the active view
     if (view && !this._need_switch_current_view()) {
-      graph = <Graph key={view.id} view={view} 
+      graph = <Graph key={view.id} view={view}
         ref="graph"
-        width={ide_store.graph_svg.width} 
+        width={ide_store.graph_svg.width}
         height={ide_store.graph_svg.height} />;
-    } else { 
+    } else {
       var reason = $hope.app.stores.graph.no_active_reason;
       var reason_content;
       if (reason === "loading") {
@@ -362,7 +385,7 @@ export default React.createClass({
       } else {
         reason_content = <div>{__("Failed to load due to ") + reason}</div>;
       }
-      graph = <div 
+      graph = <div
         className="hope-graph-background"
         style={{
           width: ide_store.graph_svg.width,
@@ -390,6 +413,7 @@ export default React.createClass({
 
     var is_info = ide_store.side_bar.current === "info";
     var is_dbg = ide_store.side_bar.current === "dbg";
+    var is_eh = ide_store.side_bar.current === "err";
 
     $hope.log("render", "IDE");
     return (
@@ -430,6 +454,7 @@ export default React.createClass({
             <PanelNavigator key="n" ref="navigator" onExpand={this._on_expand_nav} />
           ]}
           {is_dbg && <PanelDebugger ref="debug" view={view} />}
+          {is_eh && <PanelError ref="err" />}
         </Col>
         <Col xs={1} className="hope-sidebar-tabs" style={{
           height: ide_store.side_bar.height
@@ -438,6 +463,8 @@ export default React.createClass({
               onClick={toggle.bind(this, "info")}>{__("General")}</div>
           <div className={"hope-sidebar-button" + (is_dbg ? " active" : "")}
               onClick={toggle.bind(this, "dbg")}>{__("Debug")}</div>
+          <div className={"hope-sidebar-button" + (is_eh ? " active" : "")}
+              onClick={toggle.bind(this, "err")}>{__("Error")}</div>
         </Col>
 
         <div ref="vsplitter"
@@ -464,6 +491,12 @@ export default React.createClass({
         }}>
           <i className="fa fa-ellipsis-v" />
         </div>
+
+        {view &&
+          <DlgRebind view={view}
+            show={this.state.show_rebinding_dlg}
+            onHide={this._on_hide_rebinding_dlg} />
+        }
 
         <ColorPalette />
       </Row>

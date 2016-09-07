@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ class HubStore extends EventEmitter {
     super();
 
     this.manager = require("../lib/hub");
-    
+
     $hope.register_action_handler({
       "hub/add/hubs":         this.add_hubs.bind(this),
       "hub/change/color":     this.change_color.bind(this),
@@ -46,7 +46,9 @@ class HubStore extends EventEmitter {
       "hub/update/thing":     this.update_thing.bind(this),
       "hub/create/service":   this.create_service.bind(this),
       "hub/remove/service":   this.remove_service.bind(this),
-      "hub/update/service":   this.update_service.bind(this)
+      "hub/update/service":   this.update_service.bind(this),
+      "hub/install/thing":    this.install_thing.bind(this),
+      "hub/install/service":  this.install_servcie.bind(this)
     });
   }
 
@@ -99,7 +101,7 @@ class HubStore extends EventEmitter {
       }
       if (c.cmd === "set") {
         switch (c.type) {
-          case "hub": 
+          case "hub":
             // TODO in the future we may only add selected hubs instead of all
             changed = _.union(changed, ids);
             break;
@@ -153,7 +155,7 @@ class HubStore extends EventEmitter {
   }
 
   ensure_hubs_loaded$(hub_ids) {
-    var d = $Q.defer();  
+    var d = $Q.defer();
     var unloaded = this.get_all_unloaded_hubs(hub_ids);
     if (unloaded.length === 0) {
       d.resolve();
@@ -199,7 +201,7 @@ class HubStore extends EventEmitter {
   remove_hubs(hub_ids) {
     var ids = [], self = this;
     hub_ids.forEach(id => {
-      if (self.get_hub(id)) {
+      if (self.manager.get_hub(id)) {
         ids.push(id);
         self.manager.remove_hub(id);
       }
@@ -223,7 +225,16 @@ class HubStore extends EventEmitter {
       $hope.check(res && res.id, "HubStore", "create_thing$ returns invalid response");
       $hope.notify("success", __("Thing successfully created!"));
     }).catch(e => {
-      $hope.notify("error", "Failed to create thing!", e.message);
+      $hope.notify("error", __("Failed to create thing!"), e.message);
+    }).done();
+  }
+
+  install_thing(data) {
+    $hope.app.server.hub.install_thing$(data.hub_id, data.name, data.version).then(res => {
+      // $hope.check(res && res.id, "HubStore", "install_thing$ returns invalid response");
+      $hope.notify("success", __("Thing successfully install!"));
+    }).catch(e => {
+      $hope.notify("error", __("Failed to install thing!"), e.message);
     }).done();
   }
 
@@ -231,7 +242,7 @@ class HubStore extends EventEmitter {
     $hope.app.server.thing.remove$(data.ids).then(() => {
       $hope.notify("success", __("Thing successfully deleted!"));
     }).catch(e => {
-      $hope.notify("error", "Failed to remove thing!", e.message);
+      $hope.notify("error", __("Failed to remove thing!"), e.message);
     }).done();
   }
 
@@ -239,7 +250,7 @@ class HubStore extends EventEmitter {
     $hope.app.server.thing.update$(data.thing).then(() => {
       $hope.notify("success", __("Thing successfully updated!"));
     }).catch(e => {
-      $hope.notify("error", "Failed to update thing!", e.message);
+      $hope.notify("error", __("Failed to update thing!"), e.message);
     }).done();
   }
 
@@ -249,7 +260,16 @@ class HubStore extends EventEmitter {
       $hope.check(res && res.id, "HubStore", "create_service$ returns invalid response");
       $hope.notify("success", __("Service successfully created!"));
     }).catch(e => {
-      $hope.notify("error", "Failed to create service!", e.message);
+      $hope.notify("error", __("Failed to create service!"), e.message);
+    }).done();
+  }
+
+  install_servcie(data) {
+    $hope.app.server.thing.install_service$(data.thing_id, data.name, data.version).then(res => {
+      // $hope.check(res && res.id, "HubStore", "install_service$ returns invalid response");
+      $hope.notify("success", __("Service successfully install!"));
+    }).catch(e => {
+      $hope.notify("error", __("Failed to install service!"), e.message);
     }).done();
   }
 
@@ -268,6 +288,9 @@ class HubStore extends EventEmitter {
       $hope.notify("error", __("Failed to update service!"), e.message);
     }).done();
   }
+
+
+
 }
 
 

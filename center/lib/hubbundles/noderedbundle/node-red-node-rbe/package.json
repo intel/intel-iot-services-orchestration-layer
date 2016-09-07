@@ -1,0 +1,57 @@
+{
+  "name": "node-red-node-rbe",
+  "version": "0.1.5",
+  "description": "A Node-RED node that provides report-by-exception (RBE) and deadband capability.",
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/node-red/node-red-nodes/tree/master/function/rbe"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "node-red",
+    "rbe",
+    "bandgap",
+    "deadband"
+  ],
+  "node-red": {
+    "nodes": {
+      "rbe": "rbe.js"
+    }
+  },
+  "author": {
+    "name": "Dave Conway-Jones",
+    "email": "ceejay@vnet.ibm.com",
+    "url": "http://nodered.org"
+  },
+  "_id": "node-red-node-rbe@0.1.5",
+  "scripts": {},
+  "_shasum": "9df9b13b8828c9396319a54ad7c0fbb1a4005e9d",
+  "_from": "node-red-node-rbe@>=0.1.0 <0.2.0",
+  "_npmVersion": "2.14.12",
+  "_nodeVersion": "4.3.0",
+  "_npmUser": {
+    "name": "dceejay",
+    "email": "ceejay@vnet.ibm.com"
+  },
+  "maintainers": [
+    {
+      "name": "dceejay",
+      "email": "ceejay@vnet.ibm.com"
+    },
+    {
+      "name": "knolleary",
+      "email": "nick.oleary@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "9df9b13b8828c9396319a54ad7c0fbb1a4005e9d",
+    "tarball": "https://registry.npmjs.org/node-red-node-rbe/-/node-red-node-rbe-0.1.5.tgz"
+  },
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/node-red-node-rbe-0.1.5.tgz_1458518513420_0.8805124538484961"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/node-red-node-rbe/-/node-red-node-rbe-0.1.5.tgz"
+}

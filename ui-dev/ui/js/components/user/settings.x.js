@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 import auth from "../../lib/auth";
 import Dialog from "../common/dialog.x";
+import {NavDropdown, MenuItem} from "react-bootstrap";
 
 export default React.createClass({
   contextTypes: {
@@ -110,40 +111,72 @@ export default React.createClass({
     auth.removeListener("auth", this._on_auth_event);
   },
 
+  _on_set_proxy() {
+    var self = this;
+    $hope.app.server.config.proxy_get$().then(function(data) {
+      Dialog.show_proxy_set_dialog(__("User Proxy"), self._set_proxy, data);
+    }).catch(function(err) {
+      console.log(err);
+    });
+  },
+
+  _set_proxy(http_proxy, https_proxy,apply_to_all_hub) {
+    http_proxy = http_proxy || "";
+    https_proxy = https_proxy || "";
+    var proxy = {
+      http_proxy: http_proxy,
+      https_proxy: https_proxy,
+      apply_to_all_hub: apply_to_all_hub
+    };
+    $hope.app.server.config.proxy_set$(proxy).then(function() {
+      $hope.notify("success", __("User proxy successfully apply"));
+    });
+  },
+
+  _on_add_npm_user() {
+    var self = this;
+    $hope.app.server.config.npm_account_get$().then(function(data) {
+      Dialog.show_npm_account_dialog(__("Add npm account"), self._add_npm_user, data);
+    }).catch(function(err) {
+      console.log(err);
+    });
+  },
+
+  _add_npm_user(user) {
+    $hope.app.server.config.npm_account_set$(user).then(function() {
+      $hope.notify("success", __("npm account successfully add"));
+    });
+  },
+
   render() {
     return (
-      <div className={"hope-settings" + (this.state.collapsed ? " collapsed" : "")}>
-        
-        <div className="hope-settings-bg"
-            onClick={this._on_toggle} />
-
-        {this.state.logged && auth.get_user_role() === "admin" &&
-          <div className="hope-settings-users hope-settings-item"
-              onClick={this._on_users}>
-            <span className="fa fa-users"/>
-            <span>{" " + __("Users")}</span></div>
+    <div className="hope-nav-bar-navigation first">
+      <i className="fa fa-lg fa-cog">&nbsp;</i>
+      <NavDropdown title={__("User Setting")} id="hope-nav-bar-user-setting">
+        <MenuItem onClick={this._on_set_proxy}>
+          {__("Proxy Settings")}
+        </MenuItem>
+        <MenuItem onClick={this._on_add_npm_user}>
+          {__("NPM Account")}
+        </MenuItem>
+        {$hope.ui_auth_required && this.state.logged && auth.get_user_role() === "admin" &&
+          <MenuItem onClick={this._on_users}>
+            {" " + __("Users")}
+          </MenuItem>
         }
-
-        {this.state.logged &&
-          <div className="hope-settings-chpass hope-settings-item"
-              onClick={this._on_chpass}>
-            <span className="fa fa-lg fa-key"/>
-            <span>{" " + __("Change Password")}</span>
-          </div>
+        {$hope.ui_auth_required && this.state.logged &&
+          <MenuItem onClick={this._on_chpass}>
+            {" " + __("Change Password")}
+          </MenuItem>
         }
-
-        {this.state.logged &&
-          <div className="hope-settings-logout hope-settings-item"
-              onClick={this._on_logout}>
-            <span className="fa fa-lg fa-sign-out" />
-            <span>{" " + __("Logout")}</span>
-          </div>
+        {$hope.ui_auth_required && this.state.logged &&
+          <MenuItem onClick={this._on_logout}>
+            {" " + __("Logout")}
+          </MenuItem>
         }
-
-        <div className="fa fa-lg fa-cog hope-settings-cog hope-settings-item"
-            onClick={this._on_toggle} />
-      </div>
-    );
+      </NavDropdown>
+    </div>
+    )
   }
 });
 

@@ -1,0 +1,35 @@
+{
+  "name": "date_format",
+  "description": "date format in specific format",
+  "spec":{
+    "id": "__HOPE__/builtin/dater/date_format",
+    "name": "date_format_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "date",
+          "type": "any"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "out",
+          "type": "string"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name":"format",
+        "type":"string",
+        "required":true
+      }
+    ]
+  },
+  "ui": {
+
+  },
+  "doc":"builtin/timer.html#date_format"
+}

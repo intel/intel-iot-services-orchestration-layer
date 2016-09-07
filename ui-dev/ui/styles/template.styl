@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -69,6 +69,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: $nav-bar-fg;
   position: relative;
   height: 60px;
+
+  .hope-nav-bar-navigation {
+    float :right;
+    margin-top :16px;
+    margin-right :30px;
+  }
+  li {
+    display :inline;
+  }
+  .first {
+    color: rgb(51,122,183) !important;
+    a {
+      color: rgb(51,122,183);
+    }
+  }
 }
 
 .hope-nav-bar button {
@@ -245,12 +260,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .hope-search-box .input-group-addon{
-  background: $panel-lib-search-bk !important; 
+  background: $panel-lib-search-bk !important;
   padding: 1px 1px !important;
 }
 .hope-search-box .form-control{
-  border-right: 0; 
-  box-shadow: 0 0 0; 
+  border-right: 0;
+  box-shadow: 0 0 0;
   border-color: #ccc;
   background: $panel-lib-search-bk;
 }
@@ -264,7 +279,59 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 0px 2px 2px alpha($panel-lib-search-bk-on, 0.1) inset, 0 0 10px alpha($panel-lib-search-bk-on, 0.6);
   outline: 0 none;
 }
+//thing search result
+.hope-search-result {
+  margin-left :20px !important;
+  margin-right :20px !important;
+  margin-top :-5px;
+  height :200px;
+  overflow :auto;
 
+  .hope-search-result-author {
+    margin-left :10px;
+  }
+  h5 {
+    font-size :15px;
+  }
+  p {
+    font-size :13px;
+  }
+}
+//thing install page
+.hope-package-install-result {
+  margin-left :20px !important;
+  margin-right :20px !important;
+  max-height :300px;
+  overflow auto;
+
+  .hope-package-install-result-package {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #cb3837;
+  }
+  .hope-package-install-result-author {
+    margin-left :10px;
+  }
+  .hope-package-install-result-download {
+    float:right;
+    margin-top: 10px;
+  }
+  .hope-package-install-result-author {
+    color: rgba(0, 0, 0, 0.3);
+  }
+  .hope-package-install-result-version {
+    color: rgba(0, 0, 0, 0.3);
+    margin-bottom: 0;
+  }
+  .hope-package-install-result-version:hover {
+    color: green;
+    cursor: pointer;
+  }
+}
+
+.hope-npm-install-spinner {
+  text-align :center;
+}
 // tabs
 .hope-panel-lib-tabs {
   background-color: $panel-lib-tabs-bk;
@@ -308,8 +375,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: $panel-lib-fg;
 }
 
-.hope-panel-lib-view-first-level, 
-.hope-panel-lib-view-second-level, 
+.hope-panel-lib-view-first-level,
+.hope-panel-lib-view-second-level,
 .hope-panel-lib-view-third-level {
   margin-top: 2px;
   padding-top: 5px;
@@ -530,6 +597,12 @@ div.hope-graph-icon-btn:hover {
   padding-left: 3px;
   border: 1px solid $fg-1;
   border-radius: 3px;
+}
+
+.hope-input-text-warp {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .hope-input-highlighted {
@@ -783,6 +856,15 @@ text {
   100% { fill: $bk-5; }
 }
 
+.hope-graph-nodered-btn {
+  fill-opacity: 1;
+  fill: #87a980;
+  cursor: pointer;
+}
+.hope-graph-nodered-btn:hover {
+  fill-opacity: 0.4;
+}
+
 .hope-graph-node-shadow {
   animation: node-heartbeats 2s linear;
   stroke-width: 0px;
@@ -897,14 +979,14 @@ text {
   width: 100%;
 }
 .hope-ftabs {
-  list-style: none; 
+  list-style: none;
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
-.hope-ftabs li { 
+.hope-ftabs li {
   float: left;
   height: 24px;
   padding: 0 6px;
@@ -926,7 +1008,7 @@ text {
   color: red;
   font-style: italic;
 }
-.hope-ftabs li.active { 
+.hope-ftabs li.active {
   background: $fg-6;
 }
 .hope-ftabs li:not(.active):hover {
@@ -937,7 +1019,7 @@ text {
 }
 
 //////////////////////////////////////////////////////////////////
-// Open Graph/UI Dialog 
+// Open Graph/UI Dialog
 //////////////////////////////////////////////////////////////////
 .hope-open-dialog-list {
   height: 360px;
@@ -1121,7 +1203,7 @@ text {
 }
 
 //////////////////////////////////////////////////////////////////
-// UI 
+// UI
 //////////////////////////////////////////////////////////////////
 .hope-ui-container {
   background: $ui-container-bk;
@@ -1228,7 +1310,7 @@ text {
 
 
 //////////////////////////////////////////////////////////////////
-// Composer 
+// Composer
 //////////////////////////////////////////////////////////////////
 .hope-composer {
   background: $bk-3;
@@ -1242,6 +1324,10 @@ text {
 .hope-composer-file-list {
   overflow-y: auto;
   height: 35%;
+}
+.hope-composer-dependencies {
+  overflow-y: auto;
+  height: 10%;
 }
 .hope-composer-file {
   text-align: center;
@@ -1271,14 +1357,14 @@ text {
 .hope-composer-file.exists:hover .hope-composer-file-trash {
   visibility: visible;
 }
-.hope-composer-file-add {
+.hope-composer-add {
   color: $fg-3;
 }
-.hope-composer-file-add:hover {
+.hope-composer-add:hover {
   color: $fg-6;
 }
 .hope-composer-node {
-  height: 60%;
+  height: 50%;
   overflow-y: auto;
   overflow-x: hidden;
   background: $panel-inspector-details-bk;
@@ -1564,6 +1650,11 @@ text {
   margin: 0px 8px 4px 8px;
   padding: 2px 4px;
 }
+.hope-debugger-label.right {
+  margin: 3px 2px 0 0;
+  float: right;
+  cursor: default;
+}
 .hope-debugger-msg-data {
   color: #111;
   border: 0;
@@ -1574,6 +1665,23 @@ text {
 .hope-debugger-msg.grey .hope-debugger-msg-data {
   color: #222;
   background-color: #505050;
+}
+
+.hope-error-msg-data {
+  background-color: #58687f;
+  color: #fff;
+  border: 0;
+}
+.hope-error-label {
+  display: inline-block;
+  margin: 0px 8px 4px 8px;
+  padding: 2px 4px;
+  font-size: 12px;
+}
+.hope-error-label.right {
+  margin: 3px 2px 0 0;
+  float: right;
+  cursor: default;
 }
 
 .hope-frame {
@@ -1615,6 +1723,109 @@ text {
 
 .toggle-bar:hover {
   color: white;
+}
+
+.rebind-dialog {
+  .node {
+    transition: all 0.5s;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .node.gray {
+    color: #888;
+  }
+  .node:hover {
+    background-color: rgb(220, 245, 243);
+    cursor: pointer;
+  }
+
+  .tips {
+    background-color: #d9edf7;
+    border: 1px solid #bce8f1;
+    color: #31708f;
+  }
+
+
+  .tree-view_arrow {
+    transition: all 0.1s;
+  }
+
+  .modal-content {
+    width: 768px;
+  }
+  .modal-body {
+    height: 510px;
+  }
+
+  .tree-view_children-collapsed {
+    overflow: hidden;
+  }
+
+  .selected .node,
+  .node.selected {
+    font-weight: bold;
+    color: #286090;
+  }
+
+  .rebind-dialog-left {
+    width: 55%;
+    height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    float: left;
+  }
+
+  .rebind-dialog-right {
+    width: 43%;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    float: right;
+  }
+
+  .binding-target {
+    float: right;
+    color: #888;
+    font-weight: normal;
+  }
+}
+
+
+.error-info-dialog {
+  user-select: auto;
+
+  .modal-header,
+  .modal-header .close {
+    background-color: #58687f;
+    color: #d9edf7;
+  }
+
+  .modal-content {
+    width: 840px;
+  }
+  .modal-body {
+    max-height: 510px;
+    background-color: #d9edf7;
+  }
+
+  .item-name {
+    text-align: right;
+    font-weight: bold;
+  }
+
+  pre {
+    max-height: 200px;
+    background: #fff;
+    color: #000;
+    border: 1px solid #bce8f1;
+  }
+}
+
+
+.nodered-cfg-dlg {
+  .modal-content {
+    width: 680px;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////

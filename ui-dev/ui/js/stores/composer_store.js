@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -44,8 +44,11 @@ class ComposerStore extends EventEmitter {
       "composer/list/files":  this.list_files.bind(this),
       "composer/save/spec":  this.save_spec.bind(this),
       "composer/read/file": this.read_file.bind(this),
+      "composer/read/package_json": this.read_package_json.bind(this),
       "composer/write/file": this.write_file.bind(this),
-      "composer/remove/file": this.remove_file.bind(this)
+      "composer/remove/file": this.remove_file.bind(this),
+      "composer/install/package": this.install_package.bind(this),
+      "composer/uninstall/package": this.uninstall_package.bind(this)
     });
   }
 
@@ -54,7 +57,7 @@ class ComposerStore extends EventEmitter {
     $hope.app.server.service.list_files$(req.service_id).then(data => {
       this.emit("composer", {event: "listed/files", data: data});
     }).catch(err => {
-      $hope.notify("error", "Failed to list_files$ for ", req.service_id, 
+      $hope.notify("error", "Failed to list_files$ for ", req.service_id,
         "with error:", err);
     }).done();
   }
@@ -68,7 +71,7 @@ class ComposerStore extends EventEmitter {
     $hope.app.server.service.update$(svc).then(() => {
       this.emit("composer", {event: "saved/spec", id: req.service_id});
     }).catch(err => {
-      $hope.notify("error", "Failed to save_spec$ for ", req.service_id, 
+      $hope.notify("error", "Failed to save_spec$ for ", req.service_id,
         "with error:", err);
     }).done();
   }
@@ -82,12 +85,21 @@ class ComposerStore extends EventEmitter {
     }).done();
   }
 
+  read_package_json(req) {
+    $hope.check(req && req.service_id, "ComposerStore", "read_package_json: invalid arguments");
+    $hope.app.server.service.read_file$(req.service_id, "package.json").then(data => {
+      this.emit("composer", {event: "readed/package_json", name: req.file_path, content: data.content});
+    }).catch(() => {
+      this.emit("composer", {event: "readed/package_json", name: req.file_path, content: ""});
+    }).done();
+  }
+
   write_file(req) {
     $hope.check(req && req.service_id && req.file_path, "ComposerStore", "write_file: invalid arguments");
     $hope.app.server.service.write_file$(req.service_id, req.file_path, req.content).then(() => {
       this.emit("composer", {event: "written/file", name: req.file_path});
     }).catch(err => {
-      $hope.notify("error", "Failed to save_files$ for ", req.service_id, 
+      $hope.notify("error", "Failed to save_files$ for ", req.service_id,
         "with error:", err);
     }).done();
   }
@@ -97,7 +109,25 @@ class ComposerStore extends EventEmitter {
     $hope.app.server.service.remove_file$(req.service_id, req.file_path).then(() => {
       this.emit("composer", {event: "removed/file", name: req.file_path});
     }).catch(err => {
-      $hope.notify("error", "Failed to remove_files$ for ", req.service_id, 
+      $hope.notify("error", "Failed to remove_files$ for ", req.service_id,
+        "with error:", err);
+    }).done();
+  }
+
+  install_package(req) {
+    $hope.app.server.service.install_package$(req.service_id, req.package_name, req.version).then(() => {
+      this.emit("composer", {event: "install/package", name: req.package_name});
+    }).catch(err => {
+      $hope.notify("error", "Failed to install_package$ for ", req.service_id,
+        "with error:", err);
+    }).done();
+  }
+
+  uninstall_package(req) {
+    $hope.app.server.service.uninstall_package$(req.service_id, req.package_name).then(() => {
+      this.emit("composer", {event: "uninstall/package", name: req.package_name});
+    }).catch(err => {
+      $hope.notify("error", "Failed to uninstall_package$ for ", req.service_id,
         "with error:", err);
     }).done();
   }
@@ -111,7 +141,7 @@ class ComposerStore extends EventEmitter {
     this.prev_width = w;
     this.prev_height = h;
 
-    // TODO: 
+    // TODO:
     var navbar_height = 60;
 
     _.merge(this.left_toolbar, {
@@ -130,7 +160,7 @@ class ComposerStore extends EventEmitter {
 
 
     _.merge(this.file_tabs, {
-      top:      navbar_height, 
+      top:      navbar_height,
       left:     this.left_toolbar.width + this.node.width,
       width:    w - this.left_toolbar.width - this.node.width,
       height:   24

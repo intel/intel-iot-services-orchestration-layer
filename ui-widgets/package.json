@@ -11,7 +11,7 @@
   "name": "hope-ui-widgets",
   "homepage": "",
   "description": "Widgets of IoT Services Orchestration Layer",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": ""

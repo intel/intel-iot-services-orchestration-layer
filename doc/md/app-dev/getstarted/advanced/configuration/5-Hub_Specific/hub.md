@@ -4,7 +4,7 @@
 | config field  |   optional  |   available values  |  description |
 |:----------|:------|:----------------|:--------------------------------------|
 | init_script  |  yes     | path to a JavaScript file | The script to run when Hub starts |
-| init_script  |  yes     | path to a JavaScript file | The script to run before the Hub ends |
+| destroy_script  |  yes     | path to a JavaScript file | The script to run before the Hub ends |
 | thingbundle_path  |  yes     | path to a directory, by default it is "./thing_bundle" | Specifies the location where the Thing and Services are stored |
 |heartbeat| yes| a JSON object with interval field | the interval defines by every how many milliseconds a heartbeat message would be sent out from this Hub to Center|
 

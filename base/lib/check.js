@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -30,8 +30,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 var log = require("./log");
-var to_string = require("./to_string");
+var to_string = require("./to_string").to_string;
 var _ = require("lodash");
+
+var exc_hook = null;
+
+/**
+ * set the callback function that will be executed if checking failed
+ * @param  {hook} callback function
+ * @return {any}  previous hook
+ */
+exports.set_exception_hook = function(hook) {
+  var prev = exc_hook;
+  exc_hook = hook;
+  return prev;
+};
 
 
 /**
@@ -41,33 +54,34 @@ var _ = require("lodash");
  * @return {any}           the evaluation result of the condition expression if succeed
  */
 exports.check = function(condition, category) {
-  var ex;
-  try {
-    if (condition) {
-      return condition;
+  if (condition) {
+    return condition;
+  }
+
+  var args = _.toArray(arguments).slice(2);
+  var msg = "", type;
+
+  for (var i = 0; i < args.length; i++) {
+    var a = args[i];
+    if (typeof a === "string" && _.startsWith(a, "__HOPE_ERROR__")) {
+      type = a;
     }
-  } catch(e) {
-    ex = e;
-  }
-  var args = _.toArray(arguments);
-  args.shift();
-  args.shift();
-
-  log.raw("error", 1, category, "<< CHECK >>", args, ex ? "<EXCEPTION>" : "",
-    ex ? ex : "");
-
-  
-  var e_msg = "";
-  if (_.isError(ex)) {
-    e_msg = ex.stack;
-  } else if (ex) {
-    e_msg = ex.toString();
+    else {
+      if (msg.length > 0) {
+        msg += " ";
+      }
+      msg += to_string(a);
+    }
   }
 
-  var e = new Error("[CHECK FAIL] " + args.map(function(a) {
-    return to_string.to_string(a);
-  }).join(" ") + e_msg);
+  log.raw("error", 1, category, "<< CHECK >>", args);
+
+  var e = new Error("[CHECK FAIL] " + msg);
   e.$check = true;
+
+  if (exc_hook !== null) {
+    exc_hook(e, category, msg, type);
+  }
   throw e;
 };
 
@@ -110,4 +124,3 @@ exports.assert = function(condition, category) {
 
   process.exit(1);
 };
-

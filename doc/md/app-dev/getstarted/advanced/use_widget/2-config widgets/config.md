@@ -1,4 +1,4 @@
-## Configurate the widget
+## Config the widget
 
 **Note that**: the `colors` configuration is optinal.
 

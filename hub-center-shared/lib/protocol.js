@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -31,6 +31,7 @@ module.exports = {
   CLAIM_AS_CENTER:    "__HOPE__/CLAIM_AS_CENTER",     // publish as a center
   LOOK_FOR_HUB:       "__HOPE__/LOOK_FOR_HUB",        // ask hubs to publish
   CLAIM_AS_HUB:       "__HOPE__/CLAIM_AS_HUB",        // publish as a hub
+  ANNOUNCE_ERROR:     "__HOPE__/ANNOUNCE_ERROR",
     
 
   CENTER_LEAVE:       "__HOPE__/CENTER_LEAVE",        // the center leaves

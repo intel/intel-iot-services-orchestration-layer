@@ -1,4 +1,4 @@
 {
   "timer":"计时器",
-  "timer control, such as delay and interval":"延时触发，间隔触发等计时器相关服务"
+  "timer control, such as delay and interval and include date service such as date_format and timestamp":"延时触发，间隔触发等计时器相关服务以及日期格式转换,时间戳等日期服务"
 }

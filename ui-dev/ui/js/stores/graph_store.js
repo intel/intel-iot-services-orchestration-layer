@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,12 +27,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////
 //
 // GraphStore is a singleton that manages GraphView.
-// 
-// TODO: Although currently we always assume that only one GraphView in 
-// the system, but we might change (with some refactor) to allow multiple 
+//
+// TODO: Although currently we always assume that only one GraphView in
+// the system, but we might change (with some refactor) to allow multiple
 // graph views be shown.
 //
-// 
+//
 //////////////////////////////////////////////////////////////////
 
 import {EventEmitter} from "events";
@@ -53,9 +53,9 @@ class GraphStore extends EventEmitter {
     function _register(action_names) {
       var items = {};
       _.forOwn(action_names, n => {
-        items[n] = self.handle_action.bind(self, n); 
+        items[n] = self.handle_action.bind(self, n);
       });
-      $hope.register_action_handler(items);    
+      $hope.register_action_handler(items);
     }
     _register([
       "graph/set_active",
@@ -72,7 +72,7 @@ class GraphStore extends EventEmitter {
       "graph/redo",
       "graph/copy",
       "graph/paste",
-      
+
       "graph/move",
       "graph/zoom",
       "graph/fit",
@@ -115,6 +115,9 @@ class GraphStore extends EventEmitter {
     this.no_active_reason = "loading";
     this.ensure_graph_loaded$(id).then(view => {
       this.active_view = view;
+
+      RED.$$nodes = view.graph.$nodes_index;
+
       this.no_active_reason = "";
       view.listen_graph_debug();
       this.emit("graph", {type: "graph", id: id, event: "set_active"});
@@ -124,7 +127,7 @@ class GraphStore extends EventEmitter {
       this.no_active_reason = $hope.error_to_string(err);
       $hope.notify("error", __("Failed to show the workflow because"),
         this.no_active_reason);
-      
+
       this.emit("graph", {type: "graph", id: id, event: "set_active"});
     }).done();
   }
@@ -240,7 +243,7 @@ class GraphStore extends EventEmitter {
   }
 
   ensure_graph_loaded$(id) {
-    var d = $Q.defer();  
+    var d = $Q.defer();
     if (this.view(id)) {
       d.resolve(this.view(id));
     } else {
@@ -258,20 +261,17 @@ class GraphStore extends EventEmitter {
   load_graph$(id) {
     var graph_json;
     return $hope.app.server.graph.get$([id]).then(g => {
-      if (!_.isArray(g) || !g.length === 1 || !g[0]) { 
+      if (!_.isArray(g) || !g.length === 1 || !g[0]) {
         throw new Error("No graph found for this id");
       }
       graph_json = g[0];
       // not return a promise
-      // we only tries to load the hub but it is ok if not all hubs 
+      // we only tries to load the hub but it is ok if not all hubs
       // are loaded. Its result doesn't impact the later pipeline
       $hope.app.stores.hub.ensure_hubs_loaded$(
         Graph.get_all_hub_ids_used(graph_json)).catch((err) => {
           $hope.log.warn("Graph", "load_graph$", "has error when load hubs", err);
-          $hope.trigger_action("notify", {
-            level: "warning",
-            message: err
-          });
+          $hope.notify("warning", err);
         });
     }).then(() => {
       return $hope.app.stores.spec.ensure_specs_loaded$(
@@ -295,6 +295,7 @@ class GraphStore extends EventEmitter {
             view.set_running();
             break;
           default:
+            view.fix_ui_bindings();
             view.set_editing();
             break;
         }
@@ -370,6 +371,9 @@ class GraphStore extends EventEmitter {
     v.unlisten_graph_debug();
 
     if (v === this.active_view) {
+
+      RED.$$nodes = {};
+
       this.active_view = null;
       this.no_active_reason = "closing";
       this.emit("graph", {type: "graph", id: null, event: "set_active"});
@@ -381,19 +385,18 @@ class GraphStore extends EventEmitter {
   remove(ids) {
     ids.map(id => {
       var view = this.view(id);
-      if (view === this.active_view) {
-        this.active_view = null;
-        this.no_active_reason = "closed";
+      if (view) {
+        if (view === this.active_view) {
+          this.active_view = null;
+          this.no_active_reason = "closed";
+        }
+        view.unlisten_graph_debug();
+        delete this.views[id];
       }
-      view.unlisten_graph_debug();
-      delete this.views[id];
     });
     $hope.app.server.graph.remove$(ids).then(data => {
       if (data.error) {
-        $hope.trigger_action("notify", {
-            level: "warning",
-            message: data.error
-          });
+        $hope.notify("warning", data.error);
         return;
       }
 
@@ -465,7 +468,7 @@ class GraphStore extends EventEmitter {
       case "graph/close":
         this.close(data.graph_id);
         break;
-      
+
       case "graph/remove":
         this.remove(data.graphs);
         break;
@@ -496,7 +499,7 @@ class GraphStore extends EventEmitter {
         if (!view) {
           $hope.log.warn("GraphStore", "View not found when handle action", action,
             "with data", data);
-          return; 
+          return;
         }
 
         view.handle_action(action, data);

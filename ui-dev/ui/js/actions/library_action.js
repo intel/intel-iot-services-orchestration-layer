@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -34,5 +34,5 @@ $hope.register_action({         // params of Action
   "library/expand_all":   null,   
   "library/collapse_all":   null,   
   "library/search":   null,      // {search: ...}
-  "library/search_widget_spec": null
+  "library/search_widget_spec": null,
 });

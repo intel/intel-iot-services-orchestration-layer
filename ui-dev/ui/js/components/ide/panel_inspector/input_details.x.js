@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -247,6 +247,7 @@ export default class InputDetails extends ReactComponent {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
     var port = node.in.$port(name);
+    var val;
 
     this.setState({
       [name]: e.target.value
@@ -254,20 +255,23 @@ export default class InputDetails extends ReactComponent {
 
     switch(port.type) {
     case "boolean":
-      port.default = e.target.value.toLowerCase() === "true";
+      val = e.target.value.toLowerCase() === "true";
       break;
     case "float":
     case "double":
     case "number":
-      port.default = Number(e.target.value);
+      val = parseFloat(e.target.value);
+      val = isNaN(val) ? 0 : val;
       break;
     case "int":
-      port.default = parseInt(e.target.value);
+      val = parseInt(e.target.value);
+      val = isNaN(val) ? 0 : val;
       break;
     default:
-      port.default = e.target.value;
+      val = e.target.value;
       break;
     }
+    port.default = val;
     this._change_node();
   }
 

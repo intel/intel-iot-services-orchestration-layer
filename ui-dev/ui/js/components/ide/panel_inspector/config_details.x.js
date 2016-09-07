@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,11 +27,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import {Row, Col} from "react-bootstrap";
 import Dialog from "../../common/dialog.x";
 
+function is_missing(cfg, v) {
+  if (cfg.required) {
+    if (v === undefined) {
+      return true;
+    }
+    if (typeof v === "string" && v === "") {
+      return true;
+    }
+  }
+  return false;
+}
+
 export default class ConfigDetails extends ReactComponent {
 
   static propTypes = {
     id:         React.PropTypes.string.isRequired,
-    onChange:   React.PropTypes.func
+    onChange:   React.PropTypes.func,
+    onFocus:    React.PropTypes.func
   };
 
   constructor(props) {
@@ -53,7 +66,7 @@ export default class ConfigDetails extends ReactComponent {
     var spec = node.$get_spec();
     var items = spec.extra ? spec.config.concat(spec.extra) : spec.config;
     _.forOwn(items, i => {
-      if (i.name) {
+      if (i.name && !_.startsWith(i.name, "_")) {
         var v = i.name in node.config ? node.config[i.name] : i.default;
         states[i.name] = v === undefined || ((i.type === "int" || i.type === "number") && isNaN(v)) ? "" : v;
       }
@@ -75,7 +88,6 @@ export default class ConfigDetails extends ReactComponent {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
     var val;
-
     e.stopPropagation();
     switch(cfg.type) {
       case "boolean":
@@ -83,9 +95,11 @@ export default class ConfigDetails extends ReactComponent {
         break;
       case "number":
         val = parseFloat(e.target.value);
+        val = isNaN(val) ? 0 : val;
         break;
       case "int":
         val = parseInt(e.target.value);
+        val = isNaN(val) ? 0 : val;
         break;
       default:
         val = e.target.value;
@@ -170,12 +184,33 @@ export default class ConfigDetails extends ReactComponent {
     this.set_modified();
     this.forceUpdate();
   }
-
+  
+  _on_focus(cfg, val, e) {
+  	var view = $hope.app.stores.graph.active_view;
+    var node = view.get("node", this.props.id);
+    e.stopPropagation();
+    if (!cfg.use_editor) {
+    	return;	
+    } else {  
+    	  Dialog.show_textarea_dialog(__("write function"), newval=>{
+	    		node.config[cfg.name] = newval;
+	    		this.set_modified();
+	    		this.setState({
+	    			[cfg.name]: newval
+	    		});
+     	  }, val);
+    }
+  }
+  
   render_cfg(cfg) {
     var view = $hope.app.stores.graph.active_view;
     var node = view.get("node", this.props.id);
     var v = this.state[cfg.name];
     var content;
+
+    if (_.startsWith(cfg.name, "_")) {
+      return;
+    }
 
     if (cfg.depend) {
       var fn = new Function("$$", "return " + cfg.depend);
@@ -280,7 +315,7 @@ export default class ConfigDetails extends ReactComponent {
         <div className="onoffswitch">
           <input onChange={this._on_change_xxx.bind(this, cfg)}
               type="checkbox"
-              checked={v}
+              checked={!!v}
               className="onoffswitch-checkbox"
               id={cfg.name + "-onoff-" + view.id} />
           <label className="onoffswitch-label" htmlFor={cfg.name + "-onoff-" + view.id}>
@@ -295,9 +330,10 @@ export default class ConfigDetails extends ReactComponent {
     else {
       content =
         <input type="text"
-            className={"hope-inspector-detail-field" + ((!cfg.required || v) ? "" : " hope-input-highlighted")}
+            className={"hope-inspector-detail-field hope-input-text-warp" + (is_missing(cfg, v) ? " hope-input-highlighted" : "")}
             value={v}
-            onChange={this._on_change_xxx.bind(this, cfg)} />;
+            onChange={this._on_change_xxx.bind(this, cfg)} 
+            onFocus={this._on_focus.bind(this, cfg, v)} />;
     }
     return (
       <Row key={cfg.name} className="hope-panel-details-row text-center border-bottom">

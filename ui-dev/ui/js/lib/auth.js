@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -27,19 +27,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import {EventEmitter} from "events";
 import cookie from "./cookie";
 
-window.CryptoJS = require("browserify-cryptojs");
-require("browserify-cryptojs/components/hmac");
-require("browserify-cryptojs/components/md5");
-require("browserify-cryptojs/components/enc-base64");
-
-function md5(passwd, name) {
-  return CryptoJS.enc.Base64.stringify(CryptoJS.HmacMD5(passwd, name));
-}
-
 class AuthManager extends EventEmitter {
 
   register(data, callback) {
-    data.passwd = md5(data.passwd, data.name);
+    data.passwd = $hope.md5(data.passwd, data.name);
 
     $hope.app.server.user.register$(data).then(() => {
       callback(true);
@@ -49,8 +40,8 @@ class AuthManager extends EventEmitter {
   }
 
   change_passwd(name, passwd, old_passwd, callback) {
-    passwd = md5(passwd, name);
-    old_passwd = md5(old_passwd, name);
+    passwd = $hope.md5(passwd, name);
+    old_passwd = $hope.md5(old_passwd, name);
 
     $hope.app.server.user.change_passwd$(old_passwd, passwd).then(res => {
       callback(res);
@@ -60,7 +51,7 @@ class AuthManager extends EventEmitter {
   }
 
   login(name, pass, cb) {
-    var hash = md5(pass, name);
+    var hash = $hope.md5(pass, name);
     var callback = cb || _.noop;
 
     $hope.app.server.user.login$(name, hash).then(res => {

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#file">file</a><ul>
+<li><a href="#file_read">file_read</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+<li><a href="#file_write">file_write</a><ul>
+<li><a href="#description-1">Description</a></li>
+<li><a href="#config-1">Config</a></li>
+<li><a href="#inport-1">Inport</a></li>
+<li><a href="#outport-1">Outport</a></li>
+<li><a href="#example-1">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="file">file</h1>
+<h2 id="file_read">file_read</h2>
+<h3 id="description">Description</h3>
+<p>This service provides ability to read file content. If the file does not exist, it will output nothing.</p>
+<p>At this page, only supports absolute file path.</p>
+<h3 id="config">Config</h3>
+<p><code>path</code>: String. The file path that you want to read.</p>
+<h3 id="inport">Inport</h3>
+<p><code>switch</code>: Boolean. The switching signal of read file. If it's true, this service will file content according to the config <code>path</code>.</p>
+<h3 id="outport">Outport</h3>
+<p><code>out</code>: String. The file content.</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/file_read.png" />
+
+</div>
+<h2 id="file_write">file_write</h2>
+<h3 id="description-1">Description</h3>
+<p>This service provides ability to write content to file. You can simply override the specific file or just append data to it. If the file does not exist, it will create an empty file and write data to it.When you set the config <code>path</code>, you must ensure the the directory exist.</p>
+<p>At this page, only supports absolute file path.</p>
+<h3 id="config-1">Config</h3>
+<p><code>path</code>: String. The file path that you want to write.</p>
+<p><code>mod</code>: String. The operation mode. If the value equals <code>append</code>, this service will append data to specific file, otherwise it will override it.</p>
+<h3 id="inport-1">Inport</h3>
+<p><code>input</code>: String. The content that will be write to file.</p>
+<h3 id="outport-1">Outport</h3>
+<p><code>out</code>: Boolean. Output <em>true</em> if send write file successfully, otherwise output <em>false</em>.</p>
+<h3 id="example-1">Example</h3>
+<div class="figure">
+<img src="./pic/file_write.png" />
+
+</div>
+</body>
+</html>

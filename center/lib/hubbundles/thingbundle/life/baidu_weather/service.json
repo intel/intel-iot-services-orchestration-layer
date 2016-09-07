@@ -1,0 +1,41 @@
+{
+  "name":"baidu_weather",
+  "description":"provide weather base on baidu weather api",
+  "spec":{
+    "id":"__HOPE__/builtin/file/baidu_weather",
+    "name":"baidu_weather_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"out",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"city",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"key",
+        "type":"string",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/life.html#baidu_weather"
+}

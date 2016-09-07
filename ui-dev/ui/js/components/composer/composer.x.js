@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@ import {Row, Col} from "react-bootstrap";
 import Node from "./node.x";
 import Editor from "./editor.x";
 import Dialog from "../common/dialog.x";
+import {Search_Dialog} from "../common/search_dialog.x"
 
 export default React.createClass({
 
@@ -122,6 +123,12 @@ export default React.createClass({
         this.accepts = _.union(e.data.expected, e.data.exsiting);
         this.exists = e.data.exsiting;
         this.init_spec();
+
+        if (this.exists.indexOf("package.json") >= 0) {
+          $hope.trigger_action("composer/read/package_json", {
+            service_id: this.service_id
+          });
+        }
         break;
 
       case "saved/spec":
@@ -141,6 +148,22 @@ export default React.createClass({
         this._switch(this.files.length - 1);
         break;
 
+      case "readed/package_json":
+        {
+          var json = JSON.parse(e.content);
+          if (_.isObject(json) && _.isObject(json.dependencies)) {
+            this.dependencies = json.dependencies;
+          }
+
+          var f = _.find(this.files, ["name", "package.json"]);
+          if (f && f.editor) {
+            f.content = e.content;
+            f.editor.setValue(f.content, -1);
+            this.set_modified(f, false);
+          }
+        }
+        break;
+
       case "written/file":
         let wf = _.find(this.files, ["name", e.name]);
         if (wf && this.is_modified(wf)) {
@@ -156,6 +179,20 @@ export default React.createClass({
         if (this.expected.indexOf(e.name) < 0) {
           _.pull(this.accepts, e.name);
         }
+        break;
+
+      case "install/package":
+        $hope.trigger_action("composer/read/package_json", {
+          service_id: this.service_id
+        });
+        $hope.notify("success", __("Package successfully installed!"));
+        break;
+
+      case "uninstall/package":
+        $hope.trigger_action("composer/read/package_json", {
+          service_id: this.service_id
+        });
+        $hope.notify("success", __("Package successfully uninstalled!"));
         break;
     }
     this.forceUpdate();
@@ -261,6 +298,10 @@ export default React.createClass({
   _on_save() {
     var modified;
     _.forEach(this.files, f => {
+      if (f.name === "start.js" && f.content.indexOf("done") < 0) {
+        $hope.notify("error", "stat.js: done() must be called to finish the initialization of service!");
+        return false;
+      }
       if (this.is_modified(f)) {
         modified = true;
         return false;
@@ -320,6 +361,33 @@ export default React.createClass({
       this._open(name);
 
     }, "", __("Enter File Name"), __("Create"));
+  },
+
+  _show_search_dlg() {
+    Search_Dialog.show(__("Search NPM Package"), this._on_install_package);
+  },
+
+  _on_install_package(name, version) {
+    $hope.notify("info", __("Start Installing. You may need wait for a moment. You can close this modal now"));
+    $hope.trigger_action("composer/install/package", {
+      service_id: this.service_id,
+      package_name: name,
+      version: version
+    });
+  },
+
+  _uninstall_package_confirmed(name) {
+    $hope.notify("info", __("Start Uninstalling. You may need wait for a moment. You can close this modal now"));
+    $hope.trigger_action("composer/uninstall/package", {
+      service_id: this.service_id,
+      package_name: name
+    });
+  },
+
+  _on_uninstall_package(name) {
+    $hope.confirm(__("Uninstall"),
+      __("Are you sure to uninstall this package?"),
+      "warning", this._uninstall_package_confirmed.bind(this, name));
   },
 
   componentWillMount() {
@@ -410,6 +478,21 @@ export default React.createClass({
     });
   },
 
+  render_dependencies() {
+    return _.map(this.dependencies, (ver, pkg) => {
+      return (
+        <Row className={"hope-composer-file exists"} key={pkg}>
+          <Col xs={11}>
+            {pkg + " @ " + ver}
+          </Col>
+          <Col xs={1}>
+            <i onClick={this._on_uninstall_package.bind(this, pkg)}
+              className="fa fa-trash hope-composer-file-trash" />
+          </Col>
+        </Row>);
+    });
+  },
+
   render() {
     var store = $hope.app.stores.composer;
 
@@ -433,13 +516,26 @@ export default React.createClass({
               active={this.state.active === 0}
               onChanged={this._on_spec_changed} />
           <Row className="hope-composer-separator">
-            {__("Package Files")}
+            <Col xs={11}>
+              {__("Package Files")}
+            </Col>
+            <Col xs={1}>
+              <i onClick={this._on_create_file} className="fa fa-plus hope-composer-add" />
+            </Col>
           </Row>
           <div className="hope-composer-file-list">
             { this.render_file_list() }
-            <Row className="text-center">
-              <i onClick={this._on_create_file} className="fa fa-plus hope-composer-file-add" />
-            </Row>
+          </div>
+          <Row className="hope-composer-separator">
+          <Col xs={11}>
+              {__("Package Dependencies")}
+          </Col>
+          <Col xs={1}>
+            <i onClick={this._show_search_dlg} className="fa fa-plus hope-composer-add" />
+           </Col>
+          </Row>
+          <div className="hope-composer-dependencies">
+            { this.render_dependencies() }
           </div>
         </Col>
         <Col xs={10} style={{width: store.editor.width}}>

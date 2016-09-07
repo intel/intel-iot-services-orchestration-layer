@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#加密服务">加密服务</a><ul>
+<li><a href="#base64加密">base64加密</a><ul>
+<li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
+<li><a href="#输入">输入</a></li>
+<li><a href="#输出">输出</a></li>
+<li><a href="#例子">例子</a></li>
+</ul></li>
+<li><a href="#hash加密">hash加密</a><ul>
+<li><a href="#描述-1">描述</a></li>
+<li><a href="#配置-1">配置</a></li>
+<li><a href="#输入-1">输入</a></li>
+<li><a href="#输出-1">　输出</a></li>
+<li><a href="#例子-1">　例子</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="加密服务">加密服务</h1>
+<h2 id="base64加密">base64加密</h2>
+<h3 id="描述">描述</h3>
+<p>提供简单的base64加密服务</p>
+<h3 id="配置">配置</h3>
+<h3 id="输入">输入</h3>
+<p>‘input’： 字符串， 被加密的数据。</p>
+<h3 id="输出">输出</h3>
+<p>‘out’： 字符串， 加密后的结果。</p>
+<h3 id="例子">例子</h3>
+<div class="figure">
+<img src="./pic/base64.png" />
+
+</div>
+<h2 id="hash加密">hash加密</h2>
+<h3 id="描述-1">描述</h3>
+<p>hash加密是通过md5和sha256哈希函数加密的</p>
+<h3 id="配置-1">配置</h3>
+<p>‘method’： 字符串， 想要使用的哈希函数， 值为‘md5’或者‘sha256’中的一种。</p>
+<h3 id="输入-1">输入</h3>
+<p>‘input’： 字符串， 被哈希加密的数据。</p>
+<h3 id="输出-1">　输出</h3>
+<p>‘out’：　字符串，　被哈希加密后的结果。</p>
+<h3 id="例子-1">　例子</h3>
+<div class="figure">
+<img src="./pic/hash.png" />
+
+</div>
+</body>
+</html>

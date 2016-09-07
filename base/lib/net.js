@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -35,6 +35,19 @@ var _ = require("lodash");
 var log = require("./log").for_category("base/net");
 var to_string = require("./to_string").to_string;
 
+var exc_hook = null;
+
+/**
+ * set the callback function that will be executed if checking failed
+ * @param  {hook} callback function
+ * @return {any}  previous hook
+ */
+exports.set_exception_hook = function(hook) {
+  var prev = exc_hook;
+  exc_hook = hook;
+  return prev;
+};
+
 // path should start with / and not end with /
 function _normalize_path(p) {
   if (p[0] !== "/") {
@@ -63,7 +76,7 @@ function _create_handler(method, p, f) {
       res.send(r);
     }).catch(function(err) {
       log.error("restler_handler", "Failed to handle", req.body, "due to", err);
-      res.status(500).send(to_string(err));
+      res.status(500).send(exc_hook ? exc_hook(err) : err);
     }).catch(function(err) {
       log.error("restler_handler", "Failed to handle", req.body, "due to", err);
     });
@@ -127,7 +140,6 @@ exports.create_restler = function(web_app, root_path, config) {
 };
 
 
-
 function APIHandler(web_app, url_path, config) {
   check(_.isObject(web_app), "base/net/APIHandler", "web_app should be a web app");
   this.app = web_app;
@@ -150,7 +162,7 @@ function APIHandler(web_app, url_path, config) {
     log("api invoked", data);
     var params = data.params || [];
     if (!_.isArray(params)) {
-      log.error("api invoked", "Error caught: params aren't an array");
+      log.error("api invoked", "Error caught: params aren't an array",params);
       res.status(500).send("Error caught: params aren't an array");
       return;
     }
@@ -162,7 +174,7 @@ function APIHandler(web_app, url_path, config) {
       res.send(r);
     }).catch(function(err) {
       log.error("api invoked", "Error caught:", err);
-      res.status(500).send(to_string(err));
+      res.status(500).send(exc_hook ? exc_hook(err) : to_string(err));
     }).catch(function(err) {
       log.error("api_handler", "Failed to handle", data, "due to", err);
     });

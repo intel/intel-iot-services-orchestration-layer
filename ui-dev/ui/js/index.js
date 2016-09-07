@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,14 +26,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 // NOTE: other than external libs like router and react
 // inside this index.js, we use require instead of import
-// This is because we need to strictly control the loading order because 
+// This is because we need to strictly control the loading order because
 // a lot of internal modules can ONLY be loaded after major body of this index.js
 // has been executed, e.g. global.$hope etc. has been set
 // So if use import, these modules would be loaded first and causing error
 import React from "react";
 import ReactDOM from "react-dom";
 
-global._ = require("lodash");
+// lodash already loaded by bower
+//global._ = require("lodash");
+
 global.React = React;
 global.ReactDOM = ReactDOM;
 
@@ -41,6 +43,9 @@ global.ReactDOM = ReactDOM;
 global.$Q = require("q");
 
 global.__ = require("./i18n");
+
+//api from node-red
+global.RED = require("./node-red.js");
 
 // We use this to add bind helpers
 // And most of the components in this app should inheirt from this
@@ -149,7 +154,7 @@ global.$hope = (function() {
 
   ret.inherits = require("inherits");
 
-  
+
   // factory method
   // create_object(F, arg1, arg2)  equals to new F(arg1, arg2)
   ret.create_object = function(ctor, ...args) {
@@ -161,15 +166,15 @@ global.$hope = (function() {
         configurable: true
       }
     });
-    ctor.apply(o, args);    
+    ctor.apply(o, args);
     return o;
   };
-  
+
   // e.g. x = [{id: 1, value: 2}, {id: 2, value: 3}] ==>
   // {1: {id: 1, value: 2}, 2: {id: 2, value 3}}
   // by invoking array_to_hash(x, "id")
   // verify_f is a function to further verify each object
-  // 
+  //
   // only give warnings for illegal objects unless error_instead_of_warn is true
   ret.array_to_hash = function(array, key_name, verify_f, error_instead_of_warn) {
     array = array || [];
@@ -254,7 +259,7 @@ global.$hope = (function() {
       }
       for (i = 0; i < keys.length; i++) {
         var k = keys[i];
-        lines.push(indent + '  ' + k + ': ' + to_string(x[k], depth, 
+        lines.push(indent + '  ' + k + ': ' + to_string(x[k], depth,
           cur_depth + 1, new_indent));
       }
       return "{\n" + lines.join(",\n") + "\n" + indent + "}";
@@ -357,7 +362,7 @@ global.$hope = (function() {
 
   //////////////////////////////////////////////////////////////////
   // FLUX
-  // We assume entire system has one centeral places for Dispatch and for 
+  // We assume entire system has one centeral places for Dispatch and for
   // registration of Actions
   //////////////////////////////////////////////////////////////////
 
@@ -393,7 +398,7 @@ global.$hope = (function() {
   // input is similaras register_action, either for one action (with two params)
   // or register a bunch
   // For one action, it might have multiple handlers
-  // The handler is f(params) 
+  // The handler is f(params)
   ret.register_action_handler = function() {
     if (arguments.length === 2) {
       _dispatcher.register_action_handler(arguments[0], arguments[1]);
@@ -502,7 +507,7 @@ global.$hope = (function() {
     this.url_path = url_path;
     this.event = event;
     this.cb = function() {
-      $hope.log("socket", url_path, event, "with data", _.toArray(arguments));      
+      $hope.log("socket", url_path, event, "with data", _.toArray(arguments));
       cb.apply({}, arguments);
     };
     this.on_error = (e)=> {
@@ -536,21 +541,44 @@ global.$hope = (function() {
 
   ret.listen_system = function(event, cb) {
     return new SocketListener("/__HOPE__SYSTEM__", event, cb);
-  }; 
+  };
 
   ret.listen_app = function(app_id, event, cb) {
     return new SocketListener("/__HOPE__APP__" + app_id, event, cb);
-  }; 
+  };
 
   ret.listen_graph = function(graph_id, event, cb) {
     return new SocketListener("/__HOPE__GRAPH__" + graph_id, event, cb);
   };
 
-  
+  window.CryptoJS = require("browserify-cryptojs");
+  require("browserify-cryptojs/components/hmac");
+  require("browserify-cryptojs/components/md5");
+  require("browserify-cryptojs/components/enc-base64");
+
+  function md5(passwd, salt) {
+    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacMD5(passwd, salt));
+  }
+
+  ret.md5 = md5;
+
+
+
+  var configuration = {};
+
+  ret.register_spec_configuration = function(id, cfg) {
+    configuration[id] = cfg;
+  };
+
+  ret.get_spec_configuration = function(id) {
+    return configuration[id];
+  };
+
+
   //////////////////////////////////////////////////////////////////
   // Done
   //////////////////////////////////////////////////////////////////
-  
+
   return ret;
 
 })();
@@ -595,7 +623,7 @@ $hope.config = require("./config");
 // TODO may reorg it to another place
 $hope.dummy_widget_data_generator = require("./samples/dummy_widget_data_generator");
 
-// setup the graph ide 
+// setup the graph ide
 $hope.app = {
   server:         require("./lib/backend"),
   stores: {
@@ -608,7 +636,8 @@ $hope.app = {
     hub:          require("./stores/hub_store"),
     library:      require("./stores/library_store"),
     app:          require("./stores/app_store"),
-    composer:     require("./stores/composer_store")
+    composer:     require("./stores/composer_store"),
+    error:        require("./stores/error_store")
   }
 };
 

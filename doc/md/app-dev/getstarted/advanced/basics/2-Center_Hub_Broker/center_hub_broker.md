@@ -5,11 +5,11 @@
 
 While the **Hub** manages the **Things** (which is collection of **Services**), **Center** manages all **Hubs**.
 
-The **Center** provides the HTML5 Web IDE so that developers could navigate through a modern browser to create IoT applications. The UI defined by the created IoT Application, is also powered by HTML5 so that end users could also use browser and navitage to **Center** to see the user interface of the application.
+The **Center** provides the HTML5 Web IDE so that developers could navigate through a modern browser to create IoT applications. The UI defined by created IoT Application, is also provided by HTML5 so that end users could also use browser and navitage to **Center** to see the user interface of the application.
 
-The **Workflows**, the logic of the IoT application, which is defined by developers through drag and drop in the IDE, is also stored at **Center** and executed by **Center**. 
+The **Workflows**, is the logic of the IoT application, which is defined by developers through drag and drop in the IDE, is also stored at **Center** and executed by **Center**. 
 
-One thing need to mention is that the **Center** also have an embedded **Hub** in it, which is called as **Builtin Hub**. It provides a lot of builtin **Services** by default, and also hosts the virtual **Things** that represent the UI widgets used by the users.
+One thing need to mention is that the **Center** also have an embedded **Hub** in it, which is called as **Builtin Hub**. It provides a lot of builtin **Services** by default, and also hosts of virtual **Things** that represent the UI widgets used by the users.
 
 ## Broker
 
@@ -37,6 +37,6 @@ There may be some helper scripts such as `./start_mock_demo.sh` etc., which woul
 
 ## Illustration
 
-The figure below illustrates the relationship between Center, Broker and Hubs.
+The picture below illustrates the relationship between Center, Broker and Hubs.
 
 ![](./doc/pic/advanced/basics/Center_Broker_Hub.png){.viewer}

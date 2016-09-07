@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import React from "react";
 import ReactDOM from "react-dom";
 
-global._ = require("lodash");
+// lodash already loaded by bower
+//global._ = require("lodash");
+
 global.React = React;
 global.ReactDOM = ReactDOM;
 
@@ -485,6 +487,16 @@ global.$hope = (function() {
     return new SocketListener("/__HOPE__GRAPH__" + graph_id, event, cb);
   };
 
+  window.CryptoJS = require("browserify-cryptojs");
+  require("browserify-cryptojs/components/hmac");
+  require("browserify-cryptojs/components/md5");
+  require("browserify-cryptojs/components/enc-base64");
+
+  function md5(passwd, salt) {
+    return CryptoJS.enc.Base64.stringify(CryptoJS.HmacMD5(passwd, salt));
+  }
+
+  ret.md5 = md5;
   
   //////////////////////////////////////////////////////////////////
   // Done

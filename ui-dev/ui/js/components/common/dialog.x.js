@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -24,17 +24,11 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-var {Modal, Input, Button} = require("react-bootstrap");
+var {Modal, Input, Button, Tabs, Tab} = require("react-bootstrap");
 
-var dlg_mount_node = null;
-$(function() {
-  function stoppropa(e) {
-    e.stopPropagation(); //TODO: to avoid 'DEL' key propagation
-  }
-  var mount = $("<div></div>").appendTo("body");
-  mount.keydown(stoppropa).keyup(stoppropa).keypress(stoppropa);
-  dlg_mount_node = mount[0];
-});
+import Editor from "../composer/editor.x";
+
+var dlg_mount_node = document.getElementById("hope-modal-dialog");
 
 function _focus_input(selector) {
   var input = $(selector);
@@ -48,9 +42,9 @@ function _focus_input(selector) {
 }
 
 var Dialog = React.createClass({
-  _on_key_up(e) {
-    if (e.keyCode === 13 && this.props.onOK) { // ENTER
-      e.stopPropagation();
+ _on_key_up(e) {
+   if (!this.props.NoCloseByEnterKey && e.keyCode === 13 && this.props.onOK) { // ENTER
+     e.stopPropagation();
       this._on_click_ok();
     }
   },
@@ -248,6 +242,104 @@ Dialog.show_new_user_dialog = function(cb) {
     </Dialog>, dlg_mount_node);
 
   _focus_input("#au_name");
-},
+};
+
+//////////////////////////////////////////////////////////////////
+// textarea Edit dialog
+//////////////////////////////////////////////////////////////////
+
+Dialog.show_textarea_dialog = function(title, ok_cb, txt) {
+  function _on_edit_changed(newValue) {
+    if(txt !== newValue) {
+      txt = newValue;
+    }
+  }
+  function _on_edit_loaded(editor){
+    editor.focus();
+  }
+  ReactDOM.render(
+    <Dialog title={title} NoCloseByEnterKey={true} modal={{backdrop: "static"}}
+    onOK={()=>{ok_cb(txt);} }>
+        <div style={{height: "500px"}} autoFocus="true">
+          <Editor mode="javascript"
+            value={txt || " "}
+            onChange={_on_edit_changed}
+            onLoad={_on_edit_loaded}/>
+        </div>
+    </Dialog>, dlg_mount_node);
+};
+
+Dialog.show_proxy_set_dialog = function(title, ok_cb, proxy) {
+
+    ReactDOM.render(
+      <Dialog title={title} modal={{backdrop: "static"}}
+              okStr = {__("Save")}
+              onOK={() => {
+        ok_cb($("#Dlg_Create_http").val(),$("#Dlg_Create_https").val(), document.getElementById("apply_to_all_hub").checked);
+      }}>
+        <Input type="text"
+               label={__("HTTP proxy")}
+               id="Dlg_Create_http"
+               defaultValue = {proxy['http_proxy']}
+               placeholder={__("Enter HTTP proxy")}/>
+        <Input type="text"
+               label={__("HTTPS proxy")}
+               id="Dlg_Create_https"
+               defaultValue = {proxy['https_proxy']}
+               placeholder={__("Enter HTTPS proxy")}/>
+        <label><input type="checkbox" name="checkbox" id="apply_to_all_hub"></input>&nbsp;&nbsp;{__("Apply to all hub")}</label>
+      </Dialog>, dlg_mount_node);
+};
+
+Dialog.show_npm_account_dialog = function(title, ok_cb, user) {
+  var select_key = 1;
+  ReactDOM.render(
+    <Dialog title={title} modal={{backdrop: "static"}}
+            okStr = {__("Add")}
+            onOK={() => {
+              var user = {};
+              if(select_key === 1){
+                user.type = "username";
+                user.username = $("#add-npm-account-username").val();
+                user.password = $("#add-npm-account-password").val();
+                user.email = $("#add-npm-account-email").val();
+              } else {
+                user.type = "token";
+                user.token = $("#add-npm-account-token").val();
+              }
+              ok_cb(user);
+            }}>
+      <Tabs id="hope-add-npm-account">
+        <Tab  eventKey={1}  onClick={()=>{select_key=1}} title={__("Account")}>
+          <Input type="text"
+                 label={__("User Name")}
+                 id="add-npm-account-username"
+                 defaultValue = {user['username']}
+                 placeholder={__("Enter npm account name")}/>
+          <Input type="password"
+                 label={__("Password")}
+                 id="add-npm-account-password"
+                 defaultValue = {user['password']}
+                 placeholder={__("Enter npm account password")}/>
+          <Input type="text"
+                 label={__("email")}
+                 id="add-npm-account-email"
+                 defaultValue = {user['email']}
+                 placeholder={__("Enter npm account email")}/>
+        </Tab>
+        <Tab  eventKey={2} onClick={()=>{select_key=2}} title={__("Token")}>
+          <Input type="text"
+                 label={__("Token")}
+                 id="add-npm-account-token"
+                 defaultValue = {user['token']}
+                 placeholder={__("Enter npm account token")}/>
+          <div>
+            <a href="https://www.npmjs.com/package/get-npm-token" target="_blank" style={{color: "green"}}>{__("Click Here")}</a>
+            {" " + __("to see how to get your own token")}
+          </div>
+        </Tab>
+      </Tabs>
+    </Dialog>, dlg_mount_node);
+};
 
 module.exports = Dialog;

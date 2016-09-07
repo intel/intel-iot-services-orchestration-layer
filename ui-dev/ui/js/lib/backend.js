@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -25,14 +25,14 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 // Use array for parameters, assuming batch (i.e. sending / returning multiple objects)
-// 
+//
 // Object usually always has id, name, description. Receiver may use the id
 // and then call related functions in interface to get the details
-// 
-// For events, it only returns the type of the event and impacted entity, but 
-// doesn't need to provide more details. It's client that need to use APIs 
+//
+// For events, it only returns the type of the event and impacted entity, but
+// doesn't need to provide more details. It's client that need to use APIs
 // to fetch the updated details for the entities
-// 
+//
 // Object schema
 // app:{
 //   id: ...
@@ -47,32 +47,32 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //     }
 //   }]
 // }
-// 
+//
 // graph: {
 //   status: {...}
 //   graph: the_graph_json
 // }
-// 
+//
 // spec_bundle.list: [ {
 //  id: ...
 //  name: ...
 //  description: ...
-//  
+//
 // }
 // ]
-// 
+//
 // bundle: see samples/spec_bundles.js
-// 
+//
 // hub.list: [ {
 //   id: ...
 //   name: ...
 //   description: ...
 // }
 // ]
-// 
+//
 // hub: see samples/hub.js
-//   
-//   
+//
+//
 
 // For now we only need one implementation of above interface
 var WebBackend = {
@@ -83,7 +83,9 @@ var WebBackend = {
   spec_bundle: {},
   hub: {},
   thing: {},
-  service: {}
+  service: {},
+  package: {},
+  config: {}
 };
 
 function invoke(api) {
@@ -94,23 +96,29 @@ function invoke(api) {
     url: "apis/dev",
     data: JSON.stringify({
       api: api,
-      params:params 
+      params: params
     }),
     contentType: "application/json",
     dataType: "json"
   }).then(function(data) {
-    $hope.log("API", "[Invoke]", api, "\n            [Params]", 
+    $hope.log("API", "[Invoke]", api, "\n            [Params]",
       params, "\n            [Result]", data);
     return data;
   }, function(err) {
-    $hope.log.warn("API", "[Invoke]", api, "\n            [Params]", 
-      params, "\n            [Error]", err.responseText, err);
-    if (err.responseText === "__HOPE_LOGIN_REQUIRED__") {
+    var res = err.responseText;
+    $hope.log.warn("API", "[Invoke]", api, "\n            [Params]",
+      params, "\n            [Error]", res, err);
+    if (res === "__HOPE_LOGIN_REQUIRED__") {
       location.replace("/#/login");
-      return undefined;
+      return;
     }
-    if (err.responseText) {
-      return new Error(err.responseText);
+    if (_.startsWith(res, "__HOPE_ERROR__")) {
+      var res2 = res.substr(14);
+      var msg = __(res2);
+      return new Error(msg === res2 ? msg.replace(/_/g, " ") : msg);
+    }
+    if (res) {
+      return new Error(res);
     }
     return err;
   }));
@@ -118,6 +126,14 @@ function invoke(api) {
 
 WebBackend.get_config$ = function() {
   return invoke("sys.get_config");
+};
+
+WebBackend.get_errors$ = function() {
+  return invoke("sys.errors");
+};
+
+WebBackend.get_nodered_assets$ = function() {
+  return invoke("sys.get_nodered_assets");
 };
 
 WebBackend.user.login$ = function(name, pass) {
@@ -154,6 +170,13 @@ WebBackend.app.list$ = function() {
 
 WebBackend.app.create_graph$ = function(app_id, graph) {
   return invoke("app.create_graph", {
+    app: app_id,
+    graph: graph
+  });
+};
+
+WebBackend.app.create_nr_graph$ = function(app_id, graph) {
+  return invoke("app.create_nr_graph", {
     app: app_id,
     graph: graph
   });
@@ -212,7 +235,7 @@ WebBackend.ui.remove$ = function(ids) {
 WebBackend.graph.get$ = function(ids) {
   if (!_.isArray(ids)) {
     ids = [ids];
-  } 
+  }
   return invoke("graph.get", ids);
 };
 
@@ -241,7 +264,11 @@ WebBackend.graph.debug_trace$ = function(ids, limit) {
 };
 
 WebBackend.graph.set_debug_for_node$ = function(graph_id, node_id, is_debug) {
-  return invoke("graph.set_debug_for_node", {graph_id, node_id, is_debug});
+  return invoke("graph.set_debug_for_node", {
+    graph_id,
+    node_id,
+    is_debug
+  });
 };
 
 WebBackend.graph.status$ = function(ids) {
@@ -262,7 +289,7 @@ WebBackend.spec_bundle.get$ = function(ids) {
 WebBackend.spec_bundle.get_for_specs$ = function(ids) {
   if (!_.isArray(ids)) {
     ids = [ids];
-  } 
+  }
   return invoke("spec_bundle.get_for_specs", ids);
 };
 
@@ -273,7 +300,7 @@ WebBackend.hub.list$ = function() {
 WebBackend.hub.get$ = function(ids) {
   if (!_.isArray(ids)) {
     ids = [ids];
-  } 
+  }
   return invoke("hub.get", ids);
 };
 
@@ -288,6 +315,14 @@ WebBackend.hub.create_thing$ = function(hub_id, name, desc) {
   });
 };
 
+WebBackend.hub.install_thing$ = function(hub_id, name, version) {
+  return invoke("hub.install_thing", {
+    hub: hub_id,
+    name: name,
+    version: version
+  });
+};
+
 WebBackend.thing.remove$ = function(ids) {
   return invoke("thing.remove", ids);
 };
@@ -295,6 +330,7 @@ WebBackend.thing.remove$ = function(ids) {
 WebBackend.thing.update$ = function(thing) {
   return invoke("thing.update", thing);
 };
+
 
 
 
@@ -307,7 +343,7 @@ WebBackend.thing.create_service$ = function(thing_id, name, desc) {
       description: desc,
       spec: {
         id: $hope.uniqueId("SPEC__"),
-        in: {
+        in : {
           "ports": []
         },
         out: {
@@ -315,6 +351,14 @@ WebBackend.thing.create_service$ = function(thing_id, name, desc) {
         }
       }
     }
+  });
+};
+
+WebBackend.thing.install_service$ = function(thing_id, name, version) {
+  return invoke("thing.install_service", {
+    thing: thing_id,
+    name: name,
+    version: version
   });
 };
 
@@ -332,15 +376,70 @@ WebBackend.service.list_files$ = function(service_id) {
 };
 
 WebBackend.service.read_file$ = function(service_id, path) {
-  return invoke("service.read_file", {service_id: service_id, file_path: path});
+  return invoke("service.read_file", {
+    service_id: service_id,
+    file_path: path
+  });
 };
 
 WebBackend.service.write_file$ = function(service_id, path, content) {
-  return invoke("service.write_file", {service_id: service_id, file_path: path, content: content});
+  return invoke("service.write_file", {
+    service_id: service_id,
+    file_path: path,
+    content: content
+  });
 };
 
 WebBackend.service.remove_file$ = function(service_id, path) {
-  return invoke("service.remove_file", {service_id: service_id, file_path: path});
+  return invoke("service.remove_file", {
+    service_id: service_id,
+    file_path: path
+  });
+};
+
+WebBackend.service.publish$ = function(service_id, json) {
+  return invoke("service.publish", {
+    service_id: service_id,
+    package_json: json
+  });
+};
+
+WebBackend.service.install_package$ = function(service_id, package_name, version) {
+  return invoke("service.install_package", {
+    service_id: service_id,
+    package_name: package_name,
+    version: version
+  });
+};
+
+WebBackend.service.uninstall_package$ = function(service_id, package_name) {
+  return invoke("service.uninstall_package", {
+    service_id: service_id,
+    package_name: package_name
+  });
+};
+
+WebBackend.package.search$ = function(name, pagenumber) {
+  return invoke("package.search", name, pagenumber);
+};
+
+WebBackend.package.version$ = function(name) {
+  return invoke("package.version", name);
+};
+
+WebBackend.config.proxy_get$ = function(type, hub_id) {
+  return invoke("user_proxy.get", type, hub_id);
+};
+WebBackend.config.proxy_set$ = function(value) {
+  return invoke("user_proxy.set", value);
+};
+
+WebBackend.config.npm_account_get$ = function() {
+  return invoke("npm_account.get");
+};
+
+WebBackend.config.npm_account_set$ = function (user) {
+  return invoke("npm_account.set",user);
 };
 
 export default WebBackend;

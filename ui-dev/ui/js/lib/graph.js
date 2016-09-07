@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -26,50 +26,50 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 //////////////////////////////////////////////////////////////////
 // This is only responsible for building the model
-// 
+//
 // Consequently, it is mostly a thin interpretation  of raw parsed JSON.
-// 
-// It doesn't wire much extra information in besides these in JSON, except for 
-// caching of spec info. 
-// 
+//
+// It doesn't wire much extra information in besides these in JSON, except for
+// caching of spec info.
+//
 // For being used in FLUX and overall presentation, it needs another layer
 // (i.e. GraphStore) to provide events and also a lot of extra information such
 // as default styling (these not specified in JSON), binding etc.
-// 
+//
 //////////////////////////////////////////////////////////////////
 
 import g_spec_manager from "./spec";
 
 //////////////////////////////////////////////////////////////////
 // Conventions
-// 
-// IMPORTANT: reference to spec, thing, service, hub etc. should all store 
+//
+// IMPORTANT: reference to spec, thing, service, hub etc. should all store
 // the id and use function to get the object from related maangers (e.g.
 // spec manager, hub manager etc.)
 // This is because spec and hub could change so we need to make this dynamically
 // instead of cache the real object here
-// 
-// During deserialization, we directly merge the raw json into the 
+//
+// During deserialization, we directly merge the raw json into the
 // object. And for some fields, we would replace it with further deserialzation
 // to meaningful objects, e.g. the in of graph would be deserialized to
 // an In object, and the items in ports of in would be deserialized to InPorts
-// 
-// The deserialized objects would have a function $serialize() so we know 
+//
+// The deserialized objects would have a function $serialize() so we know
 // whether it is an deserialized object or just raw from parsed_json
-// 
-// To ensure there is no name conflicts, all newly created/derived fields in 
+//
+// To ensure there is no name conflicts, all newly created/derived fields in
 // the deserialized object should be prefixed with $
-// As the result: 
+// As the result:
 // * all functions of deserialized object is prefixed with $
 // * leaf objects may reference parent objects, but normally prefixed with $
 //   e.g. InPort has node, but named as $node, Node has graph, but as $graph
-// 
+//
 // This makes serialization easy, just iterate all fields (without $ prefix)
 // and store back, and if any field has $serialize, then invoke it instead
 // of directly store.
-// 
+//
 // EXCEPTION:
-// the nodes, edges, tags are direct property of Graph, although they 
+// the nodes, edges, tags are direct property of Graph, although they
 // are under Graph.graph in original json. We do so to make things easier
 // w/o the needs to write a $ every time to reference these frequently used
 // properties.
@@ -152,14 +152,14 @@ class _InOutBase {
     this.$type = type;
     this.$node = node;
     _.merge(this, parsed_json);
-    // we are going to process and deserialize this.ports 
+    // we are going to process and deserialize this.ports
     this.ports = this.ports || [];
     // concat would return a new array
     var ports = this.ports.concat(this.added_ports || []);
     // set to true to ensure error is thrown for duplicated names
     var ports_index = $hope.array_to_hash(ports, "name", null, true);
     _.forOwn(this.amended_ports, o => {
-      $hope.check(ports_index[o.name], "Node", 
+      $hope.check(ports_index[o.name], "Node",
         "Loading Node: Failed to amend the port which does't exist", o);
       _.merge(ports_index[o.name], o);
     });
@@ -171,7 +171,7 @@ class _InOutBase {
   }
 
   $serialize() {
-    var ret = $hope.serialize(this, true, 
+    var ret = $hope.serialize(this, true,
         ["ports", "added_ports", "amended_ports"]) || {};
     var spec = this.$node.$get_spec();
     spec = spec[this.$type] || {};
@@ -194,7 +194,7 @@ class _InOutBase {
           amended_ports.push(temp);
         }
       }
-    });  
+    });
     if (added_ports.length > 0) {
       ret.added_ports = added_ports;
     }
@@ -220,20 +220,20 @@ class _InOutBase {
 
 class In extends _InOutBase {
   constructor(parsed_json, node) {
-    super("in", parsed_json, node);  
+    super("in", parsed_json, node);
   }
 }
 
 
 class Out extends _InOutBase {
   constructor(parsed_json, node) {
-    super("out", parsed_json, node);  
+    super("out", parsed_json, node);
   }
 }
 
 _.merge(type_mapping, {
   "in":     InPort,
-  "out":    OutPort  
+  "out":    OutPort
 });
 
 
@@ -256,9 +256,9 @@ class Node {
     });
 
     // load the spec as the template
-    var spec = this.$get_spec();
+    var spec = _.cloneDeep(this.$get_spec());
     _.merge(this, spec);
-  
+
     // don't use spec name but description
     this.name = "";
 
@@ -268,7 +268,7 @@ class Node {
       $type: "node"
     });
 
-    if (!spec.is_ui) {
+    if (spec && !spec.is_ui) {
       var defv = {}, configs = spec.config || [];
       if (_.isArray(spec.extra)) {
         configs = configs.concat(spec.extra);
@@ -278,13 +278,17 @@ class Node {
           defv[cfg.name] = cfg.default;
         }
       });
-      this.config = defv;
+      this.config = _.cloneDeep(defv);
+
+      if (spec.nr && spec.nr.type === "debug") {
+        this.is_debug = true;
+      }
     }
 
     // overwrite
     _.merge(this, parsed_json);
 
-    if (spec.is_ui) {
+    if (spec && spec.is_ui) {
       delete this.config;
     }
 
@@ -311,9 +315,15 @@ class Node {
         delete ret[k];
       }
     });
+    if (ret.name === "") {
+      delete ret.name;
+    }
+    if (ret.description === "") {
+      delete ret.description;
+    }
     if (_.size(ret) === 0) {
       ret = undefined;
-    } 
+    }
     return ret;
   }
 
@@ -323,7 +333,7 @@ class Node {
     _.forOwn(this.in.ports, p => {
       _.assign(edges, p.$get_edges());
     });
-    return edges;  
+    return edges;
   }
 
   $get_out_edges() {
@@ -331,7 +341,7 @@ class Node {
     _.forOwn(this.out.ports, p => {
       _.assign(edges, p.$get_edges());
     });
-    return edges;  
+    return edges;
   }
 
   $get_styles() {
@@ -390,7 +400,7 @@ class Node {
 
   $add_port(type, attr) {
     var io = this[type];
-    $hope.check_warn(io.ports.length + 1 < $hope.config.max_ports_per_side, 
+    $hope.check_warn(io.ports.length + 1 < $hope.config.max_ports_per_side,
       "Node", "$add_port: too many ports");
     if (!attr.name) {
       for (var i = 1; i < $hope.config.max_ports_per_side; i++) {
@@ -404,7 +414,7 @@ class Node {
         return null;
       }
     }
-    $hope.check(!io.$ports_index[attr.name], "Node", 
+    $hope.check(!io.$ports_index[attr.name], "Node",
       "$add_port: already exists port:", attr.name);
     var np = $hope.create_object(type_mapping[type], attr, this);
     io.ports.push(np);
@@ -416,10 +426,10 @@ class Node {
     if (name === newname) {
       return;
     }
-    $hope.check(newname && newname.length !== 0, "Node", 
+    $hope.check(newname && newname.length !== 0, "Node",
       "$rename_port: invalid port name:", newname);
     var io = this[type];
-    $hope.check(!io.$ports_index[newname], "Node", 
+    $hope.check(!io.$ports_index[newname], "Node",
       "$rename_port: already exists port:", newname);
     var p = io.$ports_index[name];
     delete io.$ports_index[name];
@@ -477,7 +487,18 @@ class Node {
     return !(spec && spec[io] && spec[io].ports && _.findIndex(spec[io].ports, ["name", name]) >= 0);
   }
 
+  $is_visible() {
+    let spec = this.$get_spec();
+    if (spec && spec.nr && spec.nr.category === "config") {
+      return false;
+    }
+    return true;
+  }
+
   $get_name() {
+    if (this.nr && this.config.name) {
+      return this.config.name;
+    }
     if (this.name) {
       return this.name;
     }
@@ -515,6 +536,54 @@ class Node {
       }
     });
 
+    if (_.isEmpty(spec)) {
+      errors.push({
+        type: "SPEC_NOT_FOUND",
+        id: this.spec
+      });
+    }
+
+    var binding = this.$get_binding();
+    var hub_manager = $hope.app.stores.hub.manager;
+    if (binding && binding.type === "fixed") {
+      if (binding.widget) {
+        var w = $hope.app.stores.ui.get_widget(binding.widget);
+        if (!w) {
+          errors.push({
+            type: "WIDGET_NOT_FOUND",
+            id: binding.widget
+          });
+        }
+      }
+      else if (binding.hub) {
+        var hub = hub_manager.get_hub(binding.hub);
+        if (hub) {
+          var thing = hub_manager.get_thing(binding.hub, binding.thing);
+          if (thing) {
+            var service = hub_manager.get_service(binding.hub, binding.thing, binding.service);
+            if (!service) {
+              errors.push({
+                type: "SERVICE_NOT_FOUND",
+                id: binding.service
+              });
+            }
+          }
+          else {
+            errors.push({
+              type: "THING_NOT_FOUND",
+              id: binding.thing
+            });
+          }
+        }
+        else {
+          errors.push({
+            type: "HUB_NOT_FOUND",
+            id: binding.hub
+          });
+        }
+      }
+    }
+
     //TODO: other checks
 
 
@@ -527,7 +596,7 @@ class Node {
 
 
 //////////////////////////////////////////////////////////////////
-// Edge 
+// Edge
 //////////////////////////////////////////////////////////////////
 
 class Edge {
@@ -538,7 +607,7 @@ class Edge {
       $type: "edge"
     });
     _.merge(this, parsed_json || {});
-    
+
     this.$styles_ = this.$get_styles();
 
     // deserialize the port
@@ -679,7 +748,7 @@ export default class Graph {
     _load_graph_array_items("node");
     _load_graph_array_items("edge");
     _load_graph_array_items("tag");
-  
+
   }
 
 
@@ -714,7 +783,7 @@ export default class Graph {
   //----------------------------------------------------------------
   // Create / Remove
   //----------------------------------------------------------------
-  
+
 
   // Factory methods
   //    type could be "node", "edge", "tag"
@@ -724,7 +793,7 @@ export default class Graph {
   $create(type, data, styles, binding) {
     data = data || {};
     if (data.id) {
-      $hope.check(this.$get(type, data.id), "Graph/create", "type:", type,
+      $hope.check(!this.$get(type, data.id), "Graph/create", "type:", type,
         "data:", data, "to be created already exist");
     }
     var key = type + "s";

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -124,7 +124,7 @@ function top_navbar_item_click(id, ch4) {
       });
       divy.append(icon);
 
-      if (location.hash === ("#" + pathy) || y.children.indexOf(ch4) >= 0) {
+      if (decodeURI(location.hash) === ("#" + pathy) || y.children.indexOf(ch4) >= 0) {
         do_expcol();
       }
 
@@ -136,7 +136,7 @@ function top_navbar_item_click(id, ch4) {
           y.children.forEach(z => {
             var pathz = pathy + "/" + z.id;
             var hz = $("<a href='#" + pathz + "'><div id='" + ___(pathz) +
-              "' class='doc-menu doc-section" + (location.hash === ("#" + pathz) ? " active" : "") +
+              "' class='doc-menu doc-section" + (decodeURI(location.hash) === ("#" + pathz) ? " active" : "") +
               "'>" + z.name + "</div></a>");
             chy.append(hz);
           });
@@ -345,7 +345,7 @@ function navigate_seg_4(id1, id2, id3, id4) {
 }
 
 function hashchange() {
-  var hash = location.hash || "#";
+  var hash = decodeURI(location.hash) || "#";
 
   breadcrumb.empty();
   side_bar.find(".doc-menu.active").removeClass("active");

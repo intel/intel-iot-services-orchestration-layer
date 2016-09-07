@@ -54,7 +54,7 @@ Service only has two status: initialized or not.
 ### Session Status
 Session has 3 status: `idle`, `paused`, `working`.
 
-The following table shows the state transition rules.
+The following table shows the state of transition rules.
 
 | current state | start | resume | pause | stop |
 |----|---|--|--|--|

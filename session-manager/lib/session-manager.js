@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -45,9 +45,9 @@ exports.SessionManager = SessionManager;
 /**
  * a manager handles session invoke and service invoke.
  * @constructor
- * @param {Object} em 
- * @param {Object} mnode 
-   
+ * @param {Object} em
+ * @param {Object} mnode
+
  */
 function SessionManager(em, mnode) {
   var ssc = require("./session-cache");
@@ -62,14 +62,14 @@ function SessionManager(em, mnode) {
 
 
 SessionManager.prototype.make_lock = function(key) {
-  return B.lock.make("__HOPE__/SM/" + this.id + "/" + 
+  return B.lock.make("__HOPE__/SM/" + this.id + "/" +
     (_.isUndefined(key) ? "" : key));
 };
 
 /**
  * init the SM
  * it will setup the accept "session_invoke" for mnode
- * @return {Promise} 
+ * @return {Promise}
  */
 SessionManager.prototype.init$ = function() {
   var self = this;
@@ -78,13 +78,13 @@ SessionManager.prototype.init$ = function() {
    * callback when receive "session invoke" msg.
    * 1, if action is start, and the session not exsit, call create_session
    * 2, invoke_session
-   * 3, if invoke done, send-back the message. if is "stop" action, call delete_session 
+   * 3, if invoke done, send-back the message. if is "stop" action, call delete_session
    *    if invoke fail, send-back the error msg
-   * 4, catch the 1-3's exception 
+   * 4, catch the 1-3's exception
    * @param  {Object} msg           {
    *                                  action:
    *                                  session_id:
-   *                                  invocation_id: 
+   *                                  invocation_id:
    *                                  IN: for kernel
    *                                  service_id: for start
    *                                  config: for start and save in the session-cache-obj
@@ -155,11 +155,11 @@ SessionManager.prototype.init$ = function() {
  * 2, init service if not inited before
  * 3, save the session to session cache
  * It return the Promise(session object)
- * 
- * @param  {String||Number} id         the session's id. if null, 
+ *
+ * @param  {String||Number} id         the session's id. if null,
  *                                     then generate an unique id for the session obj
  * @param  {String||Number} service_id
- * @param {String} mnode_id the id of dst mnode, and session should send msg to it. 
+ * @param {String} mnode_id the id of dst mnode, and session should send msg to it.
  * @param {Object}  config  session's config info
  * @return {Promise}                   resolve: session object
  *                                              {
@@ -167,7 +167,7 @@ SessionManager.prototype.init$ = function() {
  *                                                service: service_id
  *                                                status: idle, paused, sending
  *                                                shared: session-shared
- *                                                is_status_stable: whether the status is changing now 
+ *                                                is_status_stable: whether the status is changing now
  *                                              }
  */
 SessionManager.prototype.create_session$ = function(id, service_id, mnode_id, config) {
@@ -177,7 +177,7 @@ SessionManager.prototype.create_session$ = function(id, service_id, mnode_id, co
     id = B.unique_id("session");
   }
   if (self.session_cache.has(id)) {
-    return Promise.reject("session already exsit, please delete it first");
+    return Promise.reject(new Error("session already exsit, please delete it first"));
   }
   //status: idle, paused, sending
   //mnode: write down the dst mnode id
@@ -186,10 +186,15 @@ SessionManager.prototype.create_session$ = function(id, service_id, mnode_id, co
     service: service_id,
     status: "idle",
     shared: {},
+    __nodered : {},
     is_status_stable: true,
     mnode: mnode_id,
     config: config
   };
+  //for nodered service, set id into config._nr
+  if (!_.isUndefined(session.config._nr)) {
+    session.config._nr.id = session.config._nr.id || id;
+  }
   return self.service_cache.get$(service_id)
   .then(function(service_cache_obj) {
     if (service_cache_obj.is_inited) {
@@ -220,7 +225,7 @@ SessionManager.prototype.get_session$ = function (id) {
  * 0, if the session doesnt exsit or its status is not stable idle.
  * 1, delete from session-cache
  * @param  {String||number} id session id
- * @return {Promise}    
+ * @return {Promise}
  */
 SessionManager.prototype.delete_session$ = function (id) {
   log("delete_session", id);
@@ -238,8 +243,8 @@ SessionManager.prototype.delete_session$ = function (id) {
 /**
  * clear all sessions, whose mnode is mnode_id.
  * session's mnode means the mnode of the session's creator
- * @param  {String} mnodeid  
- * @return {Promise}            
+ * @param  {String} mnodeid
+ * @return {Promise}
  */
 SessionManager.prototype.clear_sessions_with_mnode$ = function(mnodeid) {
   log("clear all sessions with mnode", mnodeid);
@@ -259,9 +264,9 @@ SessionManager.prototype.clear_sessions_with_mnode$ = function(mnodeid) {
  * if the session is not exsit, resolve()
  * if the session is idle, delete_session
  * if the session is paused, stop and delete
- * if the session is sending, pause and stop and delete    
- * @param  {String} session_id 
- * @return {Promise}            
+ * if the session is sending, pause and stop and delete
+ * @param  {String} session_id
+ * @return {Promise}
  */
 SessionManager.prototype.clear_session$ = function(session_id) {
   var self = this;
@@ -277,7 +282,7 @@ SessionManager.prototype.clear_session$ = function(session_id) {
       return self.invoke_session$(session_id, "stop")
       .then(function() {
         return self.delete_session$(session_id);
-      });  
+      });
     }
     else {
       return self.invoke_session$(session_id, "pause")
@@ -285,8 +290,8 @@ SessionManager.prototype.clear_session$ = function(session_id) {
         return self.invoke_session$(session_id, "stop");
       }).then(function() {
         return self.delete_session$(session_id);
-      }); 
-    }   
+      });
+    }
   });
 };
 
@@ -340,17 +345,19 @@ SessionManager.prototype.invoke_session$ = function(id, action, others) {
 
 /**
  * install the service.
- * O, make sure the servcie is not installed before (aka, not in the servcie cache). 
+ * O, make sure the service
+ is not installed before (aka, not in the service
+ cache).
  *    Otherwise, reject the promise
  * 1, fetch the service and create a service_cache_obj, save in cache
  * 2, call service_init
- * @param  {id} service_id 
+ * @param  {id} service_id
  * @return {Promise}            resolve: init done value
  */
 SessionManager.prototype.install_service$ = function(service_id) {
   var self = this;
   if (self.service_cache.has(service_id)) {
-    return Promise.reject("service already installed");
+    return Promise.reject(new Error("service already installed"));
   }
   return self.service_cache.get$(service_id)
   .then(function(service_cache_obj) {
@@ -364,13 +371,13 @@ SessionManager.prototype.install_service$ = function(service_id) {
  * 1, get the service_cache_obj
  * 2, call destroy func
  * 3, delete the obj in cache
- * @param  {id} service_id 
+ * @param  {id} service_id
  * @return {Promise}          resolve: destroy done value
  */
 SessionManager.prototype.uninstall_service$ = function(service_id) {
   var self = this;
   if (!self.service_cache.has(service_id)) {
-    return Promise.reject("service doesnt exsit");
+    return Promise.reject(new Error("service doesnt exsit"));
   }
   var service_cache_obj = self.service_cache.get_cache(service_id);
   return self.service_cache.destroy_service$(service_cache_obj)
@@ -402,7 +409,7 @@ SessionManager.prototype.reload_service$ = function(service_id) {
 /**
  * run hub script in a hub sandbox. usually init or destroy in hub wide
  * @param  {string} script_path script file path
- * @return {promise}             
+ * @return {promise}
  */
 SessionManager.prototype.run_hub_script$ = function(script_path) {
   log("run_hub_script", script_path);
@@ -410,10 +417,10 @@ SessionManager.prototype.run_hub_script$ = function(script_path) {
   var vm = require("vm");
   var self = this;
   var sandbox = sb.create_hub_sandbox(self.service_cache.hub_shared,
-    B.path.resolve(script_path, ".."));
+    B.path.dir(script_path));
   var context = fs.readFileSync(script_path);
   var func_string = "(function(){\n" + context + "\n})";
-  var func_script = new vm.Script(func_string, 
+  var func_script = new vm.Script(func_string,
         {filename: script_path + "__wrap"});
   return new Promise(function(resolve, reject) {
     sandbox.done = function(value)
@@ -445,7 +452,7 @@ SessionManager.prototype.run_hub_script$ = function(script_path) {
       log.warn("hub script catch exception", e);
       sandbox.fail(e);
     }
-    
+
   });
 };
 
@@ -455,8 +462,8 @@ SessionManager.prototype.run_hub_script$ = function(script_path) {
 // 3, when things are disconeect/connect, the services in botn store/cache should be marked.
 // 4, what to do with the init flag? we dont know. now we assume that the re-connect sevice need't re-init
 // so the init flag should not change.
-// 
-//  
+//
+//
 // the session should be in cache, service shold be in cache
 // and the service.is_inited should be true
 // and the service should have action script
@@ -482,7 +489,7 @@ function check_action_avail(session, action) {
     after_resume: "sending",
     kernel: "sending"
   };
-  check(session.status === before_action[action],
+  check(session.status === before_action[action], "sm",
     "status shoule be " + before_action[action],
     session, action);
 }
@@ -533,7 +540,7 @@ function run_func(f, sandbox, action, others, resolve, reject, session, service)
       sandbox.fail(e);
     }
     return;
-  } 
+  }
 }
 
 // add sendOUT, sendERR, done and fail to sandbox
@@ -572,8 +579,8 @@ function enhance_sandbox(sandbox, action, others, service, session, resolve, rej
     };
   }
   else {
-    sandbox.done = function(out) { 
-      
+    sandbox.done = function(out) {
+
       change_session_status(session, action);
       session.is_status_stable = true;
       log(action + " done", out, session);

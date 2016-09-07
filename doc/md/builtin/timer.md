@@ -1,5 +1,47 @@
 Timer
 ================
+
+## date
+
+### Description
+
+This service will output current date.
+
+### Inport
+
+`switch`: Boolean. The switching signal of date. 
+
+### Outport
+
+`out`: Date. Current date object.
+
+### Output Format
+```javascript
+2016-08-05T02:54:16.462Z
+```
+
+## date_format 
+
+### Description
+
+This service receive a date object and output date information according to specific format.
+
+### Inport
+
+`date`: Date. Input date object. If date is not an instance of Date, it will using current Date.
+
+### Outport
+
+`out`: String. Format result.
+
+### Example
+
+![](./pic/date_format.png)
+
+This example generate date object using `date` service and output information in format of *yyyy-MM-dd hh:mm:ss*
+`out`: 2016-08-05 11:02:40
+
+
 ## delay
 
 ### Description
@@ -43,3 +85,25 @@ This service can be used as event source, which periodically output 1 to `out`.
 ![](./pic/interval_sender.jpg)
 
 After each 1 second, `out` will output a "hello" string.
+
+
+## timestamp 
+
+### Description
+
+This service receive a date object and output according timestamp.
+
+### Inport
+
+`date`: Date. Input date object. If date is not an instance of Date, it will using current Date.
+
+### Outport
+
+`out`: String. Timestamp.
+
+### Example
+
+![](./pic/timestamp.png)
+
+This example generate date object using `date` service and output `timestamp`
+`out`: 1470366406291

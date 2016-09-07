@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#mqtt-service">mqtt service</a><ul>
+<li><a href="#mqtt_publish">mqtt_publish</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+<li><a href="#mqtt_subscribe">mqtt_subscribe</a><ul>
+<li><a href="#description-1">Description</a></li>
+<li><a href="#config-1">Config</a></li>
+<li><a href="#inport-1">Inport</a></li>
+<li><a href="#outport-1">Outport</a></li>
+<li><a href="#example-1">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="mqtt-service">mqtt service</h1>
+<h2 id="mqtt_publish">mqtt_publish</h2>
+<h3 id="description">Description</h3>
+<p>This service provides ability to publish message of specific topic to mqtt server.</p>
+<p>You must config the server url which starts with &quot;mqtt://&quot; or just ip + port. This service will automatic complete the url.</p>
+<h3 id="config">Config</h3>
+<p><code>server</code>: String. The mqtt server url.</p>
+<p><code>topic</code>: String. The publish topic .</p>
+<h3 id="inport">Inport</h3>
+<p><code>message</code>: String. The message that will be published.</p>
+<h3 id="outport">Outport</h3>
+<p><code>status</code>: Boolean. Output true if success to publish, otherwise false.</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/mqtt_publish.png" />
+
+</div>
+<p>In this example, every 2 second, this service generate a number between 0 and 100, then publish it to mqtt server. At last, the <code>Text</code> widget show the publish result.</p>
+<h2 id="mqtt_subscribe">mqtt_subscribe</h2>
+<h3 id="description-1">Description</h3>
+<p>This service provides ability to subscribe message of specific topic from mqtt server.</p>
+<p>You must config the server url which starts with &quot;mqtt://&quot; or just ip + port. This service will automatic complete the url.</p>
+<h3 id="config-1">Config</h3>
+<p><code>server</code>: String. The mqtt server url.</p>
+<p><code>topic</code>: String. The subscribe topic .</p>
+<h3 id="inport-1">Inport</h3>
+<p><code>on</code>: Boolean. If it's true, it will send request to mqtt server.</p>
+<h3 id="outport-1">Outport</h3>
+<p><code>messgae</code>: String. The message received from mqtt server.</p>
+<h3 id="example-1">Example</h3>
+<div class="figure">
+<img src="./pic/mqtt_subscribe.png" />
+
+</div>
+<p>In this example, every 1 second, this service send request to mqtt server and get message of specific topic, then output it to <code>Text</code> widget.</p>
+</body>
+</html>

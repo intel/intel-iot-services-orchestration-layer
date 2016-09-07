@@ -82,7 +82,7 @@
 <ul>
 <li><em>dim</em> and <em>switch</em> are services.</li>
 <li><em>a</em> is <strong>NOT</strong> service because it is not the first-level directory of <em>led</em>.</li>
-<li><em>b</em> is <strong>NOT</strong> service because is does not have service.json</li>
+<li><em>b</em> is <strong>NOT</strong> service because it does not have service.json</li>
 </ul>
 <p><code>service.json</code> describes some properties of the service. Except for <code>service.json</code>, service directory should have the following JavaScript files.</p>
 <ul>
@@ -111,34 +111,34 @@
 <table>
 <thead>
 <tr class="header">
-<th align="left">current state</th>
-<th align="left">start</th>
-<th align="left">resume</th>
-<th align="left">pause</th>
-<th align="left">stop</th>
+<th>current state</th>
+<th>start</th>
+<th>resume</th>
+<th>pause</th>
+<th>stop</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left"><code>idle</code></td>
-<td align="left"><code>paused</code></td>
-<td align="left">invalid</td>
-<td align="left">invalid</td>
-<td align="left">invalid</td>
+<td><code>idle</code></td>
+<td><code>paused</code></td>
+<td>invalid</td>
+<td>invalid</td>
+<td>invalid</td>
 </tr>
 <tr class="even">
-<td align="left"><code>paused</code></td>
-<td align="left">invalid</td>
-<td align="left"><code>working</code></td>
-<td align="left">invalid</td>
-<td align="left"><code>idle</code></td>
+<td><code>paused</code></td>
+<td>invalid</td>
+<td><code>working</code></td>
+<td>invalid</td>
+<td><code>idle</code></td>
 </tr>
 <tr class="odd">
-<td align="left"><code>working</code></td>
-<td align="left">invalid</td>
-<td align="left">invalid</td>
-<td align="left"><code>paused</code></td>
-<td align="left">invalid</td>
+<td><code>working</code></td>
+<td>invalid</td>
+<td>invalid</td>
+<td><code>paused</code></td>
+<td>invalid</td>
 </tr>
 </tbody>
 </table>

@@ -1,0 +1,5 @@
+{
+  "mqtt_subscrible":"mqtt消息订阅",
+  "listen on the message from the broker":"从mqtt broker订阅消息",
+  "builtin/mqtt_service.html#mqtt_subscrible":"builtin/mqtt_service.zh-CN.html#mqtt订阅服务"
+}

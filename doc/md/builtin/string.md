@@ -55,3 +55,22 @@ This service finding a string(`str2`) in a string(`str1`), output true if the te
 `str2`: abc
 
 `out`: false
+
+
+## json
+
+### Description
+
+This service translate the string into json format.
+
+### Config
+
+method: String. If `method` equals *parse*, it will output json format otherwise output the origin string. 
+
+### Inport
+
+`Inout`: String. The string that will be parsed.
+
+### Outport
+
+`out`: Object. Parsing result.

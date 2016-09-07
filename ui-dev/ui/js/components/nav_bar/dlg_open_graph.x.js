@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -24,8 +24,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-import {Modal, Button} from "react-bootstrap";
-
+import {Modal, Button, SplitButton, MenuItem} from "react-bootstrap";
 export default class DlgOpenGraph extends ReactComponent {
 
   static propTypes = {
@@ -121,6 +120,7 @@ export default class DlgOpenGraph extends ReactComponent {
   }
 
   _on_keydown(e) {
+    e.stopPropagation();
     if(e.keyCode === 13) { // ENTER KEY
       this._on_open(e);
     }
@@ -142,6 +142,136 @@ export default class DlgOpenGraph extends ReactComponent {
         tracing: false
       });
     }
+  }
+
+  _on_import_nodered() {
+    if (!window.File || !window.FileReader) {
+      $hope.notify("error", __("Unable to import workflow in this browser"));
+      return;
+    }
+
+    var input = $("<input type='file' accept='.json' multiple />").appendTo(this.refs.bh);
+    var app = this.props.app;
+    input.on("change", event => {
+      let loadq = _.map(event.target.files, file => {
+        let reader = new FileReader();
+        var d = $Q.defer();
+        reader.addEventListener("error", event => {
+          console.log(event);
+          d.reject(__("Reading operation encounter an error") + ": " + file.name);
+        });
+        reader.addEventListener("load", event => {
+          let json = JSON.parse(event.target.result);
+          if (!_.isArray(json)) {
+            d.reject(__("Invalid nodered workflow") + ": " + file.name);
+            return;
+          }
+          let graph = {};
+          graph.id = $hope.uniqueId("GRAPH_NR_");
+          graph.name = file.name;
+          graph.nr_flow = json
+          d.resolve(graph);
+        });
+        reader.readAsText(file);
+        return d.promise;
+      });
+      $Q.all(loadq).then(jsons => {
+        var createq = _.map(jsons, json => {
+          return $hope.app.server.app.create_nr_graph$(app.id, json).then(()=> {
+            app.graphs.push(json);
+          });
+        });
+        $Q.all(createq).then(()=> {
+          this.forceUpdate();
+          $hope.notify("success", __("Workflow successfully imported!"));
+        });
+      }).catch(e => {
+        $hope.notify("error", e);
+      });
+    });
+    input.trigger("click");
+  }
+
+
+
+  _on_import() {
+    if (!window.File || !window.FileReader) {
+      $hope.notify("error", __("Unable to import workflow in this browser"));
+      return;
+    }
+
+    var input = $("<input type='file' accept='.json' multiple />").appendTo(this.refs.bh);
+    var app = this.props.app;
+    input.on("change", event => {
+      let loadq = _.map(event.target.files, file => {
+        let reader = new FileReader();
+        var d = $Q.defer();
+        reader.addEventListener("error", event => {
+          console.log(event);
+          d.reject(__("Reading operation encounter an error") + ": " + file.name);
+        });
+        reader.addEventListener("load", event => {
+          let json = JSON.parse(event.target.result);
+          if (!json.id || !json.name || !_.isObject(json.graph)) {
+            d.reject(__("Invalid workflow") + ": " + file.name);
+            return;
+          }
+          if (_.find(app.graphs, ["id", json.id])) {
+            d.reject(__("This workflow already exists") + ": " + file.name);
+            return;
+          }
+          if (_.find(app.graphs, ["name", json.name])) {
+            d.reject(__("The name of this workflow already exists") + ": " + file.name);
+            return;
+          }
+          d.resolve(json);
+        });
+        reader.readAsText(file);
+        return d.promise;
+      });
+      $Q.all(loadq).then(jsons => {
+        var createq = _.map(jsons, json => {
+          return $hope.app.server.app.create_graph$(app.id, json).then(()=> {
+            app.graphs.push(json);
+          });
+        });
+        $Q.all(createq).then(()=> {
+          this.forceUpdate();
+          $hope.notify("success", __("Workflow successfully imported!"));
+        });
+      }).catch(e => {
+        $hope.notify("error", e);
+      });
+    });
+    input.trigger("click");
+  }
+
+  _on_export() {
+    if (!window.Blob) {
+      $hope.notify("error", __("Unable to export workflow in this browser"));
+      return;
+    }
+
+    $hope.app.stores.graph.ensure_graph_loaded$(this.state.selected_id).then(view => {
+      var data = view.graph.$serialize();
+      delete data.app;
+      delete data.path;
+
+      var filename = view.get_app().name + "-" + (view.graph.name || "") + ".json";
+      var blob = new Blob([JSON.stringify(data, null, "\t")], {"type": "application/octet-stream"});
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, filename);
+      }
+      else {
+        var a = this.refs.a;
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      }
+    }).catch(err => {
+      $hope.notify("error", __("Failed to export the workflow because"),
+        $hope.error_to_string(err));
+    }).done();
   }
 
   render_app(app) {
@@ -188,13 +318,28 @@ export default class DlgOpenGraph extends ReactComponent {
         <Modal.Header closeButton>
           <Modal.Title>{__("Workflow")}</Modal.Title>
         </Modal.Header>
-        <div className="modal-body hope-open-dialog-list">
+        <Modal.Body className="hope-open-dialog-list">
           {this.props.app && this.render_app(this.props.app)}
-        </div>
-        <div className="modal-footer">
+        </Modal.Body>
+        <Modal.Footer>
+          {this.props.app &&
+            <span style={{float: "left"}}>
+              <SplitButton bsStyle="info" title={__("Import")} id="isb" onClick={this._on_import}>
+                <MenuItem onClick={this._on_import}>{"IoT SOL " + __("Workflow")}</MenuItem>
+                <MenuItem divider />
+                <MenuItem onClick={this._on_import_nodered}>{"Node-RED " + __("Workflow")}</MenuItem>
+              </SplitButton>
+            </span>
+          }
+          {this.state.selected_id &&
+            <Button bsStyle="success" style={{marginLeft: 5, float: "left"}} onClick={this._on_export}>{__("Export")}</Button>
+          }
           <Button bsStyle="default" onClick={this.props.onHide}>{__("Cancel")}</Button>
           <Button bsStyle="primary" {...btn_props} onClick={this._on_open}>{__("Open")}</Button>
-        </div>
+          <div ref="bh" style={{display: "none"}}>
+            <a ref="a" target="_self" />
+          </div>
+        </Modal.Footer>
       </Modal>
     );
   }

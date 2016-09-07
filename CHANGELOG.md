@@ -1,7 +1,10 @@
 Change Logs
 ===========================
-## v1.1.3
-# allow to create UI widget in release project
+## v2.0.0
+* Basic Node-RED compatibility
+* Service repo added
+* Usibility improvements
+* Various bug fixed
 
 ## v1.1.2
 * on-the-fly debug added

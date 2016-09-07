@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ export default class HubView extends ReactComponent {
     function _add_node(service, x, y) {
       var pos;
       if (!x || !y) {
-        pos = graph.view_to_logic(ide.panel.library.width + 30, 
+        pos = graph.view_to_logic(ide.panel.library.width + 30,
           ide.nav_bar.height + 30);
       }
       $hope.trigger_action("graph/create/node", {
@@ -58,7 +58,7 @@ export default class HubView extends ReactComponent {
         },
         styles: {
           x: x || pos.x,
-          y: y || pos.y 
+          y: y || pos.y
         },
         binding: {
           type: "fixed",
@@ -75,27 +75,30 @@ export default class HubView extends ReactComponent {
       _.forOwn(d.children, (t, t_id) => {
         services = [];
         _.forOwn(t.children, s => {
-          let spec_loaded = s.obj.$get_spec() ? true : false;
+          let spec = s.obj.$get_spec();
+          if (spec && spec.nr && spec.nr.category === "config") {
+            return;
+          }
           services.push(<Tree.Node key={s.name}>
             <Service
               service={s.obj}
               draggable={true}
-              error={!spec_loaded}
-              onDoubleClick={_add_node.bind({}, s.obj, 0, 0)}/> 
+              error={!spec}
+              onDoubleClick={_add_node.bind({}, s.obj, 0, 0)}/>
             </Tree.Node>);
         });
 
-        
-        things.push(<Tree.Node key={t.name} 
+
+        things.push(<Tree.Node key={t.name}
           onToggle={_update_expand_state.bind({}, d_id, t_id)}
           defaultExpanded={t.styles.expanded}>
           <Thing thing={t.obj} />
           {services}
           </Tree.Node>);
       });
-      var hnode = (<Tree.Node key={d.name} 
+      var hnode = (<Tree.Node key={d.name}
         onToggle={_update_expand_state.bind({}, d_id, undefined)}
-        defaultExpanded={d.styles.expanded}> 
+        defaultExpanded={d.styles.expanded}>
         <Hub hub={d.obj} />
         {things}
       </Tree.Node>);
@@ -112,7 +115,7 @@ export default class HubView extends ReactComponent {
         {hubs}
       </Tree.Node>
     );
-  }  
+  }
 }
 
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-Copyright (c) 2015, Intel Corporation
+Copyright (c) 2016, Intel Corporation
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -139,7 +139,7 @@ export default class PanelNavigator extends ReactComponent {
     }
 
     // Draw edges
-    view.graph.edges.forEach(edge => {
+    _.forEach(view.graph.edges, edge => {
       if (!edge.source || !edge.target || edge.source.$node === edge.target.$node) {
         return;
       }
@@ -161,7 +161,10 @@ export default class PanelNavigator extends ReactComponent {
     c.textBaseline = "middle";
 
     // Draw nodes
-    view.graph.nodes.forEach(node => {
+    _.forEach(view.graph.nodes, node => {
+      if (!node.$is_visible()) {
+        return;
+      }
       var icon = view.get_node_icon(node);
       //var styles = node.$get_styles();
       var pt = node.$get_position();
@@ -210,7 +213,7 @@ export default class PanelNavigator extends ReactComponent {
       c.fillRect(0, 0, vx, canvas.height);
     }
     // Top
-    if (vy < 0) { 
+    if (vy < 0) {
       vh = vh + vy < 5 ? 5 : vh + vy;
       vy = 0;
     } else {
@@ -221,13 +224,13 @@ export default class PanelNavigator extends ReactComponent {
       c.fillRect(vx, 0, vw, vy);
     }
     // Right
-    if (vw > canvas.width - vx) { 
+    if (vw > canvas.width - vx) {
       vw = canvas.width - vx;
     } else {
       c.fillRect(vx + vw, 0, canvas.width - (vx + vw), canvas.height);
     }
     // Bottom
-    if (vh > canvas.height - vy) { 
+    if (vh > canvas.height - vy) {
       vh = canvas.height - vy;
     } else {
       c.fillRect(vx, vy + vh, vw, canvas.height - (vy + vh));

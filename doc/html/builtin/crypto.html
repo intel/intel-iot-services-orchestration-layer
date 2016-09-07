@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#crypto">crypto</a><ul>
+<li><a href="#base64">base64</a><ul>
+<li><a href="#description">Description</a></li>
+<li><a href="#config">Config</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+<li><a href="#example">Example</a></li>
+</ul></li>
+<li><a href="#hash">hash</a><ul>
+<li><a href="#description-1">Description</a></li>
+<li><a href="#config-1">Config</a></li>
+<li><a href="#inport-1">Inport</a></li>
+<li><a href="#outport-1">Outport</a></li>
+<li><a href="#example-1">Example</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="crypto">crypto</h1>
+<h2 id="base64">base64</h2>
+<h3 id="description">Description</h3>
+<p>This service provides simple base64 encryption.</p>
+<h3 id="config">Config</h3>
+<h3 id="inport">Inport</h3>
+<p><code>input</code>: String. The data that will be encrypted.</p>
+<h3 id="outport">Outport</h3>
+<p><code>out</code>: String. The encryption result.</p>
+<h3 id="example">Example</h3>
+<div class="figure">
+<img src="./pic/base64.png" />
+
+</div>
+<h2 id="hash">hash</h2>
+<h3 id="description-1">Description</h3>
+<p>This service provides md5 and sha256 hash function.</p>
+<h3 id="config-1">Config</h3>
+<p><code>method</code>: String. The hash function that you want to use. This value must be <code>md5</code> or <code>sha256</code>.</p>
+<h3 id="inport-1">Inport</h3>
+<p><code>input</code>: String. The data that will be hashed.</p>
+<h3 id="outport-1">Outport</h3>
+<p><code>out</code>: String. The hash result.</p>
+<h3 id="example-1">Example</h3>
+<div class="figure">
+<img src="./pic/hash.png" />
+
+</div>
+</body>
+</html>
