@@ -1,0 +1,96 @@
+<h1 id="life">life</h1><h2 id="baidu_weather">baidu_weather</h2><h3 id="description">Description</h3><p>This service provides ability to get weather report using baidu weather api.</p><p>At this page, not all city are supported because of baidu weather api is not supported.</p><h3 id="config">Config</h3><p><code>city</code>: String. The query city. Not all city are supported.</p><p><code>key</code>: String. The baidu weather api access_key.</p><h3 id="inport">Inport</h3><p><code>switch</code>: Boolean. The switching signal of baidu weather. If it's true, this service will send request and output data.</p><h3 id="outport">Outport</h3><p><code>out</code>: Object. The weather data. The format of data is Object.</p><h3 id="example">Example</h3><p>There is a simple example. If it will rain tomorrow, turn on the light.</p><div class="figure"><img src="./doc/reference/builtin/baidu_weather.png" /></div><p>The first funtion code :</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="cf">return</span> x[<span class="st">&#39;results&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather_data&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;date&#39;</span>] <span class="op">+</span> x[<span class="st">&#39;results&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather_data&#39;</span>][<span class="dv">0</span>][<span class="st">&#39;weather&#39;</span>]</code></pre></div><p>The second function code :</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"> <span class="cf">if</span>(<span class="va">x</span>.<span class="at">indexOf</span>(<span class="st">&quot;雨&quot;</span>) <span class="op">===</span> <span class="op">-</span><span class="dv">1</span>) <span class="op">{</span>
+     <span class="cf">return</span> <span class="kw">false</span><span class="op">;</span>
+ <span class="op">}</span> <span class="cf">else</span> <span class="op">{</span>
+     <span class="cf">return</span> <span class="kw">true</span><span class="op">;</span>
+ <span class="op">}</span></code></pre></div><h3 id="output-format">Output Format</h3><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+    <span class="st">&quot;error&quot;</span><span class="op">:</span> <span class="st">&quot;0&quot;</span><span class="op">,</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="st">&quot;success&quot;</span><span class="op">,</span>
+    <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;2013-07-17&quot;</span><span class="op">,</span>
+    <span class="st">&quot;results&quot;</span><span class="op">:</span> [<span class="op">{</span>
+        <span class="st">&quot;currentCity&quot;</span><span class="op">:</span> <span class="st">&quot;北京市&quot;</span><span class="op">,</span>
+        <span class="st">&quot;pm25&quot;</span><span class="op">:</span> <span class="st">&quot;166&quot;</span><span class="op">,</span>
+        <span class="st">&quot;index&quot;</span><span class="op">:</span> [<span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;穿衣&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;舒适&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;穿衣指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;洗车&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;不宜&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;洗车指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;感冒&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;较易发&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;感冒指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;相对今天出现了较大幅度降温，较易发生感冒，体质较弱的朋友请注意适当防护。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;运动&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;较不宜&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;运动指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;有降水，推荐您在室内进行健身休闲运动；若坚持户外运动，须注意携带雨具并注意避雨防滑。&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度&quot;</span><span class="op">,</span>
+            <span class="st">&quot;zs&quot;</span><span class="op">:</span> <span class="st">&quot;弱&quot;</span><span class="op">,</span>
+            <span class="st">&quot;tipt&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度指数&quot;</span><span class="op">,</span>
+            <span class="st">&quot;des&quot;</span><span class="op">:</span> <span class="st">&quot;紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。&quot;</span>
+        <span class="op">}</span>]<span class="op">,</span>
+        <span class="st">&quot;weather_data&quot;</span><span class="op">:</span> [<span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;周三(今天, 实时：24℃)&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;23℃~ 15℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;明天（周四）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/leizhenyu.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/zhongyu.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;雷阵雨转中雨&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;29～22℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;后天（周五）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/yin.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;阴转多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;31～23℃&quot;</span>
+        <span class="op">},</span> <span class="op">{</span>
+            <span class="st">&quot;date&quot;</span><span class="op">:</span> <span class="st">&quot;大后天（周六）&quot;</span><span class="op">,</span>
+            <span class="st">&quot;dayPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/day/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;nightPictureUrl&quot;</span><span class="op">:</span> <span class="st">&quot;http://api.map.baidu.com/images/weather/night/duoyun.png&quot;</span><span class="op">,</span>
+            <span class="st">&quot;weather&quot;</span><span class="op">:</span> <span class="st">&quot;多云&quot;</span><span class="op">,</span>
+            <span class="st">&quot;wind&quot;</span><span class="op">:</span> <span class="st">&quot;微风&quot;</span><span class="op">,</span>
+            <span class="st">&quot;temperature&quot;</span><span class="op">:</span> <span class="st">&quot;31～24℃&quot;</span>
+        <span class="op">}</span>]
+    <span class="op">}</span>]
+<span class="op">}</span></code></pre></div><p>For more inforation about the api, you can visit <a href="http://lbsyun.baidu.com/index.php?title=car/api/weather">baidu weather api</a></p><h2 id="rss">rss</h2><h3 id="description-1">Description</h3><p>This service provides ability to subscribe rss. this service just like a simple rss reader. Now ATOM and RSS are supported.</p><h3 id="config-1">Config</h3><p><code>url</code>: String. rss source url. 'proxy': String. Optional. You can set the proxy manually.</p><h3 id="inport-1">Inport</h3><p><code>switch</code>: Boolean. The switching signal of rss service. If it's true, this service will send request and format returned data.</p><h3 id="outport-1">Outport</h3><p><code>out</code>: Object. Rss content from config <code>url</code>. Attention:The format of data is Object which means that you can't simply show it using <code>Text</code> widget. You may need use <code>f</code>(user-defined) to show it.</p><h3 id="example-1">Example</h3><p>There is a simple example of subscribing rss of <a href="https://www.zhihu.com">zhihu</a>. The Rss url is</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">http<span class="op">:</span><span class="co">//www.zhihu.com/rss</span></code></pre></div><div class="figure"><img src="./doc/reference/builtin/rss.png" /></div><p>The function code:</p><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"> <span class="cf">return</span> <span class="va">JSON</span>.<span class="at">stringify</span>(x)<span class="op">;</span></code></pre></div><h3 id="output-format-1">Output Format</h3><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">[
+    <span class="op">{</span> 
+        <span class="st">&quot;title&quot;</span><span class="op">:</span> <span class="st">&quot;NBA明星们的专属logo有哪些？&quot;</span><span class="op">,</span>
+        <span class="st">&quot;content&quot;</span><span class="op">:</span> <span class="st">&quot;作为一个Sneaker，很多球星logo都是烂熟于心。&lt;br&gt;有些logo的设计令人叹为观止，在icon设计上的水平，完全不啻于球鞋的工业设计水准...&quot;</span><span class="op">,</span>
+        <span class="st">&quot;published&quot;</span><span class="op">:</span> <span class="st">&quot;2016-08-04T10:30:00.000Z&quot;</span><span class="op">,</span>
+        <span class="st">&quot;link&quot;</span><span class="op">:</span> <span class="st">&#39;http://www.zhihu.com/question/49195604/answer/114767321?utm_campaign=rss&amp;utm_medium=rss&amp;utm_source=rss&amp;utm_content=title&#39;</span> 
+    <span class="op">}</span>
+
+    ...
+]</code></pre></div><h2 id="alidayu_sms">alidayu_sms</h2><h3 id="description-2">Description</h3><p>This service provides ability for send message by alidayu_sms service. You may visit <a href="https://api.alidayu.com/doc2/apiDetail?spm=a3142.7791109.1999204071.19.vgOpNe&amp;apiId=25450">alidayu</a> to learn how to use and get config.</p><h3 id="config-2">Config</h3><p><code>app_key</code>: String. The same as public param of alidayu.</p><p><code>sms_free_sign_name</code>: String. The same as request param of alidayu.</p><p><code>sms_template_code</code>: String. The same as request param of alidayu.</p><p><code>secret</code>: String. The app secret to produce sign.</p><p><code>proxy</code>: String. Optinal. You can set the proxy manually.</p><h3 id="inport-2">Inport</h3><p><code>to_number</code>: String. The number that this service will send message to.</p><p><code>sms_param</code>: Object or String. If it's String, this service will translate it to Object. You must make sure the format of sms_param satisfy the app's setting on alidayu.</p><h3 id="outport-2">Outport</h3><p><code>out</code>: Object. Send status. More detail see <code>Output Format</code>.</p><h3 id="example-2">Example</h3><div class="figure"><img src="./doc/reference/builtin/alidayu.png" /></div><h3 id="output-format-2">Output Format</h3><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="co">//success</span>
+<span class="op">{</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+    <span class="st">&quot;detail&quot;</span><span class="op">:</span> <span class="op">{</span>
+        <span class="st">&quot;alibaba_aliqin_fc_sms_num_send_response&quot;</span><span class="op">:{</span>
+            <span class="st">&quot;result&quot;</span><span class="op">:{</span>
+                <span class="st">&quot;err_code&quot;</span><span class="op">:</span><span class="st">&quot;0&quot;</span><span class="op">,</span>
+                <span class="st">&quot;model&quot;</span><span class="op">:</span><span class="st">&quot;134523^4351232&quot;</span><span class="op">,</span>
+                <span class="st">&quot;success&quot;</span><span class="op">:</span><span class="kw">false</span><span class="op">,</span>
+                <span class="st">&quot;msg&quot;</span><span class="op">:</span><span class="st">&quot;成功&quot;</span>
+            <span class="op">}</span>
+        <span class="op">}</span>
+    <span class="op">}</span>
+<span class="op">}</span>
+
+<span class="co">//fail</span>
+<span class="op">{</span>
+    <span class="st">&quot;status&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+    <span class="st">&quot;detail&quot;</span><span class="op">;</span> <span class="st">&quot;fail reason&quot;</span>
+<span class="op">}</span></code></pre></div>

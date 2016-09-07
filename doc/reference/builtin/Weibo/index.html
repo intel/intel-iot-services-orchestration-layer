@@ -1,1 +1,48 @@
-<h1 id="sina-weibo">sina weibo</h1><h2 id="postweibo">postweibo</h2><h3 id="description">Description</h3><p>This service provides ability for post message to sina weibo.</p><p>It is implemented by <a href="https://www.npmjs.com/package/node-weibo-twitter">node-weibo-twitter</a></p><p>At this stage, only supports plain-text message, and don't support the network proxy.</p><h3 id="config">Config</h3><p><code>token</code>: String. The access token of weibo account.</p><h3 id="inport">Inport</h3><p><code>text</code>: String. The message content of weibo.</p><h3 id="outport">Outport</h3><p><code>status</code>: Boolean. Output true if success to sending, otherwise false.</p><h3 id="example">Example</h3><div class="figure"><img src="./doc\reference\builtin/weibo.jpg" /></div><p>In this example, we post a weibo message with &quot;hello&quot;.</p>
+<h1 id="sina-weibo">sina weibo</h1><h2 id="postweibo">postweibo</h2><h3 id="description">Description</h3><p>This service provides ability for post message to sina weibo.</p><p>It is implemented by <a href="https://www.npmjs.com/package/node-weibo-twitter">node-weibo-twitter</a></p><p>At this stage, only supports plain-text message, and don't support the network proxy.</p><h3 id="config">Config</h3><p><code>token</code>: String. The access token of weibo account.</p><h3 id="inport">Inport</h3><p><code>text</code>: String. The message content of weibo.</p><h3 id="outport">Outport</h3><p><code>status</code>: Boolean. Output true if success to sending, otherwise false.</p><h3 id="example">Example</h3><div class="figure"><img src="./doc/reference/builtin/weibo.jpg" /></div><p>In this example, we post a weibo message with &quot;hello&quot;.</p><h2 id="receiveweibo">receiveweibo</h2><h4 id="description-1">Description</h4><p>This service provides ability for receive message to sina weibo.</p><p>It is implemented by <a href="https://www.npmjs.com/package/request">Request</a></p><p>There are two mode of receving message.One is <code>all</code> mode which means that everytime you will get the all message.The other is <code>new</code> mode which means that everytime you will only get the new message based on last received message.</p><h3 id="config-1">Config</h3><p><code>token</code>: String. The access token of weibo account.</p><p><code>type</code>: String. The receive mode. It must be <code>all</code> or <code>new</code>.</p><p><code>proxy</code>: String. Optinal. You can set the proxy manually.</p><h3 id="inport-1">Inport</h3><p><code>switch</code>: Boolean. The switching signal of receive weibo. If it's true, this service will send request and format response data.</p><h3 id="outport-1">Outport</h3><p><code>data</code>: Object. The message of weibo. Attention:The format of data is Object which means that you can't simply show it using <code>Text</code> widget. You may need <code>f</code>(user-defined) to show it.</p><h3 id="example-1">Example</h3><div class="figure"><img src="./doc/reference/builtin/receiveweibo.png" /></div><h3 id="output-format">Output Format</h3><div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript">[
+    <span class="op">{</span>
+        <span class="st">&quot;created_at&quot;</span><span class="op">:</span> <span class="st">&quot;Tue May 31 17:46:55 +0800 2011&quot;</span><span class="op">,</span>
+        <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="dv">11488058246</span><span class="op">,</span>
+        <span class="st">&quot;text&quot;</span><span class="op">:</span> <span class="st">&quot;求关注。&quot;</span>，
+        <span class="st">&quot;source&quot;</span><span class="op">:</span> <span class="st">&quot;&lt;a href=&quot;</span><span class="dt">http</span><span class="op">:</span><span class="co">//weibo.com&quot; rel=&quot;nofollow&quot;&gt;新浪微博&lt;/a&gt;&quot;,</span>
+        <span class="st">&quot;favorited&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+        <span class="st">&quot;truncated&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_status_id&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_user_id&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;in_reply_to_screen_name&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+        <span class="st">&quot;geo&quot;</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span>
+        <span class="st">&quot;mid&quot;</span><span class="op">:</span> <span class="st">&quot;5612814510546515491&quot;</span><span class="op">,</span>
+        <span class="st">&quot;reposts_count&quot;</span><span class="op">:</span> <span class="dv">8</span><span class="op">,</span>
+        <span class="st">&quot;comments_count&quot;</span><span class="op">:</span> <span class="dv">9</span><span class="op">,</span>
+        <span class="st">&quot;annotations&quot;</span><span class="op">:</span> []<span class="op">,</span>
+        <span class="st">&quot;user&quot;</span><span class="op">:</span> <span class="op">{</span>
+            <span class="st">&quot;id&quot;</span><span class="op">:</span> <span class="dv">1404376560</span><span class="op">,</span>
+            <span class="st">&quot;screen_name&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;name&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;province&quot;</span><span class="op">:</span> <span class="st">&quot;11&quot;</span><span class="op">,</span>
+            <span class="st">&quot;city&quot;</span><span class="op">:</span> <span class="st">&quot;5&quot;</span><span class="op">,</span>
+            <span class="st">&quot;location&quot;</span><span class="op">:</span> <span class="st">&quot;北京 朝阳区&quot;</span><span class="op">,</span>
+            <span class="st">&quot;description&quot;</span><span class="op">:</span> <span class="st">&quot;人生五十年，乃如梦如幻；有生斯有死，壮士复何憾。&quot;</span><span class="op">,</span>
+            <span class="st">&quot;url&quot;</span><span class="op">:</span> <span class="st">&quot;http://blog.sina.com.cn/zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;profile_image_url&quot;</span><span class="op">:</span> <span class="st">&quot;http://tp1.sinaimg.cn/1404376560/50/0/1&quot;</span><span class="op">,</span>
+            <span class="st">&quot;domain&quot;</span><span class="op">:</span> <span class="st">&quot;zaku&quot;</span><span class="op">,</span>
+            <span class="st">&quot;gender&quot;</span><span class="op">:</span> <span class="st">&quot;m&quot;</span><span class="op">,</span>
+            <span class="st">&quot;followers_count&quot;</span><span class="op">:</span> <span class="dv">1204</span><span class="op">,</span>
+            <span class="st">&quot;friends_count&quot;</span><span class="op">:</span> <span class="dv">447</span><span class="op">,</span>
+            <span class="st">&quot;statuses_count&quot;</span><span class="op">:</span> <span class="dv">2908</span><span class="op">,</span>
+            <span class="st">&quot;favourites_count&quot;</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span>
+            <span class="st">&quot;created_at&quot;</span><span class="op">:</span> <span class="st">&quot;Fri Aug 28 00:00:00 +0800 2009&quot;</span><span class="op">,</span>
+            <span class="st">&quot;following&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;allow_all_act_msg&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;remark&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+            <span class="st">&quot;geo_enabled&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+            <span class="st">&quot;verified&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;allow_all_comment&quot;</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>
+            <span class="st">&quot;avatar_large&quot;</span><span class="op">:</span> <span class="st">&quot;http://tp1.sinaimg.cn/1404376560/180/0/1&quot;</span><span class="op">,</span>
+            <span class="st">&quot;verified_reason&quot;</span><span class="op">:</span> <span class="st">&quot;&quot;</span><span class="op">,</span>
+            <span class="st">&quot;follow_me&quot;</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span>
+            <span class="st">&quot;online_status&quot;</span><span class="op">:</span> <span class="dv">0</span><span class="op">,</span>
+            <span class="st">&quot;bi_followers_count&quot;</span><span class="op">:</span> <span class="dv">215</span>
+        <span class="op">}</span>
+    <span class="op">},</span>
+    ...
+]</code></pre></div><p>For more information about the data format, you can visit <a href="http://open.weibo.com/wiki/2/statuses/friends_timeline">weibo api document</a>.</p>
