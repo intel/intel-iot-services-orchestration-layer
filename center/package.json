@@ -11,7 +11,7 @@
   "name": "hope-center",
   "homepage": "",
   "description": "Orchestration Center of IoT Services Orchestration Layer",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "repository": {
     "type": "git",
     "url": ""
