@@ -1,6 +1,6 @@
 {
   "name": "iot-sol",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Intel(r) IoT Services Orchestration Layer - HTML5 IDE + Node.js middleware to create and host distributed IoT Apps in minutes",
   "main": "index.js",
   "scripts": {
