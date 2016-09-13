@@ -40,6 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 * limitations under the License.
 **/
 
+var connections = {};
+
 module.exports = function(RED) {
     "use strict";
     var settings = RED.settings;
@@ -81,6 +83,11 @@ module.exports = function(RED) {
                 node.addCh = this.serialConfig.newline.replace("\\n","\n").replace("\\r","\r").replace("\\t","\t").replace("\\e","\e").replace("\\f","\f").replace("\\0","\0"); // jshint ignore:line
             }
             node.on("input",function(msg) {
+                if (typeof msg !== "object") {
+                    msg = {
+                        payload: msg
+                    };
+                }
                 if (msg.hasOwnProperty("payload")) {
                     var payload = msg.payload;
                     if (!Buffer.isBuffer(payload)) {
@@ -226,7 +233,6 @@ module.exports = function(RED) {
 
 
     var serialPool = (function() {
-        var connections = {};
         return {
             get:function(port,baud,databits,parity,stopbits,newline,callback) {
                 var id = port;
