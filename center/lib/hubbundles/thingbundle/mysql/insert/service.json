@@ -1,0 +1,57 @@
+{
+  "name":"mysql_insert",
+  "description":"mysql insert data",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_insert",
+    "name":"mysql_insert_spec",
+     "in": {
+      "ports": [
+        {
+          "name": "host",
+          "type": "String"
+        },
+        {
+          "name": "port",
+          "type": "int"
+        },
+        {
+          "name": "database",
+          "type": "String"
+        },
+        {
+          "name": "user",
+          "type": "String"
+        },
+        {
+          "name": "password",
+          "type": "String"
+        },
+        {
+          "name": "table",
+          "type": "String"
+        },
+        {
+          "name": "values",
+          "type": "String"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    },
+    "config":[
+      {
+        
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql.html#mysql_insert"
+}
