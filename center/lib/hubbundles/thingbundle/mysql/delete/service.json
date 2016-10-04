@@ -1,0 +1,57 @@
+{
+  "name":"mysql_delete",
+  "description":"mysql delete data",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_delete",
+    "name":"mysql_delete_spec",
+       "in": {
+      "ports": [
+        {
+          "name": "host",
+          "type": "String"
+        },
+        {
+          "name": "port",
+          "type": "int"
+        },
+        {
+          "name": "database",
+          "type": "String"
+        },
+        {
+          "name": "user",
+          "type": "String"
+        },
+        {
+          "name": "password",
+          "type": "String"
+        },
+        {
+          "name": "table",
+          "type": "String"
+        },
+        {
+          "name": "condition",
+          "type": "String"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    },
+    "config":[
+      {
+        
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql.html#mysql_delete"
+}

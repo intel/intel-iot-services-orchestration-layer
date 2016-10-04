@@ -1,0 +1,61 @@
+{
+  "name":"mysql_update",
+  "description":"mysql update data",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_update",
+    "name":"mysql_update_spec",
+        "in": {
+      "ports": [
+        {
+          "name": "host",
+          "type": "String"
+        },
+        {
+          "name": "port",
+          "type": "int"
+        },
+        {
+          "name": "database",
+          "type": "String"
+        },
+        {
+          "name": "user",
+          "type": "String"
+        },
+        {
+          "name": "password",
+          "type": "String"
+        },
+        {
+          "name": "table",
+          "type": "String"
+        },
+        {
+          "name": "item",
+          "type": "String"
+        },
+        {
+          "name": "condition",
+          "type": "String"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ]
+    },
+    "config":[
+      {
+        
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql.html#mysql_update"
+}

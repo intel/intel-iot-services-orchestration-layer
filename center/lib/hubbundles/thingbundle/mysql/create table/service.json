@@ -1,0 +1,53 @@
+{
+  "name":"mysql_createtable",
+  "description":"mysql create table",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_create",
+    "name":"mysql_createtable_spec",
+	"in": {
+    "ports": [
+      {
+        "name": "host",
+        "type": "String"
+      },
+      {
+        "name": "port",
+        "type": "int"
+      },
+      {
+        "name": "database",
+        "type": "String"
+      },
+      {
+        "name": "user",
+        "type": "String"
+      },
+      {
+        "name": "password",
+        "type": "String"
+      },
+      {
+        "name": "table",
+        "type": "String"
+      }
+    ]
+	},
+	"out": {
+    "ports": [
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ]
+	},
+    "config":[
+      {
+        
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql.html#mysql_createtable"
+}

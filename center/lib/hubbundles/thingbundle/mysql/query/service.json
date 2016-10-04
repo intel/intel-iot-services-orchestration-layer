@@ -1,0 +1,61 @@
+{
+  "name":"mysql_query",
+  "description":"mysql query data",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_query",
+    "name":"mysql_query_spec",
+	"in": {
+    "ports": [
+      {
+        "name": "host",
+        "type": "String"
+      },
+      {
+        "name": "port",
+        "type": "int"
+      },
+      {
+        "name": "database",
+        "type": "String"
+      },
+      {
+        "name": "user",
+        "type": "String"
+      },
+      {
+        "name": "password",
+        "type": "String"
+      },
+      {
+        "name": "field",
+        "type": "String"
+      },
+      {
+        "name": "table",
+        "type": "String"
+      },
+      {
+        "name": "condition",
+        "type": "String"
+      }
+    ]
+	},
+	"out": {
+    "ports": [
+      {
+        "name": "value",
+        "type": "string"
+      }
+    ]
+  },
+    "config":[
+      {
+        
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql.html#mysql_query"
+}
