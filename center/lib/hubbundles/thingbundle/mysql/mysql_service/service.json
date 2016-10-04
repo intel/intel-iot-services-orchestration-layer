@@ -1,0 +1,59 @@
+{
+  "name":"mysql_service",
+  "description":"provide mysql related service",
+  "spec":{
+    "id":"__HOPE__/builtin/mysql/mysql_service",
+    "in": {
+      "ports": [
+        {
+          "name": "SQL_statement",
+          "type": "String"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "result",
+          "type": "String"
+        },
+	{
+	  "name": "info",
+	  "type": "String"
+	}
+      ]
+    },
+   "config": [
+      {
+        "name": "host",
+        "type": "String",
+        "required":true
+      },
+      {
+        "name": "port",
+        "type": "int",
+        "required":true
+      },
+      {
+        "name": "database",
+        "type": "String",
+        "required":true
+      },
+      {
+        "name": "user",
+        "type": "String",
+        "required":true
+      },
+      {
+        "name": "password",
+        "type": "String",
+        "required":true
+      }
+    ]
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/mysql_service.html#mysql_service"
+}
+
