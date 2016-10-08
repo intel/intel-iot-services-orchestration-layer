@@ -1,0 +1,5 @@
+{
+  "name": "compression",
+  "description":"provide compression service",
+  "is_builtin":true
+}
