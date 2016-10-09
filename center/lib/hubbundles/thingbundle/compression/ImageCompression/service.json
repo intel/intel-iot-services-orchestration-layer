@@ -1,0 +1,39 @@
+{
+  "type": "hope_service",
+  "name": "compress Image",
+  "description": "compress an image by node, it's very fast and satisfactory",
+  "spec": {
+    "id": "__HOPE__/builtin/compression/ImageCompression",
+    "name": "ImageCompression_builtin_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "inputPath",
+          "type": "string"
+        },
+        {
+          "name": "width",
+          "type": "int"
+        },
+        {
+          "name": "height",
+          "type": "int"
+        },
+        {
+          "name": "outputPath",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "isSuccess",
+          "type": "boolean"
+        }
+      ]
+    }
+  },
+  "ui": {},
+  "doc" : "builtin/compression.html#ImageCompression"
+}
