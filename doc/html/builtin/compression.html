@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <meta name="author" content="Copyright 2015 Intel Corporation All Rights Reserved." />
+  <title>IoT Services Orchestration Layer</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">IoT Services Orchestration Layer</h1>
+<h2 class="author">Copyright 2015 Intel Corporation All Rights Reserved.</h2>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#compression">compression</a><ul>
+<li><a href="#ImageCompression">ImageCompression</a><ul>
+<li><a href="#description">description</a></li>
+<li><a href="#inport">Inport</a></li>
+<li><a href="#outport">Outport</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<h1 id="compression">compression</h1>
+<h2 id="ImageCompression">ImageCompression</h2>
+<h3 id="description">description</h3>
+<p>This service provide you compressing an image. It works fast and satisfactory. It will reduce your time in Image Cloud Processing (such as OCR or SAR) by resize the image and smaller the image in local.</p>
+<h3 id="inport">Inport</h3>
+<p><code>inputPath</code>: String. The absolute path of input image.</p>
+<p><code>width</code>: int. Width of the output image.</p>
+<p><code>height</code>: int. Height of the output image.</p>
+<p><code>outputPath</code>: String. The absolute path of output image.</p>
+<h3 id="outport">Outport</h3>
+<p><code>isSuccess</code>: boolean. If compressing success.</p>
+</body>
+</html>
