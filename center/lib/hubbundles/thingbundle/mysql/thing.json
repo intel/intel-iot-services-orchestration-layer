@@ -1,0 +1,5 @@
+{
+  "name":"node_mysql",
+  "description":"provide mysql related service",
+  "is_builtin":true
+}
