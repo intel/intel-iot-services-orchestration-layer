@@ -1,0 +1,29 @@
+{
+  "name":"network_status",
+  "description":"get localhost IPv4 network status",
+  "spec":{
+    "id":"__HOPE__/builtin/network/network_status",
+    "name":"network_status_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"switch",
+          "type":"boolean",
+          "default":true
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"status",
+          "type":"string"
+        }
+      ]
+    }
+  },
+  "ui":{
+
+  },
+  "doc":"builtin/network.html#network_status"
+}
