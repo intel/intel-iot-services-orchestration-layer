@@ -69,6 +69,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .doc-theme-dark .doc-menu {
   vertical-align: baseline;
+  -webkit-border-radius: 0.25em;
   border-radius: 0.25em;
 }
 .doc-theme-dark .doc-menu.doc-book.active {
@@ -243,6 +244,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .doc-theme-blue .doc-menu {
   vertical-align: baseline;
+  -webkit-border-radius: 0.25em;
   border-radius: 0.25em;
 }
 .doc-theme-blue .doc-menu.doc-book.active {

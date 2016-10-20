@@ -1,0 +1,5 @@
+<h1 id="rebind-app">Rebind App</h1><p>The app that you are going to install may use hubs which are not <code>builtin hub</code>. And these hubs may have their own <code>thing</code> and <code>service</code>. In order to use the app, we firstly must solve theses dependencies. If the name of app is iotsol-test and it uses hub_a and service iot-abs under thing fan.</p><pre><code>hub_a
+    |-- fan
+    |   -- iotsol-abs</code></pre><p>In the rebind dialog, hubs on the left are unresolved hubs that app depends on however hubs on the right are hubs that you can use now. If you rebind hub_a to hub_b,then hub_b will create fan if not exists and will install iotsol-abs if not exists.</p><pre><code>hub_b
+    |-- fan
+    |   -- iotsol-abs</code></pre><p>So rebinding means which hub you are going to install dependencies.</p><div class="figure"><img src="./doc/pic/example/install_app/rebind_app.gif" class="viewer" /></div>
