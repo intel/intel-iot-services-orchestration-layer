@@ -57,7 +57,8 @@
     "ws": "0.8.1",
     "xml2js": "0.4.16",
     "sharp": "*",
-    "mysql": "2.11.1"
+    "mysql": "2.11.1",
+    "qr-image": "*"
   },
   "devDependencies": {
     "chai": "^3.0.0",
