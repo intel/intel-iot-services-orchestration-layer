@@ -1,0 +1,33 @@
+{
+  "name": "ms_face",
+  "description": "Recognize a face with the microsoft face API.",
+  "spec": {
+    "id": "__HOPE__/builtin/life/ms_face",
+    "name": "ms_face_spec",
+    "in": {
+      "ports": [
+        {
+          "name": "filepath",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "data",
+          "type": "string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"key",
+        "type":"string",
+        "required":true
+      }
+    ]
+  },
+  "ui": {},
+  "doc" :"builtin/life.html#ms_face"
+}
