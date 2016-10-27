@@ -1,0 +1,56 @@
+{
+  "name":"qrcode_image",
+  "description":"create qrcode Image file",
+  "spec":{
+    "id":"__HOPE__/builtin/util/qrcode_image",
+    "name":"qrcode_image_spec",
+    "in":{
+      "ports":[
+        {
+          "name":"text",
+          "type":"string"
+        }
+      ]
+    },
+    "out":{
+      "ports":[
+        {
+          "name":"status",
+          "type":"boolean"
+        },
+	{
+          "name":"imageFilePath",
+          "type":"string"
+        }
+      ]
+    },
+    "config":[
+      {
+        "name":"outputFolder",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"fileName",
+        "type":"string",
+        "required":true
+      },
+      {
+        "name":"type",
+        "type":"string",
+        "required":true,
+        "default":"png"
+      },
+      {
+        "name":"size",
+        "type":"int",
+        "required":true,
+        "default":5
+      }
+    ]
+  },
+  "ui":{
+  
+  },
+  "doc":"builtin/util.html#qrcode_image"
+}
