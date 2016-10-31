@@ -25,7 +25,7 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 if (IN.switch) {
-	service_shared.http_request(CONFIG.url, CONFIG.method, CONFIG.headers, CONFIG.body, CONFIG.timeout, CONFIG.proxy)
+	service_shared.http_request(CONFIG.url, CONFIG.method, CONFIG.headers, CONFIG.body, CONFIG.timeout, CONFIG.proxy, IN.switch)
 		.then(function(response) {
 			sendOUT({
 				"out": response

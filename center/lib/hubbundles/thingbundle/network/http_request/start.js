@@ -26,11 +26,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
 var request = require("request");
 var querystring = require('querystring');
-service_shared.http_request = function(url, method, headers, body, timeout, proxy) {
+service_shared.http_request = function(url, method, headers, body, timeout, proxy, switch) {
 	return new Promise(function(resolve, reject) {
 		//change url if invalid
 		if (!((url.indexOf("http://") === 0) || (url.indexOf("https://") === 0))) {
-			url = "http://" + url;
+			url = "http://" + url + switch;
 		}
 		method = method.toLowerCase();
 		headers = (typeof headers == 'string') ? JSON.parse(headers) : headers;
