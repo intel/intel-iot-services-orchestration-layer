@@ -1,0 +1,6 @@
+{
+  "I2c":"I2c通信",
+  "I2c-read":"读取I2c设备",
+  "read byte from I2C device":"从I2c设备读取数据",
+  "startkit/I2c-read.html#I2c-read":"startkit/I2c-read.zh-CN.html#I2c-read"
+}

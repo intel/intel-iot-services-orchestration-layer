@@ -1,0 +1,48 @@
+{
+  "name": "I2c-read",
+  "description": "read byte from I2C device",
+  "spec":{
+    "in": {
+      "ports": [
+        {
+          "name": "trigger"
+        }
+        
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "value",
+          "type": "array"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "bus",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "address",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "cmd",
+        "type": "number",
+        "required": true
+      },
+      {
+        "name": "readByte",
+        "type": "number",
+        "required": true
+      }
+    ]
+  },
+  "ui": {
+
+  },
+  "doc":"startkit/I2c-read.html#I2c-read"
+}
