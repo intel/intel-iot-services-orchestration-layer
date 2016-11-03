@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var B = require("hope-base");
 var _ = require("lodash");
 
-var reldir = B.fs.dir_exists(__dirname + "/../../ui-widgets") ? "../.." : "../../..";
+var reldir = "../../..";
 
 exports.process = function(file_path) {
   return new Config(file_path);
