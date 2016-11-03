@@ -42,3 +42,4 @@ public/
 out
 ui-widgets/generated
 !**/.gitkeep
+/.idea

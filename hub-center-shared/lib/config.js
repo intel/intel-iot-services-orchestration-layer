@@ -31,8 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 var B = require("hope-base");
 var _ = require("lodash");
 
-var reldir = B.fs.dir_exists(__dirname + "/../../ui-widgets") ? "/../.." : "/../../..";
-var absdir = B.path.resolve(__dirname + reldir);
+var reldir = "../../..";
 
 exports.process = function(file_path) {
   return new Config(file_path);
@@ -186,7 +185,11 @@ Config.prototype.gen_center_specific = function() {
       $type: "WebApp",
       $params: {
         port: _.get(this.json, "web_for_developer.port", 8080),
-        static: [absdir + "/ui-dev/public", absdir + "/doc/html", absdir + "/ui-widgets"],
+        static: [
+          _.get(this.json, "static_ui_dev_path", reldir + "/ui-dev") + "/public",
+          _.get(this.json, "static_doc_path", reldir + "/doc") + "/html",
+          _.get(this.json, "static_ui_widgets_path", reldir + "/ui-widgets")
+        ],
         web_socket: true
       }
     },
@@ -195,7 +198,10 @@ Config.prototype.gen_center_specific = function() {
       $type: "WebApp",
       $params: {
         port: _.get(this.json, "web_for_end_users.port", 3000),
-        static: [absdir + "/ui-user/public", absdir + "/ui-widgets"],
+        static: [
+          _.get(this.json, "static_ui_user_path", reldir + "/ui-user") + "/public",
+          _.get(this.json, "static_ui_widgets_path", reldir + "/ui-widgets")
+        ],
         web_socket: true
       }
     },
