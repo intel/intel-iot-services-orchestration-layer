@@ -1,0 +1,15 @@
+{
+  "name": "9轴姿态融合算法",
+  "version": "1.0.0",
+  "description": "iotsol service - 9轴姿态融合算法，根据9轴数据，计算欧拉角",
+  "keywords": [
+    "mpu9150"
+  ],
+  "author": "windmillknight",
+  "license": "MIT",
+  "dependencies": {
+    "jsupm_mpu9150": "^1.0.0-src"
+  }
+}
+
+
