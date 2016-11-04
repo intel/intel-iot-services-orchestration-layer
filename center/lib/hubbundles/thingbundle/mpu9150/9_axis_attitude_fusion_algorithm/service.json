@@ -1,0 +1,43 @@
+{
+  "name": "9_axis_attitude_fusion_algorithm",
+  "description": "calsulate euler angles by mpu9150",
+  "spec": {
+    "id":	"_HOPE_/builtin/mpu9150/9_axis_attitude_fusion_algorithm"
+    "in": {
+      "ports": [
+        {
+          "name": "dt",
+          "type": "number",
+          "default": 0.1
+        },
+        {
+          "name": "K",
+          "type": "number",
+          "default": 0.5
+        },
+        {
+          "name": "trigger"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "pitch",
+          "type": "number"
+        },
+        {
+          "name": "roll",
+          "type": "number"
+        },
+        {
+          "name": "yaw",
+          "type": "number"
+        }
+      ]
+    },
+    "ui":{
+  },
+    "doc":"builtin/caiculate_euler_angles.html#9_axis_attitude_fusion_algorithm"
+ 
+}
