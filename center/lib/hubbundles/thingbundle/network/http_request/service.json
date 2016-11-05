@@ -8,8 +8,8 @@
       "ports":[
         {
           "name":"switch",
-          "type":"boolean",
-          "default":true
+          "type":"string",
+          "default":""
         }
       ]
     },
