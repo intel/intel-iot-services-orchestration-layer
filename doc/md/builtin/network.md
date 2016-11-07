@@ -11,7 +11,7 @@ It is implemented by [Request](https://www.npmjs.com/package/request).
 
 ### Config
 
-`url`: String. Http request url. If the url does not start with *http://*, it will be added with *http://*.
+`url1`: String. Http request url. If the url does not start with *http://*, it will be added with *http://*.
 
 `method`: String. Request method. Now only `get`,`post`,`put`,delete`,`patch` are supported.
 
@@ -25,7 +25,8 @@ It is implemented by [Request](https://www.npmjs.com/package/request).
 
 ### Inport
 
-`switch`: Boolean. The switching signal of http request. If it's true, this service will send request and format response data. 
+`trigger`: The switching signal of http request. If it's true, this service will send request and format response data. 
+`url2`: String. The tail of url1. If it's not null, it will be added in the back of url1 to make the request variable.
 
 ### Outport
 
@@ -34,9 +35,14 @@ It is implemented by [Request](https://www.npmjs.com/package/request).
 
 ### Example
 
-![](./pic/http_request.png)
+![](./pic/http_request_1.png)
 
 In this example, we send request to http://www.baidu.com and write the response body to file.
+
+</br>
+![](./pic/http_request_2.png)
+
+In this example, we send dynamic temperature data to http://www.web.com?temp= and get the response body.
 
 </br>
 
