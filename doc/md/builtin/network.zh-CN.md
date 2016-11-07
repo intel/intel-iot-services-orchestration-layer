@@ -10,7 +10,7 @@
 
 ### 配置
 
-‘url’：字符串，http请求的url，如果这个url没有以‘http://’开头，则会被添加上‘http://’。
+‘url1’：字符串，http请求的url，如果这个url没有以‘http://’开头，则会被添加上‘http://’。
 
 ‘method’：字符串，请求方法，现在只支持‘get’,'post','put','delete','patch'这５个方法。
 
@@ -24,7 +24,8 @@
 
 ### 输入
 
-‘switch’：布尔型，判断是否发送http请求，如果值为true，就会发送http请求，并格式化响应数据。
+‘trigger’：触发时发送http请求，并格式化响应数据。
+‘url2’：字符串，判断是否为空，如果不为空，就会将其加在url1尾部，实现可变的http请求。
 
 ### 输出
 
@@ -32,12 +33,16 @@
 
 ### 例子
 
-![](./pic/http_request.png)
+![](./pic/http_request_1.png)
 
 在这个例子中，向 http://www.baidu.com发送了一个请求，并将结果写进了文件中。
 
 </br>
+![](./pic/http_request_2.png)
 
+在这个例子中，向 http://www.baidu.com发送了一个请求，并将结果写进了文件中。
+
+</br>
 ### Output Format
 
 ```javascript
