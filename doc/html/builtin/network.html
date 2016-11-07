@@ -94,17 +94,18 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 id="network">network</h1>
 <h2 id="http_request">http_request</h2>
 <h3 id="description">Description</h3>
-<p>This servide provides ability for send http request.</p>
+<p>This servide provides ability for send http request with variable url.</p>
 <p>It is implemented by <a href="https://www.npmjs.com/package/request">Request</a>.</p>
 <h3 id="config">Config</h3>
-<p><code>url</code>: String. Http request url. If the url does not start with <em>http://</em>, it will be added with <em>http://</em>.</p>
+<p><code>url1</code>: String. Http request url. If the url does not start with <em>http://</em>, it will be added with <em>http://</em>.</p>
 <p><code>method</code>: String. Request method. Now only <code>get</code>,<code>post</code>,<code>put</code>,delete<code>,</code>patch` are supported.</p>
 <p><code>headers</code>: Object. Request headers. Default is <em>{}</em>.</p>
 <p><code>body</code>: Object. Request body. Default is <em>{}</em>.</p>
 <p><code>proxy</code>: String. Optional. You can set the proxy manually.</p>
 <p><code>timeout</code>: Number. Request timeout. Default is <em>50000</em>(50s).</p>
 <h3 id="inport">Inport</h3>
-<p><code>switch</code>: Boolean. The switching signal of http request. If it's true, this service will send request and format response data.</p>
+<p><code>trigger</code>: Boolean. The triggering signal of http request. If it's true, this service will send request and format response data.</p>
+<p><code>url2</code>: String. The tail of url1. If it's not null, it will be added in the back of url1 to make the request variable.</p>
 <h3 id="outport">Outport</h3>
 <p><code>out</code>: String. The http reuquest result including <code>statusCode</code>,<code>headers</code>,<code>body</code></p>
 <h3 id="example">Example</h3>
