@@ -7,9 +7,13 @@
     "in":{
       "ports":[
         {
-          "name":"switch",
+          "name":"trigger",
           "type":"boolean",
           "default":true
+        },
+        {
+          "name": "url2",
+          "type": "string"
         }
       ]
     },
@@ -23,7 +27,7 @@
     },
     "config":[
       {
-        "name":"url",
+        "name":"url1",
         "type":"string",
         "required":true
       },

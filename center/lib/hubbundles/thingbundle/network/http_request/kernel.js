@@ -24,8 +24,8 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *****************************************************************************/
-if (IN.switch) {
-	service_shared.http_request(CONFIG.url, CONFIG.method, CONFIG.headers, CONFIG.body, CONFIG.timeout, CONFIG.proxy)
+if (IN.trigger) {
+	service_shared.http_request(CONFIG.url1, IN.url2, CONFIG.method, CONFIG.headers, CONFIG.body, CONFIG.timeout, CONFIG.proxy)
 		.then(function(response) {
 			sendOUT({
 				"out": response
