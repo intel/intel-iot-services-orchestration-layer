@@ -7,14 +7,18 @@ In addition, there are multiple paths could be configured, e.g. where the applic
 **Center** tracks the online/offline status of **Hub** by using heartbeat. So there is a heartbeat server on **Center** and need to be configured as well.
 
 
-| config field  |   optional  |   available values  |  description |
-|:----------|:------|:----------------|:--------------------------------------|
-| web_for_developer  |  yes     |   a JSON object with port field to set | defines the web server for app developer |
-| web_for_end_users  |  yes     |   a JSON object with port field to set | defines the web server for end users |
-| app_bundle_path  |  yes     |  by defult it is "./appbundle" | where to store the applications (workflows, UI etc.) |
-| user_json_path  |  yes     |  by defult it is "./user.json" | where to store the usesr profiles |
-| authenticate | yes | true / false (default) | whether we enabled user system or not |
-| heartbeat_server|yes| a JSON object with check_interval and drop_threshold fileds| check_interval defines by every how many milliseconds the server would check the heartbeat status of all Hubs, and drop_threshold means that a Hub would be considered as offline if Center doesn't receive its heartbeat message for such long milliseconds|
+| config field           | optional | available values                         | description                              |
+| ---------------------- | :------- | :--------------------------------------- | :--------------------------------------- |
+| web_for_developer      | yes      | a JSON object with port field to set     | defines the web server for app developer |
+| web_for_end_users      | yes      | a JSON object with port field to set     | defines the web server for end users     |
+| app_bundle_path        | yes      | by defult it is "./appbundle"            | where to store the applications (workflows, UI etc.) |
+| user_json_path         | yes      | by defult it is "./user.json"            | where to store the user profiles         |
+| authenticate           | yes      | true / false (default)                   | whether we enabled user system or not    |
+| heartbeat_server       | yes      | a JSON object with check_interval and drop_threshold fileds | check_interval defines by every how many milliseconds the server would check the heartbeat status of all Hubs, and drop_threshold means that a Hub would be considered as offline if Center doesn't receive its heartbeat message for such long milliseconds |
+| static_ui_dev_path     | yes      | by default it is "../../../ui-dev"       | the path to the directory where the web page files of app development interface store. |
+| static_ui_user_path    | yes      | by default it is "../../../ui-user"      | the path to the directory where the web page files of end-user interface store. |
+| static_doc_path        | yes      | by default it is "../../../doc"          | the path to the directory where the web page files of online helping document store. |
+| static_ui_widgets_path | yes      | by default it is "../../../ui-widgets"   | the path to the directory where the UI widgets store. |
 
 
 ## Example

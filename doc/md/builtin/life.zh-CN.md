@@ -219,3 +219,186 @@ http://www.zhihu.com/rss
 }
 
 ```
+
+</br>
+
+## 微软人脸识别服务
+
+### 描述
+
+通过封装好的请求来访问微软的人脸识别服务并获得返回结果，可以识别出人以及其表情和外貌特征。官网连接：https://www.azure.cn/cognitive-services/zh-cn/face-api。这里是使用了其识别人脸特征的功能，无需训练。
+
+### 配置
+
+`keys`: 字符串类型，该配置项需要填写在微软API服务中申请的认证码，即实际填写的是微软人脸识别服务的Ocp-Apim-Subscription-Key的值。
+
+### 输入
+
+`filepath`: 字符串类型，发送的文件路径。最好填写绝对路径以免发送未知的错误。
+
+### 输出
+
+`data`: 字符串类型，将云服务返回的结果处理成json字符串的形式显示。识别成功会返回一个数组，里面根据识别框大小的递减顺序排列。空的返回值说明没有识别到任何人脸信息。 人脸的返回值包含了如下属性:
+
+| 名称        | 类别           | 描述  |
+| ------------- |:-------------:|:----- |
+| faceId      | String | 检测出的人脸的唯一标示，24小时之后会过期。 |
+| faceRectangle     | Object | 图片中显示人脸位置的矩形区域。 |
+| faceLandmarks | Object | 由27个点组成的数组，对应人脸中27个重要的标志位。 |
+| faceAttributes | Object | 人脸的属性:<br />* `age`: 年龄。<br />* `gender`: 男或者女<br />* `smile`: 微笑的程度，返回值在0到1之间。<br />* `facialHair`: 由三种毛发特征组成，主要来描述不同的胡须位置。<br />* `headPose`: 人脸的三种位置姿态， 第三个参数为保留参数通常为0。<br />* `glasses`: 眼镜的类型，有四种可能的结果。|
+
+### 例子
+
+配置:
+
+```javascript
+keys:'a507fafe438643329b2dc3c2ed9*****'
+```
+
+输入: 
+
+```javascript
+filepath:'/Users/User/Documents/Emotion_Recognition/test.jpg'
+```
+
+输出:
+
+```javascript
+[
+  {
+    "faceId": "48cdf8c8-841c-4d33-b875-1710a3fc6542",
+    "faceRectangle": {
+      "width": 228,
+      "height": 228,
+      "left": 460,
+      "top": 125
+    },
+    "faceLandmarks": {
+      "pupilLeft": {
+        "x": 507,
+        "y": 204.9
+      },
+      "pupilRight": {
+        "x": 609.8,
+        "y": 175.4
+      },
+      "noseTip": {
+        "x": 596.4,
+        "y": 250.9
+      },
+      "mouthLeft": {
+        "x": 531.4,
+        "y": 301
+      },
+      "mouthRight": {
+        "x": 629,
+        "y": 273.7
+      },
+      "eyebrowLeftOuter": {
+        "x": 463.2,
+        "y": 201.2
+      },
+      "eyebrowLeftInner": {
+        "x": 547.4,
+        "y": 177.1
+      },
+      "eyeLeftOuter": {
+        "x": 496.8,
+        "y": 212
+      },
+      "eyeLeftTop": {
+        "x": 508.8,
+        "y": 199.4
+      },
+      "eyeLeftBottom": {
+        "x": 513.2,
+        "y": 214
+      },
+      "eyeLeftInner": {
+        "x": 528.2,
+        "y": 203.2
+      },
+      "eyebrowRightInner": {
+        "x": 584.2,
+        "y": 165.4
+      },
+      "eyebrowRightOuter": {
+        "x": 630.3,
+        "y": 148.3
+      },
+      "eyeRightInner": {
+        "x": 598,
+        "y": 183.7
+      },
+      "eyeRightTop": {
+        "x": 609.5,
+        "y": 170.1
+      },
+      "eyeRightBottom": {
+        "x": 615.2,
+        "y": 181.2
+      },
+      "eyeRightOuter": {
+        "x": 627.6,
+        "y": 171.3
+      },
+      "noseRootLeft": {
+        "x": 558.2,
+        "y": 198.7
+      },
+      "noseRootRight": {
+        "x": 583.5,
+        "y": 192.2
+      },
+      "noseLeftAlarTop": {
+        "x": 558.6,
+        "y": 235.7
+      },
+      "noseRightAlarTop": {
+        "x": 601.1,
+        "y": 224.9
+      },
+      "noseLeftAlarOutTip": {
+        "x": 549.2,
+        "y": 259.4
+      },
+      "noseRightAlarOutTip": {
+        "x": 615,
+        "y": 240.9
+      },
+      "upperLipTop": {
+        "x": 591.4,
+        "y": 278.3
+      },
+      "upperLipBottom": {
+        "x": 592,
+        "y": 287.7
+      },
+      "underLipTop": {
+        "x": 591.7,
+        "y": 296.7
+      },
+      "underLipBottom": {
+        "x": 594.8,
+        "y": 313.3
+      }
+    },
+    "faceAttributes": {
+      "age": 23.5,
+      "gender": "female",
+      "headPose": {
+        "roll": -16.5,
+        "yaw": 22.1,
+        "pitch": 0
+      },
+      "smile": 0.998,
+      "facialHair": {
+        "moustache": 0,
+        "beard": 0,
+        "sideburns": 0
+      },
+      "glasses": "ReadingGlasses"
+    }
+  }
+]
+```
