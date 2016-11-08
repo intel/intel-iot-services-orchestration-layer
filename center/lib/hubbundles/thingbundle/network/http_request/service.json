@@ -7,9 +7,7 @@
     "in":{
       "ports":[
         {
-          "name":"trigger",
-          "type":"boolean",
-          "default":true
+          "name":"trigger"
         },
         {
           "name": "url2",

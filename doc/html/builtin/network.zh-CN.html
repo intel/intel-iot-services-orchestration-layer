@@ -104,16 +104,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>‘proxy’：字符串，可选参数，可以手动配置代理。</p>
 <p>‘timeout’：数值，请求时限，默认是‘500000’(50s)。</p>
 <h3 id="输入">输入</h3>
-<p>‘trigger’：布尔型，判断是否发送http请求，如果值为true，就会发送http请求，并格式化响应数据。</p>
+<p>‘trigger’：触发时发送http请求，并格式化响应数据。</p>
 <p>‘url2’：字符串，判断是否为空，如果不为空，就会将其加在url1尾部，实现可变的http请求。</p>
 <h3 id="输出">输出</h3>
 <p>‘out’：字符串，http请求结果，包括‘状态码’，‘头部’，‘主体’。</p>
 <h3 id="例子">例子</h3>
 <div class="figure">
-<img src="./pic/http_request.png" />
+<img src="./pic/http_request_1.png" />
 
 </div>
 <p>在这个例子中，向 http://www.baidu.com发送了一个请求，并将结果写进了文件中。</p>
+<div class="figure">
+<img src="./pic/http_request_2.png" />
+
+</div>
+<p>在这个例子中，向 http://www.web.com发送了一个请求，并将温度数据传至服务器。</p>
 <p></br></p>
 <h3 id="output-format">Output Format</h3>
 <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>

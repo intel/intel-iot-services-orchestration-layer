@@ -104,16 +104,19 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><code>proxy</code>: String. Optional. You can set the proxy manually.</p>
 <p><code>timeout</code>: Number. Request timeout. Default is <em>50000</em>(50s).</p>
 <h3 id="inport">Inport</h3>
-<p><code>trigger</code>: Boolean. The triggering signal of http request. If it's true, this service will send request and format response data.</p>
+<p><code>trigger</code>: The triggering signal of http request. If it's true, this service will send request and format response data.</p>
 <p><code>url2</code>: String. The tail of url1. If it's not null, it will be added in the back of url1 to make the request variable.</p>
 <h3 id="outport">Outport</h3>
 <p><code>out</code>: String. The http reuquest result including <code>statusCode</code>,<code>headers</code>,<code>body</code></p>
 <h3 id="example">Example</h3>
 <div class="figure">
-<img src="./pic/http_request.png" />
-
+<img src="./pic/http_request_1.png" />
 </div>
 <p>In this example, we send request to http://www.baidu.com and write the response body to file.</p>
+<div class="figure">
+<img src="./pic/http_request_2.png" />
+</div>
+<p>In this example, we send dynamic temperature data to http://www.web.com?temp= and get the response body.</p>
 <p></br></p>
 <h3 id="output-format">Output Format</h3>
 <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>

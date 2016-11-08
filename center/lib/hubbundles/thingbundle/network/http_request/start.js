@@ -32,7 +32,7 @@ service_shared.http_request = function(url, url2, method, headers, body, timeout
 		if (!((url.indexOf("http://") === 0) || (url.indexOf("https://") === 0))) {
 			url = "http://" + url;
 		}
-		if(url2 !== null) url = url + url2;
+		if(url2 !== null && url2 !== undefined) url = url + url2;
 		method = method.toLowerCase();
 		headers = (typeof headers == 'string') ? JSON.parse(headers) : headers;
 		body = (typeof body == 'string') ? JSON.parse(body) : body;
