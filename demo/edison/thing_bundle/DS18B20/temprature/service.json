@@ -1,0 +1,25 @@
+{
+  "type": "hope_service",
+  "name": "temprature",
+  "description": "Service of digital thermometer DS18B20.Detail:https://github.com/intel-iot-devkit/mraa/pull/415",
+  "spec": {
+    "in": {
+      "ports": [
+        {
+          "name": "trigger"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "temp",
+          "type": "number"
+        }
+      ]
+    },
+    "name": "DS18B20",
+    "id": "SPEC__a5ba4470-a422-11e6-8131-bdd7ab2c52e9"
+  },
+}
+
