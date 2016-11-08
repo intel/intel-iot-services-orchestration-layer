@@ -61,7 +61,3 @@ var mz= shared.sensorObj.floatp_value(z)
 ComplementaryFilter(ax,ay,az,gx,gy,gz,mx,my,mz,Dt,K);
 }
 
-<<<<<<< HEAD
-=======
-ComplementaryFilter(ax,ay,az,gx,gy,gz,mx,my,mz,Dt,K);
->>>>>>> cb13106ec5384c3a9c3593ef5ad66570c0bc2320
