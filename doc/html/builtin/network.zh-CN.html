@@ -97,22 +97,28 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3 id="描述">描述</h3>
 <p>提供发送http请求的服务。 被<a href="https://www.npmjs.com/package/request">REQUEST</a>实现。</p>
 <h3 id="配置">配置</h3>
-<p>‘url’：字符串，http请求的url，如果这个url没有以‘http://’开头，则会被添加上‘http://’。</p>
+<p>‘url1’：字符串，http请求的url，如果这个url没有以‘http://’开头，则会被添加上‘http://’。</p>
 <p>‘method’：字符串，请求方法，现在只支持‘get’,'post','put','delete','patch'这５个方法。</p>
 <p>‘headers’：对象，请求头部，默认是‘{}’。</p>
 <p>‘body’：对象，请求主体，默认是‘{}’。</p>
 <p>‘proxy’：字符串，可选参数，可以手动配置代理。</p>
 <p>‘timeout’：数值，请求时限，默认是‘500000’(50s)。</p>
 <h3 id="输入">输入</h3>
-<p>‘switch’：布尔型，判断是否发送http请求，如果值为true，就会发送http请求，并格式化响应数据。</p>
+<p>‘trigger’：触发时发送http请求，并格式化响应数据。</p>
+<p>‘url2’：字符串，判断是否为空，如果不为空，就会将其加在url1尾部，实现可变的http请求。</p>
 <h3 id="输出">输出</h3>
 <p>‘out’：字符串，http请求结果，包括‘状态码’，‘头部’，‘主体’。</p>
 <h3 id="例子">例子</h3>
 <div class="figure">
-<img src="./pic/http_request.png" />
+<img src="./pic/http_request_1.png" />
 
 </div>
 <p>在这个例子中，向 http://www.baidu.com发送了一个请求，并将结果写进了文件中。</p>
+<div class="figure">
+<img src="./pic/http_request_2.png" />
+
+</div>
+<p>在这个例子中，向 http://www.web.com发送了一个请求，并将温度数据传至服务器。</p>
 <p></br></p>
 <h3 id="output-format">Output Format</h3>
 <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
