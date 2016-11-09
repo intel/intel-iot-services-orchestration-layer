@@ -1,7 +1,7 @@
 {
   "type": "hope_service",
   "name": "9_Axies",
-  "description": "输出欧拉角",
+  "description": "output the eular angles",
   "spec": {
     "in": {
       "ports": [
