@@ -32,4 +32,3 @@ service_shared.http_request(CONFIG.url1, IN.url2, CONFIG.method, CONFIG.headers,
   }, function(err) {
     sendERR(err);
   });
-  
