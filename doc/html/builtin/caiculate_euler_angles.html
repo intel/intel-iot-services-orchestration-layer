@@ -14,6 +14,7 @@
 <li><a href="#九轴姿态融合">九轴姿态融合算法</a><ul>
 <li><a href="#输出欧拉角">输出欧拉角</a><ul>
 <li><a href="#描述">描述</a></li>
+<li><a href="#配置">配置</a></li>
 <li><a href="#输入">输入</a></li>
 <li><a href="#输出">输出</a></li>
 
@@ -25,14 +26,15 @@
 <h2 id="输出欧拉角">输出欧拉角</h2>
 <h3 id="描述">描述</h3>
 <p>根据mpu9150九轴动作传感器的9轴数据，计算欧拉角</p>
-
-<h3 id="输入">输入</h3>
+<h3 id="配置">配置</h3>
 <p><code>dt</code>: 采样频率</p>
 <p><code>K</code>: 加速度计在补偿偏移时所占的比例</p>
+<h3 id="输入">输入</h3>
+<p><code>trigger</code>: 触发信号</p>
 <h3 id="输出">输出</h3>
 <p><code>pitch</code>: 俯仰角</p>
 <p><code>roll</code>: 翻滚角</p>
 <p><code>yaw</code>: 偏航角</p>
-<p><code>trigger</code>: 触发信号</p>
 </body>
 </html>
+
