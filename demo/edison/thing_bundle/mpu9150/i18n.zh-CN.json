@@ -1,0 +1,5 @@
+{
+  "9_Axies":"九轴姿态融合算法",
+  "output the eular angles":"根据mpu9150姿态传感器，输出欧拉角",
+  "startkit/calculate_euler_angles.zh-CN.html#calculate euler angles":"startkit/calculate_euler_angles.html#计算欧拉角"
+}
