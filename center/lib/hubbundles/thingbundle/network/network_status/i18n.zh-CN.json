@@ -1,0 +1,5 @@
+{
+  "network_status":"网络状态",
+  "get localhost IPv4 network status":"获得本机IPv4网络状态",
+  "builtin/network.html#network_status":"builtin/network.zh-CN.html#网络状态"
+}

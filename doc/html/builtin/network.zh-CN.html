@@ -62,32 +62,38 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#例子">例子</a></li>
 <li><a href="#output-format">Output Format</a></li>
 </ul></li>
-<li><a href="#tcp请求">tcp请求</a><ul>
+<li><a href="#网络状态">网络状态</a><ul>
 <li><a href="#描述-1">描述</a></li>
-<li><a href="#配置-1">配置</a></li>
 <li><a href="#输入-1">输入</a></li>
 <li><a href="#输出-1">输出</a></li>
 <li><a href="#例子-1">例子</a></li>
+<li><a href="#output-format-1">Output Format</a></li>
 </ul></li>
-<li><a href="#tcp服务器">tcp服务器</a><ul>
+<li><a href="#tcp请求">tcp请求</a><ul>
 <li><a href="#描述-2">描述</a></li>
 <li><a href="#配置-2">配置</a></li>
 <li><a href="#输入-2">输入</a></li>
+<li><a href="#输出-2">输出</a></li>
 <li><a href="#例子-2">例子</a></li>
 </ul></li>
-<li><a href="#udp请求">udp请求</a><ul>
+<li><a href="#tcp服务器">tcp服务器</a><ul>
 <li><a href="#描述-3">描述</a></li>
 <li><a href="#配置-3">配置</a></li>
 <li><a href="#输入-3">输入</a></li>
-<li><a href="#输出-2">输出</a></li>
-<li><a href="#例子-3">　例子</a></li>
+<li><a href="#例子-3">例子</a></li>
+</ul></li>
+<li><a href="#udp请求">udp请求</a><ul>
+<li><a href="#描述-4">描述</a></li>
+<li><a href="#配置-4">配置</a></li>
+<li><a href="#输入-4">输入</a></li>
+<li><a href="#输出-3">输出</a></li>
+<li><a href="#例子-4">　例子</a></li>
 </ul></li>
 <li><a href="#udp服务器">udp服务器</a><ul>
-<li><a href="#描述-4">　描述</a></li>
-<li><a href="#配置-4">　配置</a></li>
-<li><a href="#输入-4">输入</a></li>
-<li><a href="#输入-5">　输入</a></li>
-<li><a href="#例子-4">例子</a></li>
+<li><a href="#描述-5">　描述</a></li>
+<li><a href="#配置-5">　配置</a></li>
+<li><a href="#输入-5">输入</a></li>
+<li><a href="#例子-5">例子</a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -126,18 +132,44 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
     <span class="st">&quot;headers&quot;</span><span class="op">:</span> <span class="st">&quot;response.headers&quot;</span><span class="op">,</span>
     <span class="st">&quot;body&quot;</span><span class="op">:</span> <span class="st">&quot;response.body&quot;</span>
 <span class="op">}</span></code></pre></div>
-<h2 id="tcp请求">tcp请求</h2>
+<h2 id="网络状态">网络状态</h2>
 <h3 id="描述-1">描述</h3>
+<p>提供获得本机IPv4网络状态的服务。</p>
+<h3 id="输入-1">输入</h3>
+<p><code>switch</code>: 布尔型，判断是否获得网络状态，如果值为true，从服务响应本机IPv4网络状态。</p>
+<h3 id="输出-1">输出</h3>
+<p><code>status</code>: 对象，网络状态，如果没有可用的IPv4外网，响应的状态信息为<code>null</code>。</p>
+<h3 id="例子-1">例子</h3>
+<p>在这个例子中，我们将本机IP显示在 <code>Text</code> 部件上。</p>
+<div class="figure">
+<img src="./pic/network_status.zh-CN.png" />
+
+</div>
+<p>function code</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"> <span class="cf">if</span>(<span class="va">in</span><span class="op">!=</span> <span class="dv">null</span>) <span class="op">{</span>
+     <span class="cf">return</span> <span class="kw">in.address</span><span class="op">;</span>
+ <span class="op">}</span></code></pre></div>
+<p></br></p>
+<h3 id="output-format-1">Output Format</h3>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="op">{</span>
+    <span class="dv">address</span><span class="op">:</span> <span class="st">&quot;10.10.7.138&quot;</span><span class="op">,</span>
+    <span class="dv">netmask</span><span class="op">:</span> <span class="st">&quot;255.255.240.0&quot;</span><span class="op">,</span>
+    <span class="dv">family</span><span class="op">:</span> <span class="st">&quot;IPv4&quot;</span><span class="op">,</span>
+    <span class="dv">mac</span><span class="op">:</span> <span class="st">&quot;30:5a:3a:bd:fb:cc&quot;</span><span class="op">,</span>
+    <span class="dv">internal</span><span class="op">:</span> <span class="op">false</span>
+<span class="op">}</span></code></pre></div>
+<h2 id="tcp请求">tcp请求</h2>
+<h3 id="描述-2">描述</h3>
 <p>提供发送tcp请求的服务</p>
-<h3 id="配置-1">配置</h3>
+<h3 id="配置-2">配置</h3>
 <p>‘ip’：字符串，服务器ip地址。</p>
 <p>‘port’：数值，服务器端口。</p>
-<h3 id="输入-1">输入</h3>
+<h3 id="输入-2">输入</h3>
 <p>‘switch’：布尔型，判断是否发送tcp请求，如果值为true,就会发送请求，并格式化响应数据。</p>
 <p>‘data’：字符串，发送给服务器的数据。</p>
-<h3 id="输出-1">输出</h3>
+<h3 id="输出-2">输出</h3>
 <p>‘out’：字符串，从服务返回的响应信息。</p>
-<h3 id="例子-1">例子</h3>
+<h3 id="例子-2">例子</h3>
 <div class="figure">
 <img src="./pic/tcp_request.png" />
 
@@ -145,15 +177,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>在这个例子中，每隔３秒钟就会向127.0.0.1:9999发送一个请求，并用‘Text’ widget显示响应信息。</p>
 <p></br></p>
 <h2 id="tcp服务器">tcp服务器</h2>
-<h3 id="描述-2">描述</h3>
+<h3 id="描述-3">描述</h3>
 <p>通过这个服务可以创建一个简单的tcp服务器。</p>
-<h3 id="配置-2">配置</h3>
+<h3 id="配置-3">配置</h3>
 <p>‘ip’：字符串，监听ip地址，默认是‘0.0.0.0’。</p>
 <p>‘port’：数值，监听端口。</p>
 <p>‘f(data)’：函数，处理来自客户端的数据。</p>
-<h3 id="输入-2">输入</h3>
+<h3 id="输入-3">输入</h3>
 <p>‘switch’：布尔型，判断是否开启tcp服务器，如果值为true，则会开启tcp服务器，否则关闭tcp服务器。</p>
-<h3 id="例子-2">例子</h3>
+<h3 id="例子-3">例子</h3>
 <div class="figure">
 <img src="./pic/tcp_server.png" />
 
@@ -163,33 +195,29 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="cf">return</span> <span class="va">data</span>.<span class="at">toString</span>() <span class="op">+</span> <span class="st">&quot;hello&quot;</span><span class="op">;</span></code></pre></div>
 <p></br></p>
 <h2 id="udp请求">udp请求</h2>
-<h3 id="描述-3">描述</h3>
+<h3 id="描述-4">描述</h3>
 <p>提供发送udp请求的服务。</p>
-<h3 id="配置-3">配置</h3>
+<h3 id="配置-4">配置</h3>
 <p>'ip'：字符串，服务器ip地址。</p>
 <p>‘port’：数值，服务器端口。</p>
-<h3 id="输入-3">输入</h3>
+<h3 id="输入-4">输入</h3>
 <p>‘switch’：布尔型，判断是否发送udp请求，如果值为true，就会发送请求，并格式化响应信息。</p>
 <p>‘data’：字符串，发送给服务器的信息。</p>
-<h3 id="输出-2">输出</h3>
+<h3 id="输出-3">输出</h3>
 <p>‘out’：字符串，服务器的响应信息。</p>
-<h3 id="例子-3">　例子</h3>
+<h3 id="例子-4">　例子</h3>
 <p>参照tcp请求的例子。</p>
 <p></br></p>
 <h2 id="udp服务器">udp服务器</h2>
-<h3 id="描述-4">　描述</h3>
+<h3 id="描述-5">　描述</h3>
 <p>提供创建一个简单的udp服务器的功能。</p>
-<h3 id="配置-4">　配置</h3>
+<h3 id="配置-5">　配置</h3>
 <p>‘ip’：字符串，监听ip，默认是'0.0.0.0'。</p>
 <p>‘port’：数值，监听端口。</p>
 <p>‘f(data)’：函数，处理来自与客户端的数据。</p>
-<h3 id="输入-4">输入</h3>
-<p>‘ip’：字符串，监听ip，默认是'0.0.0.0'。</p>
-<p>‘port’：数值，监听端口。</p>
-<p>‘f(data)’：函数，处理来自于客户端的数据。</p>
 <h3 id="输入-5">　输入</h3>
 <p>‘switch’：布尔型，判断是否开启udp服务器，如果值为true，服务器就会开启，否则关闭。</p>
-<h3 id="例子-4">例子</h3>
+<h3 id="例子-5">例子</h3>
 <p>参照tcp服务器的例子。</p>
 </body>
 </html>

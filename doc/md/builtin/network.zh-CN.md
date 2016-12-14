@@ -53,6 +53,47 @@
 }
 ```
 
+##网络状态
+
+### 描述
+
+提供获得本机IPv4网络状态的服务。
+
+### 输入
+
+`switch`: 布尔型，判断是否获得网络状态，如果值为true，从服务响应本机IPv4网络状态。
+
+### 输出
+
+`status`: 对象，网络状态，如果没有可用的IPv4外网，响应的状态信息为`null`。
+### 例子
+
+![](./pic/network_status.zh-CN.png)
+
+在这个例子中，我们将本机IP显示在 `Text` 部件上。
+
+function code
+```javascript
+if(in!=null){
+	return in.address;
+}
+```
+
+### 输出格式
+
+```javascript 
+null or {
+    		address: '10.10.7.138',
+   	 		netmask: '255.255.240.0',
+    		family: 'IPv4',
+    		mac: '30:5a:3a:bd:fb:cc',
+    		internal: false
+		}
+```
+
+</br>
+
+
 ## tcp请求
 
 ### 描述

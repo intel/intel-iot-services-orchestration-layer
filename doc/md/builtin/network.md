@@ -56,6 +56,45 @@ In this example, we send dynamic temperature data to http://www.web.com?temp= an
 }
 ```
 
+##network_status
+
+### Description
+
+This service provides ability for getting localhost IPv4 network status.
+
+### Inport
+
+`switch`: Boolean. The switching signal of network status. If it's true, this service will get localhost IPv4 network status.
+
+### Outport
+
+`status`: Object. The network status. If there is no external IPv4 network is available, the format of status is `null`.
+### Example
+
+![](./pic/network_status.png)
+
+In this example, we show the IP of localhost with `Text` widget.
+
+function code
+```javascript
+if(in!=null){
+	return in.address;
+}
+```
+</br>
+
+### Output Format
+
+```javascript 
+null or {
+    		address: '10.10.7.138',
+   	 		netmask: '255.255.240.0',
+    		family: 'IPv4',
+    		mac: '30:5a:3a:bd:fb:cc',
+    		internal: false
+		}
+```
+
 ## tcp_request
 
 ### Description
