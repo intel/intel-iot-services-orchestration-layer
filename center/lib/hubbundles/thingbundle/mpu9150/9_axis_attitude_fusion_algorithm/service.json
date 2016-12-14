@@ -1,0 +1,47 @@
+{
+  "type": "hope_service",
+  "name": "9_Axies",
+  "description": "output the eular angles",
+  "spec": {
+    "in": {
+      "ports": [
+        {
+          "name": "trigger",
+          "type": "string"
+        }
+      ]
+    },
+    "out": {
+      "ports": [
+        {
+          "name": "pitch",
+          "type": "number"
+        },
+        {
+          "name": "roll",
+          "type": "number"
+        },
+        {
+          "name": "yaw",
+          "type": "number"
+        }
+      ]
+    },
+    "config": [
+      {
+        "name": "dt",
+        "type": "number",
+        "required": true,
+        "default": 0.1
+      },
+      {
+        "name": "K",
+        "type": "number",
+        "required": true,
+        "default": 0.5
+      }
+    ],
+    "name": "9_Axies",
+    "id": "SPEC__65998ea0-a229-11e6-9676-672b81e94994"
+  }
+}
